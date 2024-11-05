@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "this is backend of restaurant application",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write 'src/**/*.ts'",
+    "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
+    "build": "tsc && npm run copy-swagger",
+    "start": "cross-env NODE_ENV=production node build/src/index.js"
+  },
+  "author": "abin",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.14.0",
+    "eslint": "^9.14.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.12.0",
+    "prettier": "^3.3.3",
+    "typescript-eslint": "^8.13.0"
+  }
+}
