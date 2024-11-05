@@ -14,7 +14,7 @@ const connectDb = async () => {
         });
         console.log('connected to mongodb...🛢');
     } catch (error) {
-        console.log(error);
+        console.error(error);
         throw new DatabaseConnectionError();
     }
 };

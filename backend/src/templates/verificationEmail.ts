@@ -25,7 +25,7 @@ export const getEmailVerificationTemplate = function (otp: string) {
       <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">UserApp</a>
     </div>
     <p style="font-size:1.1em">Hi,</p>UserApp
-    <p>Thank you for choosing UserAuthApp. Use the following OTP to complete your Sign Up procedures.
+    <p>Thank you for choosing RestaurantApp. Use the following OTP to complete your Sign Up procedures.
     This OTP is valid for 10 minutes from the time this email was sent. After this period, You need to click on resend 
     OTP or need to signup again to verify your email.
     </p>
@@ -33,7 +33,7 @@ export const getEmailVerificationTemplate = function (otp: string) {
     <p style="font-size:0.9em;">Regards,<br />UserApp</p>
     <hr style="border:none;border-top:1px solid #eee" />
     <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
-      <p>UserAuthApp</p>
+      <p>RestaurantApp</p>
       <p>India</p>
     </div>
   </div>
@@ -42,7 +42,7 @@ export const getEmailVerificationTemplate = function (otp: string) {
 
     </html>`;
     const text = `
-        Verify Email, A request to create your UserAuthApp account was received.
+        Verify Email, A request to create your RestaurantApp account was received.
         Use this OTP to confirm your account and log in`;
     return {
         html: html,

@@ -1,3 +1,4 @@
+export * from './validation/otp.validation';
 export * from './validation/user.validation';
 export * from './email';
 export * from './jwt';

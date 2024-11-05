@@ -1,12 +1,11 @@
 import { autoInjectable } from 'tsyringe';
 import { IOtp, IUser } from '../database/model';
-
-import { BadRequestError, NotAuthorizedError } from '../errors';
+import { UserSignInDto, UserSignupDto } from '../dto/auth.dto';
+import { BadRequestError, NotAuthorizedError, NotFoundError } from '../errors';
+import { comparePassword, createJwtAccessToken, IJwtPayload, sendConfirmationEmail } from '../utils';
 import { OtpRepository, UserRepository } from '../database/repository';
 import mongoose from 'mongoose';
 import { generateOtp } from '../utils/otp';
-import { UserSignInDto, UserSignupDto } from '../dto/auth.dto';
-import { comparePassword, createJwtAccessToken, IJwtPayload, sendConfirmationEmail } from '../utils';
 
 @autoInjectable()
 export class UserService {
@@ -95,5 +94,11 @@ export class UserService {
         const jwt: string = createJwtAccessToken(userPayload);
 
         return { user: existingUser, accessToken: jwt };
+    }
+
+    public async getProfile(userId: string): Promise<IUser | null> {
+        const user: IUser | null = await this.userRepository.findUserById(userId);
+        if (!user) throw new NotFoundError('This user does not exist');
+        return user;
     }
 }
