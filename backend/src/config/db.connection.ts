@@ -6,6 +6,7 @@ import { DatabaseConnectionError } from '../errors';
 const connectDb = async () => {
     try {
         await mongoose.connect(appConfig.MONGO_URI, {
+            dbName: appConfig.DB_NAME,
             retryWrites: true,
             w: 'majority',
             connectTimeoutMS: 30000, // Increase connection timeout to 30 seconds

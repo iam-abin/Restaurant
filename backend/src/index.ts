@@ -8,15 +8,14 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 import { appConfig } from './config/app.config';
-
 import { app } from './app';
 import { connectDb } from './config/db.connection';
 
-const PORT: string | number = appConfig.PORT;
+const PORT: number = appConfig.PORT;
 
 (async () => {
     await connectDb();
     app.listen(PORT, (): void => {
-        console.log(`Server is listening on port ${PORT}...`);
+        console.log(`Server is listening on port ${PORT}...🚀`);
     });
 })();
