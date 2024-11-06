@@ -4,6 +4,8 @@ import express, { Application, Request, Response } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
+
 import { NotFoundError } from './errors';
 import { errorHandler, rateLimiter } from './middlewares';
 import { userRoute } from './routes/user';
@@ -26,6 +28,7 @@ app.use(
     }),
 );
 if (!isProductionENV) app.use(morgan('dev'));
+app.use(cookieParser());
 
 app.use(rateLimiter);
 // Routes

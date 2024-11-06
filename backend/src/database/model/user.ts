@@ -1,14 +1,13 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { generateHashedPassword } from '../../utils';
+import { ISignup } from '../../types/user';
+import { ROLES } from '../../utils/constants';
 
-export interface IUser extends Document {
-    name: string;
-    email: string;
-    password: string;
+export interface IUserDocument extends Document, ISignup {
     isVerified: boolean;
 }
 
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<IUserDocument>(
     {
         name: {
             type: String,
@@ -25,6 +24,11 @@ const userSchema = new Schema<IUser>(
         password: {
             type: String,
             required: true,
+        },
+        role: {
+            type: String,
+            required: true,
+            enum: [ROLES.ADMIN, ROLES.RESTAURANT, ROLES.USER],
         },
         isVerified: {
             type: Boolean,
@@ -56,7 +60,7 @@ userSchema.pre('save', async function (next) {
 
 // To hash password before saving the updated password to db
 userSchema.pre('findOneAndUpdate', async function (next) {
-    const update = this.getUpdate() as Partial<IUser>;
+    const update = this.getUpdate() as Partial<ISignup>;
     if (!update.password) return next();
 
     try {
@@ -68,4 +72,4 @@ userSchema.pre('findOneAndUpdate', async function (next) {
     }
 });
 
-export const UserModel = mongoose.model<IUser>('User', userSchema);
+export const UserModel = mongoose.model<IUserDocument>('User', userSchema);

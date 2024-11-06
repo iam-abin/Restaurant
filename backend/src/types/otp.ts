@@ -1,4 +1,4 @@
-export interface OtpDto {
+export interface IOtp {
     userId: string;
     otp: string;
 }

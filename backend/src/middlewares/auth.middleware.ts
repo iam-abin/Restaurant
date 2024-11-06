@@ -1,28 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
-import { NotAuthorizedError } from '../errors';
-import { IJwtPayload, verifyJwtToken } from '../utils';
-import { UserRepository } from '../database/repository';
+import { NotAuthorizedError, ForbiddenError } from '../errors';
+import { IUserRole } from '../types/roles';
 
-const userRepository = new UserRepository();
+// Middleware factory that checks for different user types
+export const auth = (requiredRole: Partial<IUserRole>) => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        try {
+            if (!req.currentUser) throw new NotAuthorizedError();
 
-declare global {
-    namespace Express {
-        interface Request {
-            user?: IJwtPayload;
+            if (req.currentUser.role !== requiredRole)
+                throw new ForbiddenError('You have no permission to access this route');
+
+            next();
+        } catch (error) {
+            next(error);
         }
-    }
-}
-
-export const auth = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-        const token = req.header('Authorization')?.replace('Bearer ', '');
-        if (!token) throw new NotAuthorizedError('UnAuthorized Request');
-        const decoded: IJwtPayload = verifyJwtToken(token);
-        const user = await userRepository.findUserById(decoded.userId);
-        if (!user) throw new Error('User Not found');
-        req.user = decoded;
-        next();
-    } catch (error) {
-        next(error);
-    }
+    };
 };

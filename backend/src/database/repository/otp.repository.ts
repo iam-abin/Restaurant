@@ -1,9 +1,9 @@
 import { ClientSession } from 'mongoose';
-import { OtpDto } from '../../dto/otp.dto';
-import { IOtp, OtpModel } from '../model';
+import { IOtpDocument, OtpModel } from '../model';
+import { IOtp } from '../../types/otp';
 
 export class OtpRepository {
-    async createOtp(otpData: OtpDto, session?: ClientSession): Promise<IOtp> {
+    async createOtp(otpData: IOtp, session?: ClientSession): Promise<IOtpDocument> {
         // Here we are performing upsert
         return await OtpModel.findOneAndUpdate(
             { userId: otpData.userId },
@@ -16,7 +16,7 @@ export class OtpRepository {
         );
     }
 
-    async findByUserId(userId: string): Promise<IOtp | null> {
+    async findByUserId(userId: string): Promise<IOtpDocument | null> {
         return await OtpModel.findOne({ userId });
     }
 }

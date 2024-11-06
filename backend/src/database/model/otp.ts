@@ -1,12 +1,13 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import { IOtp } from '../../types';
 
-export interface IOtp extends Document {
+// Use Omit to exclude 'string type' userId from IOtp and redefine it in IOtpDocument
+export interface IOtpDocument extends Document, Omit<IOtp, 'userId'> {
     userId: Schema.Types.ObjectId;
-    otp: string;
     createdAt: Date;
 }
 
-const otpSchema = new Schema<IOtp>(
+const otpSchema = new Schema<IOtpDocument>(
     {
         userId: {
             type: Schema.Types.ObjectId,
@@ -35,4 +36,4 @@ const otpSchema = new Schema<IOtp>(
     },
 );
 
-export const OtpModel = mongoose.model<IOtp>('Otp', otpSchema);
+export const OtpModel = mongoose.model<IOtpDocument>('Otp', otpSchema);
