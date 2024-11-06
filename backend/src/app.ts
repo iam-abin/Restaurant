@@ -15,8 +15,8 @@ const app: Application = express();
 
 const isProductionENV: boolean = appConfig.NODE_ENVIRONMENT === 'production';
 
-// Set trust proxy
-app.set('trust proxy', true); // Trust all proxies
+// // Set trust proxy
+// app.set('trust proxy', true); // Trust all proxies
 
 // Middlewares
 app.use(express.json());
@@ -32,7 +32,7 @@ app.use(cookieParser());
 
 app.use(rateLimiter);
 // Routes
-app.use(`${appConfig.API_PREFIX}`, userRoute);
+app.use(`${appConfig.API_PREFIX}/auth`, userRoute);
 
 app.all('*', (req: Request, res: Response): never => {
     throw new NotFoundError();

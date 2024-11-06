@@ -16,7 +16,7 @@ const appConfig: Readonly<IAppConfig> = Object.freeze({
     DB_NAME: process.env.DB_NAME as string,
     MONGO_URI: process.env.MONGODB_CONNECTION_STRING as string,
     NODE_ENVIRONMENT: process.env.NODE_ENV as string,
-    API_PREFIX: '/api',
+    API_PREFIX: '/api/v1',
     JWT_SECRET: process.env.JWT_SECRET,
     JWT_EXPIRY_TIME: '1h',
 

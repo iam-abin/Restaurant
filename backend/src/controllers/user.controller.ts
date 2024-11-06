@@ -6,6 +6,7 @@ import createSuccessResponse from '../utils/response';
 import { OtpService } from '../services';
 import { ISignin, ISignup } from '../types/user';
 import { IOtp } from '../types/otp';
+import { JWT_KEYS } from '../utils/constants';
 
 const userService = container.resolve(UserService);
 const otpService = container.resolve(OtpService);
@@ -18,6 +19,7 @@ class UserController {
 
     public async signin(req: Request, res: Response): Promise<void> {
         const user: { user: ISignin; accessToken: string } = await userService.signIn(req.body as ISignin);
+        res.cookie(JWT_KEYS.JWT_TOKEN, user.accessToken)
         res.status(200).json(createSuccessResponse('Login success', user));
     }
 
@@ -37,6 +39,11 @@ class UserController {
         const { userId } = req.currentUser!;
         const user: IUserDocument | null = await userService.getProfile(userId);
         res.status(200).json(createSuccessResponse('User Profile', user));
+    }
+
+    public async logout(req: Request, res: Response): Promise<void> {
+        res.clearCookie(JWT_KEYS.JWT_TOKEN)
+        res.status(200).json(createSuccessResponse('Successfully logged out'));
     }
 }
 

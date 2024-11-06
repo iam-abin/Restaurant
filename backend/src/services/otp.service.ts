@@ -48,8 +48,8 @@ export class OtpService {
 
         // Generate a new OTP and send confirmation email
         const otp: string = generateOtp();
-        const createdOtp: IOtpDocument = await this.otpRepository.createOtp({ userId, otp });
-        await sendConfirmationEmail(user.email, createdOtp.otp);
+        await this.otpRepository.createOtp({ userId, otp });
+        await sendConfirmationEmail(user.email, otp);
         return user;
     }
 }

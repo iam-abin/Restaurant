@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { NotAuthorizedError, ForbiddenError } from '../errors';
-import { IUserRole } from '../types/roles';
 
 // Middleware factory that checks for different user types
-export const auth = (requiredRole: Partial<IUserRole>) => {
+export const auth = (requiredRole: string) => {
     return (req: Request, res: Response, next: NextFunction) => {
         try {
             if (!req.currentUser) throw new NotAuthorizedError();
