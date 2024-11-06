@@ -4,10 +4,8 @@ interface ISuccessResponse<T> {
     data?: T;
 }
 
-const createSuccessResponse = <T>(message: string, data?: T): ISuccessResponse<T> => {
+export const createSuccessResponse = <T>(message: string, data?: T): ISuccessResponse<T> => {
     const response: ISuccessResponse<T> = { success: true, message };
     if (data) response.data = data;
     return response;
 };
-
-export default createSuccessResponse;

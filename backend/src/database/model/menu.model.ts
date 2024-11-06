@@ -1,7 +1,9 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { IMenu } from '../../types';
 
-export interface IMenuDocument extends Document, IMenu {}
+export interface IMenuDocument extends Document, Omit<IMenu, 'restaurantId'> {
+    restaurantId: Schema.Types.ObjectId;
+}
 
 const menuSchema = new Schema<IMenuDocument>(
     {
@@ -17,8 +19,12 @@ const menuSchema = new Schema<IMenuDocument>(
             type: Number,
             required: true,
         },
-        image: {
+        imageUrl: {
             type: String,
+            required: true,
+        },
+        restaurantId: {
+            type: Schema.Types.ObjectId,
             required: true,
         },
     },

@@ -8,7 +8,8 @@ import cookieParser from 'cookie-parser';
 
 import { NotFoundError } from './errors';
 import { errorHandler, rateLimiter } from './middlewares';
-import { userRoute } from './routes/user';
+import { userRoute } from './routes/user.route';
+import { menuRoute } from './routes/menu.route';
 import { appConfig } from './config/app.config';
 
 const app: Application = express();
@@ -33,6 +34,7 @@ app.use(cookieParser());
 app.use(rateLimiter);
 // Routes
 app.use(`${appConfig.API_PREFIX}/auth`, userRoute);
+app.use(`${appConfig.API_PREFIX}/menu`, menuRoute);
 
 app.all('*', (req: Request, res: Response): never => {
     throw new NotFoundError();

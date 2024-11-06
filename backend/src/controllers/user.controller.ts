@@ -1,12 +1,10 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
-import { UserService } from '../services';
 import { IUserDocument } from '../database/model';
-import createSuccessResponse from '../utils/response';
-import { OtpService } from '../services';
-import { ISignin, ISignup } from '../types/user';
-import { IOtp } from '../types/otp';
-import { JWT_KEYS } from '../utils/constants';
+
+import { createSuccessResponse, JWT_KEYS } from '../utils';
+import { OtpService, UserService } from '../services';
+import { IOtp, ISignin, ISignup } from '../types';
 
 const userService = container.resolve(UserService);
 const otpService = container.resolve(OtpService);
@@ -19,7 +17,7 @@ class UserController {
 
     public async signin(req: Request, res: Response): Promise<void> {
         const user: { user: ISignin; accessToken: string } = await userService.signIn(req.body as ISignin);
-        res.cookie(JWT_KEYS.JWT_TOKEN, user.accessToken)
+        res.cookie(JWT_KEYS.JWT_TOKEN, user.accessToken);
         res.status(200).json(createSuccessResponse('Login success', user));
     }
 
@@ -32,7 +30,7 @@ class UserController {
     public async resendOtp(req: Request, res: Response): Promise<void> {
         const { userId } = req.body;
         const user: IUserDocument | null = await otpService.resendOtp(userId);
-        res.status(200).json(createSuccessResponse('An otp is send to your emain, Please verify', user));
+        res.status(200).json(createSuccessResponse('An otp is send to your email, Please verify', user));
     }
 
     public async profile(req: Request, res: Response): Promise<void> {
@@ -42,7 +40,7 @@ class UserController {
     }
 
     public async logout(req: Request, res: Response): Promise<void> {
-        res.clearCookie(JWT_KEYS.JWT_TOKEN)
+        res.clearCookie(JWT_KEYS.JWT_TOKEN);
         res.status(200).json(createSuccessResponse('Successfully logged out'));
     }
 }

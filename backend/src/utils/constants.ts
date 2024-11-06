@@ -7,6 +7,6 @@ export const ROLES: Readonly<IUserRole> = Object.freeze({
 });
 
 export const JWT_KEYS = Object.freeze({
-    JWT_TOKEN: "jwtToken",
-    JWT_REFRESH_TOKEN: "jwtRefreshToken"
+    JWT_TOKEN: 'jwtToken',
+    JWT_REFRESH_TOKEN: 'jwtRefreshToken',
 });
