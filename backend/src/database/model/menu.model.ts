@@ -26,6 +26,7 @@ const menuSchema = new Schema<IMenuDocument>(
         restaurantId: {
             type: Schema.Types.ObjectId,
             required: true,
+            ref: 'Restaurant',
         },
     },
     {

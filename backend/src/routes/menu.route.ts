@@ -8,7 +8,7 @@ import { multerUpload } from '../middlewares/multer.middleware';
 const router: Router = express.Router();
 
 router.post(
-    '/create',
+    '/',
     checkCurrentUser,
     auth(ROLES.RESTAURANT),
     multerUpload.single('image'),
