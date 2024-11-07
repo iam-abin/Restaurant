@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 import { NotFoundError } from './errors';
 import { errorHandler, rateLimiter } from './middlewares';
 import { userRoute } from './routes/user.route';
+import { restaurantRoute } from './routes/restaurant.route';
 import { menuRoute } from './routes/menu.route';
 import { appConfig } from './config/app.config';
 
@@ -35,6 +36,7 @@ app.use(rateLimiter);
 // Routes
 app.use(`${appConfig.API_PREFIX}/auth`, userRoute);
 app.use(`${appConfig.API_PREFIX}/menu`, menuRoute);
+app.use(`${appConfig.API_PREFIX}/restaurant`, restaurantRoute);
 
 app.all('*', (req: Request, res: Response): never => {
     throw new NotFoundError();
