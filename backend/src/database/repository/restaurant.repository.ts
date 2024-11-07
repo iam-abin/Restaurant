@@ -7,6 +7,14 @@ export class RestaurantRepository {
         return restaurant;
     }
 
+    async findRestaurant(restaurantId: string): Promise<IRestaurantDocument | null> {
+        return await RestaurantModel.findById(restaurantId);
+    }
+
+    async findMyRestaurant(userId: string): Promise<IRestaurantDocument | null> {
+        return await RestaurantModel.findOne({ userId });
+    }
+
     async updateRestaurant(
         restaurantId: string,
         updatedData: Partial<IRestaurant>,

@@ -15,4 +15,9 @@ router.post(
     restaurantController.addRestaurant,
 );
 
+router.get('/', checkCurrentUser, auth(ROLES.RESTAURANT), restaurantController.getMyRestaurant);
+router.get('/:restaurantId', checkCurrentUser, auth(ROLES.USER), restaurantController.getARestaurant);
+// router.get('/orders', checkCurrentUser, auth(ROLES.RESTAURANT), restaurantController.getRestaurantOrder);
+// router.get('/order/:orderId/status', checkCurrentUser, auth(ROLES.RESTAURANT), restaurantController.updateOrderStatus);
+
 export { router as restaurantRoute };

@@ -5,6 +5,7 @@ import { ROLES } from '../../utils/constants';
 
 export interface IUserDocument extends Document, ISignup {
     isVerified: boolean;
+    isBlocked: boolean;
 }
 
 const userSchema = new Schema<IUserDocument>(
@@ -32,6 +33,11 @@ const userSchema = new Schema<IUserDocument>(
         },
         isVerified: {
             type: Boolean,
+            default: false,
+        },
+        isBlocked: {
+            type: Boolean,
+            required: true,
             default: false,
         },
     },

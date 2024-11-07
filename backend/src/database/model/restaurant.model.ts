@@ -3,6 +3,7 @@ import { IRestaurant } from '../../types';
 
 export interface IRestaurantDocument extends Document, Omit<IRestaurant, 'userId'> {
     userId: Schema.Types.ObjectId;
+    isBlocked: boolean;
 }
 
 const restaurantSchema = new Schema<IRestaurantDocument>({
@@ -29,6 +30,11 @@ const restaurantSchema = new Schema<IRestaurantDocument>({
     imageUrl: {
         type: String,
         required: true,
+    },
+    isBlocked: {
+        type: Boolean,
+        required: true,
+        default: false,
     },
 });
 

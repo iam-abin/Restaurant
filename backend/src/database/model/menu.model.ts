@@ -3,6 +3,7 @@ import { IMenu } from '../../types';
 
 export interface IMenuDocument extends Document, Omit<IMenu, 'restaurantId'> {
     restaurantId: Schema.Types.ObjectId;
+    isClosed: boolean;
 }
 
 const menuSchema = new Schema<IMenuDocument>(
@@ -28,6 +29,11 @@ const menuSchema = new Schema<IMenuDocument>(
             required: true,
             ref: 'Restaurant',
         },
+        isClosed: {
+            type: Boolean,
+            required: true,
+            default: false
+        }
     },
     {
         timestamps: true,

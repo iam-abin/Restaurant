@@ -7,10 +7,22 @@ export class OrderRepository {
         return order;
     }
 
-    async updateOrder(orderId: string, updatedData: Partial<IOrder>): Promise<IOrderDocument | null> {
-        const order: IOrderDocument | null = await OrderModel.findByIdAndUpdate(orderId, updatedData, {
-            new: true,
-        });
+    async getMyOrders(userId: string): Promise<IOrderDocument[] | []> {
+        return await OrderModel.find({ userId });
+    }
+
+    async getOrders(restaurantId: string): Promise<IOrderDocument[] | []> {
+        return await OrderModel.find({ restaurantId });
+    }
+
+    async updateOrderStatus(orderId: string, status: string): Promise<IOrderDocument | null> {
+        const order: IOrderDocument | null = await OrderModel.findByIdAndUpdate(
+            orderId,
+            { status },
+            {
+                new: true,
+            },
+        );
         return order;
     }
 }

@@ -15,4 +15,18 @@ router.post(
     orderController.addOrder,
 );
 
+// router.get(
+//     '/',
+//     checkCurrentUser,
+//     auth(ROLES.USER),
+//     orderController.getOrders,
+// );
+
+// router.get(
+//     '/:orderId',
+//     checkCurrentUser,
+//     auth(ROLES.USER),
+//     orderController.getOrder,
+// );
+
 export { router as orderRoute };
