@@ -6,6 +6,7 @@ import Divider from "@mui/material/Divider";
 import { ChangeEvent, FormEvent, useState } from "react";
 import LoaderCircle from "../components/LoaderCircle";
 import { signInSchema, signUpSchema } from "../utils/schema/userSchema";
+import { Link } from "react-router-dom";
 
 interface IAuthentication {
     name?: string;
@@ -15,7 +16,7 @@ interface IAuthentication {
 }
 
 const Auth = () => {
-    const [isLogin, setIsLogin] = useState<boolean>(false);
+    const [isLogin, setIsLogin] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const [input, setInput] = useState<Partial<IAuthentication>>({
@@ -50,13 +51,12 @@ const Auth = () => {
     };
 
     const handleSubmit = (e: FormEvent) => {
-        
         setIsLoading(true);
         e.preventDefault();
-        if(Object.keys(errors).length){
+        if (Object.keys(errors).length) {
             console.log("errors", errors);
             setIsLoading(false);
-            return
+            return;
         }
         if (isLogin) {
             // Form validation
@@ -85,7 +85,7 @@ const Auth = () => {
         <div className="bg-yellow-200 min-h-screen flex justify-center items-center">
             <form
                 onSubmit={handleSubmit}
-                className="bg-slate-200 items-center w-3/12 gap-5 p-8 border-black rounded-lg"
+                className="bg-slate-200 items-center w-10/12  md:w-2/6 gap-5 p-8 border-black rounded-lg"
             >
                 <div className="w-full flex flex-col gap-4 mb-10">
                     <div className="mb-4 flex justify-center ">
@@ -170,23 +170,26 @@ const Auth = () => {
                         )}
                     </div>
                 </div>
-                <div className="">
-                    <Button
-                        type="submit"
-                        disabled={isLoading}
-                        className="w-full mb-5"
-                        variant="contained"
-                    >
-                        {isLoading ? (
-                            <label className="flex items-center gap-4">
-                                <LoaderCircle /> Please wait
-                            </label>
-                        ) : isLogin ? (
-                            "Login"
-                        ) : (
-                            "Signup"
-                        )}
-                    </Button>
+                <Button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full mb-5 bg-orange-300"
+                    variant="contained"
+                >
+                    {isLoading ? (
+                        <label className="flex items-center gap-4">
+                            Please wait <LoaderCircle />
+                        </label>
+                    ) : isLogin ? (
+                        "Login"
+                    ) : (
+                        "Signup"
+                    )}
+                </Button>
+                <div className="flex justify-end mt-2">
+                    <Link className="text-sm hover:text-blue-700" to="/forgot-password">
+                        Forgot Password
+                    </Link>
                 </div>
 
                 <div className="mt-5">
@@ -197,7 +200,7 @@ const Auth = () => {
                                 Dont have an account?{" "}
                                 <p
                                     onClick={handlePageSwitch}
-                                    className="ml-1 text-blue-700 cursor-pointer"
+                                    className="ml-1 text-blue-700 hover:text-blue-500 cursor-pointer"
                                 >
                                     signup
                                 </p>
@@ -207,7 +210,7 @@ const Auth = () => {
                                 Already have an account?{" "}
                                 <p
                                     onClick={handlePageSwitch}
-                                    className="ml-1 text-blue-700 cursor-pointer"
+                                    className="ml-1 text-blue-700 hover:text-blue-500 cursor-pointer"
                                 >
                                     signin
                                 </p>

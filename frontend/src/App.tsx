@@ -1,6 +1,9 @@
 import MainLayout from "./components/MainLayout";
 import Auth from "./pages/Auth";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import Otp from "./pages/Otp";
 
 const appRouter = createBrowserRouter([
     {
@@ -14,6 +17,18 @@ const appRouter = createBrowserRouter([
     {
         path: "/landing",
         element: <MainLayout />,
+    },
+    {
+        path: "/forgot-password",
+        element: <ForgotPassword />,
+    },
+    {
+        path: "/reset-password",
+        element: <ResetPassword />,
+    },
+    {
+        path: "/otp",
+        element: <Otp />,
     },
 ]);
 

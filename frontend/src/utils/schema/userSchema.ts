@@ -14,3 +14,7 @@ export const signInSchema = z.object({
     email: z.string().email("invalid email address"),
     password: z.string().min(4, "password must be minimum 4 letters"),
 });
+
+export const emailSchema = z.object({
+    email: z.string().email("invalid email address"),
+});
