@@ -8,6 +8,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Otp from "./pages/Otp";
 import Landing from "./pages/Landing";
 import Profile from "./pages/Profile";
+import SearchResult from "./pages/SearchResult";
 
 const darkTheme = createTheme({
     palette: {
@@ -27,6 +28,10 @@ const appRouter = createBrowserRouter([
             {
                 path: "/profile",
                 element: <Profile />
+            },
+            {
+                path: "/search/:searchKey",
+                element: <SearchResult />
             }
         ]
     },

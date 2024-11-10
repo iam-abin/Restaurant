@@ -1,10 +1,12 @@
 import { ChangeEvent, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button } from "@mui/material";
-import PizzaImage from "../assets/hero_pizza.png"
+import PizzaImage from "../assets/hero_pizza.png";
+import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
     const [searchText, setSearchText] = useState<string>("");
+    const navigate = useNavigate();
     const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value);
     };
@@ -26,17 +28,26 @@ const Landing = () => {
                         <input
                             type="text"
                             value={searchText}
+                            placeholder="Search restaurant by name, city & country"
                             onChange={handleSearch}
-                            className="border-2 h-11 w-full  border-black shadow-lg rounded-lg"
+                            className="border-2 pl-10 h-11 w-full  border-black shadow-lg rounded-lg"
                         />
                     </div>
-                    <Button variant="contained" className="bg-orange-500 ">
+                    <Button
+                        onClick={() => navigate(`/search/:${searchText}`)}
+                        variant="contained"
+                        className="bg-orange-500 "
+                    >
                         Search
                     </Button>
                 </div>
             </div>
             <div>
-              <img src={PizzaImage} className="w-full max-h-[500px] max-w-90%" alt="LandingImg" />
+                <img
+                    src={PizzaImage}
+                    className="w-full max-h-[500px] max-w-90%"
+                    alt="LandingImg"
+                />
             </div>
         </div>
     );
