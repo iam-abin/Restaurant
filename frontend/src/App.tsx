@@ -1,22 +1,38 @@
-import MainLayout from "./components/MainLayout";
+import MainLayout from "./layout/MainLayout";
 import Auth from "./pages/Auth";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Otp from "./pages/Otp";
+import Landing from "./pages/Landing";
+import Profile from "./pages/Profile";
+
+const darkTheme = createTheme({
+    palette: {
+        mode: "dark",
+    },
+});
 
 const appRouter = createBrowserRouter([
     {
         path: "/",
         element: <MainLayout />,
+        children: [
+            {
+                path: "/",
+                element: <Landing />
+            },
+            {
+                path: "/profile",
+                element: <Profile />
+            }
+        ]
     },
     {
         path: "/auth",
         element: <Auth />,
-    },
-    {
-        path: "/landing",
-        element: <MainLayout />,
     },
     {
         path: "/forgot-password",
@@ -34,8 +50,9 @@ const appRouter = createBrowserRouter([
 
 export default function ButtonUsage() {
     return (
-        <main>
-            <RouterProvider router={appRouter}></RouterProvider>
-        </main>
+  
+            <main>
+                <RouterProvider router={appRouter}></RouterProvider>
+            </main>
     );
 }
