@@ -3,7 +3,7 @@ import Filter from "../components/Filter";
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button, Chip } from "@mui/material";
-import RestaurantCard from "../components/RestaurantCard";
+import RestaurantCard from "../components/cards/RestaurantCard";
 import RestaurantCardSkeleton from "../components/shimmer/RestaurantCardSkeleton";
 import { NoResultFound } from "../components/NoResultFound";
 

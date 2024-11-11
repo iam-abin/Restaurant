@@ -1,7 +1,7 @@
 import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
 import RestaurantKfcImg from "../assets/restaurant_KFC.png";
 import { Chip } from "@mui/material";
-import MenuCard from "../components/MenuCard";
+import MenuCard from "../components/cards/MenuCard";
 import MenuCardSkeleton from "../components/shimmer/MenuCardSkeleton";
 
 const RestaurantDetails = () => {

@@ -10,6 +10,8 @@ import Profile from "./pages/Profile";
 import SearchResult from "./pages/SearchResult";
 import RestaurantDetails from "./pages/RestaurantDetails";
 import Cart from "./pages/Cart";
+import Restaurant from "./pages/admin/Restaurant";
+import Menu from "./pages/admin/Menu";
 
 const darkTheme = createTheme({
     palette: {
@@ -41,6 +43,15 @@ const appRouter = createBrowserRouter([
             {
                 path: "/cart",
                 element: <Cart />
+            },
+            // Admin routes
+            {
+                path: "/admin/restaurant",
+                element: <Restaurant />
+            },
+            {
+                path: "/admin/menu",
+                element: <Menu />
             }
         ]
     },

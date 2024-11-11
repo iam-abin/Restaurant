@@ -1,14 +1,21 @@
-import FriedChicken from "../assets/fried-chicken-french-fries-black-cement-floor (1).jpg";
+import FriedChicken from "../../assets/fried-chicken-french-fries-black-cement-floor (1).jpg";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import EditMenuModal from "../modal/EditMenuModal";
 
 const MenuCard = () => {
+    const isAdmin = true;
+    const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
+    const handleEditMenuOpen = () => setIsEditMenuOpen(true);
+    const handleEditMenuClose = () => setIsEditMenuOpen(false);
     return (
         <Card sx={{ maxWidth: 345 }}>
+            <EditMenuModal isOpen={isEditMenuOpen} handleClose={handleEditMenuClose} />
             <div className="relative">
                 <CardMedia
                     component="img"
@@ -34,11 +41,13 @@ const MenuCard = () => {
                 </h2>
             </CardContent>
             <div className="flex items-center justify-center px-4 py-2">
-                <Link to={`/restaurant/${124}`} className="w-full">
+               {!isAdmin?<Link to={`/restaurant/${124}`} className="w-full">
                     <Button className="w-full" variant="contained" size="small">
                        Add to cart
                     </Button>
-                </Link>
+                </Link>:<Button onClick={handleEditMenuOpen} className="w-full" variant="contained" size="small">
+                       Edit
+                    </Button>} 
             </div>
         </Card>
     );
