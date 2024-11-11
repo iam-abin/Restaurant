@@ -24,7 +24,7 @@ const NavBar = () => {
     const menuItemsAdmin: IMenuItems[] = [
         { to: "/admin/restaurant", value: "Restaurant" },
         { to: "/admin/menu", value: "Menu" },
-        { to: "/admin/order", value: "Order" },
+        { to: "/admin/orders", value: "Order" },
     ];
 
     const menuItems: Partial<IMenuItems2>[] = [

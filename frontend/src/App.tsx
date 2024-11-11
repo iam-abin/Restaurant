@@ -12,6 +12,7 @@ import RestaurantDetails from "./pages/RestaurantDetails";
 import Cart from "./pages/Cart";
 import Restaurant from "./pages/admin/Restaurant";
 import Menu from "./pages/admin/Menu";
+import Orders from "./pages/admin/Orders";
 
 const darkTheme = createTheme({
     palette: {
@@ -52,6 +53,11 @@ const appRouter = createBrowserRouter([
             {
                 path: "/admin/menu",
                 element: <Menu />
+            }
+            ,
+            {
+                path: "/admin/orders",
+                element: <Orders />
             }
         ]
     },
