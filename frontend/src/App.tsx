@@ -13,6 +13,7 @@ import Cart from "./pages/Cart";
 import Restaurant from "./pages/admin/Restaurant";
 import Menu from "./pages/admin/Menu";
 import Orders from "./pages/admin/Orders";
+import Success from "./pages/Success";
 
 const darkTheme = createTheme({
     palette: {
@@ -44,6 +45,10 @@ const appRouter = createBrowserRouter([
             {
                 path: "/cart",
                 element: <Cart />
+            },
+            {
+                path: "/success",
+                element: <Success />
             },
             // Admin routes
             {
