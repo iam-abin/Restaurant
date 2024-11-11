@@ -8,7 +8,7 @@ const MainLayout = () => {
       {/* Navbar */}
       <NavBar />
       {/* Main body content */}
-      <main className='flex-1'>
+      <main className='flex-1 mx-2'>
         <Outlet />
       </main>
       {/* Footer */}

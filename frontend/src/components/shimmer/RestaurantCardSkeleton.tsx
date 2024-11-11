@@ -5,7 +5,7 @@ import { Skeleton } from "@mui/material";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import PublicIcon from "@mui/icons-material/Public";
 
-export default function ItemsCardSkeleton() {
+export default function RestaurantCardSkeleton() {
     return (
         <Card sx={{ maxWidth: 345 }}>
             <div className="relative">

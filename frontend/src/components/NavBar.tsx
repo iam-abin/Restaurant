@@ -34,7 +34,7 @@ const NavBar = () => {
             to: "/profile",
         },
         { name: "order", icon: <FlatwareIcon />, to: "/order/status" },
-        { name: "cart", icon: <ShoppingCartIcon /> },
+        { name: "cart", icon: <ShoppingCartIcon />, to: "/cart" },
         { name: "menu", icon: <MenuBookIcon />, to: "/menu" },
         { name: "logout", icon: <LogoutIcon /> },
     ];

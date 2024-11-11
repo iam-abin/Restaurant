@@ -10,7 +10,7 @@ import PublicIcon from "@mui/icons-material/Public";
 import { Chip } from "@mui/material";
 import { Link } from "react-router-dom";
 
-export default function ItemsCard() {
+const RestaurantCard = ()=> {
     return (
         <Card sx={{ maxWidth: 345 }}>
             <div className="relative">
@@ -56,3 +56,5 @@ export default function ItemsCard() {
         </Card>
     );
 }
+
+export default RestaurantCard

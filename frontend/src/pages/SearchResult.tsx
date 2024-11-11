@@ -3,8 +3,8 @@ import Filter from "../components/Filter";
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button, Chip } from "@mui/material";
-import ItemsCard from "../components/ItemsCard";
-import ItemsCardSkeleton from "../components/shimmer/ItemsCardSkeleton";
+import RestaurantCard from "../components/RestaurantCard";
+import RestaurantCardSkeleton from "../components/shimmer/RestaurantCardSkeleton";
 import { NoResultFound } from "../components/NoResultFound";
 
 const SearchResult = () => {
@@ -13,7 +13,7 @@ const SearchResult = () => {
     console.log(params.searchKey);
 
     const handleDelete = () => {};
-    const searchResults = [];
+    const searchResults = ["jf"];
 
     return (
         <div className=" max-w-7xl mx-auto my-5">
@@ -70,13 +70,13 @@ const SearchResult = () => {
 
                     {searchResults.length ? (
                         <div className="grid md:grid-cols-3 gap-4">
-                            <ItemsCard />
-                            <ItemsCardSkeleton />
-                            <ItemsCard />
-                            <ItemsCardSkeleton />
-                            <ItemsCard />
-                            <ItemsCardSkeleton />
-                            <ItemsCard />
+                            <RestaurantCard />
+                            <RestaurantCardSkeleton />
+                            <RestaurantCard />
+                            <RestaurantCardSkeleton />
+                            <RestaurantCard />
+                            <RestaurantCardSkeleton />
+                            <RestaurantCard />
                         </div>
                     ) : (
                         <NoResultFound searchText="hi" />
