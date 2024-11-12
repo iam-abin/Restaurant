@@ -1,6 +1,6 @@
 import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
 import RestaurantKfcImg from "../assets/restaurant_KFC.png";
-import { Chip } from "@mui/material";
+import { Chip, Typography } from "@mui/material";
 import MenuCard from "../components/cards/MenuCard";
 import MenuCardSkeleton from "../components/shimmer/MenuCardSkeleton";
 
@@ -38,9 +38,9 @@ const RestaurantDetails = () => {
                                 <TimerOutlinedIcon className="w-5 h-5" />
                                 <h1 className="flex items-center gap-2 font-medium">
                                     Delivery Time:{" "}
-                                    <span className="text-[#D19254]">
+                                    <Typography className="text-[#D19254]">
                                         {35} mins
-                                    </span>
+                                    </Typography>
                                 </h1>
                             </div>
                         </div>

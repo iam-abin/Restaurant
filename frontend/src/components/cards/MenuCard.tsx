@@ -37,7 +37,7 @@ const MenuCard = () => {
                     and finger-lickin' good!
                 </p>
                 <h2 className="text-lg font-semibold mt-4">
-                    Price: <span className="text-yellow-600">₹80</span>
+                    Price: <Typography className="text-yellow-600">₹80</Typography>
                 </h2>
             </CardContent>
             <div className="flex items-center justify-center px-4 py-2">

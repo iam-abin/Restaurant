@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { FormEvent, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LoaderCircle from "../components/LoaderCircle";
+import LoaderCircle from "../components/Loader/LoaderCircle";
 
 const Otp = () => {
     const inputRef = useRef<any>([]);

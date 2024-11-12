@@ -1,5 +1,5 @@
 
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const Success = () => {
@@ -10,7 +10,7 @@ const Success = () => {
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
             Order Status:{" "}
-            <span className="text-[#FF5A5A]">{"confirm".toUpperCase()}</span>
+            <Typography className="text-[#FF5A5A]">{"confirm".toUpperCase()}</Typography>
           </h1>
         </div>
         <div className="mb-6">

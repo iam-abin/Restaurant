@@ -5,7 +5,8 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
-import LoaderCircle from "../LoaderCircle";
+import LoaderCircle from "../Loader/LoaderCircle";
+import { MenuFormSchema } from "../../utils/schema/menuSchema";
 
 const style = {
     position: "absolute",
@@ -27,6 +28,8 @@ export default function EditMenuModal({
     isOpen: boolean;
     handleClose: () => void;
 }) {
+
+    const [errors, setErrors] = useState<Partial<MenuFormSchema>>({});
     const [isLoading, setIsLoading] = useState(false);
     const [input, setInput] = useState<MenuFormSchema>({
         name: "h",
@@ -108,6 +111,11 @@ export default function EditMenuModal({
                                 value={input.description}
                                 onChange={changeEventHandler}
                             />
+                                {errors && (
+                                <Typography className="text-sm text-red-500">
+                                    {errors.name!}
+                                </Typography>
+                            )}
                         </div>
                         <div>
                             <label className="text-sm">Price in rupees</label>
@@ -126,24 +134,24 @@ export default function EditMenuModal({
                                 className="w-full h-10 boh-12der border-black rounded-lg p-1 pl-4"
                                 type="file"
                                 accept="image/*"
-                                name="imageFile"
+                                name="image"
                                 onChange={(e) =>
                                     setInput({
                                         ...input,
-                                        imageFile:
+                                        image:
                                             e.target.files?.[0] || undefined,
                                     })
                                 }
                             />
-                            {/* {errors.imageFile && (
-                                <FormHelperText className="text-red-500 text-sm">
-                                    {errors.imageFile?.name || "image file is required"}
-                                </FormHelperText>
-                            )} */}
+                            {errors.image && (
+                                <Typography className="text-red-500 text-sm">
+                                    {errors.image?.name || "image file is required"}
+                                </Typography>
+                            )}
                         </div>
                         <Button
                             variant="contained"
-                            className=" h-10 w-full col-span-2 pt-5"
+                            className=" h-10 w-full col-Typography-2 pt-5"
                         >
                             {isLoading ? (
                                 <>

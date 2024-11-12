@@ -1,8 +1,8 @@
-import { Button, Input } from "@mui/material";
+import { Button, Input, Typography } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { emailSchema } from "../utils/schema/userSchema";
-import LoaderCircle from "../components/LoaderCircle";
+import LoaderCircle from "../components/Loader/LoaderCircle";
 import { Link, useNavigate } from "react-router-dom";
 
 interface IForgotPassword {
@@ -59,9 +59,9 @@ const ForgotPassword = () => {
                         autoComplete="email"
                     />
                     {errors && (
-                        <span className="text-sm text-red-500">
+                        <Typography className="text-sm text-red-500">
                             {errors.email}
-                        </span>
+                        </Typography>
                     )}
                 </div>
                 <Button
@@ -87,7 +87,7 @@ const ForgotPassword = () => {
                     )}
                 </Button>
 
-                <span className="mt-5 text-center">
+                <Typography className="mt-5 text-center">
                     Back to
                     <Link
                         to="/auth"
@@ -95,7 +95,7 @@ const ForgotPassword = () => {
                     >
                         Login
                     </Link>
-                </span>
+                </Typography>
             </form>
         </div>
     );

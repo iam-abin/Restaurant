@@ -1,10 +1,10 @@
-import { Button, Input } from "@mui/material";
+import { Button, Input, Typography } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
 import PersonIcon from "@mui/icons-material/Person";
 import LockIcon from "@mui/icons-material/Lock";
 import Divider from "@mui/material/Divider";
 import { ChangeEvent, FormEvent, useState } from "react";
-import LoaderCircle from "../components/LoaderCircle";
+import LoaderCircle from "../components/Loader/LoaderCircle";
 import { signInSchema, signUpSchema } from "../utils/schema/userSchema";
 import { Link } from "react-router-dom";
 
@@ -108,9 +108,9 @@ const Auth = () => {
                                 autoComplete="name"
                             />
                             {errors && (
-                                <span className="text-sm text-red-500">
+                                <Typography className="text-sm text-red-500">
                                     {errors.name}
-                                </span>
+                                </Typography>
                             )}
                         </div>
                     )}
@@ -126,9 +126,9 @@ const Auth = () => {
                             autoComplete="email"
                         />
                         {errors && (
-                            <span className="text-sm text-red-500">
+                            <Typography className="text-sm text-red-500">
                                 {errors.email}
-                            </span>
+                            </Typography>
                         )}
                     </div>
                     {!isLogin && (
@@ -145,9 +145,9 @@ const Auth = () => {
                                 autoComplete="phone"
                             />
                             {errors && (
-                                <span className="text-sm text-red-500">
+                                <Typography className="text-sm text-red-500">
                                     {errors.phone}
-                                </span>
+                                </Typography>
                             )}
                         </div>
                     )}
@@ -164,9 +164,9 @@ const Auth = () => {
                             autoComplete="password"
                         />
                         {errors && (
-                            <span className="text-sm text-red-500">
+                            <Typography className="text-sm text-red-500">
                                 {errors.phone}
-                            </span>
+                            </Typography>
                         )}
                     </div>
                 </div>
@@ -194,7 +194,7 @@ const Auth = () => {
 
                 <div className="mt-5">
                     <Divider className="mt-5" />
-                    <span className="text-sm flex mt-3">
+                    <Typography className="text-sm flex mt-3">
                         {isLogin ? (
                             <>
                                 Dont have an account?{" "}
@@ -216,7 +216,7 @@ const Auth = () => {
                                 </p>
                             </>
                         )}
-                    </span>
+                    </Typography>
                 </div>
             </form>
         </div>

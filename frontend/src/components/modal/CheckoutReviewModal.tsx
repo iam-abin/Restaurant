@@ -5,7 +5,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
-import LoaderCircle from "./LoaderCircle";
+import LoaderCircle from "../Loader/LoaderCircle";
 
 const style = {
     position: "absolute",
@@ -139,7 +139,7 @@ export default function CheckoutReviewModal({
                         </div>
                         <Button
                             variant="contained"
-                            className=" h-10 col-span-2 pt-5"
+                            className=" h-10 col-Typography-2 pt-5"
                         >
                             {isLoading ? (
                                 <>

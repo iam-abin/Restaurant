@@ -1,7 +1,7 @@
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import React, { useState } from "react";
-import TableCart from "../components/TableCart";
-import CheckoutReviewModal from "../components/CheckoutReviewModal";
+import TableCart from "../components/table/TableCart";
+import CheckoutReviewModal from "../components/modal/CheckoutReviewModal";
 
 const Cart = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -21,8 +21,8 @@ const Cart = () => {
             <div className="mt-3 flex flex-row justify-end">
                 <div className="mt-3 flex flex-col items-end gap-5">
                     <div>
-                        <span className="font-extrabold text-xl">Total: </span>{" "}
-                        <span className="text-xl">₹1000</span>
+                        <Typography className="font-extrabold text-xl">Total: </Typography>{" "}
+                        <Typography className="text-xl">₹1000</Typography>
                     </div>
                     <Button
                         className="h-10"

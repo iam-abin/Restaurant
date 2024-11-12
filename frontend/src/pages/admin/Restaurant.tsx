@@ -4,7 +4,7 @@ import {
     restaurantFromSchema,
 } from "../../utils/schema/restaurantSchema";
 import { FormEvent, useState } from "react";
-import LoaderCircle from "../../components/LoaderCircle";
+import LoaderCircle from "../../components/Loader/LoaderCircle";
 
 const Restaurant = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -15,7 +15,7 @@ const Restaurant = () => {
         country: "",
         deliveryTime: 0,
         cuisines: [],
-        imageFile: undefined,
+        image: undefined,
     });
     const [errors, setErrors] = useState<Partial<RestaurantFormSchema>>({});
 
@@ -45,8 +45,8 @@ const Restaurant = () => {
             formData.append("deliveryTime", input.deliveryTime.toString());
             formData.append("cuisines", JSON.stringify(input.cuisines));
 
-            if (input.imageFile) {
-                formData.append("imageFile", input.imageFile);
+            if (input.image) {
+                formData.append("image", input.image);
             }
 
             // Make your API call to update or create the restaurant here
@@ -170,17 +170,17 @@ const Restaurant = () => {
                                 className="w-full h-10 boh-12der border-black rounded-lg p-1 pl-4"
                                 type="file"
                                 accept="image/*"
-                                name="imageFile"
+                                name="image"
                                 onChange={(e) =>
                                     setInput({
                                         ...input,
-                                        imageFile: e.target.files?.[0] || undefined,
+                                        image: e.target.files?.[0] || undefined,
                                     })
                                 }
                             />
-                            {errors.imageFile && (
+                            {errors.image && (
                                 <FormHelperText className="text-red-500 text-sm">
-                                    {errors.imageFile?.name || "image file is required"}
+                                    {errors.image?.name || "image file is required"}
                                 </FormHelperText>
                             )}
                         </div>

@@ -13,7 +13,7 @@ const SearchResult = () => {
     console.log(params.searchKey);
 
     const handleDelete = () => {};
-    const searchResults = ["jf"];
+    const searchResults = [];
 
     return (
         <div className=" max-w-7xl mx-auto my-5">

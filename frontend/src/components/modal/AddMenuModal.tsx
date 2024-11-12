@@ -5,7 +5,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
-import LoaderCircle from "../LoaderCircle";
+import LoaderCircle from "../Loader/LoaderCircle";
 import { MenuFormSchema } from "../../utils/schema/menuSchema";
 
 const style = {
@@ -127,24 +127,24 @@ export default function AddMenuModal({
                                 className="w-full h-10 boh-12der border-black rounded-lg p-1 pl-4"
                                 type="file"
                                 accept="image/*"
-                                name="imageFile"
+                                name="image"
                                 onChange={(e) =>
                                     setInput({
                                         ...input,
-                                        imageFile:
+                                        image:
                                             e.target.files?.[0] || undefined,
                                     })
                                 }
                             />
-                            {/* {errors.imageFile && (
+                            {/* {errors.image && (
                                 <FormHelperText className="text-red-500 text-sm">
-                                    {errors.imageFile?.name || "image file is required"}
+                                    {errors.image?.name || "image file is required"}
                                 </FormHelperText>
                             )} */}
                         </div>
                         <Button
                             variant="contained"
-                            className=" h-10 w-full col-span-2 pt-5"
+                            className=" h-10 w-full col-Typography-2 pt-5"
                         >
                             {isLoading ? (
                                 <>

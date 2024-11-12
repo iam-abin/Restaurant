@@ -1,6 +1,6 @@
 import { useState } from "react";
 import AddMenuModal from "../../components/modal/AddMenuModal";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import MenuCard from "../../components/cards/MenuCard";
 
 const Menu = () => {
@@ -8,12 +8,10 @@ const Menu = () => {
     const handleAddMenuOpen = () => setIsAddMenuOpen(true);
     const handleAddMenuClose = () => setIsAddMenuOpen(false);
 
-   
-
     return (
         <div>
             <div className="mt-3 flex justify-between items-center">
-                <span className="text-xl font-extrabold">Available menus</span>
+                <Typography className="text-xl font-extrabold">Available menus</Typography>
                 <div className="mt-3 flex flex-col items-end gap-5">
                     <Button
                         className="h-10"
@@ -32,10 +30,9 @@ const Menu = () => {
                 )}
             </div>
             <div className="flex flex-row gap-5 flex-wrap mt-5">
-                <MenuCard />
-                <MenuCard />
-                <MenuCard />
-                <MenuCard />
+                {[...new Array(4).fill(0)].map((item) => (
+                    <MenuCard />
+                ))}
             </div>
         </div>
     );

@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import DropDown from "../../components/list/DropDown";
 
 const Orders = () => {
@@ -22,13 +23,13 @@ const Orders = () => {
                             Lorem ipsm
                         </h1>
                         <p className="text-gray-600 mt-2">
-                            <span className="font-semibold">Address: </span>
+                            <Typography className="font-semibold">Address: </Typography>
                             {"kochi, kerala"}
                         </p>
                         <p className="text-gray-600  mt-2">
-                            <span className="font-semibold">
+                            <Typography className="font-semibold">
                                 Total Amount:{" "}
-                            </span>
+                            </Typography>
                             {1000 / 100}
                         </p>
                     </div>

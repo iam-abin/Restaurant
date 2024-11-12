@@ -4,7 +4,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Fade from "@mui/material/Fade";
 import { Link } from "react-router-dom";
-import { IMenuItems } from "./NavBar";
+import { IMenuItems } from "../navbar/NavBar";
 
 const FadeMenu: React.FC<{ menuItems: IMenuItems[] }> = ({
     menuItems,

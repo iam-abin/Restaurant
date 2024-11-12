@@ -21,9 +21,9 @@ const RestaurantCard = ()=> {
                     image={FriedChicken}
                 />
                 <div className="absolute top-2 left-2 bg-white dark:bg-gray-700 bg-opacity-75 rounded-lg px-3 py-1">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <Typography className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         Featured
-                    </span>
+                    </Typography>
                 </div>
             </div>
             <CardContent>
@@ -35,13 +35,13 @@ const RestaurantCard = ()=> {
                 <div className="mt-2 gap-1 flex items-center text-gray-600 dark:text-gray-400">
                     <LocationOnOutlinedIcon className="text-gray-500" />
                     <p className="text-sm">
-                        City: <span className="font-medium">Kochi</span>
+                        City: <Typography className="font-medium">Kochi</Typography>
                     </p>
                 </div>
                 <div className="mt-2 gap-1 flex items-center text-gray-600 dark:text-gray-400">
                     <PublicIcon />
                     <p className="text-sm">
-                        Country: <span className="font-medium">India</span>
+                        Country: <Typography className="font-medium">India</Typography>
                     </p>
                 </div>
                 <div className="flex gap-2 mt-4 flex-wrap">

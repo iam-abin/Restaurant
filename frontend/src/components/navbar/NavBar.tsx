@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import FadeMenu from "./FadeMenu";
-import { Avatar, Badge, IconButton } from "@mui/material";
+import FadeMenu from "../list/FadeMenu";
+import { Avatar, Badge, IconButton, Typography } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import RightDrawer from "./RightDrawer";
+import RightDrawer from "../drawer/RightDrawer";
 import LogoutIcon from "@mui/icons-material/Logout";
 import FlatwareIcon from "@mui/icons-material/Flatware";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
@@ -20,7 +20,7 @@ export interface IMenuItems2 {
 }
 
 const NavBar = () => {
-    const admin = false;
+    const admin = true;
     const menuItemsAdmin: IMenuItems[] = [
         { to: "/admin/restaurant", value: "Restaurant" },
         { to: "/admin/menu", value: "Menu" },
@@ -61,9 +61,9 @@ const NavBar = () => {
                 </div>
                 {admin && <FadeMenu menuItems={menuItemsAdmin} />}
                 {/* Mobile responsiveness */}
-                <span className="md:hidden">
+                <Typography className="md:hidden">
                     <RightDrawer menuItems={menuItems} />
-                </span>
+                </Typography>
             </div>
         </div>
     );

@@ -11,6 +11,7 @@ import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { Typography } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -102,7 +103,7 @@ export default function TableCart() {
                                     >
                                         <RemoveIcon />
                                     </IconButton>
-                                    <span>{row.quantity}</span>
+                                    <Typography>{row.quantity}</Typography>
                                     <IconButton
                                         onClick={() =>
                                             handleQuantityChange(index, 1)

@@ -1,8 +1,8 @@
-import { Button, Input } from "@mui/material";
+import { Button, Input, Typography } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { emailSchema } from "../utils/schema/userSchema";
-import LoaderCircle from "../components/LoaderCircle";
+import LoaderCircle from "../components/Loader/LoaderCircle";
 import { Link, useNavigate } from "react-router-dom";
 
 interface IForgotPassword {
@@ -59,9 +59,9 @@ const ResetPassword = () => {
                             autoComplete="password"
                         />
                         {errors && (
-                            <span className="text-sm text-red-500">
+                            <Typography className="text-sm text-red-500">
                                 {errors.password}
-                            </span>
+                            </Typography>
                         )}
                     </div>
                 <Button
@@ -87,9 +87,9 @@ const ResetPassword = () => {
                     )}
                 </Button>
 
-                <span className="mt-5 text-center">Back to 
+                <Typography className="mt-5 text-center">Back to 
                     <Link to="/auth" className="ml-1 text-blue-500 hover:text-blue-800">Login</Link>
-                </span>
+                </Typography>
             </form>
         </div>
     );

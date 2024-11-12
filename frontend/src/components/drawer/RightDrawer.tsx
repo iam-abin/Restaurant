@@ -7,7 +7,7 @@ import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import LunchDiningIcon from "@mui/icons-material/LunchDining";
-import { IMenuItems2 } from "./NavBar";
+import { IMenuItems2 } from "../navbar/NavBar";
 import { Link } from "react-router-dom";
 
 type Anchor = "right";
