@@ -10,3 +10,4 @@ export const JWT_KEYS_CONSTANTS = Object.freeze({
     JWT_TOKEN: 'jwtToken',
     JWT_REFRESH_TOKEN: 'jwtRefreshToken',
 });
+

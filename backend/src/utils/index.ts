@@ -1,4 +1,5 @@
 export * from './constants';
+export * from './crypto';
 export * from './email';
 export * from './jwt';
 export * from './mongo-doc';

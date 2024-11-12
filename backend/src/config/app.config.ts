@@ -7,6 +7,8 @@ export interface IAppConfig {
     JWT_SECRET: string;
     JWT_EXPIRY_TIME: string;
 
+    FRONTEND_URL: string,
+
     EMAIL_USER: string;
     EMAIL_PASSWORD: string;
 
@@ -23,6 +25,8 @@ const appConfig: Readonly<IAppConfig> = Object.freeze({
     API_PREFIX: '/api/v1',
     JWT_SECRET: process.env.JWT_SECRET!,
     JWT_EXPIRY_TIME: '1h',
+
+    FRONTEND_URL: process.env.FRONTEND_URL!,
 
     EMAIL_USER: process.env.EMAIL_USER!,
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD!,

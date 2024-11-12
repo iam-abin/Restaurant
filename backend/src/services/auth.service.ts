@@ -7,12 +7,13 @@ import {
     comparePassword,
     createJwtAccessToken,
     IJwtPayload,
-    sendConfirmationEmail,
+    sendEmail,
 } from '../utils';
 import { OtpRepository, UserRepository } from '../database/repository';
 import mongoose from 'mongoose';
 import { IOtpDocument, IUserDocument } from '../database/model';
-import { ISignin, ISignup } from '../types';
+import { IEmailTemplate, ISignin, ISignup } from '../types';
+import { getEmailVerificationTemplate } from '../templates/verificationEmail';
 
 @autoInjectable()
 export class UserService {
@@ -44,13 +45,7 @@ export class UserService {
                 }
 
                 const otp: string = generateOtp();
-                const savedOtp: IOtpDocument = await this.otpRepository.createOtp(
-                    {
-                        userId: existingUser._id as string,
-                        otp,
-                    },
-                    session,
-                );
+                await this.otpRepository.createOtp({ userId: existingUser._id as string, otp }, session);
 
                 // Update if user enter new name or password
                 const updatedUser: IUserDocument | null = await this.userRepository.updateUser(
@@ -59,7 +54,8 @@ export class UserService {
                     session,
                 );
 
-                await sendConfirmationEmail(email, savedOtp.otp);
+                const emailTemplate: IEmailTemplate = getEmailVerificationTemplate(otp);
+                await sendEmail(email, emailTemplate);
                 // Commit the transaction
                 await session.commitTransaction();
                 session.endSession();
@@ -72,11 +68,9 @@ export class UserService {
             // Create a new user and generate OTP and send confirmation email
             const user: IUserDocument = await this.userRepository.createUser(userRegisterDto, session);
             const otp: string = generateOtp();
-            const savedOtp: IOtpDocument = await this.otpRepository.createOtp(
-                { userId: user._id as string, otp },
-                session,
-            );
-            await sendConfirmationEmail(email, savedOtp.otp);
+            await this.otpRepository.createOtp({ userId: user._id as string, otp }, session);
+            const emailTemplate: IEmailTemplate = getEmailVerificationTemplate(otp);
+            await sendEmail(email, emailTemplate);
 
             // Commit the transaction
             await session.commitTransaction();
