@@ -25,4 +25,4 @@ const cuisineSchema = new Schema<ICuisineDocument>(
     },
 );
 
-export const CuisineModel = mongoose.model<ICuisineDocument>('Cart', cuisineSchema);
+export const CuisineModel = mongoose.model<ICuisineDocument>('Cuisine', cuisineSchema);

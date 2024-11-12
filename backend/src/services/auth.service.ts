@@ -1,10 +1,16 @@
 import { autoInjectable } from 'tsyringe';
 
 import { BadRequestError, NotAuthorizedError, NotFoundError } from '../errors';
-import { comparePassword, createJwtAccessToken, IJwtPayload, sendConfirmationEmail } from '../utils';
+import {
+    checkOtpIntervalCompleted,
+    generateOtp,
+    comparePassword,
+    createJwtAccessToken,
+    IJwtPayload,
+    sendConfirmationEmail,
+} from '../utils';
 import { OtpRepository, UserRepository } from '../database/repository';
 import mongoose from 'mongoose';
-import { generateOtp } from '../utils/otp';
 import { IOtpDocument, IUserDocument } from '../database/model';
 import { ISignin, ISignup } from '../types';
 
@@ -24,6 +30,19 @@ export class UserService {
             const existingUser: IUserDocument | null = await this.userRepository.findByEmail(email);
             // If the user already exists but is not verified
             if (existingUser && !existingUser.isVerified) {
+                // Check if an OTP already exists and hasn't expired (optional, based on use case)
+                const existingOtp: IOtpDocument | null = await this.otpRepository.findByUserId(
+                    existingUser.id,
+                );
+                if (existingOtp) {
+                    const isResendTimeLimitCompleted = checkOtpIntervalCompleted(existingOtp.createdAt);
+                    if (!isResendTimeLimitCompleted) {
+                        throw new BadRequestError(
+                            'OTP has been recently sent. Please wait a minute before requesting again.',
+                        );
+                    }
+                }
+
                 const otp: string = generateOtp();
                 const savedOtp: IOtpDocument = await this.otpRepository.createOtp(
                     {
@@ -51,9 +70,12 @@ export class UserService {
             if (existingUser) throw new BadRequestError('User already exists');
 
             // Create a new user and generate OTP and send confirmation email
-            const user = await this.userRepository.createUser(userRegisterDto, session);
+            const user: IUserDocument = await this.userRepository.createUser(userRegisterDto, session);
             const otp: string = generateOtp();
-            const savedOtp = await this.otpRepository.createOtp({ userId: user._id as string, otp }, session);
+            const savedOtp: IOtpDocument = await this.otpRepository.createOtp(
+                { userId: user._id as string, otp },
+                session,
+            );
             await sendConfirmationEmail(email, savedOtp.otp);
 
             // Commit the transaction

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 import { IUserDocument } from '../database/model';
 
-import { createSuccessResponse, JWT_KEYS } from '../utils';
+import { createSuccessResponse, JWT_KEYS_CONSTANTS } from '../utils';
 import { OtpService, UserService } from '../services';
 import { IOtp, ISignin, ISignup } from '../types';
 
@@ -17,7 +17,7 @@ class UserController {
 
     public async signin(req: Request, res: Response): Promise<void> {
         const user: { user: ISignin; accessToken: string } = await userService.signIn(req.body as ISignin);
-        res.cookie(JWT_KEYS.JWT_TOKEN, user.accessToken);
+        res.cookie(JWT_KEYS_CONSTANTS.JWT_TOKEN, user.accessToken);
         res.status(200).json(createSuccessResponse('Login success', user));
     }
 
@@ -40,7 +40,7 @@ class UserController {
     }
 
     public async logout(req: Request, res: Response): Promise<void> {
-        res.clearCookie(JWT_KEYS.JWT_TOKEN);
+        res.clearCookie(JWT_KEYS_CONSTANTS.JWT_TOKEN);
         res.status(200).json(createSuccessResponse('Successfully logged out'));
     }
 }

@@ -1,14 +1,13 @@
 import express, { Router } from 'express';
-import { userController } from '../controllers/user.controller';
+import { userController } from '../controllers/auth.controller';
 import {
     resendOtpRequestBodyValidator,
     signinRequestBodyValidator,
     signupRequestBodyValidator,
     verifyOtpRequestBodyValidator,
+    ROLES_CONSTANTS,
 } from '../utils';
-import { auth, validateRequest } from '../middlewares';
-import { checkCurrentUser } from '../middlewares/check-current-user.middleware';
-import { ROLES } from '../utils/constants';
+import { checkCurrentUser, auth, validateRequest } from '../middlewares';
 
 const router: Router = express.Router();
 
@@ -20,8 +19,8 @@ router.post('/verify-otp', verifyOtpRequestBodyValidator, validateRequest, userC
 
 router.post('/resend-otp', resendOtpRequestBodyValidator, validateRequest, userController.resendOtp);
 
-router.get('/profile', checkCurrentUser, auth(ROLES.USER), userController.profile);
+router.get('/profile', checkCurrentUser, auth(ROLES_CONSTANTS.USER), userController.profile);
 
-router.get('/logout', checkCurrentUser, auth(ROLES.USER), userController.logout);
+router.get('/logout', checkCurrentUser, auth(ROLES_CONSTANTS.USER), userController.logout);
 
 export { router as userRoute };

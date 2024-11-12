@@ -1,16 +1,14 @@
 import express, { Router } from 'express';
-import { checkCurrentUser } from '../middlewares/check-current-user.middleware';
-import { auth } from '../middlewares';
-import { ROLES } from '../utils';
+import { checkCurrentUser, auth, multerUpload } from '../middlewares';
+import { ROLES_CONSTANTS } from '../utils';
 import { orderController } from '../controllers/order.controller';
-import { multerUpload } from '../middlewares/multer.middleware';
 
 const router: Router = express.Router();
 
 router.post(
     '/',
     checkCurrentUser,
-    auth(ROLES.RESTAURANT),
+    auth(ROLES_CONSTANTS.RESTAURANT),
     multerUpload.single('image'),
     orderController.addOrder,
 );
@@ -18,14 +16,14 @@ router.post(
 // router.get(
 //     '/',
 //     checkCurrentUser,
-//     auth(ROLES.USER),
+//     auth(ROLES_CONSTANTS.USER),
 //     orderController.getOrders,
 // );
 
 // router.get(
 //     '/:orderId',
 //     checkCurrentUser,
-//     auth(ROLES.USER),
+//     auth(ROLES_CONSTANTS.USER),
 //     orderController.getOrder,
 // );
 

@@ -1,9 +1,8 @@
 import { autoInjectable } from 'tsyringe';
 
 import { BadRequestError, NotFoundError } from '../errors';
-import { sendConfirmationEmail } from '../utils';
+import { generateOtp, checkOtpIntervalCompleted, sendConfirmationEmail } from '../utils';
 import { OtpRepository, UserRepository } from '../database/repository';
-import { generateOtp } from '../utils';
 import { IOtpDocument, IUserDocument } from '../database/model';
 
 @autoInjectable()
@@ -38,10 +37,8 @@ export class OtpService {
         // Check if an OTP already exists and hasn't expired (optional, based on use case)
         const existingOtp: IOtpDocument | null = await this.otpRepository.findByUserId(userId);
         if (existingOtp) {
-            const timeSinceLastOtp = new Date().getTime() - existingOtp.createdAt.getTime();
-            const otpResendThreshold = 60 * 1000; // e.g., 1 minute threshold
-
-            if (timeSinceLastOtp < otpResendThreshold) {
+            const isResendTimeLimitCompleted = checkOtpIntervalCompleted(existingOtp.createdAt);
+            if (!isResendTimeLimitCompleted) {
                 throw new BadRequestError('OTP has been recently sent. Please wait before requesting again.');
             }
         }

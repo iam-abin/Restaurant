@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { generateHashedPassword, omitDocFields } from '../../utils';
 import { ISignup } from '../../types';
-import { ROLES } from '../../utils';
+import { ROLES_CONSTANTS } from '../../utils';
 
 export interface IUserDocument extends Document, ISignup {
     isVerified: boolean;
@@ -29,7 +29,7 @@ const userSchema = new Schema<IUserDocument>(
         role: {
             type: String,
             required: true,
-            enum: [ROLES.ADMIN, ROLES.RESTAURANT, ROLES.USER],
+            enum: [ROLES_CONSTANTS.ADMIN, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.USER],
         },
         isVerified: {
             type: Boolean,

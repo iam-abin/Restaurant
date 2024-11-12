@@ -1,20 +1,18 @@
 import express, { Router } from 'express';
-import { checkCurrentUser } from '../middlewares/check-current-user.middleware';
-import { auth } from '../middlewares';
-import { ROLES } from '../utils';
+import { checkCurrentUser, auth, multerUpload } from '../middlewares';
+import { ROLES_CONSTANTS } from '../utils';
 import { menuController } from '../controllers/menu.controller';
-import { multerUpload } from '../middlewares/multer.middleware';
 
 const router: Router = express.Router();
 
 router.post(
     '/',
     checkCurrentUser,
-    auth(ROLES.RESTAURANT),
+    auth(ROLES_CONSTANTS.RESTAURANT),
     multerUpload.single('image'),
     menuController.addMenu,
 );
 
-router.get('/', checkCurrentUser, auth(ROLES.RESTAURANT), menuController.addMenu);
+router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.RESTAURANT), menuController.addMenu);
 
 export { router as menuRoute };

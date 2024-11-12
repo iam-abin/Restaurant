@@ -1,4 +1,4 @@
-interface IAppConfig {
+export interface IAppConfig {
     PORT: number;
     DB_NAME: string;
     MONGO_URI: string;
