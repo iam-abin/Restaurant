@@ -6,20 +6,23 @@ export interface ICuisineDocument extends Document, ICuisine {
     userId: Schema.Types.ObjectId;
 }
 
-const cuisineSchema = new Schema<ICuisineDocument>({
-    name: {
-        type: String,
-        required: true,
+const cuisineSchema = new Schema<ICuisineDocument>(
+    {
+        name: {
+            type: String,
+            required: true,
+        },
+        description: {
+            type: String,
+            required: true,
+        },
     },
-    description: {
-        type: String,
-        required: true,
+    {
+        timestamps: true,
+        toJSON: {
+            transform: omitDocFields,
+        },
     },
-},{
-    timestamps: true,
-    toJSON: {
-        transform: omitDocFields
-    },
-},);
+);
 
 export const CuisineModel = mongoose.model<ICuisineDocument>('Cart', cuisineSchema);

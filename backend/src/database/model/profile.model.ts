@@ -1,27 +1,30 @@
 import mongoose, { Schema } from 'mongoose';
-import { IProfile } from '../../types/profile';
+import { IProfile } from '../../types';
 import { omitDocFields } from '../../utils';
 
-export interface IProfileDocument extends Document, Omit<IProfile, "userId"> {
+export interface IProfileDocument extends Document, Omit<IProfile, 'userId'> {
     userId: Schema.Types.ObjectId;
 }
 
-const profileSchema = new Schema<IProfileDocument>({
-    userId: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-        unique: true
+const profileSchema = new Schema<IProfileDocument>(
+    {
+        userId: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
+            unique: true,
+        },
+        imageUrl: {
+            type: String,
+            required: true,
+        },
     },
-    imageUrl: {
-        type: String,
-        required: true,
-    }
-},{
-    timestamps: true,
-    toJSON: {
-        transform: omitDocFields
+    {
+        timestamps: true,
+        toJSON: {
+            transform: omitDocFields,
+        },
     },
-});
+);
 
 export const ProfileModel = mongoose.model<IProfileDocument>('Profile', profileSchema);

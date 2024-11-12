@@ -30,18 +30,18 @@ const menuSchema = new Schema<IMenuDocument>(
             type: Schema.Types.ObjectId,
             ref: 'Restaurant',
             required: true,
-            index: true
+            index: true,
         },
         isClosed: {
             type: Boolean,
             required: true,
-            default: false
-        }
+            default: false,
+        },
     },
     {
         timestamps: true,
         toJSON: {
-            transform: omitDocFields
+            transform: omitDocFields,
         },
     },
 );

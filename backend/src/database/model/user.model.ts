@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { generateHashedPassword, omitDocFields } from '../../utils';
-import { ISignup } from '../../types/user';
-import { ROLES } from '../../utils/constants';
+import { ISignup } from '../../types';
+import { ROLES } from '../../utils';
 
 export interface IUserDocument extends Document, ISignup {
     isVerified: boolean;
@@ -45,7 +45,7 @@ const userSchema = new Schema<IUserDocument>(
     {
         timestamps: true,
         toJSON: {
-            transform: omitDocFields
+            transform: omitDocFields,
         },
     },
 );

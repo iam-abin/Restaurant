@@ -31,7 +31,7 @@ const otpSchema = new Schema<IOtpDocument>(
     {
         timestamps: true,
         toJSON: {
-            transform: omitDocFields
+            transform: omitDocFields,
         },
     },
 );

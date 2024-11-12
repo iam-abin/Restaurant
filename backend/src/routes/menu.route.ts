@@ -15,11 +15,6 @@ router.post(
     menuController.addMenu,
 );
 
-router.get(
-    '/',
-    checkCurrentUser,
-    auth(ROLES.RESTAURANT),
-    menuController.addMenu,
-);
+router.get('/', checkCurrentUser, auth(ROLES.RESTAURANT), menuController.addMenu);
 
 export { router as menuRoute };

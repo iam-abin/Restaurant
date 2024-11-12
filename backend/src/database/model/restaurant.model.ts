@@ -7,27 +7,29 @@ export interface IRestaurantDocument extends Document, Omit<IRestaurant, 'userId
     isBlocked: boolean;
 }
 
-const restaurantSchema = new Schema<IRestaurantDocument>({
-    userId: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-        unique: true
+const restaurantSchema = new Schema<IRestaurantDocument>(
+    {
+        userId: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
+            unique: true,
+        },
+        deliveryTime: {
+            type: Number,
+            required: true,
+        },
+        imageUrl: {
+            type: String,
+            required: true,
+        },
     },
-    deliveryTime: {
-        type: Number,
-        required: true,
+    {
+        timestamps: true,
+        toJSON: {
+            transform: omitDocFields,
+        },
     },
-    imageUrl: {
-        type: String,
-        required: true,
-    },
-},
-{
-    timestamps: true,
-    toJSON: {
-        transform: omitDocFields
-    },
-},);
+);
 
 export const RestaurantModel = mongoose.model<IRestaurantDocument>('Restaurant', restaurantSchema);

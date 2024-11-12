@@ -18,8 +18,8 @@ export class MenuService {
         file: Express.Multer.File,
     ): Promise<IMenuDocument | null> {
         const restaurant = await this.restaurantRepository.findMyRestaurant(userId);
-        if(restaurant?.isBlocked) throw new BadRequestError("This restaurant is blocked")
-            
+        if (restaurant?.isBlocked) throw new BadRequestError('This restaurant is blocked');
+
         const imageUrl = await uploadImageOnCloudinary(file);
 
         const menu: IMenuDocument | null = await this.menuRepository.createMenu({

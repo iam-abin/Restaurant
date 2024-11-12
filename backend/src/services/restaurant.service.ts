@@ -28,7 +28,7 @@ export class RestaurantService {
     public async getARestaurant(restaurantId: string): Promise<IRestaurantDocument | null> {
         const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
-        
+
         return restaurant;
     }
 
