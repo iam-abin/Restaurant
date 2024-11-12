@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { IOtp } from '../../types';
+import { omitDocFields } from '../../utils';
 
 // Use Omit to exclude 'string type' userId from IOtp and redefine it in IOtpDocument
 export interface IOtpDocument extends Document, Omit<IOtp, 'userId'> {
@@ -28,10 +29,9 @@ const otpSchema = new Schema<IOtpDocument>(
         },
     },
     {
+        timestamps: true,
         toJSON: {
-            transform(doc, ret) {
-                delete ret.__v;
-            },
+            transform: omitDocFields
         },
     },
 );

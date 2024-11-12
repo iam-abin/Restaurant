@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { generateHashedPassword } from '../../utils';
+import { generateHashedPassword, omitDocFields } from '../../utils';
 import { ISignup } from '../../types/user';
 import { ROLES } from '../../utils/constants';
 
@@ -33,6 +33,7 @@ const userSchema = new Schema<IUserDocument>(
         },
         isVerified: {
             type: Boolean,
+            required: true,
             default: false,
         },
         isBlocked: {
@@ -44,10 +45,7 @@ const userSchema = new Schema<IUserDocument>(
     {
         timestamps: true,
         toJSON: {
-            transform(doc, ret) {
-                delete ret.__v;
-                delete ret.password;
-            },
+            transform: omitDocFields
         },
     },
 );

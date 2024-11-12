@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { IRestaurant } from '../../types';
+import { omitDocFields } from '../../utils';
 
 export interface IRestaurantDocument extends Document, Omit<IRestaurant, 'userId'> {
     userId: Schema.Types.ObjectId;
@@ -9,19 +10,9 @@ export interface IRestaurantDocument extends Document, Omit<IRestaurant, 'userId
 const restaurantSchema = new Schema<IRestaurantDocument>({
     userId: {
         type: Schema.Types.ObjectId,
+        ref: 'User',
         required: true,
-    },
-    restaurantName: {
-        type: String,
-        required: true,
-    },
-    city: {
-        type: String,
-        required: true,
-    },
-    country: {
-        type: String,
-        required: true,
+        unique: true
     },
     deliveryTime: {
         type: Number,
@@ -31,11 +22,12 @@ const restaurantSchema = new Schema<IRestaurantDocument>({
         type: String,
         required: true,
     },
-    isBlocked: {
-        type: Boolean,
-        required: true,
-        default: false,
+},
+{
+    timestamps: true,
+    toJSON: {
+        transform: omitDocFields
     },
-});
+},);
 
 export const RestaurantModel = mongoose.model<IRestaurantDocument>('Restaurant', restaurantSchema);

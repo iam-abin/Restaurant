@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { IMenu } from '../../types';
+import { omitDocFields } from '../../utils';
 
 export interface IMenuDocument extends Document, Omit<IMenu, 'restaurantId'> {
     restaurantId: Schema.Types.ObjectId;
@@ -19,6 +20,7 @@ const menuSchema = new Schema<IMenuDocument>(
         price: {
             type: Number,
             required: true,
+            min: [0, 'Price cannot be less than zero'],
         },
         imageUrl: {
             type: String,
@@ -26,8 +28,9 @@ const menuSchema = new Schema<IMenuDocument>(
         },
         restaurantId: {
             type: Schema.Types.ObjectId,
-            required: true,
             ref: 'Restaurant',
+            required: true,
+            index: true
         },
         isClosed: {
             type: Boolean,
@@ -38,9 +41,7 @@ const menuSchema = new Schema<IMenuDocument>(
     {
         timestamps: true,
         toJSON: {
-            transform(doc, ret) {
-                delete ret.__v;
-            },
+            transform: omitDocFields
         },
     },
 );

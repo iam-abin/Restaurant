@@ -1,6 +1,7 @@
 export * from './constants';
 export * from './email';
 export * from './jwt';
+export * from './mongo-doc';
 export * from './otp';
 export * from './password';
 export * from './response';
