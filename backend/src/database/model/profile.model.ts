@@ -14,10 +14,7 @@ const profileSchema = new Schema<IProfileDocument>(
             required: true,
             unique: true,
         },
-        imageUrl: {
-            type: String,
-            required: true,
-        },
+        imageUrl: String
     },
     {
         timestamps: true,

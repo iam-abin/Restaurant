@@ -8,9 +8,9 @@ import cookieParser from 'cookie-parser';
 
 import { NotFoundError } from './errors';
 import { errorHandler, rateLimiter } from './middlewares';
-import { userRoute } from './routes/auth.route';
-import { restaurantRoute } from './routes/restaurant.route';
-import { menuRoute } from './routes/menu.route';
+import { userRoute } from './routes/auth.routes';
+import { restaurantRoute } from './routes/restaurant.routes';
+import { menuRoute } from './routes/menu.routes';
 import { appConfig } from './config/app.config';
 
 const app: Application = express();

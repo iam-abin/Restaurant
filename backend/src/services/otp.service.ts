@@ -1,8 +1,8 @@
 import { autoInjectable } from 'tsyringe';
 
 import { BadRequestError, NotFoundError } from '../errors';
-import { generateOtp, checkOtpIntervalCompleted, sendEmail } from '../utils';
-import { OtpRepository, UserRepository } from '../database/repository';
+import { generateOtp, checkOtpIntervalCompleted, sendEmail, ROLES_CONSTANTS } from '../utils';
+import { OtpRepository, UserRepository, ProfileRepository, RestaurantRepository } from '../database/repository';
 import { IOtpDocument, IUserDocument } from '../database/model';
 import { createToken } from '../utils';
 import { IEmailTemplate } from '../types';
@@ -15,6 +15,8 @@ export class OtpService {
     constructor(
         private readonly userRepository: UserRepository,
         private readonly otpRepository: OtpRepository,
+        private readonly profileRepository: ProfileRepository,
+        private readonly restaurantRepository: RestaurantRepository,
     ) {}
 
     public async verify(userId: string, otp: string): Promise<IUserDocument | null> {
@@ -31,6 +33,11 @@ export class OtpService {
 
         // Update the user's verification status
         const updatedUser: IUserDocument | null = await this.userRepository.updateUserVerification(userId);
+        if(user.role === ROLES_CONSTANTS.USER){
+            await this.profileRepository.create({userId});
+        }else if(user.role === ROLES_CONSTANTS.RESTAURANT){
+            await this.restaurantRepository.create({userId});
+        }
         return updatedUser;
     }
 

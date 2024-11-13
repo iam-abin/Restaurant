@@ -2,7 +2,7 @@ import { IRestaurant } from '../../types';
 import { IRestaurantDocument, RestaurantModel } from '../model';
 
 export class RestaurantRepository {
-    async createRestaurant(restaurantData: IRestaurant): Promise<IRestaurantDocument> {
+    async create(restaurantData: Pick<IRestaurant, "userId">): Promise<IRestaurantDocument> {
         const restaurant: IRestaurantDocument = await RestaurantModel.create(restaurantData);
         return restaurant;
     }
@@ -15,12 +15,12 @@ export class RestaurantRepository {
         return await RestaurantModel.findOne({ userId });
     }
 
-    async updateRestaurant(
-        restaurantId: string,
+    async update(
+        ownerId: string,
         updatedData: Partial<IRestaurant>,
     ): Promise<IRestaurantDocument | null> {
-        const restaurant: IRestaurantDocument | null = await RestaurantModel.findByIdAndUpdate(
-            restaurantId,
+        const restaurant: IRestaurantDocument | null = await RestaurantModel.findOneAndUpdate(
+            {userId: ownerId},
             updatedData,
             {
                 new: true,

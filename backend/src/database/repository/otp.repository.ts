@@ -1,6 +1,6 @@
 import { ClientSession } from 'mongoose';
 import { IOtpDocument, OtpModel } from '../model';
-import { IOtp } from '../../types/otp';
+import { IOtp } from '../../types';
 
 export class OtpRepository {
     async createOtp(otpData: IOtp, session?: ClientSession): Promise<IOtpDocument> {

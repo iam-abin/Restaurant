@@ -9,22 +9,6 @@ import { ForbiddenError, NotFoundError } from '../errors';
 export class RestaurantService {
     constructor(private readonly restaurantRepository: RestaurantRepository) {}
 
-    public async createRestaurant(
-        userId: string,
-        restaurantData: Omit<IRestaurant, 'userId' | 'imageUrl'>,
-        file: Express.Multer.File,
-    ): Promise<IRestaurantDocument> {
-        const imageUrl = await uploadImageOnCloudinary(file);
-
-        const restaurant: IRestaurantDocument = await this.restaurantRepository.createRestaurant({
-            ...restaurantData,
-            userId,
-            imageUrl,
-        });
-
-        return restaurant;
-    }
-
     public async getARestaurant(restaurantId: string): Promise<IRestaurantDocument | null> {
         const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
@@ -37,6 +21,21 @@ export class RestaurantService {
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         if (userId !== restaurant?.userId.toString())
             throw new ForbiddenError('You cannot access others restaurant');
+        return restaurant;
+    }
+
+    public async updateRestaurant(
+        ownerId: string,
+        restaurantData: Omit<IRestaurant, 'userId' | 'imageUrl'>,
+        file: Express.Multer.File,
+    ): Promise<IRestaurantDocument | null> {
+        const imageUrl = await uploadImageOnCloudinary(file);
+
+        const restaurant: IRestaurantDocument | null = await this.restaurantRepository.update(ownerId, {
+            ...restaurantData,
+            imageUrl,
+        });
+
         return restaurant;
     }
 }

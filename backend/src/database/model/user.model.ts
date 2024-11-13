@@ -65,6 +65,11 @@ userSchema.pre('save', async function (next) {
 // To hash password before saving the updated password to db
 userSchema.pre('findOneAndUpdate', async function (next) {
     const update = this.getUpdate() as Partial<ISignup>;
+    if (update?.email || update?.role) {
+        delete update.email;
+        delete update.role;
+      }
+      
     if (!update.password) return next();
 
     try {

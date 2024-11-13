@@ -5,21 +5,12 @@ import { restaurantController } from '../controllers/restaurant.controller';
 
 const router: Router = express.Router();
 
-router.post(
-    '/',
-    checkCurrentUser,
-    auth(ROLES_CONSTANTS.RESTAURANT),
-    multerUpload.single('image'),
-    restaurantController.addRestaurant,
-);
+router.get('/:restaurantId', checkCurrentUser, restaurantController.getARestaurant);
 
 router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.RESTAURANT), restaurantController.getMyRestaurant);
-router.get(
-    '/:restaurantId',
-    checkCurrentUser,
-    auth(ROLES_CONSTANTS.USER),
-    restaurantController.getARestaurant,
-);
+
+router.patch('/:restaurantId', checkCurrentUser, auth(ROLES_CONSTANTS.RESTAURANT), restaurantController.updateRestaurant);
+
 // router.get('/orders', checkCurrentUser, auth(ROLES_CONSTANTS.RESTAURANT), restaurantController.getRestaurantOrder);
 // router.get('/order/:orderId/status', checkCurrentUser, auth(ROLES_CONSTANTS.RESTAURANT), restaurantController.updateOrderStatus);
 

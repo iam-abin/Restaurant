@@ -1,6 +1,6 @@
 import { IUserRole } from './roles';
 
-interface IUser {
+export interface IUser {
     email: string;
     password: string;
     role: Partial<IUserRole>;

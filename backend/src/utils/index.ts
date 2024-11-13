@@ -8,5 +8,6 @@ export * from './password';
 export * from './response';
 export * from './upload';
 export * from './validation/otp.validation';
+export * from './validation/password.validation';
 export * from './validation/user.validation';
 export * from './winston-logger';

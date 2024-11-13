@@ -8,15 +8,16 @@ import { IRestaurant } from '../types';
 const restaurantService = container.resolve(RestaurantService);
 
 class RestaurantController {
-    public async addRestaurant(req: Request, res: Response): Promise<void> {
+    public async updateRestaurant(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
+        // const { restaurantId } = req.params;
         const file: Express.Multer.File = req.file!;
-        const restaurant: IRestaurantDocument | null = await restaurantService.createRestaurant(
+        const restaurant: IRestaurantDocument | null = await restaurantService.updateRestaurant(
             userId,
             req.body as Omit<IRestaurant, 'userId' | 'imageUrl'>,
             file,
         );
-        res.status(200).json(createSuccessResponse('Restaurant created successfully', restaurant));
+        res.status(200).json(createSuccessResponse('Restaurant updated successfully', restaurant));
     }
 
     public async getMyRestaurant(req: Request, res: Response): Promise<void> {
