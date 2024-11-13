@@ -10,8 +10,31 @@ const orderService = container.resolve(OrderService);
 class OrderController {
     public async addOrder(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
+        const {items} = req.body
         const order: IOrderDocument | null = await orderService.createOrder(userId, req.body as IOrder);
         res.status(200).json(createSuccessResponse('Order created successfully', order));
+    }
+
+    public async getRestaurantOrders(req: Request, res: Response): Promise<void> {
+        const { userId } = req.currentUser!;
+        const { restaurantId } = req.params;
+
+        const orders: IOrderDocument[] | [] = await orderService.getOrders(restaurantId, userId);
+        res.status(200).json(createSuccessResponse('Restaurant orders fetched successfully', orders));
+    }
+
+    public async getMyOrders(req: Request, res: Response): Promise<void> {
+        const { userId } = req.currentUser!;
+        const orders: IOrderDocument[] | [] = await orderService.getMyOrders(userId);
+        res.status(200).json(createSuccessResponse('Your orders fetched successfully', orders));
+    }
+
+    public async updateOrderStatus(req: Request, res: Response): Promise<void> {
+        const { userId } = req.currentUser!;
+        const {orderId } = req.params;
+        const {status } = req.body;
+        const order: IOrderDocument | null = await orderService.updateOrderStatus(orderId, status,userId);
+        res.status(200).json(createSuccessResponse('Order status updated successfully', order));
     }
 }
 

@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import compression from 'compression';
 
 import { NotFoundError } from './errors';
 import { errorHandler, rateLimiter } from './middlewares';
@@ -21,16 +22,17 @@ const isProductionENV: boolean = appConfig.NODE_ENVIRONMENT === 'production';
 // app.set('trust proxy', true); // Trust all proxies
 
 // Middlewares
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({limit: '10mb'}));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(helmet());
 app.use(
     cors({
         origin: '*',
     }),
 );
-if (!isProductionENV) app.use(morgan('dev'));
+app.use(compression());
 app.use(cookieParser());
+if (!isProductionENV) app.use(morgan('dev'));
 
 app.use(rateLimiter);
 // Routes

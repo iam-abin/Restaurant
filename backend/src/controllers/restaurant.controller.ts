@@ -23,7 +23,7 @@ class RestaurantController {
     public async getMyRestaurant(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
         const restaurant: IRestaurantDocument | null = await restaurantService.getMyRestaurant(userId);
-        res.status(200).json(createSuccessResponse('Restaurant fetched successfully', restaurant));
+        res.status(200).json(createSuccessResponse('Your restaurant fetched successfully', restaurant));
     }
 
     public async getARestaurant(req: Request, res: Response): Promise<void> {

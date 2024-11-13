@@ -1,12 +1,14 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { IOrder } from '../../types';
 import { omitDocFields } from '../../utils';
+import { IUserDocument } from './user.model';
+import { IRestaurantDocument } from './restaurant.model';
 
 export interface IOrderDocument
     extends Document,
         Omit<IOrder, 'userId' | 'restaurantId' | 'cartId' | 'addressId'> {
-    userId: Schema.Types.ObjectId;
-    restaurantId: Schema.Types.ObjectId;
+    userId: Schema.Types.ObjectId | IUserDocument;
+    restaurantId: Schema.Types.ObjectId | IRestaurantDocument;
     cartId: Schema.Types.ObjectId;
     addressId: Schema.Types.ObjectId;
 }

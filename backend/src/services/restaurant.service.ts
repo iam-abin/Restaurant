@@ -19,17 +19,18 @@ export class RestaurantService {
     public async getMyRestaurant(userId: string): Promise<IRestaurantDocument | null> {
         const restaurant = await this.restaurantRepository.findMyRestaurant(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
-        if (userId !== restaurant?.userId.toString())
-            throw new ForbiddenError('You cannot access others restaurant');
         return restaurant;
     }
 
     public async updateRestaurant(
         ownerId: string,
         restaurantData: Omit<IRestaurant, 'userId' | 'imageUrl'>,
-        file: Express.Multer.File,
+        file?: Express.Multer.File,
     ): Promise<IRestaurantDocument | null> {
-        const imageUrl = await uploadImageOnCloudinary(file);
+        let imageUrl: string | undefined;
+        if (file) {
+            imageUrl = await uploadImageOnCloudinary(file);
+        }
 
         const restaurant: IRestaurantDocument | null = await this.restaurantRepository.update(ownerId, {
             ...restaurantData,

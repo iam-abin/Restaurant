@@ -8,17 +8,36 @@ const router: Router = express.Router();
 router.post(
     '/',
     checkCurrentUser,
-    auth(ROLES_CONSTANTS.RESTAURANT),
-    multerUpload.single('image'),
     orderController.addOrder,
 );
 
+router.get(
+    '/',
+    checkCurrentUser,
+    auth(ROLES_CONSTANTS.USER),
+    orderController.getMyOrders,
+);
+
 // router.get(
-//     '/',
+//     '/:orderId',
 //     checkCurrentUser,
 //     auth(ROLES_CONSTANTS.USER),
-//     orderController.getOrders,
+//     orderController.getOrder,
 // );
+
+router.get(
+    '/restaurant/:restaurantId',
+    checkCurrentUser,
+    auth(ROLES_CONSTANTS.RESTAURANT),
+    orderController.getRestaurantOrders,
+);
+
+router.patch(
+    '/:orderId',
+    checkCurrentUser,
+    auth(ROLES_CONSTANTS.RESTAURANT),
+    orderController.updateOrderStatus,
+);
 
 // router.get(
 //     '/:orderId',

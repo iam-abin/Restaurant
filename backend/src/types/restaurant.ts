@@ -1,5 +1,5 @@
 export interface IRestaurant {
-    userId: string;
+    ownerId: string;
     restaurantName: string;
     city: string;
     country: string;

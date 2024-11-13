@@ -5,6 +5,7 @@ import { NotFoundError } from '../errors';
 import { ProfileRepository } from '../database/repository';
 import { IProfileDocument } from '../database/model';
 import { IProfile } from '../types';
+import { uploadImageOnCloudinary } from '../utils';
 
 @autoInjectable()
 export class ProfileService {
@@ -19,8 +20,13 @@ export class ProfileService {
     public async updateProfile(
         profileId: string,
         updateData: Partial<IProfile>,
+        file?: Express.Multer.File,
     ): Promise<IProfileDocument | null> {
-        const profile: IProfileDocument | null = await this.profileRepository.update(profileId, updateData);
+        let imageUrl: string | undefined;
+        if (file) {
+            imageUrl = await uploadImageOnCloudinary(file);
+        }
+        const profile: IProfileDocument | null = await this.profileRepository.update(profileId, {...updateData, imageUrl});
         if (!profile) throw new NotFoundError('This profile does not exist');
         return profile;
     }

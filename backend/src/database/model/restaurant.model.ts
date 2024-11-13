@@ -2,14 +2,14 @@ import mongoose, { Schema } from 'mongoose';
 import { IRestaurant } from '../../types';
 import { omitDocFields } from '../../utils';
 
-export interface IRestaurantDocument extends Document, Omit<IRestaurant, 'userId'> {
-    userId: Schema.Types.ObjectId;
+export interface IRestaurantDocument extends Document, Omit<IRestaurant, 'ownerId'> {
+    ownerId: Schema.Types.ObjectId;
     isBlocked: boolean;
 }
 
 const restaurantSchema = new Schema<IRestaurantDocument>(
     {
-        userId: {
+        ownerId: {
             type: Schema.Types.ObjectId,
             ref: 'User',
             required: true,

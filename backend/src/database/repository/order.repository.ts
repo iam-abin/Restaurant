@@ -7,12 +7,16 @@ export class OrderRepository {
         return order;
     }
 
-    async getMyOrders(userId: string): Promise<IOrderDocument[] | []> {
+    async findMyOrders(userId: string): Promise<IOrderDocument[] | []> {
         return await OrderModel.find({ userId });
     }
 
-    async getOrders(restaurantId: string): Promise<IOrderDocument[] | []> {
+    async findOrders(restaurantId: string): Promise<IOrderDocument[] | []> {
         return await OrderModel.find({ restaurantId });
+    }
+
+    async findOrder(orderId: string): Promise<IOrderDocument | null> {
+        return await OrderModel.findById(orderId).populate('userId').populate('restaurantId');
     }
 
     async updateOrderStatus(orderId: string, status: string): Promise<IOrderDocument | null> {

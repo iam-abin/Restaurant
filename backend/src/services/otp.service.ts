@@ -36,7 +36,7 @@ export class OtpService {
         if(user.role === ROLES_CONSTANTS.USER){
             await this.profileRepository.create({userId});
         }else if(user.role === ROLES_CONSTANTS.RESTAURANT){
-            await this.restaurantRepository.create({userId});
+            await this.restaurantRepository.create({ownerId: userId});
         }
         return updatedUser;
     }
