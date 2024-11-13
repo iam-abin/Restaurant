@@ -68,8 +68,8 @@ userSchema.pre('findOneAndUpdate', async function (next) {
     if (update?.email || update?.role) {
         delete update.email;
         delete update.role;
-      }
-      
+    }
+
     if (!update.password) return next();
 
     try {

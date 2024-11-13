@@ -7,7 +7,7 @@ export interface IAppConfig {
     JWT_SECRET: string;
     JWT_EXPIRY_TIME: string;
 
-    FRONTEND_URL: string,
+    FRONTEND_URL: string;
 
     EMAIL_USER: string;
     EMAIL_PASSWORD: string;

@@ -2,7 +2,12 @@ import { autoInjectable } from 'tsyringe';
 
 import { BadRequestError, NotFoundError } from '../errors';
 import { generateOtp, checkOtpIntervalCompleted, sendEmail, ROLES_CONSTANTS } from '../utils';
-import { OtpRepository, UserRepository, ProfileRepository, RestaurantRepository } from '../database/repository';
+import {
+    OtpRepository,
+    UserRepository,
+    ProfileRepository,
+    RestaurantRepository,
+} from '../database/repository';
 import { IOtpDocument, IUserDocument } from '../database/model';
 import { createToken } from '../utils';
 import { IEmailTemplate } from '../types';
@@ -33,10 +38,10 @@ export class OtpService {
 
         // Update the user's verification status
         const updatedUser: IUserDocument | null = await this.userRepository.updateUserVerification(userId);
-        if(user.role === ROLES_CONSTANTS.USER){
-            await this.profileRepository.create({userId});
-        }else if(user.role === ROLES_CONSTANTS.RESTAURANT){
-            await this.restaurantRepository.create({ownerId: userId});
+        if (user.role === ROLES_CONSTANTS.USER) {
+            await this.profileRepository.create({ userId });
+        } else if (user.role === ROLES_CONSTANTS.RESTAURANT) {
+            await this.restaurantRepository.create({ ownerId: userId });
         }
         return updatedUser;
     }

@@ -1,29 +1,13 @@
 import express, { Router } from 'express';
-import { checkCurrentUser, auth, multerUpload } from '../middlewares';
+import { checkCurrentUser, auth } from '../middlewares';
 import { ROLES_CONSTANTS } from '../utils';
 import { orderController } from '../controllers/order.controller';
 
 const router: Router = express.Router();
 
-router.post(
-    '/',
-    checkCurrentUser,
-    orderController.addOrder,
-);
+router.post('/', checkCurrentUser, orderController.addOrder);
 
-router.get(
-    '/',
-    checkCurrentUser,
-    auth(ROLES_CONSTANTS.USER),
-    orderController.getMyOrders,
-);
-
-// router.get(
-//     '/:orderId',
-//     checkCurrentUser,
-//     auth(ROLES_CONSTANTS.USER),
-//     orderController.getOrder,
-// );
+router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.USER), orderController.getMyOrders);
 
 router.get(
     '/restaurant/:restaurantId',
@@ -32,6 +16,12 @@ router.get(
     orderController.getRestaurantOrders,
 );
 
+// router.get(
+//     '/:orderId',
+//     checkCurrentUser,
+//     orderController.getOrder,
+// );
+
 router.patch(
     '/:orderId',
     checkCurrentUser,
@@ -39,11 +29,4 @@ router.patch(
     orderController.updateOrderStatus,
 );
 
-// router.get(
-//     '/:orderId',
-//     checkCurrentUser,
-//     auth(ROLES_CONSTANTS.USER),
-//     orderController.getOrder,
-// );
-
-export { router as orderRoute };
+export { router as orderRoutes };

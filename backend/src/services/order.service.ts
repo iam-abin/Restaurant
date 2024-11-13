@@ -33,12 +33,19 @@ export class OrderService {
         return restaurant;
     }
 
-    public async updateOrderStatus(orderId: string, status: string, ownerId: string): Promise<IOrderDocument | null> {
+    public async updateOrderStatus(
+        orderId: string,
+        status: string,
+        ownerId: string,
+    ): Promise<IOrderDocument | null> {
         const order: IOrderDocument | null = await this.orderRepository.findOrder(orderId);
         if (!order) throw new NotFoundError('Order not found');
         if ('ownerId' in order.restaurantId && order.restaurantId.ownerId.toString() !== ownerId)
             throw new ForbiddenError('You cannot update other restaurants order status');
-        const updatedOrder: IOrderDocument | null = await this.orderRepository.updateOrderStatus(orderId, status);
+        const updatedOrder: IOrderDocument | null = await this.orderRepository.updateOrderStatus(
+            orderId,
+            status,
+        );
         return updatedOrder;
     }
 }

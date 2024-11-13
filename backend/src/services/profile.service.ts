@@ -26,7 +26,10 @@ export class ProfileService {
         if (file) {
             imageUrl = await uploadImageOnCloudinary(file);
         }
-        const profile: IProfileDocument | null = await this.profileRepository.update(profileId, {...updateData, imageUrl});
+        const profile: IProfileDocument | null = await this.profileRepository.update(profileId, {
+            ...updateData,
+            imageUrl,
+        });
         if (!profile) throw new NotFoundError('This profile does not exist');
         return profile;
     }

@@ -4,14 +4,14 @@ import { ROLES_CONSTANTS } from '../constants';
 export const forgotPasswordRequestBodyValidator = [
     body('email').isEmail().withMessage('Email must be valid').toLowerCase().trim().escape(),
     body('role')
-    .notEmpty()
-    .withMessage('Role is required')
-    .isIn([ROLES_CONSTANTS.ADMIN, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.USER])
-    .withMessage(
-        `Role must be one of ${ROLES_CONSTANTS.ADMIN}, ${ROLES_CONSTANTS.RESTAURANT}, or ${ROLES_CONSTANTS.USER}`,
-    )
-    .trim()
-    .escape(),
+        .notEmpty()
+        .withMessage('Role is required')
+        .isIn([ROLES_CONSTANTS.ADMIN, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.USER])
+        .withMessage(
+            `Role must be one of ${ROLES_CONSTANTS.ADMIN}, ${ROLES_CONSTANTS.RESTAURANT}, or ${ROLES_CONSTANTS.USER}`,
+        )
+        .trim()
+        .escape(),
 ];
 
 export const resetPasswordRequestBodyValidator = [

@@ -9,17 +9,19 @@ import { IProfile, IUser } from '../types';
 const profileService = container.resolve(ProfileService);
 
 class ProfileController {
-    
     public async getProfile(req: Request, res: Response): Promise<void> {
-        const { userId, role } = req.currentUser!;
+        const { userId } = req.currentUser!;
 
         const user: IProfileDocument | null = await profileService.getProfile(userId);
         res.status(200).json(createSuccessResponse('User Profile', user));
     }
 
-    public async updateProfile(req: Request, res: Response): Promise<void> {
+    public async editProfile(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
-        const user: IProfileDocument | null = await profileService.updateProfile(userId, req.body as Partial<IProfile & IUser> );
+        const user: IProfileDocument | null = await profileService.updateProfile(
+            userId,
+            req.body as Partial<IProfile & IUser>,
+        );
         res.status(200).json(createSuccessResponse('User Profile', user));
     }
 }

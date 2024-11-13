@@ -5,7 +5,7 @@ import {
     signinRequestBodyValidator,
     signupRequestBodyValidator,
     verifyOtpRequestBodyValidator,
-    forgotPasswordRequestBodyValidator, 
+    forgotPasswordRequestBodyValidator,
     resetPasswordRequestBodyValidator,
     ROLES_CONSTANTS,
 } from '../utils';
@@ -21,10 +21,20 @@ router.post('/verify-otp', verifyOtpRequestBodyValidator, validateRequest, authC
 
 router.post('/resend-otp', resendOtpRequestBodyValidator, validateRequest, authController.resendOtp);
 
-router.post('/password/forgot', forgotPasswordRequestBodyValidator, validateRequest, authController.forgotPassword);
+router.post(
+    '/password/forgot',
+    forgotPasswordRequestBodyValidator,
+    validateRequest,
+    authController.forgotPassword,
+);
 
-router.post('/password/reset', resetPasswordRequestBodyValidator, validateRequest, authController.resetPassword);
+router.post(
+    '/password/reset',
+    resetPasswordRequestBodyValidator,
+    validateRequest,
+    authController.resetPassword,
+);
 
 router.get('/logout', checkCurrentUser, auth(ROLES_CONSTANTS.USER), authController.logout);
 
-export { router as userRoute };
+export { router as authRoutes };

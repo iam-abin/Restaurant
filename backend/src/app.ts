@@ -9,9 +9,11 @@ import compression from 'compression';
 
 import { NotFoundError } from './errors';
 import { errorHandler, rateLimiter } from './middlewares';
-import { userRoute } from './routes/auth.routes';
-import { restaurantRoute } from './routes/restaurant.routes';
-import { menuRoute } from './routes/menu.routes';
+import { authRoutes } from './routes/auth.routes';
+import { menuRoutes } from './routes/menu.routes';
+import { orderRoutes } from './routes/order.routes';
+import { profileRoutes } from './routes/profile.routes';
+import { restaurantRoutes } from './routes/restaurant.routes';
 import { appConfig } from './config/app.config';
 
 const app: Application = express();
@@ -22,7 +24,7 @@ const isProductionENV: boolean = appConfig.NODE_ENVIRONMENT === 'production';
 // app.set('trust proxy', true); // Trust all proxies
 
 // Middlewares
-app.use(express.json({limit: '10mb'}));
+app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(helmet());
 app.use(
@@ -36,9 +38,11 @@ if (!isProductionENV) app.use(morgan('dev'));
 
 app.use(rateLimiter);
 // Routes
-app.use(`${appConfig.API_PREFIX}/auth`, userRoute);
-app.use(`${appConfig.API_PREFIX}/menu`, menuRoute);
-app.use(`${appConfig.API_PREFIX}/restaurant`, restaurantRoute);
+app.use(`${appConfig.API_PREFIX}/auth`, authRoutes);
+app.use(`${appConfig.API_PREFIX}/menu`, menuRoutes);
+app.use(`${appConfig.API_PREFIX}/order`, orderRoutes);
+app.use(`${appConfig.API_PREFIX}/profile`, profileRoutes);
+app.use(`${appConfig.API_PREFIX}/restaurant`, restaurantRoutes);
 
 app.all('*', (req: Request, res: Response): never => {
     throw new NotFoundError();

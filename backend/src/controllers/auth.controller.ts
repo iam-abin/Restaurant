@@ -12,7 +12,9 @@ const otpService = container.resolve(OtpService);
 class AuthController {
     public async signup(req: Request, res: Response): Promise<void> {
         const user: IUserDocument | null = await userService.signUp(req.body as ISignup);
-        res.status(201).json(createSuccessResponse(`An otp is send to your ${user?.email || "email"}, Please verify`, user));
+        res.status(201).json(
+            createSuccessResponse(`An otp is send to your ${user?.email || 'email'}, Please verify`, user),
+        );
     }
 
     public async signin(req: Request, res: Response): Promise<void> {
@@ -30,13 +32,17 @@ class AuthController {
     public async resendOtp(req: Request, res: Response): Promise<void> {
         const { userId } = req.body;
         const user: IUserDocument | null = await otpService.resendOtp(userId);
-        res.status(200).json(createSuccessResponse(`An otp is send to your ${user?.email || "email"}, Please verify`, user));
+        res.status(200).json(
+            createSuccessResponse(`An otp is send to your ${user?.email || 'email'}, Please verify`, user),
+        );
     }
 
     public async forgotPassword(req: Request, res: Response): Promise<void> {
         const { email } = req.body;
         const user: IUserDocument | null = await otpService.forgotPassword(email);
-        res.status(200).json(createSuccessResponse(`Password reset link sent to your ${email}, Please verify`, user));
+        res.status(200).json(
+            createSuccessResponse(`Password reset link sent to your ${email}, Please verify`, user),
+        );
     }
 
     public async resetPassword(req: Request, res: Response): Promise<void> {
@@ -44,7 +50,6 @@ class AuthController {
         const user: IUserDocument | null = await otpService.resetPassword(email, password, resetToken);
         res.status(200).json(createSuccessResponse(`Password reseted successfully`, user));
     }
-
 
     public async logout(req: Request, res: Response): Promise<void> {
         res.clearCookie(JWT_KEYS_CONSTANTS.JWT_TOKEN);

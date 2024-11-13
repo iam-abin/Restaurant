@@ -13,6 +13,7 @@ router.post(
     menuController.addMenu,
 );
 
-router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.RESTAURANT), menuController.addMenu);
+router.get('/:restaurantId', checkCurrentUser, menuController.getMenus);
+router.get('/:menuId', checkCurrentUser, menuController.getMenu);
 
-export { router as menuRoute };
+export { router as menuRoutes };
