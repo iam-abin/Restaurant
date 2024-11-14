@@ -13,7 +13,8 @@ router.post(
     menuController.addMenu,
 );
 
-router.get('/:restaurantId', checkCurrentUser, menuController.getMenus);
+router.get('/restaurant/:restaurantId', checkCurrentUser, menuController.getMenus);
+
 router.get('/:menuId', checkCurrentUser, menuController.getMenu);
 
 router.patch(
