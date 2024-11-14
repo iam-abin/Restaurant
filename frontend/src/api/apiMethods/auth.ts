@@ -1,6 +1,6 @@
+import makeApiCall from "../apiCalls";
 import authApiUrls from "../urls/auth";
 import { IResponse } from "../../types/api";
-import makeApiCall from "../apiCalls";
 
 
 export const signinApi = async (data: any): Promise<IResponse> => {

@@ -5,8 +5,8 @@ import { checkCurrentUser, auth } from '../middlewares';
 
 const router: Router = express.Router();
 
-router.get('/profile', checkCurrentUser, auth(ROLES_CONSTANTS.USER), profileController.getProfile);
+router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.USER), profileController.getProfile);
 
-router.patch('/profile', checkCurrentUser, auth(ROLES_CONSTANTS.USER), profileController.editProfile);
+router.patch('/', checkCurrentUser, auth(ROLES_CONSTANTS.USER), profileController.editProfile);
 
 export { router as profileRoutes };

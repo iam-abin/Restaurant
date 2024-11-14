@@ -35,6 +35,6 @@ router.post(
     authController.resetPassword,
 );
 
-router.get('/logout', checkCurrentUser, auth(ROLES_CONSTANTS.USER), authController.logout);
+router.post('/logout', checkCurrentUser, auth(ROLES_CONSTANTS.USER), authController.logout);
 
 export { router as authRoutes };
