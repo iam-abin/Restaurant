@@ -34,6 +34,7 @@
     "otp-generator": "^4.0.1",
     "reflect-metadata": "^0.2.2",
     "streamifier": "^0.1.1",
+    "stripe": "^17.3.1",
     "tsyringe": "^4.8.0",
     "winston": "^3.16.0"
   },

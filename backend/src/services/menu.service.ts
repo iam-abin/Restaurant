@@ -32,8 +32,8 @@ export class MenuService {
         return menu;
     }
 
-    public async getMenus(restaurantId: string): Promise<IMenuDocument[] | []> {
-        const menus: IMenuDocument[] | [] = await this.menuRepository.findMenus(restaurantId);
+    public async getMenus(restaurantId: string): Promise<IMenuDocument[]> {
+        const menus: IMenuDocument[] = await this.menuRepository.findMenus(restaurantId);
         return menus;
     }
 
@@ -57,7 +57,7 @@ export class MenuService {
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         console.log(restaurant);
 
-        if ('_id' in restaurant.ownerId && userId !== restaurant.ownerId.id.toString())
+        if ('id' in restaurant.ownerId && userId !== restaurant.ownerId.id.toString())
             throw new ForbiddenError('You cannot modify others restaurant menu');
 
         let imageUrl: string | undefined;

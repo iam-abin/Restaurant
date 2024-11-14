@@ -21,7 +21,7 @@ class MenuController {
 
     public async getMenus(req: Request, res: Response): Promise<void> {
         const { restaurantId } = req.params;
-        const menu: IMenuDocument[] | [] = await menuService.getMenus(restaurantId);
+        const menu: IMenuDocument[] = await menuService.getMenus(restaurantId);
         res.status(200).json(createSuccessResponse('Menus fetched successfully', menu));
     }
 

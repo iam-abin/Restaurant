@@ -43,7 +43,7 @@ export class RestaurantService {
         searchText: string,
         searchQuery: string,
         selectedCuisines: string,
-    ): Promise<any[] | []> {
+    ): Promise<any[]> {
         // search is based on ( name, city, country, cuisines )
 
         const cuisinesArray: string[] = selectedCuisines.split(', ').filter((cuisine: string) => cuisine); // It avoid falsy values

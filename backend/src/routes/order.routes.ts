@@ -5,9 +5,10 @@ import { orderController } from '../controllers/order.controller';
 
 const router: Router = express.Router();
 
-router.post('/', checkCurrentUser, orderController.addOrder);
-
 router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.USER), orderController.getMyOrders);
+
+router.post('/payment', checkCurrentUser, auth(ROLES_CONSTANTS.USER), orderController.addOrder);
+// router.post('/webhook', checkCurrentUser, auth(ROLES_CONSTANTS.USER), orderController.);
 
 router.get(
     '/restaurant/:restaurantId',
@@ -16,17 +17,18 @@ router.get(
     orderController.getRestaurantOrders,
 );
 
+router.patch(
+    '/restaurant/:orderId',
+    checkCurrentUser,
+    auth(ROLES_CONSTANTS.RESTAURANT),
+    orderController.updateOrderStatus,
+);
+
 // router.get(
 //     '/:orderId',
 //     checkCurrentUser,
 //     orderController.getOrder,
 // );
 
-router.patch(
-    '/:orderId',
-    checkCurrentUser,
-    auth(ROLES_CONSTANTS.RESTAURANT),
-    orderController.updateOrderStatus,
-);
 
 export { router as orderRoutes };

@@ -9,7 +9,7 @@ export interface IOrderDocument
         Omit<IOrder, 'userId' | 'restaurantId' | 'cartId' | 'addressId'> {
     userId: Schema.Types.ObjectId | IUserDocument;
     restaurantId: Schema.Types.ObjectId | IRestaurantDocument;
-    cartId: Schema.Types.ObjectId;
+    // cartId: Schema.Types.ObjectId;
     addressId: Schema.Types.ObjectId;
 }
 
@@ -26,11 +26,6 @@ const orderSchema = new Schema<IOrderDocument>(
             ref: 'Restaurant',
             required: true,
             index: true,
-        },
-        cartId: {
-            type: Schema.Types.ObjectId,
-            ref: 'Cart',
-            required: true,
         },
         addressId: {
             type: Schema.Types.ObjectId,

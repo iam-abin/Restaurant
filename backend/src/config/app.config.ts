@@ -15,6 +15,12 @@ export interface IAppConfig {
     CLOUDINARY_CLOUD_NAME: string;
     CLOUDINARY_API_KEY: string;
     CLOUDINARY_API_SECRET: string;
+
+    STRIPE_SECRET_KEY: string;
+    STRIPE_PUBLISHABLE_KEY: string;
+
+    PAYMENT_SUCCESS_URL: string;
+    PAYMENT_CANCEL_URL: string;
 }
 
 const appConfig: Readonly<IAppConfig> = Object.freeze({
@@ -34,6 +40,12 @@ const appConfig: Readonly<IAppConfig> = Object.freeze({
     CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME!,
     CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY!,
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET!,
+
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY!,
+    STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY!,
+
+    PAYMENT_SUCCESS_URL: `${process.env.FRONTEND_URL}/order/status`,
+    PAYMENT_CANCEL_URL: `${process.env.FRONTEND_URL}/cart`,
 });
 
 export { appConfig };

@@ -36,7 +36,7 @@ class RestaurantController {
         const searchText: string = req.params.searchText || ''; // From home page search bar
         const searchQuery: string = (req.query.searchQuery as string) || ''; // From search page search bar
         const selectedCuisines: string = (req.query.selectedCuisines as string) || ''; // From filter area
-        const restaurant: any[] | [] = await restaurantService.searchRestaurant(
+        const restaurant: any[] = await restaurantService.searchRestaurant(
             searchText,
             searchQuery,
             selectedCuisines,

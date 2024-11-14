@@ -5,6 +5,7 @@ import { IUserDocument } from './user.model';
 import { IAddressDocument } from './address.model';
 
 export interface IRestaurantDocument extends Document, Omit<IRestaurant, 'ownerId' | 'addressId'> {
+    _id: Schema.Types.ObjectId;
     ownerId: Schema.Types.ObjectId | IUserDocument;
     addressId: Schema.Types.ObjectId | IAddressDocument;
     isBlocked: boolean;

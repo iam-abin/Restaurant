@@ -16,6 +16,12 @@ router.post(
 router.get('/:restaurantId', checkCurrentUser, menuController.getMenus);
 router.get('/:menuId', checkCurrentUser, menuController.getMenu);
 
-router.patch('/:menuId', checkCurrentUser, auth(ROLES_CONSTANTS.RESTAURANT), multerUpload.single('image'), menuController.editMenu);
+router.patch(
+    '/:menuId',
+    checkCurrentUser,
+    auth(ROLES_CONSTANTS.RESTAURANT),
+    multerUpload.single('image'),
+    menuController.editMenu,
+);
 
 export { router as menuRoutes };

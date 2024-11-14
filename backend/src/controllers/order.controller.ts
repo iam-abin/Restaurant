@@ -7,10 +7,25 @@ import { IOrder } from '../types';
 
 const orderService = container.resolve(OrderService);
 
+type CheckoutSessionRequest = {
+    cartItems: { menuId: string }[];
+    deliveryDetails: {
+        name: string;
+        email: string;
+        address: string;
+        city: string;
+    };
+    restaurantId: string;
+};
+
 class OrderController {
     public async addOrder(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
-        const order: IOrderDocument | null = await orderService.createOrder(userId, req.body as IOrder);
+        const checkoutSessionData = req.body;
+        const order: IOrderDocument | null = await orderService.createOrder(
+            userId,
+            checkoutSessionData as IOrder,
+        );
         res.status(200).json(createSuccessResponse('Order created successfully', order));
     }
 
@@ -18,13 +33,13 @@ class OrderController {
         const { userId } = req.currentUser!;
         const { restaurantId } = req.params;
 
-        const orders: IOrderDocument[] | [] = await orderService.getOrders(restaurantId, userId);
+        const orders: IOrderDocument[] = await orderService.getOrders(restaurantId, userId);
         res.status(200).json(createSuccessResponse('Restaurant orders fetched successfully', orders));
     }
 
     public async getMyOrders(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
-        const orders: IOrderDocument[] | [] = await orderService.getMyOrders(userId);
+        const orders: IOrderDocument[] = await orderService.getMyOrders(userId);
         res.status(200).json(createSuccessResponse('Your orders fetched successfully', orders));
     }
 

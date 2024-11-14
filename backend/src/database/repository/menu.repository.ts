@@ -12,8 +12,8 @@ export class MenuRepository {
         return menu;
     }
 
-    async findMenus(restaurantId: string): Promise<IMenuDocument[] | []> {
-        const menu: IMenuDocument[] | [] = await MenuModel.find({ restaurantId });
+    async findMenus(restaurantId: string): Promise<IMenuDocument[]> {
+        const menu: IMenuDocument[] = await MenuModel.find({ restaurantId });
         return menu;
     }
 

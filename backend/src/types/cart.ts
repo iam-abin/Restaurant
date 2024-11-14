@@ -1,4 +1,5 @@
 export interface ICart {
     userId: string;
-    menuId: string;
+    menuItemId: string;
+    count: number;
 }
