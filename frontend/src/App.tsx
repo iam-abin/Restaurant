@@ -84,11 +84,10 @@ const appRouter = createBrowserRouter([
     },
 ]);
 
-export default function ButtonUsage() {
+export default function App()  {
     return (
-  
-            <main>
+        <ThemeProvider theme={darkTheme}>
                 <RouterProvider router={appRouter}></RouterProvider>
-            </main>
+                </ThemeProvider>
     );
 }
