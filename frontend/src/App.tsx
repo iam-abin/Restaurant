@@ -28,43 +28,42 @@ const appRouter = createBrowserRouter([
         children: [
             {
                 path: "/",
-                element: <Landing />
+                element: <Landing />,
             },
             {
                 path: "/profile",
-                element: <Profile />
+                element: <Profile />,
             },
             {
                 path: "/search/:searchKey",
-                element: <SearchResult />
+                element: <SearchResult />,
             },
             {
                 path: "/restaurant/:restaurantId",
-                element: <RestaurantDetails />
+                element: <RestaurantDetails />,
             },
             {
                 path: "/cart",
-                element: <Cart />
+                element: <Cart />,
             },
             {
                 path: "/success",
-                element: <Success />
+                element: <Success />,
             },
             // Admin routes
             {
                 path: "/admin/restaurant",
-                element: <Restaurant />
+                element: <Restaurant />,
             },
             {
                 path: "/admin/menu",
-                element: <Menu />
-            }
-            ,
+                element: <Menu />,
+            },
             {
                 path: "/admin/orders",
-                element: <Orders />
-            }
-        ]
+                element: <Orders />,
+            },
+        ],
     },
     {
         path: "/auth",
@@ -84,10 +83,12 @@ const appRouter = createBrowserRouter([
     },
 ]);
 
-export default function App()  {
+export default function App() {
     return (
-        <ThemeProvider theme={darkTheme}>
+        <main>
+            {/* <ThemeProvider theme={darkTheme}> */}
                 <RouterProvider router={appRouter}></RouterProvider>
-                </ThemeProvider>
+            {/* </ThemeProvider> */}
+        </main>
     );
 }

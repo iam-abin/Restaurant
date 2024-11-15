@@ -7,6 +7,10 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import LoaderCircle from "../components/Loader/LoaderCircle";
 import { signInSchema, signUpSchema } from "../utils/schema/userSchema";
 import { Link } from "react-router-dom";
+import { ROLES_CONSTANTS } from "../utils/constants";
+import { useAppDispatch } from "../redux/hooks";
+import { signinUser } from "../redux/thunk/authThunk";
+// import { useAppSelector } from "../redux/hooks";
 
 interface IAuthentication {
     name?: string;
@@ -18,6 +22,8 @@ interface IAuthentication {
 const Auth = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const dispatch = useAppDispatch();
+    const role: string = ROLES_CONSTANTS.USER;
 
     const [input, setInput] = useState<Partial<IAuthentication>>({
         name: "",
@@ -37,12 +43,15 @@ const Auth = () => {
                 setErrors(fieldErrors as Partial<IAuthentication>);
                 return;
             }
+            setErrors({});
         } else {
             const result = signUpSchema.safeParse(input);
             if (!result.success) {
                 const fieldErrors = result.error.formErrors.fieldErrors;
                 setErrors(fieldErrors as Partial<IAuthentication>);
+                return;
             }
+            setErrors({});
         }
     };
 
@@ -50,16 +59,23 @@ const Auth = () => {
         setIsLogin((state) => !state);
     };
 
-    const handleSubmit = (e: FormEvent) => {
-        setIsLoading(true);
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        if (Object.keys(errors).length) {
-            console.log("errors", errors);
-            setIsLoading(false);
-            return;
-        }
+        console.log("input");
+        console.log(input);
+        console.log("input");
+        // console.log(errors);
+
+        // if (Object.keys(errors).length) {
+        //     console.log("errors", errors);
+        //     // setIsLoading(false);
+        //     return;
+        // }
         if (isLogin) {
             // Form validation
+
+            console.log("isLogin ", isLogin);
+
             const result = signInSchema.safeParse(input);
             if (!result.success) {
                 const fieldErrors = result.error.formErrors.fieldErrors;
@@ -67,6 +83,13 @@ const Auth = () => {
                 return;
             }
             // login api call
+            // Dispatch signup action
+            console.log("dispatch");
+            
+            console.log("dispatch");
+
+            const resultAction = await dispatch(signinUser(input));
+            console.log(resultAction);
         } else {
             // Form validation
             const result = signUpSchema.safeParse(input);
@@ -187,7 +210,10 @@ const Auth = () => {
                     )}
                 </Button>
                 <div className="flex justify-end mt-2">
-                    <Link className="text-sm hover:text-blue-700" to="/forgot-password">
+                    <Link
+                        className="text-sm hover:text-blue-700"
+                        to="/forgot-password"
+                    >
                         Forgot Password
                     </Link>
                 </div>
