@@ -4,41 +4,65 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { emailSchema } from "../utils/schema/userSchema";
 import LoaderCircle from "../components/Loader/LoaderCircle";
 import { Link, useNavigate } from "react-router-dom";
+import { forgotPasswordApi } from "../api/apiMethods/auth";
+import { IResponse } from "../types/api";
+import { hotToastMessage } from "../utils/hotToast";
 
-interface IForgotPassword {
+export interface IForgotPasswordEmail {
     email: string;
 }
 
 const ForgotPassword = () => {
-    const navigate = useNavigate();
     const [email, setEmail] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [errors, setErrors] = useState<Partial<IForgotPassword>>({});
+    const [errors, setErrors] = useState<Partial<IForgotPasswordEmail>>({});
 
     const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
         const result = emailSchema.safeParse(email);
         if (!result.success) {
             const fieldErrors = result.error.formErrors.fieldErrors;
-            setErrors(fieldErrors as Partial<IForgotPassword>);
+            setErrors(fieldErrors as Partial<IForgotPasswordEmail>);
             return;
         }
     };
 
-    const handleSubmit = (e: FormEvent) => {
-        setIsLoading(true);
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        
+        setErrors({});
+        
         if (Object.keys(errors).length) {
             console.log("errors", errors);
-            setIsLoading(false);
             return;
         }
-        setIsLoading(false);
-        navigate("/otp");
+        // Form validation
+        const result = emailSchema.safeParse({email});
+        
+        if (!result.success) {
+            console.log('result submit', result);
+            console.log('email submit', email);
+            const fieldErrors = result.error.formErrors.fieldErrors;
+            setErrors(fieldErrors as Partial<IForgotPasswordEmail>);
+            return;
+        }
+        try {
+            setIsLoading(true);
+            const response: IResponse = await forgotPasswordApi({email});
+            if (response.data) {
+                hotToastMessage(response.message, "success");
+                setEmail('')
+            }
+        } finally {
+            setIsLoading(false);
+        }
     };
     return (
         <div className="flex items-center justify-center min-h-screen w-full">
-            <form onSubmit={handleSubmit} className="flex flex-col  w-10/12  md:w-2/6 ">
+            <form
+                onSubmit={handleSubmit}
+                className="flex flex-col  w-10/12  md:w-2/6 "
+            >
                 <div className="text-center">
                     <h1 className="font-extrabold text-2xl mb-2">
                         Forgot Password

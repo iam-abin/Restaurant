@@ -1,33 +1,17 @@
 import { body } from 'express-validator';
-import { ROLES_CONSTANTS } from '../constants';
-
 export const forgotPasswordRequestBodyValidator = [
     body('email').isEmail().withMessage('Email must be valid').toLowerCase().trim().escape(),
-    body('role')
-        .notEmpty()
-        .withMessage('Role is required')
-        .isIn([ROLES_CONSTANTS.ADMIN, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.USER])
-        .withMessage(
-            `Role must be one of ${ROLES_CONSTANTS.ADMIN}, ${ROLES_CONSTANTS.RESTAURANT}, or ${ROLES_CONSTANTS.USER}`,
-        )
-        .trim()
-        .escape(),
 ];
 
 export const resetPasswordRequestBodyValidator = [
-    body('email').isEmail().withMessage('Email must be valid').toLowerCase().trim().escape(),
-    body('role')
-        .notEmpty()
-        .withMessage('Role is required')
-        .isIn([ROLES_CONSTANTS.ADMIN, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.USER])
-        .withMessage(
-            `Role must be one of ${ROLES_CONSTANTS.ADMIN}, ${ROLES_CONSTANTS.RESTAURANT}, or ${ROLES_CONSTANTS.USER}`,
-        )
-        .trim()
-        .escape(),
+    body('userId').isMongoId().withMessage('Invalid ID format').trim().escape(),
     body('password')
         .trim()
         .isLength({ min: 4, max: 20 })
         .withMessage('Password must be between 4 and 20 characters')
         .escape(), // used to sanitize input by escaping characters that could be used in cross-site scripting (XSS) attacks or other injection vulnerabilities.
+];
+
+export const verifyTokenRequestBodyValidator = [
+    body('resetToken').trim().isLength({ min: 80, max: 80 }).withMessage('invalid reset token').escape(), // used to sanitize input by escaping characters that could be used in cross-site scripting (XSS) attacks or other injection vulnerabilities.
 ];

@@ -12,15 +12,8 @@ import { useAppDispatch } from "../redux/hooks";
 import { signinUser } from "../redux/thunk/authThunk";
 import { hotToastMessage } from "../utils/hotToast";
 import { signupApi } from "../api/apiMethods/auth";
-// import { useAppSelector } from "../redux/hooks";
+import { ISignup } from "../types";
 
-interface IAuthentication {
-    name?: string;
-    email: string;
-    phone?: string;
-    password: string;
-    role: string;
-}
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -29,14 +22,14 @@ const Auth = () => {
     const naivgate = useNavigate();
     const role: string = ROLES_CONSTANTS.USER;
 
-    const [input, setInput] = useState<Partial<IAuthentication>>({
+    const [input, setInput] = useState<ISignup>({
         name: "",
         email: "",
         phone: "",
         password: "",
         role,
     });
-    const [errors, setErrors] = useState<Partial<IAuthentication>>({});
+    const [errors, setErrors] = useState<Partial<ISignup>>({});
 
     const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -70,7 +63,7 @@ const Auth = () => {
 
             if (!result.success) {
                 const fieldErrors = result.error.formErrors.fieldErrors;
-                setErrors(fieldErrors as Partial<IAuthentication>);
+                setErrors(fieldErrors as Partial<ISignup>);
                 return;
             }
             if (isLogin) {
@@ -208,7 +201,7 @@ const Auth = () => {
                 <div className="flex justify-end mt-2">
                     <Link
                         className="text-sm hover:text-blue-700"
-                        to="/forgot-password"
+                        to="/forgot-password/email"
                     >
                         Forgot Password
                     </Link>

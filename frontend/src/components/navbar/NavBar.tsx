@@ -20,24 +20,34 @@ export interface IMenuItems2 {
     to: string;
 }
 
-const NavBar = ({currentUser}:{currentUser: any}) => {
+const NavBar = ({
+    currentUser,
+    handleLogout,
+}: {
+    currentUser: any;
+    handleLogout: () => void;
+}) => {
     const admin = true;
+    const isAdmin = currentUser && currentUser.role === ROLES_CONSTANTS.ADMIN
+    const isRestaurant = currentUser && currentUser.role === ROLES_CONSTANTS.RESTAURANT
+    const isUser = currentUser && currentUser.role === ROLES_CONSTANTS.USER
 
-    const menuItemsAdmin: (IMenuItems | boolean)[] = [
-        (currentUser.role === ROLES_CONSTANTS.ADMIN) && { to: "/admin/restaurant", value: "Restaurant" },
-        (currentUser.role === ROLES_CONSTANTS.ADMIN) && { to: "/admin/menu", value: "Menu" },
-        (currentUser.role === ROLES_CONSTANTS.ADMIN) && { to: "/admin/orders", value: "Order" },
-    ];
+       const menuItemsAdmin: (IMenuItems | boolean)[] = [
+        isAdmin && { to: "/admin/restaurant", value: "Restaurant" },
+        isAdmin && { to: "/admin/menu", value: "Menu" },
+        isAdmin && { to: "/admin/orders", value: "Order" },
+    ].filter(Boolean); // Ensures no false or undefined values
+
 
     const menuItems: (Partial<IMenuItems2> | boolean)[] = [
-        (currentUser.role === ROLES_CONSTANTS.USER || currentUser.role === ROLES_CONSTANTS.RESTAURANT)&&{
+        currentUser && (isUser || isRestaurant)&&{
             name: "profile",
             icon: <Avatar src="/broken-image.jpg" />,
             to: "/profile",
         },
-        (currentUser.role === ROLES_CONSTANTS.USER)&&{ name: "order", icon: <FlatwareIcon />, to: "/order/status" },
-        (currentUser.role === ROLES_CONSTANTS.USER)&&{ name: "cart", icon: <ShoppingCartIcon />, to: "/cart" },
-        (currentUser.role === ROLES_CONSTANTS.USER)&&{ name: "menu", icon: <MenuBookIcon />, to: "/menu" },
+        (currentUser && isUser)&&{ name: "order", icon: <FlatwareIcon />, to: "/order/status" },
+        (currentUser && isUser)&&{ name: "cart", icon: <ShoppingCartIcon />, to: "/cart" },
+        (currentUser && isUser)&&{ name: "menu", icon: <MenuBookIcon />, to: "/menu" },
         { name: "logout", icon: <LogoutIcon /> },
     ];
     return (
@@ -59,7 +69,7 @@ const NavBar = ({currentUser}:{currentUser: any}) => {
                     </IconButton>
 
                     <Avatar src="/broken-image.jpg" />
-                    <LogoutIcon />
+                    <LogoutIcon onClick={handleLogout} style={{ cursor: "pointer" }} />
                 </div>
                 {admin && <FadeMenu menuItems={menuItemsAdmin} />}
                 {/* Mobile responsiveness */}

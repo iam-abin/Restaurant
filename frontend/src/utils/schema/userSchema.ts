@@ -19,3 +19,17 @@ export const signInSchema = z.object({
 export const emailSchema = z.object({
     email: z.string().email("invalid email address"),
 });
+
+export const resetPasswordSchema = z
+    .object({
+        password: z
+            .string()
+            .min(4, "Password must be at least 4 characters long"),
+        confirmPassword: z
+            .string()
+            .min(4, "Password must be at least 4 characters long"),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: "Passwords must match",
+        path: ["confirmPassword"], // Specify which field to highlight on error
+    });

@@ -30,14 +30,14 @@ app.use(helmet());
 app.use(
     cors({
         origin: 'http://localhost:5173',
-        credentials: true
+        credentials: true,
     }),
 );
 app.use(compression());
 app.use(cookieParser());
 if (!isProductionENV) app.use(morgan('dev'));
 
-app.use(rateLimiter);
+// app.use(rateLimiter);
 // Routes
 app.use(`${appConfig.API_PREFIX}/auth`, authRoutes);
 app.use(`${appConfig.API_PREFIX}/menu`, menuRoutes);

@@ -1,7 +1,7 @@
 import { autoInjectable } from 'tsyringe';
 import mongoose from 'mongoose';
 
-import { IAddress, IOrder } from '../types';
+import { IOrder } from '../types';
 import {
     OrderRepository,
     RestaurantRepository,
@@ -9,7 +9,7 @@ import {
     CartRepository,
     AddressRepository,
 } from '../database/repository';
-import { IAddressDocument, ICartDocument, IMenuDocument, IOrderDocument } from '../database/model';
+import { ICartDocument, IMenuDocument, IOrderDocument } from '../database/model';
 import { ForbiddenError, NotFoundError } from '../errors';
 import { stripeInstance } from '../config/stripe';
 import { appConfig } from '../config/app.config';
@@ -64,14 +64,16 @@ export class OrderService {
                 mode: 'payment',
                 success_url: appConfig.PAYMENT_SUCCESS_URL,
                 cancel_url: appConfig.PAYMENT_CANCEL_URL,
-                metadata:{
+                metadata: {
                     orderId: order.id.toString(),
-                    images: JSON.stringify(cartItems.map((item)=>(item.menuItemId as IMenuDocument).imageUrl))
-                }
+                    images: JSON.stringify(
+                        cartItems.map((item) => (item.menuItemId as IMenuDocument).imageUrl),
+                    ),
+                },
             });
-            
-            if(!checkoutSession.url){
-                throw new Error("Error while creating checkout session")
+
+            if (!checkoutSession.url) {
+                throw new Error('Error while creating checkout session');
             }
 
             // Delete cart items in bulk
@@ -96,7 +98,7 @@ export class OrderService {
         }
     }
 
-    private createLineItems( cartItems: ICartDocument[]) {
+    private createLineItems(cartItems: ICartDocument[]) {
         // create line items (line items will display in the stripe payment interface as list)
         const lineItems = cartItems.map((cartItem: ICartDocument) => {
             const menuItem = cartItem.menuItemId as IMenuDocument;

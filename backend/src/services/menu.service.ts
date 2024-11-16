@@ -55,7 +55,6 @@ export class MenuService {
             menu.restaurantId.toString(),
         );
         if (!restaurant) throw new NotFoundError('Restaurant not found');
-        console.log(restaurant);
 
         if ('id' in restaurant.ownerId && userId !== restaurant.ownerId.id.toString())
             throw new ForbiddenError('You cannot modify others restaurant menu');

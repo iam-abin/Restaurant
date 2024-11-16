@@ -71,15 +71,19 @@ const appRouter = createBrowserRouter([
         element: <Auth />,
     },
     {
-        path: "/forgot-password",
+        path: "/forgot-password/email",
         element: <ForgotPassword />,
     },
     {
-        path: "/reset-password",
+        path: "/reset-password/:uniqueId",
         element: <ResetPassword />,
     },
     {
-        path: "/otp",
+        path: "/otp/forgot-password",
+        element: <Otp />,
+    },
+    {
+        path: "/otp/signup",
         element: <Otp />,
     },
 ]);

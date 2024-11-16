@@ -11,7 +11,11 @@ const Otp = () => {
     const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const location = useLocation();
-    const userId: string = location.state?.userId
+    const userId: string = location.state?.userId;
+
+    const isSignupOtpPage = location.pathname == '/otp/signup'
+    const isForgotPasswordOtpPage = location.pathname ==  '/otp/forgot-password'
+    
 
     const handleChange = (index: number, value: string) => {
         if (/^[a-zA-Z0-9]$/.test(value) || value === "") {
@@ -35,27 +39,30 @@ const Otp = () => {
         }
     };
 
-    const handleSubmit = async(e: FormEvent) => {
-       try {
-        setIsLoading(true);
-        e.preventDefault();
-        if(otp.length<6 || otp.length>6){
-            return
-        }
-        // if (Object.keys(errors).length) {
-        //     console.log("errors", errors);
-        //     setIsLoading(false);
-        //     return;
-        // }
+    const handleSubmit = async (e: FormEvent) => {
+        try {
+            setIsLoading(true);
+            e.preventDefault();
+            if (otp.length < 6 || otp.length > 6) {
+                return;
+            }
 
-        const otpString = otp.join('')
-        const response = await verifyOtpApi({ userId, otp: otpString})
-        hotToastMessage(response.message, 'success')
-        navigate("/auth");
-    } finally {
-           setIsLoading(false);
-        
-       }
+            const otpString = otp.join("");
+            const response = await verifyOtpApi({ userId, otp: otpString });
+            if (response.data) {
+                hotToastMessage(response.message, "success");
+                if(isSignupOtpPage){
+                    navigate("/auth");
+                }
+    
+                if(isForgotPasswordOtpPage){
+                    navigate("/reset-password", {state: {userId}});
+                }
+            }
+
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

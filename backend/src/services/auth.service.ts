@@ -9,9 +9,9 @@ import {
     IJwtPayload,
     sendEmail,
 } from '../utils';
-import { OtpRepository, UserRepository } from '../database/repository';
+import { OtpTokenRepository, UserRepository } from '../database/repository';
 import mongoose from 'mongoose';
-import { IOtpDocument, IUserDocument } from '../database/model';
+import { IOtpTokenDocument, IUserDocument } from '../database/model';
 import { IEmailTemplate, ISignin, ISignup } from '../types';
 import { getEmailVerificationTemplate } from '../templates/signupVerificationEmail';
 
@@ -19,7 +19,7 @@ import { getEmailVerificationTemplate } from '../templates/signupVerificationEma
 export class UserService {
     constructor(
         private readonly userRepository: UserRepository,
-        private readonly otpRepository: OtpRepository,
+        private readonly otpTokenRepository: OtpTokenRepository,
     ) {}
 
     public async signUp(userRegisterDto: ISignup): Promise<IUserDocument | null> {
@@ -32,7 +32,7 @@ export class UserService {
             // If the user already exists but is not verified
             if (existingUser && !existingUser.isVerified) {
                 // Check if an OTP already exists and hasn't expired (optional, based on use case)
-                const existingOtp: IOtpDocument | null = await this.otpRepository.findByUserId(
+                const existingOtp: IOtpTokenDocument | null = await this.otpTokenRepository.findByUserId(
                     existingUser.id,
                 );
                 if (existingOtp) {
@@ -45,7 +45,7 @@ export class UserService {
                 }
 
                 const otp: string = generateOtp();
-                await this.otpRepository.createOtp({ userId: existingUser.id, otp }, session);
+                await this.otpTokenRepository.create({ userId: existingUser.id, otp }, session);
 
                 // Update if user enter new name or password
                 const updatedUser: IUserDocument | null = await this.userRepository.updateUser(
@@ -68,7 +68,7 @@ export class UserService {
             // Create a new user and generate OTP and send confirmation email
             const user: IUserDocument = await this.userRepository.createUser(userRegisterDto, session);
             const otp: string = generateOtp();
-            await this.otpRepository.createOtp({ userId: user.id, otp }, session);
+            await this.otpTokenRepository.create({ userId: user.id, otp }, session);
             const emailTemplate: IEmailTemplate = getEmailVerificationTemplate(otp);
             await sendEmail(email, emailTemplate);
 
@@ -86,8 +86,7 @@ export class UserService {
 
     public async signIn(userSignInDto: ISignin): Promise<{ user: IUserDocument; accessToken: string }> {
         const { email, password } = userSignInDto;
-        console.log(userSignInDto);
-        
+
         // Check if the user exists
         const existingUser: IUserDocument | null = await this.userRepository.findByEmail(email);
         if (!existingUser) throw new BadRequestError('Invalid email or password');

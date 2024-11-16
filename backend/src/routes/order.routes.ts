@@ -30,5 +30,4 @@ router.patch(
 //     orderController.getOrder,
 // );
 
-
 export { router as orderRoutes };

@@ -6,17 +6,25 @@ import Fade from "@mui/material/Fade";
 import { Link } from "react-router-dom";
 import { IMenuItems } from "../navbar/NavBar";
 
+
 const FadeMenu: React.FC<{ menuItems: (IMenuItems | boolean)[] }> = ({
     menuItems,
 }) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    // Type guard to filter valid IMenuItems
+    const isValidMenuItem = (item: any): item is IMenuItems =>
+        item && typeof item === "object" && "to" in item && "value" in item;
+
+    const validMenuItems = menuItems.filter(isValidMenuItem);
 
     return (
         <div>
@@ -39,11 +47,9 @@ const FadeMenu: React.FC<{ menuItems: (IMenuItems | boolean)[] }> = ({
                 onClose={handleClose}
                 TransitionComponent={Fade}
             >
-                {menuItems.map((item: any) => (
-                    <Link to={item.to}>
-                        <MenuItem key={item.value} onClick={handleClose}>
-                            {item.value}
-                        </MenuItem>
+                {validMenuItems.map((item) => (
+                    <Link key={item.to} to={item.to}>
+                        <MenuItem onClick={handleClose}>{item.value}</MenuItem>
                     </Link>
                 ))}
             </Menu>

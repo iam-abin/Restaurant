@@ -1,14 +1,15 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { IOtp } from '../../types';
+import { IOtpToken } from '../../types';
 import { omitDocFields } from '../../utils';
 
-// Use Omit to exclude 'string type' userId from IOtp and redefine it in IOtpDocument
-export interface IOtpDocument extends Document, Omit<IOtp, 'userId'> {
+// Use Omit to exclude 'string type' userId from IOtpToken and redefine it in IOtpTokenDocument
+export interface IOtpTokenDocument extends Document, Omit<IOtpToken, 'userId'> {
     userId: Schema.Types.ObjectId;
     createdAt: Date;
 }
 
-const otpSchema = new Schema<IOtpDocument>(
+// Here can also store token
+const otpTokenSchema = new Schema<IOtpTokenDocument>(
     {
         userId: {
             type: Schema.Types.ObjectId,
@@ -18,9 +19,13 @@ const otpSchema = new Schema<IOtpDocument>(
         },
         otp: {
             type: String,
-            required: true,
             minlength: 6,
             maxlength: 6,
+        },
+        resetToken: {
+            type: String,
+            minlength: 80,
+            maxlength: 80,
         },
         createdAt: {
             type: Date,
@@ -36,4 +41,4 @@ const otpSchema = new Schema<IOtpDocument>(
     },
 );
 
-export const OtpModel = mongoose.model<IOtpDocument>('Otp', otpSchema);
+export const OtpTokenModel = mongoose.model<IOtpTokenDocument>('OtpToken', otpTokenSchema);

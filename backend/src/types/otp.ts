@@ -1,6 +1,7 @@
-export interface IOtp {
+export interface IOtpToken {
     userId: string;
-    otp: string;
+    otp?: string;
+    resetToken?: string;
 }
 
 export interface IEmailTemplate {

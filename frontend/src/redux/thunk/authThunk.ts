@@ -24,7 +24,9 @@ export const logoutUser = createAsyncThunk(
     "auth/userLogout",
     async (_, { rejectWithValue }) => { // Use an underscore to indicate no payload
         try {
-            return await logoutApi();
+            const result: IResponse = await logoutApi();
+            hotToastMessage(result.message, "success")   
+            return result
         } catch (error) {
             
             return rejectWithValue("Failed to log out");

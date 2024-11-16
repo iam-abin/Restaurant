@@ -4,7 +4,7 @@ import { IUserDocument } from '../database/model';
 
 import { createSuccessResponse, JWT_KEYS_CONSTANTS } from '../utils';
 import { OtpService, UserService } from '../services';
-import { IOtp, ISignin, ISignup } from '../types';
+import { IOtpToken, ISignin, ISignup } from '../types';
 
 const userService = container.resolve(UserService);
 const otpService = container.resolve(OtpService);
@@ -24,8 +24,8 @@ class AuthController {
     }
 
     public async verifyOtp(req: Request, res: Response): Promise<void> {
-        const { userId, otp } = req.body as IOtp;
-        const user: IUserDocument | null = await otpService.verify(userId, otp);
+        const { userId, otp } = req.body as IOtpToken;
+        const user: IUserDocument | null = await otpService.verifyOtp(userId, otp!);
         res.status(200).json(createSuccessResponse('Otp verified successfully, Pleast login', user));
     }
 
@@ -45,9 +45,18 @@ class AuthController {
         );
     }
 
+    public async verifyResetToken(req: Request, res: Response): Promise<void> {
+        const { resetToken } = req.body;
+
+        const user: IUserDocument | null = await otpService.verifyResetToken(resetToken as string);
+        res.status(200).json(
+            createSuccessResponse('Reset Token verified successfully, Pleast Reset your password', user),
+        );
+    }
+
     public async resetPassword(req: Request, res: Response): Promise<void> {
-        const { email, password, resetToken } = req.body;
-        const user: IUserDocument | null = await otpService.resetPassword(email, password, resetToken);
+        const { userId, password } = req.body;
+        const user: IUserDocument | null = await otpService.resetPassword(userId, password);
         res.status(200).json(createSuccessResponse(`Password reseted successfully`, user));
     }
 
