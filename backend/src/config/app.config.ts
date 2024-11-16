@@ -1,4 +1,4 @@
-interface IAppConfig {
+export interface IAppConfig {
     PORT: number;
     DB_NAME: string;
     MONGO_URI: string;
@@ -7,12 +7,20 @@ interface IAppConfig {
     JWT_SECRET: string;
     JWT_EXPIRY_TIME: string;
 
+    FRONTEND_URL: string;
+
     EMAIL_USER: string;
     EMAIL_PASSWORD: string;
 
     CLOUDINARY_CLOUD_NAME: string;
     CLOUDINARY_API_KEY: string;
     CLOUDINARY_API_SECRET: string;
+
+    STRIPE_SECRET_KEY: string;
+    STRIPE_PUBLISHABLE_KEY: string;
+
+    PAYMENT_SUCCESS_URL: string;
+    PAYMENT_CANCEL_URL: string;
 }
 
 const appConfig: Readonly<IAppConfig> = Object.freeze({
@@ -24,12 +32,20 @@ const appConfig: Readonly<IAppConfig> = Object.freeze({
     JWT_SECRET: process.env.JWT_SECRET!,
     JWT_EXPIRY_TIME: '1h',
 
+    FRONTEND_URL: process.env.FRONTEND_URL!,
+
     EMAIL_USER: process.env.EMAIL_USER!,
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD!,
 
     CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME!,
     CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY!,
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET!,
+
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY!,
+    STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY!,
+
+    PAYMENT_SUCCESS_URL: `${process.env.FRONTEND_URL}/order/status`,
+    PAYMENT_CANCEL_URL: `${process.env.FRONTEND_URL}/cart`,
 });
 
 export { appConfig };

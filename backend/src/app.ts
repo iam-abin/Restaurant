@@ -5,12 +5,15 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import compression from 'compression';
 
 import { NotFoundError } from './errors';
 import { errorHandler, rateLimiter } from './middlewares';
-import { userRoute } from './routes/user.route';
-import { restaurantRoute } from './routes/restaurant.route';
-import { menuRoute } from './routes/menu.route';
+import { authRoutes } from './routes/auth.routes';
+import { menuRoutes } from './routes/menu.routes';
+import { orderRoutes } from './routes/order.routes';
+import { profileRoutes } from './routes/profile.routes';
+import { restaurantRoutes } from './routes/restaurant.routes';
 import { appConfig } from './config/app.config';
 
 const app: Application = express();
@@ -21,22 +24,26 @@ const isProductionENV: boolean = appConfig.NODE_ENVIRONMENT === 'production';
 // app.set('trust proxy', true); // Trust all proxies
 
 // Middlewares
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(helmet());
 app.use(
     cors({
-        origin: '*',
+        origin: 'http://localhost:5173',
+        credentials: true,
     }),
 );
-if (!isProductionENV) app.use(morgan('dev'));
+app.use(compression());
 app.use(cookieParser());
+if (!isProductionENV) app.use(morgan('dev'));
 
-app.use(rateLimiter);
+// app.use(rateLimiter);
 // Routes
-app.use(`${appConfig.API_PREFIX}/auth`, userRoute);
-app.use(`${appConfig.API_PREFIX}/menu`, menuRoute);
-app.use(`${appConfig.API_PREFIX}/restaurant`, restaurantRoute);
+app.use(`${appConfig.API_PREFIX}/auth`, authRoutes);
+app.use(`${appConfig.API_PREFIX}/menu`, menuRoutes);
+app.use(`${appConfig.API_PREFIX}/order`, orderRoutes);
+app.use(`${appConfig.API_PREFIX}/profile`, profileRoutes);
+app.use(`${appConfig.API_PREFIX}/restaurant`, restaurantRoutes);
 
 app.all('*', (req: Request, res: Response): never => {
     throw new NotFoundError();

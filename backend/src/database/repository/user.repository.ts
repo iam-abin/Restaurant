@@ -1,6 +1,6 @@
 import { ClientSession } from 'mongoose';
 import { IUserDocument, UserModel } from '../model';
-import { ISignup } from '../../types/user';
+import { ISignup } from '../../types';
 
 export class UserRepository {
     async createUser(userData: ISignup, session?: ClientSession): Promise<IUserDocument> {

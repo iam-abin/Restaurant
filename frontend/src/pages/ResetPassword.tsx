@@ -1,41 +1,84 @@
-import { Button, Input } from "@mui/material";
+import { Button, Input, Typography } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
-import { ChangeEvent, FormEvent, useState } from "react";
-import { emailSchema } from "../utils/schema/userSchema";
-import LoaderCircle from "../components/LoaderCircle";
-import { Link, useNavigate } from "react-router-dom";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { resetPasswordSchema } from "../utils/schema/userSchema";
+import LoaderCircle from "../components/Loader/LoaderCircle";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { resetPasswordApi, verifyOtpApi, verifyResetTokenApi } from "../api/apiMethods/auth";
+import { IResetPassword, IUser } from "../types";
+import { IResponse } from "../types/api";
+import { hotToastMessage } from "../utils/hotToast";
 
-interface IForgotPassword {
-    password: string;
-}
+
 
 const ResetPassword = () => {
     const navigate = useNavigate();
-    const [password, setPassword] = useState<string>("");
+    const { uniqueId } = useParams();
+
+    const [password, setPassword] = useState<IResetPassword>({
+        password: "",
+        confirmPassword: "",
+    });
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [errors, setErrors] = useState<Partial<IForgotPassword>>({});
+    const [user, setUser] = useState<IUser | null>(null);
+    const [errors, setErrors] = useState<Partial<IResetPassword>>({});
 
+    useEffect(()=>{
+       (
+        async()=>{
+            const response:IResponse = await verifyResetTokenApi({resetToken: uniqueId!})
+            console.log(response);
+            
+            if(response.data){
+                setUser(response.data)
+            }
+           }
+       )()
+    },[])
+
+    // Handle input changes
     const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setPassword(e.target.value);
-        const result = emailSchema.safeParse(password);
-        if (!result.success) {
-            const fieldErrors = result.error.formErrors.fieldErrors;
-            setErrors(fieldErrors as Partial<IForgotPassword>);
-            return;
+        const { name, value } = e.target;
+
+        setPassword((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+
+        // Validate after updating the value
+        const validationResult = resetPasswordSchema.safeParse({
+            ...password,
+            [name]: value,
+        });
+
+        if (!validationResult.success) {
+            const fieldErrors = validationResult.error.formErrors.fieldErrors;
+            setErrors(fieldErrors as Partial<IResetPassword>);
+        } else {
+            setErrors({});
         }
     };
 
-    const handleSubmit = (e: FormEvent) => {
-        setIsLoading(true);
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        if (Object.keys(errors).length) {
-            console.log("errors", errors);
-            setIsLoading(false);
-            return;
+
+        if(!user){
+            hotToastMessage( "invalid token","error")
+            return
         }
-        setIsLoading(false);
-        navigate("/login");
+        setIsLoading(true);
+
+        try {
+            const response: IResponse = await resetPasswordApi({ userId: user.id!, password: password.password }); // Pass the uniqueId if required by the API
+            hotToastMessage( response.message,"success")
+            navigate("/auth");
+        } catch (error) {
+            console.error("Reset password error:", error);
+        } finally {
+            setIsLoading(false);
+        }
     };
+
     return (
         <div className="flex items-center justify-center min-h-screen w-full">
             <form onSubmit={handleSubmit} className="flex flex-col md:w-2/6">
@@ -44,36 +87,52 @@ const ResetPassword = () => {
                         Reset Password
                     </h1>
                     <p className="text-sm text-gray-600">
-                        Enter your new password to reset old one
+                        Enter your new password to reset the old one
                     </p>
                 </div>
-                    <div className="items-center relative">
-                        <LockIcon className="ml-2 mr-2 absolute inset-y-7 pointer-events-none" />
-                        <Input
-                            className="w-full p-1 pl-8  border border-black mt-5"
-                            type="password"
-                            name="password"
-                            value={password}
-                            onChange={changeEventHandler}
-                            placeholder="Enter your password"
-                            autoComplete="password"
-                        />
-                        {errors && (
-                            <span className="text-sm text-red-500">
-                                {errors.password}
-                            </span>
-                        )}
-                    </div>
+                <div className="items-center relative">
+                    <LockIcon className="ml-2 mr-2 absolute inset-y-7 pointer-events-none" />
+                    <Input
+                        className="w-full p-1 pl-8 border border-black mt-5"
+                        type="password"
+                        name="password"
+                        value={password.password}
+                        onChange={changeEventHandler}
+                        placeholder="Enter your password"
+                        autoComplete="new-password"
+                    />
+                    {errors.password && (
+                        <Typography className="text-sm text-red-500">
+                            {errors.password}
+                        </Typography>
+                    )}
+                </div>
+                <div className="items-center relative">
+                    <LockIcon className="ml-2 mr-2 absolute inset-y-7 pointer-events-none" />
+                    <Input
+                        className="w-full p-1 pl-8 border border-black mt-5"
+                        type="password"
+                        name="confirmPassword"
+                        value={password.confirmPassword}
+                        onChange={changeEventHandler}
+                        placeholder="Confirm your password"
+                        autoComplete="new-password"
+                    />
+                    {errors.confirmPassword && (
+                        <Typography className="text-sm text-red-500">
+                            {errors.confirmPassword}
+                        </Typography>
+                    )}
+                </div>
                 <Button
                     type="submit"
                     disabled={isLoading}
-                    // className="w-full mb-5"
                     sx={{
-                        width: '100%',
-                        mt: 2, 
-                        backgroundColor:  isLoading ? 'orange' : '#FF8C00',
-                        '&:hover': {
-                            backgroundColor: isLoading ? 'orange' : '#FF8C00',
+                        width: "100%",
+                        mt: 2,
+                        backgroundColor: isLoading ? "orange" : "#FF8C00",
+                        "&:hover": {
+                            backgroundColor: isLoading ? "orange" : "#FF8C00",
                         },
                     }}
                     variant="contained"
@@ -86,10 +145,15 @@ const ResetPassword = () => {
                         <>Reset</>
                     )}
                 </Button>
-
-                <span className="mt-5 text-center">Back to 
-                    <Link to="/auth" className="ml-1 text-blue-500 hover:text-blue-800">Login</Link>
-                </span>
+                <Typography className="mt-5 text-center">
+                    Back to{" "}
+                    <Link
+                        to="/auth"
+                        className="ml-1 text-blue-500 hover:text-blue-800"
+                    >
+                        Login
+                    </Link>
+                </Typography>
             </form>
         </div>
     );

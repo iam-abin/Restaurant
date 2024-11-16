@@ -1,7 +1,7 @@
 import MainLayout from "./layout/MainLayout";
 import Auth from "./pages/Auth";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider, createTheme, duration } from "@mui/material/styles";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Otp from "./pages/Otp";
@@ -10,6 +10,11 @@ import Profile from "./pages/Profile";
 import SearchResult from "./pages/SearchResult";
 import RestaurantDetails from "./pages/RestaurantDetails";
 import Cart from "./pages/Cart";
+import Restaurant from "./pages/admin/Restaurant";
+import Menu from "./pages/admin/Menu";
+import Orders from "./pages/admin/Orders";
+import Success from "./pages/Success";
+import { Toaster } from "react-hot-toast";
 
 const darkTheme = createTheme({
     palette: {
@@ -24,49 +29,80 @@ const appRouter = createBrowserRouter([
         children: [
             {
                 path: "/",
-                element: <Landing />
+                element: <Landing />,
             },
             {
                 path: "/profile",
-                element: <Profile />
+                element: <Profile />,
             },
             {
                 path: "/search/:searchKey",
-                element: <SearchResult />
+                element: <SearchResult />,
             },
             {
                 path: "/restaurant/:restaurantId",
-                element: <RestaurantDetails />
+                element: <RestaurantDetails />,
             },
             {
                 path: "/cart",
-                element: <Cart />
-            }
-        ]
+                element: <Cart />,
+            },
+            {
+                path: "/success",
+                element: <Success />,
+            },
+            // Admin routes
+            {
+                path: "/admin/restaurant",
+                element: <Restaurant />,
+            },
+            {
+                path: "/admin/menu",
+                element: <Menu />,
+            },
+            {
+                path: "/admin/orders",
+                element: <Orders />,
+            },
+        ],
     },
     {
         path: "/auth",
         element: <Auth />,
     },
     {
-        path: "/forgot-password",
+        path: "/forgot-password/email",
         element: <ForgotPassword />,
     },
     {
-        path: "/reset-password",
+        path: "/reset-password/:uniqueId",
         element: <ResetPassword />,
     },
     {
-        path: "/otp",
+        path: "/otp/forgot-password",
+        element: <Otp />,
+    },
+    {
+        path: "/otp/signup",
         element: <Otp />,
     },
 ]);
 
-export default function ButtonUsage() {
+export default function App() {
     return (
-  
-            <main>
-                <RouterProvider router={appRouter}></RouterProvider>
-            </main>
+        <main>
+            {/* <ThemeProvider theme={darkTheme}> */}
+            <Toaster
+                position="top-right"
+                toastOptions={{
+                    duration: 6000, // 6 seconds
+                    style: {
+                        marginTop: "80px", // Adjust the offset from the top
+                    },
+                }}
+            />
+            <RouterProvider router={appRouter}></RouterProvider>
+            {/* </ThemeProvider> */}
+        </main>
     );
 }

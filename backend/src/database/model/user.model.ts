@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { generateHashedPassword } from '../../utils';
-import { ISignup } from '../../types/user';
-import { ROLES } from '../../utils/constants';
+import { generateHashedPassword, omitDocFields } from '../../utils';
+import { ISignup } from '../../types';
+import { ROLES_CONSTANTS } from '../../utils';
 
 export interface IUserDocument extends Document, ISignup {
     isVerified: boolean;
@@ -29,10 +29,11 @@ const userSchema = new Schema<IUserDocument>(
         role: {
             type: String,
             required: true,
-            enum: [ROLES.ADMIN, ROLES.RESTAURANT, ROLES.USER],
+            enum: [ROLES_CONSTANTS.ADMIN, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.USER],
         },
         isVerified: {
             type: Boolean,
+            required: true,
             default: false,
         },
         isBlocked: {
@@ -44,10 +45,7 @@ const userSchema = new Schema<IUserDocument>(
     {
         timestamps: true,
         toJSON: {
-            transform(doc, ret) {
-                delete ret.__v;
-                delete ret.password;
-            },
+            transform: omitDocFields,
         },
     },
 );
@@ -67,6 +65,11 @@ userSchema.pre('save', async function (next) {
 // To hash password before saving the updated password to db
 userSchema.pre('findOneAndUpdate', async function (next) {
     const update = this.getUpdate() as Partial<ISignup>;
+    if (update?.email || update?.role) {
+        delete update.email;
+        delete update.role;
+    }
+
     if (!update.password) return next();
 
     try {

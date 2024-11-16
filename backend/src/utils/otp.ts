@@ -11,3 +11,13 @@ export const generateOtp = (): string => {
 
     return otp;
 };
+
+// Function to check weather the given time has passed before sending otp again if not expired
+export const checkOtpIntervalCompleted = (
+    createdTime: Date,
+    otpResendThreshold: number = 60 * 1000, // default 1 minute threshold
+): boolean => {
+    const timeSinceLastOtp: number = new Date().getTime() - createdTime.getTime();
+    const isCompeted: boolean = timeSinceLastOtp > otpResendThreshold;
+    return isCompeted;
+};

@@ -1,11 +1,11 @@
 import { ClientSession } from 'mongoose';
-import { IOtpDocument, OtpModel } from '../model';
-import { IOtp } from '../../types/otp';
+import { IOtpTokenDocument, OtpTokenModel } from '../model';
+import { IOtpToken } from '../../types';
 
-export class OtpRepository {
-    async createOtp(otpData: IOtp, session?: ClientSession): Promise<IOtpDocument> {
+export class OtpTokenRepository {
+    async create(otpData: IOtpToken, session?: ClientSession): Promise<IOtpTokenDocument> {
         // Here we are performing upsert
-        return await OtpModel.findOneAndUpdate(
+        return await OtpTokenModel.findOneAndUpdate(
             { userId: otpData.userId },
             { ...otpData, createdAt: new Date() }, // Updates `createdAt` to extend OTP validity by 10 minutes
             {
@@ -16,7 +16,15 @@ export class OtpRepository {
         );
     }
 
-    async findByUserId(userId: string): Promise<IOtpDocument | null> {
-        return await OtpModel.findOne({ userId });
+    async findByUserId(userId: string): Promise<IOtpTokenDocument | null> {
+        return await OtpTokenModel.findOne({ userId });
+    }
+
+    async findByResetToken(resetToken: string): Promise<IOtpTokenDocument | null> {
+        return await OtpTokenModel.findOne({ resetToken });
+    }
+
+    async delete(id: string): Promise<IOtpTokenDocument | null> {
+        return await OtpTokenModel.findByIdAndDelete(id, { returnDocument: 'before' });
     }
 }

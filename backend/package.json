@@ -16,6 +16,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
+    "compression": "^1.7.5",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
@@ -33,12 +34,14 @@
     "otp-generator": "^4.0.1",
     "reflect-metadata": "^0.2.2",
     "streamifier": "^0.1.1",
+    "stripe": "^17.3.1",
     "tsyringe": "^4.8.0",
     "winston": "^3.16.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",
     "@types/bcryptjs": "^2.4.6",
+    "@types/compression": "^1.7.5",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",

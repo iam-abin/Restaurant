@@ -3,7 +3,7 @@ import Filter from "../components/Filter";
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button, Chip } from "@mui/material";
-import RestaurantCard from "../components/RestaurantCard";
+import RestaurantCard from "../components/cards/RestaurantCard";
 import RestaurantCardSkeleton from "../components/shimmer/RestaurantCardSkeleton";
 import { NoResultFound } from "../components/NoResultFound";
 
@@ -13,7 +13,7 @@ const SearchResult = () => {
     console.log(params.searchKey);
 
     const handleDelete = () => {};
-    const searchResults = ["jf"];
+    const searchResults = [];
 
     return (
         <div className=" max-w-7xl mx-auto my-5">

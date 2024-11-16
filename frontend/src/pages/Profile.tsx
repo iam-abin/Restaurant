@@ -1,7 +1,7 @@
 import { Avatar, Box, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
-import LoaderCircle from "../components/LoaderCircle";
+import LoaderCircle from "../components/Loader/LoaderCircle";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmailIcon from "@mui/icons-material/Email";
 import FlagIcon from '@mui/icons-material/Flag';

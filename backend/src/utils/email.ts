@@ -1,13 +1,11 @@
 import nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
-import { getEmailVerificationTemplate } from '../templates/verificationEmail';
 import { appConfig } from '../config/app.config';
+import { IEmailTemplate } from '../types';
 
-const SUBJECT = 'RestaurantApp Confirmation';
-
-export const sendConfirmationEmail = async (
+export const sendEmail = async (
     toEmail: string,
-    otp: string,
+    template: IEmailTemplate,
 ): Promise<SMTPTransport.SentMessageInfo> => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -21,14 +19,11 @@ export const sendConfirmationEmail = async (
         connectionTimeout: 10000,
     });
 
-    const emailTemplate: { html: string; text: string } = getEmailVerificationTemplate(otp);
-
     const mailOptions = {
         from: `RestaurantApp ${appConfig.EMAIL_USER}`,
         to: toEmail,
-        subject: SUBJECT,
-        text: emailTemplate.text,
-        html: emailTemplate.html,
+        subject: template.emailSubject,
+        html: template.html,
     };
 
     const info = await transporter.sendMail(mailOptions);

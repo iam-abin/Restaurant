@@ -1,21 +1,26 @@
+import mongoose from 'mongoose';
 import { IOrder } from '../../types';
 import { IOrderDocument, OrderModel } from '../model';
 
 export class OrderRepository {
-    async createOrder(orderData: IOrder): Promise<IOrderDocument> {
-        const order: IOrderDocument = await OrderModel.create(orderData);
-        return order;
+    async create(orderData: IOrder, session?: mongoose.ClientSession): Promise<IOrderDocument> {
+        const order: IOrderDocument[] = await OrderModel.create([orderData], { session });
+        return order[0];
     }
 
-    async getMyOrders(userId: string): Promise<IOrderDocument[] | []> {
+    async findMyOrders(userId: string): Promise<IOrderDocument[]> {
         return await OrderModel.find({ userId });
     }
 
-    async getOrders(restaurantId: string): Promise<IOrderDocument[] | []> {
+    async findOrders(restaurantId: string): Promise<IOrderDocument[]> {
         return await OrderModel.find({ restaurantId });
     }
 
-    async updateOrderStatus(orderId: string, status: string): Promise<IOrderDocument | null> {
+    async findOrder(orderId: string): Promise<IOrderDocument | null> {
+        return await OrderModel.findById(orderId).populate('userId').populate('restaurantId');
+    }
+
+    async updateStatus(orderId: string, status: string): Promise<IOrderDocument | null> {
         const order: IOrderDocument | null = await OrderModel.findByIdAndUpdate(
             orderId,
             { status },

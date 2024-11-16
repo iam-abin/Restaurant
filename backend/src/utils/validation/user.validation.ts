@@ -1,5 +1,5 @@
 import { body } from 'express-validator';
-import { ROLES } from '../constants';
+import { ROLES_CONSTANTS } from '../constants';
 
 export const signinRequestBodyValidator = [
     body('email').isEmail().withMessage('Email must be valid').toLowerCase().trim().escape(),
@@ -7,8 +7,10 @@ export const signinRequestBodyValidator = [
     body('role')
         .notEmpty()
         .withMessage('Role is required')
-        .isIn([ROLES.ADMIN, ROLES.RESTAURANT, ROLES.USER])
-        .withMessage(`Role must be one of ${ROLES.ADMIN}, ${ROLES.RESTAURANT}, or ${ROLES.USER}`)
+        .isIn([ROLES_CONSTANTS.ADMIN, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.USER])
+        .withMessage(
+            `Role must be one of ${ROLES_CONSTANTS.ADMIN}, ${ROLES_CONSTANTS.RESTAURANT}, or ${ROLES_CONSTANTS.USER}`,
+        )
         .trim()
         .escape(),
 ];
@@ -19,8 +21,10 @@ export const signupRequestBodyValidator = [
     body('role')
         .notEmpty()
         .withMessage('Role is required')
-        .isIn([ROLES.ADMIN, ROLES.RESTAURANT, ROLES.USER])
-        .withMessage(`Role must be one of ${ROLES.ADMIN}, ${ROLES.RESTAURANT}, or ${ROLES.USER}`)
+        .isIn([ROLES_CONSTANTS.ADMIN, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.USER])
+        .withMessage(
+            `Role must be one of ${ROLES_CONSTANTS.ADMIN}, ${ROLES_CONSTANTS.RESTAURANT}, or ${ROLES_CONSTANTS.USER}`,
+        )
         .trim()
         .escape(),
     body('password')
