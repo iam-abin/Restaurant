@@ -7,6 +7,7 @@ import RightDrawer from "../drawer/RightDrawer";
 import LogoutIcon from "@mui/icons-material/Logout";
 import FlatwareIcon from "@mui/icons-material/Flatware";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
+import { ROLES_CONSTANTS } from "../../utils/constants";
 
 export interface IMenuItems {
     to: string;
@@ -19,23 +20,24 @@ export interface IMenuItems2 {
     to: string;
 }
 
-const NavBar = () => {
+const NavBar = ({currentUser}:{currentUser: any}) => {
     const admin = true;
-    const menuItemsAdmin: IMenuItems[] = [
-        { to: "/admin/restaurant", value: "Restaurant" },
-        { to: "/admin/menu", value: "Menu" },
-        { to: "/admin/orders", value: "Order" },
+
+    const menuItemsAdmin: (IMenuItems | boolean)[] = [
+        (currentUser.role === ROLES_CONSTANTS.ADMIN) && { to: "/admin/restaurant", value: "Restaurant" },
+        (currentUser.role === ROLES_CONSTANTS.ADMIN) && { to: "/admin/menu", value: "Menu" },
+        (currentUser.role === ROLES_CONSTANTS.ADMIN) && { to: "/admin/orders", value: "Order" },
     ];
 
-    const menuItems: Partial<IMenuItems2>[] = [
-        {
+    const menuItems: (Partial<IMenuItems2> | boolean)[] = [
+        (currentUser.role === ROLES_CONSTANTS.USER || currentUser.role === ROLES_CONSTANTS.RESTAURANT)&&{
             name: "profile",
             icon: <Avatar src="/broken-image.jpg" />,
             to: "/profile",
         },
-        { name: "order", icon: <FlatwareIcon />, to: "/order/status" },
-        { name: "cart", icon: <ShoppingCartIcon />, to: "/cart" },
-        { name: "menu", icon: <MenuBookIcon />, to: "/menu" },
+        (currentUser.role === ROLES_CONSTANTS.USER)&&{ name: "order", icon: <FlatwareIcon />, to: "/order/status" },
+        (currentUser.role === ROLES_CONSTANTS.USER)&&{ name: "cart", icon: <ShoppingCartIcon />, to: "/cart" },
+        (currentUser.role === ROLES_CONSTANTS.USER)&&{ name: "menu", icon: <MenuBookIcon />, to: "/menu" },
         { name: "logout", icon: <LogoutIcon /> },
     ];
     return (

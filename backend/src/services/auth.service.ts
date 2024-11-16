@@ -13,7 +13,7 @@ import { OtpRepository, UserRepository } from '../database/repository';
 import mongoose from 'mongoose';
 import { IOtpDocument, IUserDocument } from '../database/model';
 import { IEmailTemplate, ISignin, ISignup } from '../types';
-import { getEmailVerificationTemplate } from '../templates/verificationEmail';
+import { getEmailVerificationTemplate } from '../templates/signupVerificationEmail';
 
 @autoInjectable()
 export class UserService {
@@ -45,11 +45,11 @@ export class UserService {
                 }
 
                 const otp: string = generateOtp();
-                await this.otpRepository.createOtp({ userId: existingUser._id as string, otp }, session);
+                await this.otpRepository.createOtp({ userId: existingUser.id, otp }, session);
 
                 // Update if user enter new name or password
                 const updatedUser: IUserDocument | null = await this.userRepository.updateUser(
-                    existingUser._id as string,
+                    existingUser.id,
                     userRegisterDto,
                     session,
                 );
@@ -68,7 +68,7 @@ export class UserService {
             // Create a new user and generate OTP and send confirmation email
             const user: IUserDocument = await this.userRepository.createUser(userRegisterDto, session);
             const otp: string = generateOtp();
-            await this.otpRepository.createOtp({ userId: user._id as string, otp }, session);
+            await this.otpRepository.createOtp({ userId: user.id, otp }, session);
             const emailTemplate: IEmailTemplate = getEmailVerificationTemplate(otp);
             await sendEmail(email, emailTemplate);
 
@@ -86,7 +86,8 @@ export class UserService {
 
     public async signIn(userSignInDto: ISignin): Promise<{ user: IUserDocument; accessToken: string }> {
         const { email, password } = userSignInDto;
-
+        console.log(userSignInDto);
+        
         // Check if the user exists
         const existingUser: IUserDocument | null = await this.userRepository.findByEmail(email);
         if (!existingUser) throw new BadRequestError('Invalid email or password');
@@ -104,7 +105,7 @@ export class UserService {
 
         // Generate JWT
         const userPayload: IJwtPayload = {
-            userId: existingUser._id as string,
+            userId: existingUser.id,
             name: existingUser.name,
             email: existingUser.email,
             role: existingUser.role,

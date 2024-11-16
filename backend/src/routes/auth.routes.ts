@@ -13,11 +13,11 @@ import { checkCurrentUser, auth, validateRequest } from '../middlewares';
 
 const router: Router = express.Router();
 
-router.post('/signin', signinRequestBodyValidator, validateRequest, authController.signin);
+router.post('/signin',  authController.signin);
 
 router.post('/signup', signupRequestBodyValidator, validateRequest, authController.signup);
 
-router.post('/verify-otp', verifyOtpRequestBodyValidator, validateRequest, authController.verifyOtp);
+router.post('/verify-otp',  authController.verifyOtp);
 
 router.post('/resend-otp', resendOtpRequestBodyValidator, validateRequest, authController.resendOtp);
 

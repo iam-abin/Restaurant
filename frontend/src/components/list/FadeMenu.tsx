@@ -6,7 +6,7 @@ import Fade from "@mui/material/Fade";
 import { Link } from "react-router-dom";
 import { IMenuItems } from "../navbar/NavBar";
 
-const FadeMenu: React.FC<{ menuItems: IMenuItems[] }> = ({
+const FadeMenu: React.FC<{ menuItems: (IMenuItems | boolean)[] }> = ({
     menuItems,
 }) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);

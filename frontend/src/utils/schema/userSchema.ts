@@ -1,13 +1,14 @@
 import { z } from "zod";
 
 export const signUpSchema = z.object({
-    name: z.string().min(1, "name is required"),
-    email: z.string().email("invalid email address"),
+    name: z.string().min(1, "Name is required"),
+    email: z.string().email("Invalid email address"),
     phone: z
-        .string()
-        .min(9, "number must be 10 characters")
-        .max(9, "number must be 10 characters"),
-    password: z.string().min(4, "password must be minimum 4 letters"),
+        .number()
+        .int("Phone number must be an integer") // Ensures it's a whole number
+        .min(1000000000, "Phone number must be exactly 10 digits") // Minimum value for 10 digits
+        .max(9999999999, "Phone number must be exactly 10 digits"),
+    password: z.string().min(4, "Password must be at least 4 characters long"),
 });
 
 export const signInSchema = z.object({

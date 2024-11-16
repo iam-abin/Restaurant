@@ -1,9 +1,9 @@
-import { IUserRole } from './roles';
+// import { IUserRole } from './roles';
 
 export interface IUser {
     email: string;
     password: string;
-    role: Partial<IUserRole>;
+    role: string;
 }
 
 export interface ISignup extends IUser {

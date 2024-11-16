@@ -31,11 +31,11 @@ export const getEmailVerificationTemplate = function (otp: string) {
                           <a
                               href=""
                               style="font-size: 1.4em; color: #00466a; text-decoration: none; font-weight: 600"
-                              >UserApp</a
+                              >RestaurantApp</a
                           >
                       </div>
                       <p style="font-size: 1.1em">Hi,</p>
-                      UserApp
+                      RestaurantApp
                       <p>
                           Thank you for choosing RestaurantApp. Use the following OTP to complete your Sign Up
                           procedures. This OTP is valid for 10 minutes from the time this email was sent. After this
@@ -53,7 +53,7 @@ export const getEmailVerificationTemplate = function (otp: string) {
                       >
                           ${otp}
                       </h2>
-                      <p style="font-size: 0.9em">Regards,<br />UserApp</p>
+                      <p style="font-size: 0.9em">Regards,<br />RestaurantApp</p>
                       <hr style="border: none; border-top: 1px solid #eee" />
                       <div
                           style="

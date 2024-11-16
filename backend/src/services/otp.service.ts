@@ -11,7 +11,7 @@ import {
 import { IOtpDocument, IUserDocument } from '../database/model';
 import { createToken } from '../utils';
 import { IEmailTemplate } from '../types';
-import { getEmailVerificationTemplate } from '../templates/verificationEmail';
+import { getEmailVerificationTemplate } from '../templates/signupVerificationEmail';
 import { getForgotPasswordEmailTemplate } from '../templates/forgotPasswordEmail';
 import { appConfig } from '../config/app.config';
 

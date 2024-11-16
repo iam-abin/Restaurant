@@ -6,10 +6,12 @@ import Divider from "@mui/material/Divider";
 import { ChangeEvent, FormEvent, useState } from "react";
 import LoaderCircle from "../components/Loader/LoaderCircle";
 import { signInSchema, signUpSchema } from "../utils/schema/userSchema";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ROLES_CONSTANTS } from "../utils/constants";
 import { useAppDispatch } from "../redux/hooks";
 import { signinUser } from "../redux/thunk/authThunk";
+import { hotToastMessage } from "../utils/hotToast";
+import { signupApi } from "../api/apiMethods/auth";
 // import { useAppSelector } from "../redux/hooks";
 
 interface IAuthentication {
@@ -17,12 +19,14 @@ interface IAuthentication {
     email: string;
     phone?: string;
     password: string;
+    role: string;
 }
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const dispatch = useAppDispatch();
+    const naivgate = useNavigate();
     const role: string = ROLES_CONSTANTS.USER;
 
     const [input, setInput] = useState<Partial<IAuthentication>>({
@@ -30,29 +34,13 @@ const Auth = () => {
         email: "",
         phone: "",
         password: "",
+        role,
     });
     const [errors, setErrors] = useState<Partial<IAuthentication>>({});
 
     const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setInput({ ...input, [name]: value });
-        if (isLogin) {
-            const result = signInSchema.safeParse(input);
-            if (!result.success) {
-                const fieldErrors = result.error.formErrors.fieldErrors;
-                setErrors(fieldErrors as Partial<IAuthentication>);
-                return;
-            }
-            setErrors({});
-        } else {
-            const result = signUpSchema.safeParse(input);
-            if (!result.success) {
-                const fieldErrors = result.error.formErrors.fieldErrors;
-                setErrors(fieldErrors as Partial<IAuthentication>);
-                return;
-            }
-            setErrors({});
-        }
     };
 
     const handlePageSwitch = () => {
@@ -60,48 +48,56 @@ const Auth = () => {
     };
 
     const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        console.log("input");
-        console.log(input);
-        console.log("input");
-        // console.log(errors);
+        try {
+            e.preventDefault();
+            // Clear existing errors
+            setErrors({});
+            console.log(errors);
+            // Convert phone to number for validation if necessary
+            
+            const filteredData = Object.fromEntries(
+                Object.entries(input).filter(([_, value]) => value)
+            );
+            const inputData = {
+                ...input,
+                phone: input.phone ? Number(input.phone) : undefined,
+            };
 
-        // if (Object.keys(errors).length) {
-        //     console.log("errors", errors);
-        //     // setIsLoading(false);
-        //     return;
-        // }
-        if (isLogin) {
             // Form validation
+            const result = isLogin
+                ? signInSchema.safeParse(filteredData)
+                : signUpSchema.safeParse(inputData);
 
-            console.log("isLogin ", isLogin);
-
-            const result = signInSchema.safeParse(input);
             if (!result.success) {
                 const fieldErrors = result.error.formErrors.fieldErrors;
                 setErrors(fieldErrors as Partial<IAuthentication>);
                 return;
             }
-            // login api call
-            // Dispatch signup action
-            console.log("dispatch");
-            
-            console.log("dispatch");
+            if (isLogin) {
+                const response = await dispatch(
+                    signinUser({
+                        email: input.email!,
+                        password: input.password!,
+                        role: role!,
+                    })
+                );
 
-            const resultAction = await dispatch(signinUser(input));
-            console.log(resultAction);
-        } else {
-            // Form validation
-            const result = signUpSchema.safeParse(input);
-            if (!result.success) {
-                const fieldErrors = result.error.formErrors.fieldErrors;
-                setErrors(fieldErrors as Partial<IAuthentication>);
+                // Check if the action was rejected
+                if (response.meta.requestStatus !== "rejected") {
+                    naivgate("/");
+                }
+            } else {
+                setIsLoading(true);
+
+                const response = await signupApi(input);
+                if (response.data) {
+                    hotToastMessage(response.message, "success");
+                    naivgate("/otp", { state: { userId: response.data.id } });
+                }
             }
-            return;
-            // signup api call
+        } finally {
+            setIsLoading(false);
         }
-        console.log(input);
-        setIsLoading(false);
     };
 
     return (
@@ -130,7 +126,7 @@ const Auth = () => {
                                 placeholder="Enter your name"
                                 autoComplete="name"
                             />
-                            {errors && (
+                            {errors.name && (
                                 <Typography className="text-sm text-red-500">
                                     {errors.name}
                                 </Typography>
@@ -148,7 +144,7 @@ const Auth = () => {
                             placeholder="Enter your email"
                             autoComplete="email"
                         />
-                        {errors && (
+                        {errors.email && (
                             <Typography className="text-sm text-red-500">
                                 {errors.email}
                             </Typography>
@@ -167,7 +163,7 @@ const Auth = () => {
                                 placeholder="Enter your phone"
                                 autoComplete="phone"
                             />
-                            {errors && (
+                            {errors.phone && (
                                 <Typography className="text-sm text-red-500">
                                     {errors.phone}
                                 </Typography>
@@ -186,9 +182,9 @@ const Auth = () => {
                             placeholder="Enter your password"
                             autoComplete="password"
                         />
-                        {errors && (
+                        {errors.password && (
                             <Typography className="text-sm text-red-500">
-                                {errors.phone}
+                                {errors.password}
                             </Typography>
                         )}
                     </div>

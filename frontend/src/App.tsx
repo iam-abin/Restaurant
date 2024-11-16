@@ -1,7 +1,7 @@
 import MainLayout from "./layout/MainLayout";
 import Auth from "./pages/Auth";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider, createTheme, duration } from "@mui/material/styles";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Otp from "./pages/Otp";
@@ -14,6 +14,7 @@ import Restaurant from "./pages/admin/Restaurant";
 import Menu from "./pages/admin/Menu";
 import Orders from "./pages/admin/Orders";
 import Success from "./pages/Success";
+import { Toaster } from "react-hot-toast";
 
 const darkTheme = createTheme({
     palette: {
@@ -87,7 +88,16 @@ export default function App() {
     return (
         <main>
             {/* <ThemeProvider theme={darkTheme}> */}
-                <RouterProvider router={appRouter}></RouterProvider>
+            <Toaster
+                position="top-right"
+                toastOptions={{
+                    duration: 6000, // 6 seconds
+                    style: {
+                        marginTop: "80px", // Adjust the offset from the top
+                    },
+                }}
+            />
+            <RouterProvider router={appRouter}></RouterProvider>
             {/* </ThemeProvider> */}
         </main>
     );

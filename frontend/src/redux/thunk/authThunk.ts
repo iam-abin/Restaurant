@@ -1,13 +1,18 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { signinApi, logoutApi } from "../../api/apiMethods/auth";
-
+import { ISignin } from "../../types";
+import { hotToastMessage } from "../../utils/hotToast";
+import { IResponse } from "../../types/api";
 
 // Async thunk for user sign-in
 export const signinUser = createAsyncThunk(
     "auth/userSignin",
-    async (data: any, { rejectWithValue }) => {
+    async (data: ISignin, { rejectWithValue }) => {
         try {
-            return await signinApi(data);
+            console.log("data ",data);
+            const result: IResponse = await signinApi(data);
+            hotToastMessage(result.message, "success")   
+            return result
         } catch (error) {
             return rejectWithValue("Failed to sign in");
         }
@@ -21,6 +26,7 @@ export const logoutUser = createAsyncThunk(
         try {
             return await logoutApi();
         } catch (error) {
+            
             return rejectWithValue("Failed to log out");
         }
     }

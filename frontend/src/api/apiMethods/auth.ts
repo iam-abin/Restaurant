@@ -1,9 +1,10 @@
 import makeApiCall from "../apiCalls";
 import authApiUrls from "../urls/auth";
 import { IResponse } from "../../types/api";
+import { ISignin } from "../../types";
 
 
-export const signinApi = async (data: any): Promise<IResponse> => {
+export const signinApi = async (data: ISignin): Promise<IResponse> => {
 	return await makeApiCall("post", authApiUrls.signinUrl, data);
 };
 

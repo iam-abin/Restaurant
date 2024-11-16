@@ -1,8 +1,11 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import userSlice from "./slice/profileSlice"
+import authSlice from "./slice/authSlice"
+import profileSlice from "./slice/profileSlice"
 
 const rootRedcucer = combineReducers({
-    authReducer: userSlice,
+    authReducer: authSlice,
+    profileReducer: profileSlice,
+    
 });
 
 export default rootRedcucer;

@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, KeyboardEvent, MouseEvent, Fragment } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
@@ -15,17 +15,17 @@ type Anchor = "right";
 export default function RightDrawer({
     menuItems,
 }: {
-    menuItems: Partial<IMenuItems2>[];
+    menuItems: (Partial<IMenuItems2> | boolean)[];
 }) {
-    const [state, setState] = React.useState({ right: false });
+    const [state, setState] = useState({ right: false });
 
     const toggleDrawer =
         (anchor: Anchor, open: boolean) =>
-        (event: React.KeyboardEvent | React.MouseEvent) => {
+        (event: KeyboardEvent | MouseEvent) => {
             if (
                 event.type === "keydown" &&
-                ((event as React.KeyboardEvent).key === "Tab" ||
-                    (event as React.KeyboardEvent).key === "Shift")
+                ((event as KeyboardEvent).key === "Tab" ||
+                    (event as KeyboardEvent).key === "Shift")
             ) {
                 return;
             }
@@ -40,14 +40,25 @@ export default function RightDrawer({
             onKeyDown={toggleDrawer(anchor, false)}
         >
             <List className="flex flex-col gap-8">
-                {menuItems.map((item) => (
-                    <ListItem key={item.name} disablePadding>
-                        <ListItemButton className="flex gap-4">
-                          {item.icon}
-                        {item.to ? <Link to={item.to}>{item.name}</Link> : item.name}
-                        </ListItemButton>
-                    </ListItem>
-                ))}
+                {menuItems
+                    .filter(
+                        (
+                            item: boolean | Partial<IMenuItems2>
+                        ): item is Partial<IMenuItems2> =>
+                            typeof item === "object" && item !== null
+                    )
+                    .map((item) => (
+                        <ListItem key={item.name} disablePadding>
+                            <ListItemButton className="flex gap-4">
+                                {item.icon}
+                                {item.to ? (
+                                    <Link to={item.to}>{item.name}</Link>
+                                ) : (
+                                    item.name
+                                )}
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
             </List>
             <Divider />
         </Box>
@@ -56,7 +67,7 @@ export default function RightDrawer({
     return (
         <div>
             {(["right"] as const).map((anchor) => (
-                <React.Fragment key={anchor}>
+                <Fragment key={anchor}>
                     <Button onClick={toggleDrawer(anchor, true)}>
                         <LunchDiningIcon />
                     </Button>
@@ -67,7 +78,7 @@ export default function RightDrawer({
                     >
                         {list(anchor)}
                     </Drawer>
-                </React.Fragment>
+                </Fragment>
             ))}
         </div>
     );

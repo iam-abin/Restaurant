@@ -1,13 +1,18 @@
 import { Button } from "@mui/material";
 import { FormEvent, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import LoaderCircle from "../components/Loader/LoaderCircle";
+import { verifyOtpApi } from "../api/apiMethods/auth";
+import { hotToastMessage } from "../utils/hotToast";
 
 const Otp = () => {
     const inputRef = useRef<any>([]);
     const navigate = useNavigate();
     const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const location = useLocation();
+    const userId: string = location.state?.userId
+
     const handleChange = (index: number, value: string) => {
         if (/^[a-zA-Z0-9]$/.test(value) || value === "") {
             const otps = [...otp];
@@ -30,16 +35,27 @@ const Otp = () => {
         }
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async(e: FormEvent) => {
+       try {
         setIsLoading(true);
         e.preventDefault();
+        if(otp.length<6 || otp.length>6){
+            return
+        }
         // if (Object.keys(errors).length) {
         //     console.log("errors", errors);
         //     setIsLoading(false);
         //     return;
         // }
-        setIsLoading(false);
+
+        const otpString = otp.join('')
+        const response = await verifyOtpApi({ userId, otp: otpString})
+        hotToastMessage(response.message, 'success')
         navigate("/auth");
+    } finally {
+           setIsLoading(false);
+        
+       }
     };
 
     return (

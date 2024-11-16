@@ -13,13 +13,13 @@ class AuthController {
     public async signup(req: Request, res: Response): Promise<void> {
         const user: IUserDocument | null = await userService.signUp(req.body as ISignup);
         res.status(201).json(
-            createSuccessResponse(`An otp is send to your ${user?.email || 'email'}, Please verify`, user),
+            createSuccessResponse(`An otp is send to ${user?.email || 'email'}, Please verify`, user),
         );
     }
 
     public async signin(req: Request, res: Response): Promise<void> {
-        const user: { user: ISignin; accessToken: string } = await userService.signIn(req.body as ISignin);
-        res.cookie(JWT_KEYS_CONSTANTS.JWT_TOKEN, user.accessToken);
+        const { user, accessToken } = await userService.signIn(req.body as ISignin);
+        res.cookie(JWT_KEYS_CONSTANTS.JWT_TOKEN, accessToken);
         res.status(200).json(createSuccessResponse('Login success', user));
     }
 
@@ -33,7 +33,7 @@ class AuthController {
         const { userId } = req.body;
         const user: IUserDocument | null = await otpService.resendOtp(userId);
         res.status(200).json(
-            createSuccessResponse(`An otp is send to your ${user?.email || 'email'}, Please verify`, user),
+            createSuccessResponse(`An otp is send to ${user?.email || 'your email'}, Please verify`, user),
         );
     }
 
@@ -41,7 +41,7 @@ class AuthController {
         const { email } = req.body;
         const user: IUserDocument | null = await otpService.forgotPassword(email);
         res.status(200).json(
-            createSuccessResponse(`Password reset link sent to your ${email}, Please verify`, user),
+            createSuccessResponse(`Password reset link sent to ${email}, Please verify`, user),
         );
     }
 
