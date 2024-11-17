@@ -8,7 +8,7 @@ export const auth = (requiredRoles: string | string[]) => {
             // Ensure `requiredRoles` is always treated as an array
             const roles = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles];
 
-            if (!req.currentUser) throw new NotAuthorizedError();
+            if (!req.currentUser) throw new ForbiddenError();
 
             if (!roles.includes(req.currentUser.role as string))
                 throw new ForbiddenError('You have no permission to access this route');

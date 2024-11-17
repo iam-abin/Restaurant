@@ -1,6 +1,6 @@
 import { autoInjectable } from 'tsyringe';
 
-import { BadRequestError, NotAuthorizedError, NotFoundError } from '../errors';
+import { BadRequestError, ForbiddenError, NotAuthorizedError, NotFoundError } from '../errors';
 import {
     checkOtpIntervalCompleted,
     generateOtp,
@@ -93,7 +93,7 @@ export class UserService {
 
         // Check if the user is verified
         if (!existingUser.isVerified) {
-            throw new NotAuthorizedError(
+            throw new ForbiddenError(
                 'You are not verified yet. Pleas verify by signup again to get otp.',
             );
         }
