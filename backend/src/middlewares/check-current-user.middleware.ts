@@ -23,8 +23,8 @@ export const checkCurrentUser = async(req: Request, res: Response, next: NextFun
         const payload = verifyJwtToken(accessToken);
         const user = await userRepository.findUserById(payload.userId);
         if (!user) throw new NotFoundError('User Not found');
-        if (user.isBlocked) throw new ForbiddenError('You are a blocaked user');
         if (!user.isVerified) throw new ForbiddenError('Your are not verified');
+        if (user.isBlocked) throw new ForbiddenError('You are a blocked user');
         req.currentUser = payload;
 
         next();
