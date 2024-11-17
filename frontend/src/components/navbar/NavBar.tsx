@@ -27,7 +27,6 @@ const NavBar = ({
     currentUser: any;
     handleLogout: () => void;
 }) => {
-    const admin = true;
     const isAdmin = currentUser && currentUser.role === ROLES_CONSTANTS.ADMIN
     const isRestaurant = currentUser && currentUser.role === ROLES_CONSTANTS.RESTAURANT
     const isUser = currentUser && currentUser.role === ROLES_CONSTANTS.USER
@@ -71,11 +70,11 @@ const NavBar = ({
                     <Avatar src="/broken-image.jpg" />
                     <LogoutIcon onClick={handleLogout} style={{ cursor: "pointer" }} />
                 </div>
-                {admin && <FadeMenu menuItems={menuItemsAdmin} />}
+                {isAdmin && <FadeMenu menuItems={menuItemsAdmin} />}
                 {/* Mobile responsiveness */}
-                <Typography className="md:hidden">
+                <div className="md:hidden">
                     <RightDrawer menuItems={menuItems} />
-                </Typography>
+                </div>
             </div>
         </div>
     );

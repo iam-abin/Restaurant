@@ -1,7 +1,7 @@
 import MainLayout from "./layout/MainLayout";
 import Auth from "./pages/Auth";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ThemeProvider, createTheme, duration } from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Otp from "./pages/Otp";
@@ -15,59 +15,65 @@ import Menu from "./pages/admin/Menu";
 import Orders from "./pages/admin/Orders";
 import Success from "./pages/Success";
 import { Toaster } from "react-hot-toast";
-
-const darkTheme = createTheme({
-    palette: {
-        mode: "dark",
-    },
-});
+import Error404 from "./pages/Error404";
+import { RoleProtectedRoute } from "./components/ProtectedRoute";
+import { ROLES_CONSTANTS } from "./utils/constants";
 
 const appRouter = createBrowserRouter([
     {
         path: "/",
-        element: <MainLayout />,
+        element: (
+            <RoleProtectedRoute >
+                <MainLayout />
+            </RoleProtectedRoute>
+        ),
         children: [
-            {
-                path: "/",
-                element: <Landing />,
-            },
-            {
-                path: "/profile",
-                element: <Profile />,
-            },
-            {
-                path: "/search/:searchKey",
-                element: <SearchResult />,
-            },
-            {
-                path: "/restaurant/:restaurantId",
-                element: <RestaurantDetails />,
-            },
-            {
-                path: "/cart",
-                element: <Cart />,
-            },
-            {
-                path: "/success",
-                element: <Success />,
-            },
-            // Admin routes
-            {
-                path: "/admin/restaurant",
-                element: <Restaurant />,
-            },
-            {
-                path: "/admin/menu",
-                element: <Menu />,
-            },
-            {
-                path: "/admin/orders",
-                element: <Orders />,
-            },
+            { path: "/", element: <Landing /> },
+            { path: "/profile", element: <Profile /> },
+            { path: "/search/:searchKey", element: <SearchResult /> },
+            { path: "/user/restaurant/:restaurantId", element: <RestaurantDetails /> },
+            { path: "/cart", element: <Cart /> },
+            { path: "/success", element: <Success /> },
+            { path: "*", element: <Error404 /> },
         ],
     },
     {
+        path: "/restaurant",
+        element: (
+            <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.RESTAURANT]}>
+                <MainLayout />
+            </RoleProtectedRoute>
+        ),
+        children: [
+            { path: "", element: <Restaurant /> },  // Correct relative path
+            { path: "menu", element: <Menu /> },
+            { path: "orders", element: <Orders /> },
+        ],
+    },
+    {
+        path: "/admin",
+        element: (
+            <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.ADMIN]}>
+                <MainLayout />
+            </RoleProtectedRoute>
+        ),
+        children: [
+            // { path: "/", element: <Dashboard /> },
+            // { path: "/users", element: <Users /> },
+            // { path: "/restaurants", element: <Restaurants /> },
+        ],
+    },
+    
+    {
         path: "/auth",
+        element: <Auth />,
+    },
+    {
+        path: "/restaurant/auth",
+        element: <Auth />,
+    },
+    {
+        path: "admin/auth",
         element: <Auth />,
     },
     {
@@ -91,18 +97,15 @@ const appRouter = createBrowserRouter([
 export default function App() {
     return (
         <main>
-            {/* <ThemeProvider theme={darkTheme}> */}
             <Toaster
                 position="top-right"
                 toastOptions={{
-                    duration: 6000, // 6 seconds
-                    style: {
-                        marginTop: "80px", // Adjust the offset from the top
-                    },
+                    duration: 6000,
+                    style: { marginTop: "80px" },
                 }}
             />
-            <RouterProvider router={appRouter}></RouterProvider>
-            {/* </ThemeProvider> */}
+            <RouterProvider router={appRouter} />
         </main>
     );
 }
+

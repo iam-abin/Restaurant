@@ -6,7 +6,7 @@ import Divider from "@mui/material/Divider";
 import { ChangeEvent, FormEvent, useState } from "react";
 import LoaderCircle from "../components/Loader/LoaderCircle";
 import { signInSchema, signUpSchema } from "../utils/schema/userSchema";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ROLES_CONSTANTS } from "../utils/constants";
 import { useAppDispatch } from "../redux/hooks";
 import { signinUser } from "../redux/thunk/authThunk";
@@ -14,13 +14,23 @@ import { hotToastMessage } from "../utils/hotToast";
 import { signupApi } from "../api/apiMethods/auth";
 import { ISignup } from "../types";
 
-
 const Auth = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const dispatch = useAppDispatch();
     const naivgate = useNavigate();
-    const role: string = ROLES_CONSTANTS.USER;
+    const location = useLocation();
+    
+    const isRestaurantPage = location.pathname.includes(
+        ROLES_CONSTANTS.RESTAURANT
+    );
+    const isAdminPage = location.pathname.includes(ROLES_CONSTANTS.ADMIN);
+
+    const role: string = isRestaurantPage
+        ? ROLES_CONSTANTS.RESTAURANT 
+        : isAdminPage
+        ? ROLES_CONSTANTS.ADMIN
+        : ROLES_CONSTANTS.USER;
 
     const [input, setInput] = useState<ISignup>({
         name: "",
@@ -47,7 +57,7 @@ const Auth = () => {
             setErrors({});
             console.log(errors);
             // Convert phone to number for validation if necessary
-            
+
             const filteredData = Object.fromEntries(
                 Object.entries(input).filter(([_, value]) => value)
             );
@@ -103,7 +113,7 @@ const Auth = () => {
                     <div className="mb-4 flex justify-center ">
                         {" "}
                         <h1 className="font8-bold text-2xl">
-                            Restaurant {isLogin ? "Login" : "Signup"}
+                            {role} {isLogin ? "Login" : "Signup"}
                         </h1>
                     </div>
                     {!isLogin && (
@@ -198,41 +208,45 @@ const Auth = () => {
                         "Signup"
                     )}
                 </Button>
-                <div className="flex justify-end mt-2">
-                    <Link
-                        className="text-sm hover:text-blue-700"
-                        to="/forgot-password/email"
-                    >
-                        Forgot Password
-                    </Link>
-                </div>
+                {!isAdminPage && (
+                    <div className="flex justify-end mt-2">
+                        <Link
+                            className="text-sm hover:text-blue-700"
+                            to="/forgot-password/email"
+                        >
+                            Forgot Password
+                        </Link>
+                    </div>
+                )}
 
-                <div className="mt-5">
-                    <Divider className="mt-5" />
-                    <Typography className="text-sm flex mt-3">
-                        {isLogin ? (
-                            <>
-                                Dont have an account?{" "}
-                                <p
-                                    onClick={handlePageSwitch}
-                                    className="ml-1 text-blue-700 hover:text-blue-500 cursor-pointer"
-                                >
-                                    signup
-                                </p>
-                            </>
-                        ) : (
-                            <>
-                                Already have an account?{" "}
-                                <p
-                                    onClick={handlePageSwitch}
-                                    className="ml-1 text-blue-700 hover:text-blue-500 cursor-pointer"
-                                >
-                                    signin
-                                </p>
-                            </>
-                        )}
-                    </Typography>
-                </div>
+                {!isAdminPage && (
+                    <div className="mt-5">
+                        <Divider className="mt-5" />
+                        <Typography className="text-sm flex mt-3">
+                            {isLogin ? (
+                                <>
+                                    Dont have an account?{" "}
+                                    <p
+                                        onClick={handlePageSwitch}
+                                        className="ml-1 text-blue-700 hover:text-blue-500 cursor-pointer"
+                                    >
+                                        signup
+                                    </p>
+                                </>
+                            ) : (
+                                <>
+                                    Already have an account?{" "}
+                                    <p
+                                        onClick={handlePageSwitch}
+                                        className="ml-1 text-blue-700 hover:text-blue-500 cursor-pointer"
+                                    >
+                                        signin
+                                    </p>
+                                </>
+                            )}
+                        </Typography>
+                    </div>
+                )}
             </form>
         </div>
     );

@@ -3,23 +3,25 @@ import { useAppSelector } from "../redux/hooks";
 import { RootState } from "../redux/store";
 import { ReactNode } from "react";
 
-interface ProtectedRouteProps {
+interface RoleProtectedRouteProps {
   children: ReactNode;
-  allowedRole: string;
+  allowedRoles?: string[];
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRole }) => {
-  const authData = useAppSelector((state: RootState) => state.authReducer.authData); // Access auth data from state
+export const RoleProtectedRoute: React.FC<RoleProtectedRouteProps> = ({ children, allowedRoles }) => {
+  const authData = useAppSelector((state: RootState) => state.authReducer.authData);
 
   if (!authData) {
     return <Navigate to="/auth" />;
   }
 
-  if (authData.role !== allowedRole) {
-    return <Navigate to="/" />;
+  
+  const CURRENT_USER_ROLE = authData.role
+  if (authData && allowedRoles && !allowedRoles.includes(CURRENT_USER_ROLE)) {
+    // Redirect based on role
+    const redirectPath = CURRENT_USER_ROLE === "ADMIN" ? "/admin" : CURRENT_USER_ROLE === "RESTAURANT" ? "/restaurant" : "/";
+    return <Navigate to={redirectPath} />;
   }
 
   return <>{children}</>;
 };
-
-export default ProtectedRoute;
