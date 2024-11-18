@@ -1,6 +1,6 @@
 import { autoInjectable } from 'tsyringe';
 
-import { BadRequestError, ForbiddenError, NotAuthorizedError, NotFoundError } from '../errors';
+import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
 import { generateOtp, checkOtpIntervalCompleted, sendEmail, ROLES_CONSTANTS } from '../utils';
 import {
     OtpTokenRepository,

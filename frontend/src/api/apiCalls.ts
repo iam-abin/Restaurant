@@ -10,6 +10,7 @@ const makeApiCall = async (
     isFileUpload: boolean = false
 ): Promise<IResponse> => {
     try {
+        
         const config = isFileUpload ? { headers: { "Content-Type": "multipart/form-data" } } : {};
         const response = await axiosInstance[method](url, data, config);
         return response.data;

@@ -1,6 +1,6 @@
 import { autoInjectable } from 'tsyringe';
 
-import { BadRequestError, ForbiddenError, NotAuthorizedError, NotFoundError } from '../errors';
+import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
 import {
     checkOtpIntervalCompleted,
     generateOtp,
@@ -95,9 +95,8 @@ export class UserService {
         if (existingUser.role !== role) throw new BadRequestError('Role is not matching');
 
         if (role === ROLES_CONSTANTS.ADMIN) {
-            if(email!==existingUser.email && password!== existingUser.password)
-                throw new BadRequestError('Invalid email or password')
- 
+            if (email !== existingUser.email && password !== existingUser.password)
+                throw new BadRequestError('Invalid email or password');
         } else {
             // Check if the user is verified
             if (!existingUser.isVerified) {

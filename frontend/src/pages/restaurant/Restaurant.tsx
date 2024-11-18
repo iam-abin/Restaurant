@@ -3,14 +3,46 @@ import {
     RestaurantFormSchema,
     restaurantFromSchema,
 } from "../../utils/schema/restaurantSchema";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import LoaderCircle from "../../components/Loader/LoaderCircle";
+import { getARestaurantApi, getMyRestaurantApi, updateRestaurantApi } from "../../api/apiMethods/restaurant";
+import { hotToastMessage } from "../../utils/hotToast";
+import { IResponse } from "../../types/api";
+import { IRestaurant } from "../../types";
+import { useAppSelector } from "../../redux/hooks";
 
 const Restaurant = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [restaurant, setRestaurant] = useState<IRestaurant | null>(null);
+
+    // const authData = useAppSelector(
+    //     (state) => state.authReducer.authData
+    // );
+
+    useEffect(()=>{
+        (
+            async()=>{
+                const response = await getMyRestaurantApi();
+                setRestaurant(response.data)
+            }
+        )()
+    },[])
+
+    useEffect(() => {
+        if (restaurant) {
+            setInput((prevInput) => ({
+                ...prevInput,
+                name: restaurant.ownerId.name || "",
+                city: restaurant.addressId.city || "",
+                country: restaurant.addressId.country || "",
+                deliveryTime: restaurant.deliveryTime || 0,
+                cuisines: restaurant.cuisines || [],
+            }));
+        }
+    }, [restaurant]);
 
     const [input, setInput] = useState<RestaurantFormSchema>({
-        restaurantName: "",
+        name: restaurant?.ownerId.name!,
         city: "",
         country: "",
         deliveryTime: 0,
@@ -29,17 +61,21 @@ const Restaurant = () => {
 
     const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
+        setIsLoading(true)
+        
+        console.log("input is ",input);
+        
         const result = restaurantFromSchema.safeParse(input);
         if (!result.success) {
             const fieldErrors = result.error.formErrors.fieldErrors;
             setErrors(fieldErrors as Partial<RestaurantFormSchema>);
+            setIsLoading(false)
             return;
         }
 
         try {
             const formData = new FormData();
-            formData.append("restaurantName", input.restaurantName);
+            formData.append("name", input.name);
             formData.append("city", input.city);
             formData.append("country", input.country);
             formData.append("deliveryTime", input.deliveryTime.toString());
@@ -49,9 +85,14 @@ const Restaurant = () => {
                 formData.append("image", input.image);
             }
 
-            // Make your API call to update or create the restaurant here
-        } catch (error) {
-            console.log(error);
+            // Make your API call to update the restaurant here
+            if(restaurant){
+                const response: IResponse =  await updateRestaurantApi(restaurant.id!, input, )
+                hotToastMessage(response.message, 'success')
+            }
+
+        }finally{
+        setIsLoading(false)
         }
     };
 
@@ -69,16 +110,19 @@ const Restaurant = () => {
                             <input
                                 className="w-full h-12 border border-black rounded-lg p-1 pl-4"
                                 type="text"
-                                name="restaurantName"
-                                value={input.restaurantName}
+                                name="name"
+                                value={
+                                    input.name
+                                        
+                                }
                                 onChange={changeEventHandler}
                                 placeholder="Enter your restaurant name"
                                 autoComplete="restaurant-name"
                             />
-                            {errors.restaurantName && (
-                                <FormHelperText className="text-red-500 text-sm">
-                                    {errors.restaurantName}
-                                </FormHelperText>
+                            {errors.name && (
+                                <span className="text-red-500 text-sm">
+                                    {errors.name}
+                                </span>
                             )}
                         </div>
 
@@ -95,9 +139,9 @@ const Restaurant = () => {
                                 autoComplete="city"
                             />
                             {errors.city && (
-                                <FormHelperText className="text-red-500 text-sm">
+                                <span className="text-red-500 text-sm">
                                     {errors.city}
-                                </FormHelperText>
+                                </span>
                             )}
                         </div>
 
@@ -114,9 +158,9 @@ const Restaurant = () => {
                                 autoComplete="country"
                             />
                             {errors.country && (
-                                <FormHelperText className="text-red-500 text-sm">
+                                <span className="text-red-500 text-sm">
                                     {errors.country}
-                                </FormHelperText>
+                                </span>
                             )}
                         </div>
 
@@ -133,9 +177,9 @@ const Restaurant = () => {
                                 autoComplete="delivery-time"
                             />
                             {errors.deliveryTime && (
-                                <FormHelperText className="text-red-500 text-sm">
+                                <span className="text-red-500 text-sm">
                                     {errors.deliveryTime}
-                                </FormHelperText>
+                                </span>
                             )}
                         </div>
 
@@ -157,9 +201,9 @@ const Restaurant = () => {
                                 autoComplete="cuisines"
                             />
                             {errors.cuisines && (
-                                <FormHelperText className="text-red-500 text-sm">
+                                <span className="text-red-500 text-sm">
                                     {errors.cuisines}
-                                </FormHelperText>
+                                </span>
                             )}
                         </div>
 
@@ -179,9 +223,9 @@ const Restaurant = () => {
                                 }
                             />
                             {errors.image && (
-                                <FormHelperText className="text-red-500 text-sm">
+                                <span className="text-red-500 text-sm">
                                     {errors.image?.name || "image file is required"}
-                                </FormHelperText>
+                                </span>
                             )}
                         </div>
                     </div>

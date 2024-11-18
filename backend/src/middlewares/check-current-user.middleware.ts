@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { BadRequestError, ForbiddenError, NotAuthorizedError, NotFoundError } from '../errors';
+import { ForbiddenError, NotAuthorizedError, NotFoundError } from '../errors';
 import { IJwtPayload, verifyJwtToken } from '../utils';
 import { UserRepository } from '../database/repository';
 
@@ -15,7 +15,7 @@ declare global {
 const userRepository = new UserRepository();
 
 // Middleware to get current user from token and assign it to req.currentUser
-export const checkCurrentUser = async(req: Request, res: Response, next: NextFunction) => {
+export const checkCurrentUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const accessToken = req.cookies?.jwtToken;
         if (!accessToken) return next();

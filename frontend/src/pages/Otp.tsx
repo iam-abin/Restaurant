@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import LoaderCircle from "../components/Loader/LoaderCircle";
 import { verifyOtpApi } from "../api/apiMethods/auth";
 import { hotToastMessage } from "../utils/hotToast";
+import { ROLES_CONSTANTS } from "../utils/constants";
 
 const Otp = () => {
     const inputRef = useRef<any>([]);
@@ -11,11 +12,16 @@ const Otp = () => {
     const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const location = useLocation();
-    const userId: string = location.state?.userId;
-
-    const isSignupOtpPage = location.pathname == '/otp/signup'
-    const isForgotPasswordOtpPage = location.pathname ==  '/otp/forgot-password'
+    const { userId, role } = location.state;
+    console.log("userId ", userId);
+    console.log("role ", role);
     
+    const isUser = role === ROLES_CONSTANTS.USER;
+    const isRestaurant = role === ROLES_CONSTANTS.RESTAURANT;
+
+    const isSignupOtpPage = location.pathname == "/signup/otp";
+    const isForgotPasswordEmailOtpPage =
+        location.pathname == "/forgot-password/otp";
 
     const handleChange = (index: number, value: string) => {
         if (/^[a-zA-Z0-9]$/.test(value) || value === "") {
@@ -51,15 +57,23 @@ const Otp = () => {
             const response = await verifyOtpApi({ userId, otp: otpString });
             if (response.data) {
                 hotToastMessage(response.message, "success");
-                if(isSignupOtpPage){
-                    navigate("/auth");
+                if (isSignupOtpPage) {
+                    console.log("signupOtpPage isRestaurant ",isRestaurant);
+                    console.log("signupOtpPage isUser ",isUser);
+                    
+                    if (isRestaurant) {
+                        navigate("/restaurant/auth");
+                    }
+
+                    if (isUser) {
+                        navigate("/auth");
+                    }
                 }
-    
-                if(isForgotPasswordOtpPage){
-                    navigate("/reset-password", {state: {userId}});
+
+                if (isForgotPasswordEmailOtpPage) {
+                    navigate("/reset-password", { state: { userId } });
                 }
             }
-
         } finally {
             setIsLoading(false);
         }

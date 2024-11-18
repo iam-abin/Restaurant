@@ -3,6 +3,7 @@ import { IAddress } from '../../types';
 import { omitDocFields } from '../../utils';
 
 export interface IAddressDocument extends Document, Omit<IAddress, 'userId'> {
+    _id: Schema.Types.ObjectId;
     userId: Schema.Types.ObjectId;
 }
 

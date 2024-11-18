@@ -9,10 +9,9 @@ export const signinUser = createAsyncThunk(
     "auth/userSignin",
     async (data: ISignin, { rejectWithValue }) => {
         try {
-            console.log("data ",data);
             const result: IResponse = await signinApi(data);
             hotToastMessage(result.message, "success")   
-            return result
+            return result.data
         } catch (error) {
             return rejectWithValue("Failed to sign in");
         }
@@ -26,7 +25,7 @@ export const logoutUser = createAsyncThunk(
         try {
             const result: IResponse = await logoutApi();
             hotToastMessage(result.message, "success")   
-            return result
+            return null
         } catch (error) {
             
             return rejectWithValue("Failed to log out");

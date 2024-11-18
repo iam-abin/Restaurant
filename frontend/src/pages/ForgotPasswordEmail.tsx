@@ -4,7 +4,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { emailSchema } from "../utils/schema/userSchema";
 import LoaderCircle from "../components/Loader/LoaderCircle";
 import { Link, useNavigate } from "react-router-dom";
-import { forgotPasswordApi } from "../api/apiMethods/auth";
+import { ForgotPasswordEmailApi } from "../api/apiMethods/auth";
 import { IResponse } from "../types/api";
 import { hotToastMessage } from "../utils/hotToast";
 
@@ -12,10 +12,11 @@ export interface IForgotPasswordEmail {
     email: string;
 }
 
-const ForgotPassword = () => {
+const ForgotPasswordEmail = () => {
     const [email, setEmail] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errors, setErrors] = useState<Partial<IForgotPasswordEmail>>({});
+    const navigate = useNavigate()
 
     const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
@@ -48,10 +49,11 @@ const ForgotPassword = () => {
         }
         try {
             setIsLoading(true);
-            const response: IResponse = await forgotPasswordApi({email});
+            const response: IResponse = await ForgotPasswordEmailApi({email});
             if (response.data) {
                 hotToastMessage(response.message, "success");
                 setEmail('')
+                navigate('/forgot-password/otp')
             }
         } finally {
             setIsLoading(false);
@@ -125,4 +127,4 @@ const ForgotPassword = () => {
     );
 };
 
-export default ForgotPassword;
+export default ForgotPasswordEmail;

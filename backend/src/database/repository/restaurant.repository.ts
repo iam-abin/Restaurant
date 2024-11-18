@@ -1,3 +1,4 @@
+import { ClientSession } from 'mongoose';
 import { IRestaurant } from '../../types';
 import { IRestaurantDocument, RestaurantModel } from '../model';
 
@@ -8,19 +9,24 @@ export class RestaurantRepository {
     }
 
     async findRestaurant(restaurantId: string): Promise<IRestaurantDocument | null> {
-        return await RestaurantModel.findById(restaurantId).populate('ownerId');
+        return await RestaurantModel.findById(restaurantId).populate(['ownerId', 'addressId']);
     }
 
-    async findMyRestaurant(userId: string): Promise<IRestaurantDocument | null> {
-        return await RestaurantModel.findOne({ userId }).populate('ownerId');
+    async findMyRestaurant(ownerId: string): Promise<IRestaurantDocument | null> {
+        return await RestaurantModel.findOne({ ownerId }).populate(['ownerId', 'addressId']);
     }
 
-    async update(ownerId: string, updatedData: Partial<IRestaurant>): Promise<IRestaurantDocument | null> {
+    async update(
+        ownerId: string,
+        updatedData: Partial<Pick<IRestaurant, 'addressId' | 'deliveryTime' | 'imageUrl'>>,
+        session?: ClientSession,
+    ): Promise<IRestaurantDocument | null> {
         const restaurant: IRestaurantDocument | null = await RestaurantModel.findOneAndUpdate(
-            { userId: ownerId },
+            { ownerId },
             updatedData,
             {
                 new: true,
+                session,
             },
         );
         return restaurant;

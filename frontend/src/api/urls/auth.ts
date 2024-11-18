@@ -7,7 +7,7 @@ const authApiUrls = {
     resendOtpUrl: `${AUTH_URL}/resend-otp`,
     resetPasswordUrl: `${AUTH_URL}/password/reset`,
     verifyResetTokenUrl: `${AUTH_URL}/verify/reset-token`,
-    forgotPasswordUrl: `${AUTH_URL}/password/forgot`,
+    forgotPasswordEmailUrl: `${AUTH_URL}/password/forgot`,
     logoutUrl: `${AUTH_URL}/logout`,
 };
 

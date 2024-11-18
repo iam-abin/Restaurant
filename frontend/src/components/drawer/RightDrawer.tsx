@@ -13,12 +13,19 @@ import { Link } from "react-router-dom";
 type Anchor = "right";
 
 export default function RightDrawer({
+    onClickFn,
     menuItems,
 }: {
     menuItems: (Partial<IMenuItems2> | boolean)[];
+    onClickFn: ()=>void
 }) {
     const [state, setState] = useState({ right: false });
 
+    const handleClick = (item: Partial<IMenuItems2>)=>{
+        if(item.name ==="logout"){
+            onClickFn()
+        }
+    }
     const toggleDrawer =
         (anchor: Anchor, open: boolean) =>
         (event: KeyboardEvent | MouseEvent) => {
@@ -49,13 +56,14 @@ export default function RightDrawer({
                     )
                     .map((item) => (
                         <ListItem key={item.name} disablePadding>
-                            <ListItemButton className="flex gap-4">
+                            <ListItemButton onClick={()=>handleClick(item)} className="flex gap-4">
                                 {item.icon}
                                 {item.to ? (
                                     <Link to={item.to}>{item.name}</Link>
                                 ) : (
                                     item.name
                                 )}
+                                
                             </ListItemButton>
                         </ListItem>
                     ))}

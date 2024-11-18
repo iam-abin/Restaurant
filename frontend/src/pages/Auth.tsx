@@ -55,7 +55,7 @@ const Auth = () => {
             e.preventDefault();
             // Clear existing errors
             setErrors({});
-            console.log(errors);
+            setIsLoading(true);
             // Convert phone to number for validation if necessary
 
             const filteredData = Object.fromEntries(
@@ -90,12 +90,10 @@ const Auth = () => {
                     naivgate("/");
                 }
             } else {
-                setIsLoading(true);
-
                 const response = await signupApi(input);
                 if (response.data) {
                     hotToastMessage(response.message, "success");
-                    naivgate("/otp", { state: { userId: response.data.id } });
+                    naivgate("/signup/otp", { state: { userId: response.data.id, role: response.data.role } });
                 }
             }
         } finally {
@@ -126,7 +124,7 @@ const Auth = () => {
                                 name="name"
                                 value={input.name}
                                 onChange={changeEventHandler}
-                                placeholder="Enter your name"
+                                placeholder={`Enter your ${isRestaurantPage && "restaurant"} name`}
                                 autoComplete="name"
                             />
                             {errors.name && (

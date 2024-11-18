@@ -6,7 +6,8 @@ export const fetchUserProfile = createAsyncThunk(
     "profile/fetchUserProfile",
     async (_, { rejectWithValue }) => { // Use an underscore here as well
         try {
-            return await getProfileApi();
+            const profile = await getProfileApi();
+            return profile.data
         } catch (error) {
             return rejectWithValue("Failed to fetch profile");
         }
@@ -18,7 +19,8 @@ export const updateUserProfile = createAsyncThunk(
     "profile/updateUserProfile",
     async (updateData: any, { rejectWithValue }) => {
         try {
-            return await updateProfileApi(updateData);
+            const updatedData = await updateProfileApi(updateData);
+            return updatedData.data
         } catch (error) {
             return rejectWithValue("Failed to update profile");
         }

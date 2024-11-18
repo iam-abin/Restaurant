@@ -44,9 +44,14 @@ const NavBar = ({
             icon: <Avatar src="/broken-image.jpg" />,
             to: "/profile",
         },
-        (currentUser && isUser)&&{ name: "order", icon: <FlatwareIcon />, to: "/order/status" },
-        (currentUser && isUser)&&{ name: "cart", icon: <ShoppingCartIcon />, to: "/cart" },
-        (currentUser && isUser)&&{ name: "menu", icon: <MenuBookIcon />, to: "/menu" },
+        (currentUser && isUser)&&{ name: "Orders", icon: <FlatwareIcon />, to: "/order/status" },
+        (currentUser && isUser)&&{ name: "Cart", icon: <ShoppingCartIcon />, to: "/cart" },
+        (currentUser && (isUser || isRestaurant))&&{ name: "Home", icon: <ShoppingCartIcon />, to: "/" },
+        // (currentUser && isUser)&&{ name: "Cart", icon: <ShoppingCartIcon />, to: "/cart" },
+        // (currentUser && isUser)&&{ name: "Cart", icon: <ShoppingCartIcon />, to: "/cart" },
+        (currentUser && isRestaurant)&&{ name: "Restaurant", icon: <MenuBookIcon />, to: "/restaurant" },
+        (currentUser && isRestaurant)&&{ name: "Menu", icon: <MenuBookIcon />, to: "/restaurant/menu" },
+        (currentUser && isRestaurant)&&{ name: "Restaurant orders", icon: <MenuBookIcon />, to: "/restaurant/orders" },
         { name: "logout", icon: <LogoutIcon /> },
     ];
     return (
@@ -58,23 +63,26 @@ const NavBar = ({
                     </h1>
                 </Link>
                 <div className="hidden md:flex gap-10 items-center ">
-                    <Link to={"/"}>Home</Link>
-                    <Link to={"/profile"}>Profile</Link>
-                    <Link to={"/order/status"}>Order</Link>
-                    <IconButton aria-label="cart">
-                        <Badge badgeContent={4} color="primary">
-                            <ShoppingCartIcon />
-                        </Badge>
-                    </IconButton>
+                   {
+                    currentUser && (isUser) && <><Link to={"/"}>Home</Link>
+                     <Link to={"/profile"}>Profile</Link>
+                     <Link to={"/order/status"}>Order</Link>
+                  
+                     <IconButton aria-label="cart">
+                         <Badge badgeContent={4} color="primary">
+                             <ShoppingCartIcon />
+                         </Badge>
+                     </IconButton></>
+                   }
 
                     <Avatar src="/broken-image.jpg" />
                     <LogoutIcon onClick={handleLogout} style={{ cursor: "pointer" }} />
                 </div>
                 {isAdmin && <FadeMenu menuItems={menuItemsAdmin} />}
                 {/* Mobile responsiveness */}
-                <div className="md:hidden">
-                    <RightDrawer menuItems={menuItems} />
-                </div>
+                {!isAdmin && <div className="md:hidden">
+                    <RightDrawer  onClickFn={handleLogout} menuItems={menuItems} />
+                </div>}
             </div>
         </div>
     );

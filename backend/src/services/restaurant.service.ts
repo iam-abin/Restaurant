@@ -1,13 +1,26 @@
 import { autoInjectable } from 'tsyringe';
 import { IRestaurant } from '../types';
-import { RestaurantRepository } from '../database/repository';
-import { IRestaurantDocument } from '../database/model';
+import {
+    AddressRepository,
+    CuisineRepository,
+    RestaurantCuisineRepository,
+    RestaurantRepository,
+    UserRepository,
+} from '../database/repository';
+import { IAddressDocument, ICuisineDocument, IRestaurantDocument } from '../database/model';
 import { uploadImageOnCloudinary } from '../utils';
 import { NotFoundError } from '../errors';
+import mongoose from 'mongoose';
 
 @autoInjectable()
 export class RestaurantService {
-    constructor(private readonly restaurantRepository: RestaurantRepository) {}
+    constructor(
+        private readonly userRepository: UserRepository,
+        private readonly addressRepository: AddressRepository,
+        private readonly restaurantRepository: RestaurantRepository,
+        private readonly cuisineRepository: CuisineRepository,
+        private readonly restaurantCuisineRepository: RestaurantCuisineRepository,
+    ) {}
 
     public async getARestaurant(restaurantId: string): Promise<IRestaurantDocument | null> {
         const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
@@ -26,17 +39,82 @@ export class RestaurantService {
         restaurantData: Partial<Omit<IRestaurant, 'userId' | 'imageUrl'>>,
         file?: Express.Multer.File,
     ): Promise<IRestaurantDocument | null> {
+        const { name, city, country, deliveryTime, cuisines } = restaurantData;
+        console.log(restaurantData);
+
         let imageUrl: string | undefined;
         if (file) {
             imageUrl = await uploadImageOnCloudinary(file);
         }
 
-        const restaurant: IRestaurantDocument | null = await this.restaurantRepository.update(ownerId, {
-            ...restaurantData,
-            imageUrl,
-        });
+        const session = await mongoose.startSession();
+        session.startTransaction();
+        try {
+            // user
+            await this.userRepository.updateUser(ownerId, { name }, session);
+            // address
+            const addressData: IAddressDocument | null = await this.addressRepository.update(
+                ownerId,
+                { userId: ownerId, city, country },
+                session,
+            );
+            // resturant
+            const restaurant: IRestaurantDocument | null = await this.restaurantRepository.update(
+                ownerId,
+                { addressId: addressData?._id.toString(), deliveryTime, imageUrl },
+                session,
+            );
+            // cusine
+            if (cuisines) {
+                const existingCuisines: ICuisineDocument[] =
+                    await this.cuisineRepository.findArrayItems(cuisines);
 
-        return restaurant;
+                // Filter out cuisines that already exist
+                const filteredCuisines: string[] = this.filterOutExistingCuisines(cuisines, existingCuisines);
+                const cuisinesToInsert: {
+                    name: string;
+                }[] = filteredCuisines.map((name: string) => ({ name }));
+                if (cuisinesToInsert.length) {
+                    const insertedCuisines = await this.cuisineRepository.insertCuisines(
+                        cuisinesToInsert,
+                        session,
+                    );
+                    console.log(insertedCuisines, ' insertedCuisines');
+                    const restaurantCuisinesToInsert = insertedCuisines.map((cuisine: ICuisineDocument) => ({
+                        cuisineId: cuisine._id.toString(),
+                        restaurantId: restaurant?._id.toString(),
+                    }));
+
+                    await this.restaurantCuisineRepository.insertRestaurantCuisines(
+                        restaurantCuisinesToInsert,
+                        session,
+                    );
+                }
+            }
+
+            // Commit the transaction
+            await session.commitTransaction();
+            return restaurant;
+        } catch (error) {
+            // Rollback the transaction if something goes wrong
+            await session.abortTransaction();
+            throw error;
+        } finally {
+            session.endSession();
+        }
+    }
+
+    private filterOutExistingCuisines(
+        newCuisineNames: string[],
+        existingCuisineDocuments: ICuisineDocument[],
+    ): string[] {
+        const existingNames: string[] = existingCuisineDocuments.map(
+            (cuisine: ICuisineDocument) => cuisine.name,
+        );
+        const filteredCuisines: string[] = newCuisineNames.filter(
+            (cuisine: string) => !existingNames.includes(cuisine),
+        );
+        return filteredCuisines;
     }
 
     public async searchRestaurant(

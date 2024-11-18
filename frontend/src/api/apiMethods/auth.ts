@@ -2,7 +2,7 @@ import makeApiCall from "../apiCalls";
 import authApiUrls from "../urls/auth";
 import { IResponse } from "../../types/api";
 import { IResetPasswordRequest, ISignin, ISignup } from "../../types";
-import { IForgotPasswordEmail } from "../../pages/ForgotPassword";
+import { IForgotPasswordEmail } from "../../pages/ForgotPasswordEmail";
 
 
 export const signinApi = async (data: ISignin): Promise<IResponse> => {
@@ -21,8 +21,8 @@ export const resendOtpApi = async (data: any): Promise<IResponse> => {
 	return await makeApiCall("post", authApiUrls.resendOtpUrl, data);
 };
 
-export const forgotPasswordApi = async (data: IForgotPasswordEmail): Promise<IResponse> => {
-    return await makeApiCall("post", authApiUrls.forgotPasswordUrl, data);
+export const ForgotPasswordEmailApi = async (data: IForgotPasswordEmail): Promise<IResponse> => {
+    return await makeApiCall("post", authApiUrls.forgotPasswordEmailUrl, data);
 };
 
 export const verifyResetTokenApi = async (data: {resetToken: string}): Promise<IResponse> => {

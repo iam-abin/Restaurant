@@ -30,7 +30,7 @@ const appConfig: Readonly<IAppConfig> = Object.freeze({
     NODE_ENVIRONMENT: process.env.NODE_ENV!,
     API_PREFIX: '/api/v1',
     JWT_SECRET: process.env.JWT_SECRET!,
-    JWT_EXPIRY_TIME: '1h',
+    JWT_EXPIRY_TIME: '3h',
 
     FRONTEND_URL: process.env.FRONTEND_URL!,
 
