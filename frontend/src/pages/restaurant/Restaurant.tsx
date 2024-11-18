@@ -5,42 +5,26 @@ import {
 } from "../../utils/schema/restaurantSchema";
 import { FormEvent, useEffect, useState } from "react";
 import LoaderCircle from "../../components/Loader/LoaderCircle";
-import { getARestaurantApi, getMyRestaurantApi, updateRestaurantApi } from "../../api/apiMethods/restaurant";
+import {
+    getARestaurantApi,
+    getMyRestaurantApi,
+    updateRestaurantApi,
+} from "../../api/apiMethods/restaurant";
 import { hotToastMessage } from "../../utils/hotToast";
 import { IResponse } from "../../types/api";
-import { IRestaurant } from "../../types";
+import { ICuisine, IRestaurant } from "../../types";
 import { useAppSelector } from "../../redux/hooks";
 
 const Restaurant = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [restaurant, setRestaurant] = useState<IRestaurant | null>(null);
+    const [cuisines, setCuisines] = useState<
+        { cuisineId: ICuisine; restaurantId: string; id: string }[]
+    >([]);
 
     // const authData = useAppSelector(
     //     (state) => state.authReducer.authData
     // );
-
-    useEffect(()=>{
-        (
-            async()=>{
-                const response = await getMyRestaurantApi();
-                setRestaurant(response.data)
-            }
-        )()
-    },[])
-
-    useEffect(() => {
-        if (restaurant) {
-            setInput((prevInput) => ({
-                ...prevInput,
-                name: restaurant.ownerId.name || "",
-                city: restaurant.addressId.city || "",
-                country: restaurant.addressId.country || "",
-                deliveryTime: restaurant.deliveryTime || 0,
-                cuisines: restaurant.cuisines || [],
-            }));
-        }
-    }, [restaurant]);
-
     const [input, setInput] = useState<RestaurantFormSchema>({
         name: restaurant?.ownerId.name!,
         city: "",
@@ -51,6 +35,32 @@ const Restaurant = () => {
     });
     const [errors, setErrors] = useState<Partial<RestaurantFormSchema>>({});
 
+
+    useEffect(() => {
+        (async () => {
+            const response: IResponse = await getMyRestaurantApi();
+            const { restaurant, cuisines } = response.data;
+            setRestaurant(restaurant);
+            setCuisines(cuisines);
+        })();
+    }, []);
+
+    useEffect(() => {
+        if (restaurant) {
+            setInput((prevInput) => ({
+                ...prevInput,
+                name: restaurant.ownerId.name || "",
+                city: restaurant.addressId.city || "",
+                country: restaurant.addressId.country || "",
+                deliveryTime: restaurant.deliveryTime || 0,
+                cuisines: cuisines.map(
+                    (cuisine) => (cuisine.cuisineId as ICuisine).name
+                ) || [],
+            }));
+        }
+    }, [restaurant]);
+
+    
     const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type } = e.target;
         setInput({
@@ -61,15 +71,15 @@ const Restaurant = () => {
 
     const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setIsLoading(true)
-        
-        console.log("input is ",input);
-        
-        const result = restaurantFromSchema.safeParse(input);
+        setIsLoading(true);
+
+        console.log("input is ", input);
+
+        const result = restaurantFromSchema.safeParse({...input, cuisines: input.cuisines});
         if (!result.success) {
             const fieldErrors = result.error.formErrors.fieldErrors;
             setErrors(fieldErrors as Partial<RestaurantFormSchema>);
-            setIsLoading(false)
+            setIsLoading(false);
             return;
         }
 
@@ -86,13 +96,15 @@ const Restaurant = () => {
             }
 
             // Make your API call to update the restaurant here
-            if(restaurant){
-                const response: IResponse =  await updateRestaurantApi(restaurant.id!, input, )
-                hotToastMessage(response.message, 'success')
+            if (restaurant) {
+                const response: IResponse = await updateRestaurantApi(
+                    restaurant.id!,
+                    input
+                );
+                hotToastMessage(response.message, "success");
             }
-
-        }finally{
-        setIsLoading(false)
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -106,15 +118,12 @@ const Restaurant = () => {
                     <div className="md:grid grid-cols-2 gap-6 space-y-2 md:space-y-0">
                         {/* Restaurant Name */}
                         <div className="relative">
-                        <label>restaurantName</label>
+                            <label>restaurantName</label>
                             <input
                                 className="w-full h-12 border border-black rounded-lg p-1 pl-4"
                                 type="text"
                                 name="name"
-                                value={
-                                    input.name
-                                        
-                                }
+                                value={input.name}
                                 onChange={changeEventHandler}
                                 placeholder="Enter your restaurant name"
                                 autoComplete="restaurant-name"
@@ -128,7 +137,7 @@ const Restaurant = () => {
 
                         {/* City */}
                         <div className="relative">
-                        <label>city</label>
+                            <label>city</label>
                             <input
                                 className="w-full h-12 border border-black rounded-lg p-1 pl-4"
                                 type="text"
@@ -147,7 +156,7 @@ const Restaurant = () => {
 
                         {/* Country */}
                         <div className="relative">
-                        <label>country</label>
+                            <label>country</label>
                             <input
                                 className="w-full h-12 border border-black rounded-lg p-1 pl-4"
                                 type="text"
@@ -166,7 +175,7 @@ const Restaurant = () => {
 
                         {/* Delivery Time */}
                         <div className="relative">
-                        <label>deliveryTime( In minutes )</label>
+                            <label>deliveryTime( In minutes )</label>
                             <input
                                 className="w-full h-12 border border-black rounded-lg p-1 pl-4"
                                 type="number"
@@ -185,16 +194,16 @@ const Restaurant = () => {
 
                         {/* Cuisines */}
                         <div className="relative">
-                        <label>cuisines</label>
+                            <label>cuisines</label>
                             <input
                                 className="w-full h-12 border border-black rounded-lg p-1 pl-4"
                                 type="text"
                                 name="cuisines"
-                                value={input.cuisines.join(", ")}
+                                value={input.cuisines}
                                 onChange={(e) =>
                                     setInput({
                                         ...input,
-                                        cuisines: e.target.value.split(","),
+                                        cuisines: e.target.value.split(',').map((c) => c.trim()), // Split and trim for state
                                     })
                                 }
                                 placeholder="Enter cuisines (e.g. Momos, Biryani)"
@@ -209,7 +218,7 @@ const Restaurant = () => {
 
                         {/* Upload Restaurant Banner */}
                         <div className="relative">
-                        <label>Upload Restaurant Banner</label>
+                            <label>Upload Restaurant Banner</label>
                             <input
                                 className="w-full h-10 boh-12der border-black rounded-lg p-1 pl-4"
                                 type="file"
@@ -224,7 +233,8 @@ const Restaurant = () => {
                             />
                             {errors.image && (
                                 <span className="text-red-500 text-sm">
-                                    {errors.image?.name || "image file is required"}
+                                    {errors.image?.name ||
+                                        "image file is required"}
                                 </span>
                             )}
                         </div>

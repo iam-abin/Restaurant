@@ -7,10 +7,16 @@ import {
     RestaurantRepository,
     UserRepository,
 } from '../database/repository';
-import { IAddressDocument, ICuisineDocument, IRestaurantDocument } from '../database/model';
+import {
+    IAddressDocument,
+    ICuisineDocument,
+    IRestaurantCuisineDocument,
+    IRestaurantDocument,
+} from '../database/model';
 import { uploadImageOnCloudinary } from '../utils';
 import { NotFoundError } from '../errors';
 import mongoose from 'mongoose';
+import { RestaurantWithCuisines } from '../controllers/restaurant.controller';
 
 @autoInjectable()
 export class RestaurantService {
@@ -28,10 +34,16 @@ export class RestaurantService {
         return restaurant;
     }
 
-    public async getMyRestaurant(userId: string): Promise<IRestaurantDocument | null> {
-        const restaurant = await this.restaurantRepository.findMyRestaurant(userId);
+    public async getMyRestaurant(
+        userId: string,
+    ): Promise<RestaurantWithCuisines> {
+        const restaurant: IRestaurantDocument | null =
+            await this.restaurantRepository.findMyRestaurant(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
-        return restaurant;
+        const cuisines: IRestaurantCuisineDocument[] = await this.restaurantCuisineRepository.find(
+            restaurant?._id.toString(),
+        );
+        return { restaurant, cuisines };
     }
 
     public async updateRestaurant(

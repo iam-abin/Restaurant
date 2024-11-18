@@ -10,7 +10,6 @@ export class CuisineRepository {
     }
 
     async findArrayItems(cuisines: string[]): Promise<ICuisineDocument[]> {
-        const restaurant: ICuisineDocument[] = await CuisineModel.find({ name: { $in: cuisines } });
-        return restaurant;
+        return await CuisineModel.find({ name: { $in: cuisines } });
     }
 }
