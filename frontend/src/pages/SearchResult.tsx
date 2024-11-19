@@ -1,19 +1,19 @@
-import { useParams } from "react-router-dom";
-import Filter from "../components/Filter";
-import { useState } from "react";
-import SearchIcon from "@mui/icons-material/Search";
-import { Button, Chip } from "@mui/material";
-import RestaurantCard from "../components/cards/RestaurantCard";
-import RestaurantCardSkeleton from "../components/shimmer/RestaurantCardSkeleton";
-import { NoResultFound } from "../components/NoResultFound";
+import { useParams } from 'react-router-dom'
+import Filter from '../components/Filter'
+import { useState } from 'react'
+import SearchIcon from '@mui/icons-material/Search'
+import { Button, Chip } from '@mui/material'
+import RestaurantCard from '../components/cards/RestaurantCard'
+import RestaurantCardSkeleton from '../components/shimmer/RestaurantCardSkeleton'
+import { NoResultFound } from '../components/NoResultFound'
 
 const SearchResult = () => {
-    const params = useParams();
-    const [searchQuery, setSearchQuery] = useState<string>("");
-    console.log(params.searchKey);
+    const params = useParams()
+    const [searchQuery, setSearchQuery] = useState<string>('')
+    console.log(params.searchKey)
 
-    const handleDelete = () => {};
-    const searchResults = [];
+    const handleDelete = () => {}
+    const searchResults = []
 
     return (
         <div className=" max-w-7xl mx-auto my-5">
@@ -46,22 +46,20 @@ const SearchResult = () => {
                             <h1 className="font-medium text-lg">
                                 (3) Search result found
                                 <div className="flex flex-wrap gap-2 mb-4 md:mb-0">
-                                    {[
-                                        "biriyani",
-                                        "shawarma",
-                                        "Kuzhi mandhi",
-                                    ].map((selectedFlter, index) => (
-                                        <div
-                                            key={index}
-                                            className="relative inline-flex items-center max-w-full"
-                                        >
-                                            <Chip
-                                                label={selectedFlter}
-                                                variant="outlined"
-                                                onDelete={handleDelete}
-                                            />
-                                        </div>
-                                    ))}
+                                    {['biriyani', 'shawarma', 'Kuzhi mandhi'].map(
+                                        (selectedFlter, index) => (
+                                            <div
+                                                key={index}
+                                                className="relative inline-flex items-center max-w-full"
+                                            >
+                                                <Chip
+                                                    label={selectedFlter}
+                                                    variant="outlined"
+                                                    onDelete={handleDelete}
+                                                />
+                                            </div>
+                                        )
+                                    )}
                                 </div>
                             </h1>
                         </div>
@@ -84,7 +82,7 @@ const SearchResult = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default SearchResult;
+export default SearchResult

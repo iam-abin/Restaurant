@@ -1,19 +1,19 @@
 export interface IOtp {
-    userId: string;
-    otp: string;
+    userId: string
+    otp: string
 }
 
 export interface IEmailTemplate {
-    html: string;
-    emailSubject: string;
+    html: string
+    emailSubject: string
 }
 
 export interface IResetPassword {
-    password: string;
-    confirmPassword: string;
+    password: string
+    confirmPassword: string
 }
 
 export interface IResetPasswordRequest {
-    userId: string;
-    password: string;
+    userId: string
+    password: string
 }

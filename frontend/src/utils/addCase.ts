@@ -1,4 +1,4 @@
-import { ActionReducerMapBuilder, AsyncThunk, PayloadAction, Draft } from "@reduxjs/toolkit";
+import { ActionReducerMapBuilder, AsyncThunk, PayloadAction, Draft } from '@reduxjs/toolkit'
 
 export function addAsyncThunkCases<StateType extends { status: string; error: string | null }>(
     builder: ActionReducerMapBuilder<StateType>,
@@ -7,17 +7,17 @@ export function addAsyncThunkCases<StateType extends { status: string; error: st
 ) {
     builder
         .addCase(asyncThunk.pending, (state) => {
-            state.status = "loading";
-            state.error = null;
+            state.status = 'loading'
+            state.error = null
         })
         .addCase(asyncThunk.fulfilled, (state, action) => {
-            state.status = "succeeded";
+            state.status = 'succeeded'
             if (onSuccess) {
-                onSuccess(state, action); // Execute onSuccess if provided
+                onSuccess(state, action) // Execute onSuccess if provided
             }
         })
         .addCase(asyncThunk.rejected, (state, action) => {
-            state.status = "failed";
-            state.error = action.payload as string;
-        });
+            state.status = 'failed'
+            state.error = action.payload as string
+        })
 }

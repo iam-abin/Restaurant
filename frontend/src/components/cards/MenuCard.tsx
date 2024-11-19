@@ -1,27 +1,24 @@
-import FriedChicken from "../../assets/fried-chicken-french-fries-black-cement-floor (1).jpg";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import EditMenuModal from "../modal/EditMenuModal";
-import { IMenu } from "../../types";
+import FriedChicken from '../../assets/fried-chicken-french-fries-black-cement-floor (1).jpg'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardMedia from '@mui/material/CardMedia'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import EditMenuModal from '../modal/EditMenuModal'
+import { IMenu } from '../../types'
 
-const MenuCard = ({menu}: {menu: IMenu}) => {
-    const isAdmin = true;
-    const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
-    const handleEditMenuOpen = () => setIsEditMenuOpen(true);
-    const handleEditMenuClose = () => setIsEditMenuOpen(false);
+const MenuCard = ({ menu }: { menu: IMenu }) => {
+    const isAdmin = true
+    const [isEditMenuOpen, setIsEditMenuOpen] = useState(false)
+    const handleEditMenuOpen = () => setIsEditMenuOpen(true)
+    const handleEditMenuClose = () => setIsEditMenuOpen(false)
     return (
         <div className="flex justify-center bg-yellow-700">
             <Card sx={{ width: 10 / 12 }}>
                 <div className="flex md:flex">
-                    <EditMenuModal
-                        isOpen={isEditMenuOpen}
-                        handleClose={handleEditMenuClose}
-                    />
+                    <EditMenuModal isOpen={isEditMenuOpen} handleClose={handleEditMenuClose} />
                     <div className="relative">
                         <CardMedia
                             component="img"
@@ -32,29 +29,19 @@ const MenuCard = ({menu}: {menu: IMenu}) => {
                     </div>
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
-                            <h1 className="text-2xl font-bold text-gray-900">
-                                {menu.name}
-                            </h1>
+                            <h1 className="text-2xl font-bold text-gray-900">{menu.name}</h1>
                         </Typography>
 
-                        <p>
-                        {menu.description}
-                        </p>
+                        <p>{menu.description}</p>
                         <h2 className="text-lg font-semibold mt-4">
-                            Price:{" "}
-                            <Typography className="text-yellow-600">
-                                ₹{menu.price}
-                            </Typography>
+                            Price:{' '}
+                            <Typography className="text-yellow-600">₹{menu.price}</Typography>
                         </h2>
                     </CardContent>
                     <div className="flex items-center justify-center px-4 py-2">
                         {!isAdmin ? (
                             <Link to={`/restaurant/${menu.id}`} className="w-full">
-                                <Button
-                                    className="w-full"
-                                    variant="contained"
-                                    size="small"
-                                >
+                                <Button className="w-full" variant="contained" size="small">
                                     Add to cart
                                 </Button>
                             </Link>
@@ -72,7 +59,7 @@ const MenuCard = ({menu}: {menu: IMenu}) => {
                 </div>
             </Card>
         </div>
-    );
-};
+    )
+}
 
-export default MenuCard;
+export default MenuCard

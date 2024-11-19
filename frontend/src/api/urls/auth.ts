@@ -1,4 +1,4 @@
-const AUTH_URL = `/auth`;
+const AUTH_URL = `/auth`
 
 const authApiUrls = {
     signinUrl: `${AUTH_URL}/signin`,
@@ -8,7 +8,7 @@ const authApiUrls = {
     resetPasswordUrl: `${AUTH_URL}/password/reset`,
     verifyResetTokenUrl: `${AUTH_URL}/verify/reset-token`,
     forgotPasswordEmailUrl: `${AUTH_URL}/password/forgot`,
-    logoutUrl: `${AUTH_URL}/logout`,
-};
+    logoutUrl: `${AUTH_URL}/logout`
+}
 
-export default authApiUrls;
+export default authApiUrls

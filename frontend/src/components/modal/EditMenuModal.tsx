@@ -1,53 +1,52 @@
-import { ChangeEvent, FormEvent, useState } from "react";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
-import { Button } from "@mui/material";
-import LoaderCircle from "../Loader/LoaderCircle";
-import { MenuFormSchema } from "../../utils/schema/menuSchema";
+import { ChangeEvent, FormEvent, useState } from 'react'
+import Box from '@mui/material/Box'
+import Modal from '@mui/material/Modal'
+import IconButton from '@mui/material/IconButton'
+import CloseIcon from '@mui/icons-material/Close'
+import Typography from '@mui/material/Typography'
+import { Button } from '@mui/material'
+import LoaderCircle from '../Loader/LoaderCircle'
+import { MenuFormSchema } from '../../utils/schema/menuSchema'
 
 const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "80%",
-    height: "80%",
-    bgcolor: "background.paper",
-    border: "2px solid #000",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '80%',
+    height: '80%',
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
     boxShadow: 24,
-    p: 4,
-};
+    p: 4
+}
 
 export default function EditMenuModal({
     isOpen,
-    handleClose,
+    handleClose
 }: {
-    isOpen: boolean;
-    handleClose: () => void;
+    isOpen: boolean
+    handleClose: () => void
 }) {
-
-    const [errors, setErrors] = useState<Partial<MenuFormSchema>>({});
-    const [isLoading, setIsLoading] = useState(false);
+    const [errors, setErrors] = useState<Partial<MenuFormSchema>>({})
+    const [isLoading, setIsLoading] = useState(false)
     const [input, setInput] = useState<MenuFormSchema>({
-        name: "h",
-        description: "j",
+        name: 'h',
+        description: 'j',
         price: 0,
-        image: undefined,
-    });
+        image: undefined
+    })
 
     const submitHandler = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-    };
+        e.preventDefault()
+    }
     const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type } = e.target;
+        const { name, value, type } = e.target
         setInput({
             ...input,
-            [name]: type === "number" ? Number(value) : value,
-        });
-    };
+            [name]: type === 'number' ? Number(value) : value
+        })
+    }
 
     return (
         <div>
@@ -62,34 +61,24 @@ export default function EditMenuModal({
                     {/* Close button at the top-right corner */}
                     <IconButton
                         sx={{
-                            position: "absolute",
+                            position: 'absolute',
                             top: 8,
-                            right: 8,
+                            right: 8
                         }}
                         onClick={handleClose}
                     >
                         <CloseIcon />
                     </IconButton>
                     <div className="flex justify-center">
-                        <Typography
-                            id="keep-mounted-modal-title"
-                            variant="h6"
-                            component="h2"
-                        >
+                        <Typography id="keep-mounted-modal-title" variant="h6" component="h2">
                             Edit Menu
                         </Typography>
                     </div>
-                    <Typography
-                        id="keep-mounted-modal-description"
-                        sx={{ mt: 2 }}
-                    >
+                    <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
                         Create a menu that will make your restaurant stand out.
                     </Typography>
                     {/* Form */}
-                    <form
-                        onSubmit={submitHandler}
-                        className="mt-4 flex flex-col"
-                    >
+                    <form onSubmit={submitHandler} className="mt-4 flex flex-col">
                         <div>
                             <label className="text-sm">Fullname</label>
                             <input
@@ -111,7 +100,7 @@ export default function EditMenuModal({
                                 value={input.description}
                                 onChange={changeEventHandler}
                             />
-                                {errors && (
+                            {errors && (
                                 <Typography className="text-sm text-red-500">
                                     {errors.name!}
                                 </Typography>
@@ -138,21 +127,17 @@ export default function EditMenuModal({
                                 onChange={(e) =>
                                     setInput({
                                         ...input,
-                                        image:
-                                            e.target.files?.[0] || undefined,
+                                        image: e.target.files?.[0] || undefined
                                     })
                                 }
                             />
                             {errors.image && (
                                 <Typography className="text-red-500 text-sm">
-                                    {errors.image?.name || "image file is required"}
+                                    {errors.image?.name || 'image file is required'}
                                 </Typography>
                             )}
                         </div>
-                        <Button
-                            variant="contained"
-                            className=" h-10 w-full col-Typography-2 pt-5"
-                        >
+                        <Button variant="contained" className=" h-10 w-full col-Typography-2 pt-5">
                             {isLoading ? (
                                 <>
                                     Please wait
@@ -166,5 +151,5 @@ export default function EditMenuModal({
                 </Box>
             </Modal>
         </div>
-    );
+    )
 }

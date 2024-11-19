@@ -1,60 +1,59 @@
-import { Avatar, Box, Button } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import { ChangeEvent, FormEvent, useRef, useState } from "react";
-import LoaderCircle from "../components/Loader/LoaderCircle";
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import EmailIcon from "@mui/icons-material/Email";
-import FlagIcon from '@mui/icons-material/Flag';
-import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
+import { Avatar, Box, Button } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
+import { ChangeEvent, FormEvent, useRef, useState } from 'react'
+import LoaderCircle from '../components/Loader/LoaderCircle'
+import LocationOnIcon from '@mui/icons-material/LocationOn'
+import EmailIcon from '@mui/icons-material/Email'
+import FlagIcon from '@mui/icons-material/Flag'
+import LocationSearchingIcon from '@mui/icons-material/LocationSearching'
 
 type ProfileDataState = {
-    name: string;
-    email: string;
-    address: string;
-    city: string;
-    country: string;
-    image: string;
-};
+    name: string
+    email: string
+    address: string
+    city: string
+    country: string
+    image: string
+}
 
 const Profile = () => {
-    const imageRef = useRef<HTMLInputElement | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [selectedProfilePicture, setSelectedProfilePicture] =
-        useState<string>("");
+    const imageRef = useRef<HTMLInputElement | null>(null)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [selectedProfilePicture, setSelectedProfilePicture] = useState<string>('')
     const [profileData, setProfileData] = useState({
-        name: "",
-        email: "",
-        address: "",
-        city: "",
-        country: "",
-        image: "",
-    });
+        name: '',
+        email: '',
+        address: '',
+        city: '',
+        country: '',
+        image: ''
+    })
     const fileChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
+        const file = e.target.files?.[0]
         if (!file) {
-            return;
+            return
         }
 
-        const reader = new FileReader();
+        const reader = new FileReader()
         reader.onloadend = () => {
-            const result = reader.result as string;
-            setSelectedProfilePicture(result);
+            const result = reader.result as string
+            setSelectedProfilePicture(result)
             setProfileData((prevData) => ({
                 ...prevData,
-                image: result,
-            }));
-        };
-        reader.readAsDataURL(file);
-    };
+                image: result
+            }))
+        }
+        reader.readAsDataURL(file)
+    }
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setProfileData({ ...profileData, [name]: value });
-    };
+        const { name, value } = e.target
+        setProfileData({ ...profileData, [name]: value })
+    }
 
     const updateProfileHandler = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        console.log(profileData);
+        e.preventDefault()
+        console.log(profileData)
 
         // try {
         //   setIsLoading(true);
@@ -63,7 +62,7 @@ const Profile = () => {
         // } catch (error) {
         //   setIsLoading(false);
         // }
-    };
+    }
 
     return (
         <form className=" max-w-7xl mx-auto my-5">
@@ -74,28 +73,28 @@ const Profile = () => {
                             sx={{
                                 width: 80,
                                 height: 80,
-                                md: { width: 112, height: 112 },
+                                md: { width: 112, height: 112 }
                             }}
                             src="/broken-image.jpg"
                         />
                         {/* Overlay for hover effect */}
                         <Box
                             sx={{
-                                position: "absolute",
+                                position: 'absolute',
                                 top: 0,
                                 left: 0,
-                                width: "100%",
-                                height: "100%",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                                borderRadius: "50%",
+                                width: '100%',
+                                height: '100%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                                borderRadius: '50%',
                                 opacity: 0,
-                                transition: "opacity 0.3s",
-                                "&:hover": {
-                                    opacity: 1,
-                                },
+                                transition: 'opacity 0.3s',
+                                '&:hover': {
+                                    opacity: 1
+                                }
                             }}
                         >
                             <input
@@ -121,7 +120,7 @@ const Profile = () => {
             </div>
             <div className="grid md:grid-cols-4 md:gap-2 gap-3 my-10">
                 <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
-                        <EmailIcon className="text-gray-500" />
+                    <EmailIcon className="text-gray-500" />
                     <div className="w-full">
                         <label>Email</label>
                         <input
@@ -182,12 +181,12 @@ const Profile = () => {
                             Please wait <LoaderCircle />
                         </label>
                     ) : (
-                        "Update"
+                        'Update'
                     )}
                 </Button>
             </div>
         </form>
-    );
-};
+    )
+}
 
-export default Profile;
+export default Profile

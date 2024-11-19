@@ -1,16 +1,16 @@
 // import { IUserRole } from './roles';
 
 export interface IUser {
-    id?: string;
-    name: string;
-    email: string;
-    phone: string;
-    password: string;
-    role: string;
+    id?: string
+    name: string
+    email: string
+    phone: string
+    password: string
+    role: string
 }
 
 export interface ISignup extends Omit<IUser, 'id'> {
-    name: string;
+    name: string
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
