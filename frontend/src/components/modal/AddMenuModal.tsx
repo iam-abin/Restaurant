@@ -10,6 +10,8 @@ import { MenuFormSchema, menuSchema } from '../../utils/schema/menuSchema'
 import { IResponse } from '../../types/api'
 import { addMenuApi } from '../../api/apiMethods/menu'
 import { hotToastMessage } from '../../utils/hotToast'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { fetchMenus } from '../../redux/thunk/menusThunk'
 
 const style = {
     position: 'absolute',
@@ -38,7 +40,9 @@ export default function AddMenuModal({
         price: 0,
         image: undefined
     })
+    const restaurantData = useAppSelector((state) => state.restaurantReducer.restaurantData)
     const [errors, setErrors] = useState<Partial<MenuFormSchema>>({})
+    const dispatch = useAppDispatch()
 
     const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -76,6 +80,9 @@ export default function AddMenuModal({
                 price: 0,
                 image: undefined
             })
+                // Re-fetch menus
+        dispatch(fetchMenus(restaurantData.restaurant.id))
+        handleClose()
         } finally {
             setIsLoading(false)
         }

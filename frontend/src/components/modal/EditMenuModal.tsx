@@ -77,10 +77,10 @@ export default function EditMenuModal({
             const response: IResponse = await editMenuApi(menu.id, formData)
             hotToastMessage(response.message, 'success')
               // Re-fetch menus
-        dispatch(fetchMenus(menu.restaurantId))
+        dispatch(fetchMenus(menu.restaurantId));
+        handleClose()
         } finally {
             setIsLoading(false)
-            handleClose()
         }
     }
     const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
