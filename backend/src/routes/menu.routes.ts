@@ -13,9 +13,9 @@ router.post(
     menuController.addMenu,
 );
 
-router.get('/restaurant/:restaurantId', checkCurrentUser, menuController.getMenus);
-
 router.get('/:menuId', checkCurrentUser, menuController.getMenu);
+
+router.get('/restaurant/:restaurantId', checkCurrentUser, menuController.getMenus);
 
 router.patch(
     '/:menuId',

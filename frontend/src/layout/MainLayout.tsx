@@ -4,6 +4,7 @@ import Footer from "../components/footer/Footer";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { RootState } from "../redux/store";
 import { logoutUser } from "../redux/thunk/authThunk";
+import { clearRestaurant } from "../redux/slice/restaurantSlice";
 
 const MainLayout = () => {
   const currentUser = useAppSelector(
@@ -15,6 +16,7 @@ const MainLayout = () => {
   const handleLogout = async () => {
     
       const response = await dispatch(logoutUser());
+      dispatch(clearRestaurant());
 
       // Check if the action was rejected
       if (response.meta.requestStatus !== "rejected") {

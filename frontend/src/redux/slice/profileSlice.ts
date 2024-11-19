@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
 import { fetchUserProfile, updateUserProfile } from "../thunk/profileThunk";
 import { addAsyncThunkCases } from "../../utils/addCase";
 
@@ -18,14 +17,7 @@ const initialState: IProfileSlice = {
 const profileSlice = createSlice({
     name: "profile-data",
     initialState,
-    reducers: {
-        setMyProfileData: (state, action: PayloadAction<any>) => {
-            state.myProfile = action.payload;
-        },
-        clearMyProfileData: (state) => {
-            state.myProfile = null;
-        },
-    },
+    reducers: {},
     extraReducers: (builder) => {
         addAsyncThunkCases(builder, fetchUserProfile, (state, action) => {
             state.status = "succeeded";
@@ -38,5 +30,4 @@ const profileSlice = createSlice({
     },
 });
 
-export const { setMyProfileData, clearMyProfileData } = profileSlice.actions;
 export default profileSlice.reducer;

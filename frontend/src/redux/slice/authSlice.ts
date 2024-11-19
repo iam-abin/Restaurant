@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { addAsyncThunkCases } from "../../utils/addCase";
 import { logoutUser, signinUser } from "../thunk/authThunk";
 
@@ -17,14 +17,7 @@ const initialState: IAuthSlice = {
 const authSlice = createSlice({
     name: "auth-data",
     initialState,
-    reducers: {
-        setUser: (state, action: PayloadAction<any>) => {
-            state.authData = action.payload;
-        },
-        clearUser: (state) => {
-            state.authData = null;
-        },
-    },
+    reducers: {},
     extraReducers: (builder) => {
         // Signin logic with custom success handling
         addAsyncThunkCases<IAuthSlice>(builder, signinUser, (state, action) => {
@@ -38,5 +31,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { setUser, clearUser } = authSlice.actions;
+// export const { setUser, clearUser } = authSlice.actions;
 export default authSlice.reducer;

@@ -52,12 +52,6 @@ export class RestaurantService {
         file?: Express.Multer.File,
     ): Promise<IRestaurantDocument | null> {
         const { name, city, country, deliveryTime, cuisines } = restaurantData;
-        console.log(restaurantData);
-
-        let imageUrl: string | undefined;
-        if (file) {
-            imageUrl = await uploadImageOnCloudinary(file);
-        }
 
         const session = await mongoose.startSession();
         session.startTransaction();
@@ -70,7 +64,13 @@ export class RestaurantService {
                 { userId: ownerId, city, country },
                 session,
             );
+
             // resturant
+            let imageUrl: string | undefined;
+            if (file) {
+                imageUrl = await uploadImageOnCloudinary(file);
+            }
+            
             const restaurant: IRestaurantDocument | null = await this.restaurantRepository.update(
                 ownerId,
                 { addressId: addressData?._id.toString(), deliveryTime, imageUrl },

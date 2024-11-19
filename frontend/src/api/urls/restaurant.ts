@@ -4,8 +4,7 @@ const restaurantApiUrls = {
     getARestaurantUrl: (restaurantId: string) =>
         `${RESTAURANT_URL}/${restaurantId}`,
     getMyRestaurantUrl: `${RESTAURANT_URL}`,
-    updateRestaurantUrl: (restaurantId: string) =>
-        `${RESTAURANT_URL}/${restaurantId}`,
+    updateRestaurantUrl: `${RESTAURANT_URL}`,
     searchRestaurantUrl: (
         searchText: string,
         searchQuery: string,

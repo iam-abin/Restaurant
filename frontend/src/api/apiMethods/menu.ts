@@ -3,7 +3,7 @@ import { IResponse } from "../../types/api";
 import menuApiUrls from "../urls/menu";
 
 
-export const addMenuApi = async (data: any): Promise<IResponse> => {
+export const addMenuApi = async (data: FormData): Promise<IResponse> => {
 	return await makeApiCall("post", menuApiUrls.addMenuUrl, data);
 };
 

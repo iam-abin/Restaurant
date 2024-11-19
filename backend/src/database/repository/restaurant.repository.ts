@@ -13,6 +13,8 @@ export class RestaurantRepository {
     }
 
     async findMyRestaurant(ownerId: string): Promise<IRestaurantDocument | null> {
+        console.log("owner id ", ownerId);
+        
         return await RestaurantModel.findOne({ ownerId }).populate(['ownerId', 'addressId']);
     }
 

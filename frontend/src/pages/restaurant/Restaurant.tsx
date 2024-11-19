@@ -1,4 +1,4 @@
-import { Button, FormHelperText } from "@mui/material";
+import { Button } from "@mui/material";
 import {
     RestaurantFormSchema,
     restaurantFromSchema,
@@ -6,7 +6,6 @@ import {
 import { FormEvent, useEffect, useState } from "react";
 import LoaderCircle from "../../components/Loader/LoaderCircle";
 import {
-    getARestaurantApi,
     getMyRestaurantApi,
     updateRestaurantApi,
 } from "../../api/apiMethods/restaurant";
@@ -97,10 +96,7 @@ const Restaurant = () => {
 
             // Make your API call to update the restaurant here
             if (restaurant) {
-                const response: IResponse = await updateRestaurantApi(
-                    restaurant.id!,
-                    input
-                );
+                const response: IResponse = await updateRestaurantApi(formData);
                 hotToastMessage(response.message, "success");
             }
         } finally {

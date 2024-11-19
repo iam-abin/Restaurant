@@ -15,7 +15,6 @@ export type RestaurantWithCuisines = {
 class RestaurantController {
     public async editRestaurant(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
-        // const { restaurantId } = req.params;
         const file: Express.Multer.File = req.file!;
         const restaurant: IRestaurantDocument | null = await restaurantService.updateRestaurant(
             userId,
@@ -27,6 +26,10 @@ class RestaurantController {
 
     public async getMyRestaurant(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
+        console.log("-------------------");
+        console.log(userId);
+        console.log("-------------------");
+        
         const restaurant: RestaurantWithCuisines = await restaurantService.getMyRestaurant(userId);
         res.status(200).json(createSuccessResponse('Your restaurant fetched successfully', restaurant));
     }

@@ -13,6 +13,7 @@ import { signinUser } from "../redux/thunk/authThunk";
 import { hotToastMessage } from "../utils/hotToast";
 import { signupApi } from "../api/apiMethods/auth";
 import { ISignup } from "../types";
+import { fetchMyRestaurant } from "../redux/thunk/restaurantThunk";
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -83,6 +84,10 @@ const Auth = () => {
                         password: input.password!,
                         role: role!,
                     })
+                );
+
+                await dispatch(
+                    fetchMyRestaurant()
                 );
 
                 // Check if the action was rejected

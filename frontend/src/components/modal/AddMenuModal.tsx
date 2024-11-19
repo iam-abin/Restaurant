@@ -6,7 +6,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
 import LoaderCircle from "../Loader/LoaderCircle";
-import { MenuFormSchema } from "../../utils/schema/menuSchema";
+import { MenuFormSchema, menuSchema } from "../../utils/schema/menuSchema";
+import { IResponse } from "../../types/api";
+import { addMenuApi } from "../../api/apiMethods/menu";
+import { hotToastMessage } from "../../utils/hotToast";
 
 const style = {
     position: "absolute",
@@ -35,17 +38,57 @@ export default function AddMenuModal({
         price: 0,
         image: undefined,
     });
+    const [errors, setErrors] = useState<Partial<MenuFormSchema>>({});
 
-    const submitHandler = (e: FormEvent<HTMLFormElement>) => {
+    const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true);
+        // Clear existing errors
+        setErrors({});
+        const inputData = {
+            ...input,
+            price: input.price ? Number(input.price) : undefined,
+        };
+        
+        const result = menuSchema.safeParse({ ...inputData });
+        console.log(input);
+        
+        if (!result.success) {
+            const fieldErrors = result.error.formErrors.fieldErrors;
+            setErrors(fieldErrors as Partial<MenuFormSchema>);
+            setIsLoading(false);
+            return;
+        }
+        try {
+            const formData = new FormData();
+            formData.append("name", inputData.name);
+            formData.append("description", inputData.description);
+            formData.append("price", inputData.price?.toString()!);
+            if (inputData.image) {
+                formData.append("image", inputData.image);
+            }
+
+            const response: IResponse = await addMenuApi(formData);
+            hotToastMessage(response.message, "success");
+            setInput({
+                name: "",
+                description: "",
+                price: 0,
+                image: undefined,
+            })
+
+        } finally {
+            setIsLoading(false);
+        }
     };
     const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type } = e.target;
+        const { name, value } = e.target;
         setInput({
             ...input,
-            [name]: type === "number" ? Number(value) : value,
+            [name]:  value
         });
     };
+    
 
     return (
         <div>
@@ -89,7 +132,7 @@ export default function AddMenuModal({
                         className="mt-4 flex flex-col"
                     >
                         <div>
-                            <label className="text-sm">Fullname</label>
+                            <label className="text-sm">name</label>
                             <input
                                 className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
                                 type="text"
@@ -98,9 +141,14 @@ export default function AddMenuModal({
                                 value={input.name}
                                 onChange={changeEventHandler}
                             />
+                            {errors.name && (
+                                <span className="text-red-500 text-sm">
+                                    {errors.name}
+                                </span>
+                            )}
                         </div>
                         <div>
-                            <label className="text-sm">Contact</label>
+                            <label className="text-sm">Description</label>
                             <input
                                 className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
                                 type="text"
@@ -109,6 +157,11 @@ export default function AddMenuModal({
                                 value={input.description}
                                 onChange={changeEventHandler}
                             />
+                            {errors.description && (
+                                <span className="text-red-500 text-sm">
+                                    {errors.description}
+                                </span>
+                            )}
                         </div>
                         <div>
                             <label className="text-sm">Price in rupees</label>
@@ -120,6 +173,11 @@ export default function AddMenuModal({
                                 value={input.price}
                                 onChange={changeEventHandler}
                             />
+                            {errors.price && (
+                                <span className="text-red-500 text-sm">
+                                    {errors.price}
+                                </span>
+                            )}
                         </div>
                         <div>
                             <label>Upload Menu image</label>
@@ -131,20 +189,22 @@ export default function AddMenuModal({
                                 onChange={(e) =>
                                     setInput({
                                         ...input,
-                                        image:
-                                            e.target.files?.[0] || undefined,
+                                        image: e.target.files?.[0] || undefined,
                                     })
                                 }
                             />
-                            {/* {errors.image && (
-                                <FormHelperText className="text-red-500 text-sm">
-                                    {errors.image?.name || "image file is required"}
-                                </FormHelperText>
-                            )} */}
+                            {errors.image && (
+                                <span className="text-red-500 text-sm">
+                                    {typeof errors.image === "string"
+                                        ? errors.image
+                                        : "Invalid image"}
+                                </span>
+                            )}
                         </div>
                         <Button
                             variant="contained"
                             className=" h-10 w-full col-Typography-2 pt-5"
+                            type="submit"
                         >
                             {isLoading ? (
                                 <>

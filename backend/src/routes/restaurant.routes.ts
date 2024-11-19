@@ -10,7 +10,7 @@ router.get('/:restaurantId', checkCurrentUser, restaurantController.getARestaura
 router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.RESTAURANT), restaurantController.getMyRestaurant);
 
 router.patch(
-    '/:restaurantId',
+    '/',
     checkCurrentUser,
     auth(ROLES_CONSTANTS.RESTAURANT),
     multerUpload.single('image'),
