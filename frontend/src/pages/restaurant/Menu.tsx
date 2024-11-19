@@ -2,26 +2,24 @@ import { useEffect, useState } from 'react'
 import AddMenuModal from '../../components/modal/AddMenuModal'
 import { Button, Typography } from '@mui/material'
 import MenuCard from '../../components/cards/MenuCard'
-import { getMenusApi } from '../../api/apiMethods/menu'
-import { useAppSelector } from '../../redux/hooks'
-import { IResponse } from '../../types/api'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { fetchMenus } from '../../redux/thunk/menusThunk'
+import { IMenu } from '../../types'
 
 const Menu = () => {
     const [isAddMenuOpen, setIsAddMenuOpen] = useState(false)
-    const [menus, setMenus] = useState([])
     const handleAddMenuOpen = () => setIsAddMenuOpen(true)
     const handleAddMenuClose = () => setIsAddMenuOpen(false)
+    const dispatch = useAppDispatch()
 
     const restaurantData = useAppSelector((state) => state.restaurantReducer.restaurantData)
+    const menus = useAppSelector((state) => state.menusReducer.menusData)
 
     useEffect(() => {
-        ;(async () => {
-            const response: IResponse | undefined = await getMenusApi(restaurantData.restaurant.id)
-            if (response) {
-                setMenus(response.data)
-            }
-        })()
-    }, [])
+        if (restaurantData?.restaurant?.id) {
+            dispatch(fetchMenus(restaurantData.restaurant.id))
+        }
+    }, [dispatch, restaurantData])
 
     return (
         <div className="my-5">
@@ -41,10 +39,10 @@ const Menu = () => {
                     <AddMenuModal isOpen={isAddMenuOpen} handleClose={handleAddMenuClose} />
                 )}
             </div>
-            {menus.length && (
+            {menus && menus.length && (
                 <div className="flex flex-wrap justify-center gap-5 mx-5 bg-green-300">
-                    {menus.map((menu, index) => (
-                        <MenuCard key={index} menu={menu} />
+                    {menus.map((menu: IMenu, index: number) => (
+                        <MenuCard key={menu.id} menu={menu} />
                     ))}
                 </div>
             )}

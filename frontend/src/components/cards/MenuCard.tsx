@@ -18,7 +18,7 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
         <div className="flex justify-center bg-yellow-700">
             <Card sx={{ width: 10 / 12 }}>
                 <div className="flex md:flex">
-                    <EditMenuModal isOpen={isEditMenuOpen} handleClose={handleEditMenuClose} />
+                    {menu && <EditMenuModal menu={menu} isOpen={isEditMenuOpen} handleClose={handleEditMenuClose} />}
                     <div className="relative">
                         <CardMedia
                             component="img"
