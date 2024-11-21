@@ -1,97 +1,111 @@
-import { Button, Input, Typography } from "@mui/material";
-import EmailIcon from "@mui/icons-material/Email";
-import PersonIcon from "@mui/icons-material/Person";
-import LockIcon from "@mui/icons-material/Lock";
-import Divider from "@mui/material/Divider";
-import { ChangeEvent, FormEvent, useState } from "react";
-import LoaderCircle from "../components/Loader/LoaderCircle";
-import { signInSchema, signUpSchema } from "../utils/schema/userSchema";
-import { Link, useNavigate } from "react-router-dom";
-import { ROLES_CONSTANTS } from "../utils/constants";
-import { useAppDispatch } from "../redux/hooks";
-import { signinUser } from "../redux/thunk/authThunk";
-import { hotToastMessage } from "../utils/hotToast";
-import { signupApi } from "../api/apiMethods/auth";
-import { ISignup } from "../types";
-
+import { Button, Input, Typography } from '@mui/material'
+import EmailIcon from '@mui/icons-material/Email'
+import PersonIcon from '@mui/icons-material/Person'
+import LockIcon from '@mui/icons-material/Lock'
+import Divider from '@mui/material/Divider'
+import { ChangeEvent, FormEvent, useState } from 'react'
+import LoaderCircle from '../components/Loader/LoaderCircle'
+import { signInSchema, signUpSchema } from '../utils/schema/userSchema'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { ROLES_CONSTANTS } from '../utils/constants'
+import { useAppDispatch } from '../redux/hooks'
+import { signinUser } from '../redux/thunk/authThunk'
+import { hotToastMessage } from '../utils/hotToast'
+import { signupApi } from '../api/apiMethods/auth'
+import { ISignup } from '../types'
+import { fetchMyRestaurant } from '../redux/thunk/restaurantThunk'
 
 const Auth = () => {
-    const [isLogin, setIsLogin] = useState<boolean>(true);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const dispatch = useAppDispatch();
-    const naivgate = useNavigate();
-    const role: string = ROLES_CONSTANTS.USER;
+    const [isLogin, setIsLogin] = useState<boolean>(true)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const dispatch = useAppDispatch()
+    const naivgate = useNavigate()
+    const location = useLocation()
+
+    const isRestaurantPage = location.pathname.includes(ROLES_CONSTANTS.RESTAURANT)
+    const isAdminPage = location.pathname.includes(ROLES_CONSTANTS.ADMIN)
+
+    const role: string = isRestaurantPage
+        ? ROLES_CONSTANTS.RESTAURANT
+        : isAdminPage
+          ? ROLES_CONSTANTS.ADMIN
+          : ROLES_CONSTANTS.USER
 
     const [input, setInput] = useState<ISignup>({
-        name: "",
-        email: "",
-        phone: "",
-        password: "",
-        role,
-    });
-    const [errors, setErrors] = useState<Partial<ISignup>>({});
+        name: '',
+        email: '',
+        phone: '',
+        password: '',
+        role
+    })
+    const [errors, setErrors] = useState<Partial<ISignup>>({})
 
     const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setInput({ ...input, [name]: value });
-    };
+        const { name, value } = e.target
+        setInput({ ...input, [name]: value })
+    }
 
     const handlePageSwitch = () => {
-        setIsLogin((state) => !state);
-    };
+        setIsLogin((state) => !state)
+    }
 
     const handleSubmit = async (e: FormEvent) => {
         try {
-            e.preventDefault();
+            e.preventDefault()
             // Clear existing errors
-            setErrors({});
-            console.log(errors);
+            setErrors({})
+            setIsLoading(true)
             // Convert phone to number for validation if necessary
-            
+
             const filteredData = Object.fromEntries(
                 Object.entries(input).filter(([_, value]) => value)
-            );
+            )
             const inputData = {
                 ...input,
-                phone: input.phone ? Number(input.phone) : undefined,
-            };
+                phone: input.phone ? Number(input.phone) : undefined
+            }
 
             // Form validation
             const result = isLogin
                 ? signInSchema.safeParse(filteredData)
-                : signUpSchema.safeParse(inputData);
+                : signUpSchema.safeParse(inputData)
 
             if (!result.success) {
-                const fieldErrors = result.error.formErrors.fieldErrors;
-                setErrors(fieldErrors as Partial<ISignup>);
-                return;
+                const fieldErrors = result.error.formErrors.fieldErrors
+                setErrors(fieldErrors as Partial<ISignup>)
+                return
             }
             if (isLogin) {
                 const response = await dispatch(
                     signinUser({
                         email: input.email!,
                         password: input.password!,
-                        role: role!,
+                        role: role!
                     })
-                );
+                )
+
+                await dispatch(fetchMyRestaurant())
 
                 // Check if the action was rejected
-                if (response.meta.requestStatus !== "rejected") {
-                    naivgate("/");
+                if (response.meta.requestStatus !== 'rejected') {
+                    naivgate('/')
                 }
             } else {
-                setIsLoading(true);
-
-                const response = await signupApi(input);
+                const response = await signupApi(input)
                 if (response.data) {
-                    hotToastMessage(response.message, "success");
-                    naivgate("/otp", { state: { userId: response.data.id } });
+                    hotToastMessage(response.message, 'success')
+                    naivgate('/signup/otp', {
+                        state: {
+                            userId: response.data.id,
+                            role: response.data.role
+                        }
+                    })
                 }
             }
         } finally {
-            setIsLoading(false);
+            setIsLoading(false)
         }
-    };
+    }
 
     return (
         <div className="bg-yellow-200 min-h-screen flex justify-center items-center">
@@ -101,9 +115,9 @@ const Auth = () => {
             >
                 <div className="w-full flex flex-col gap-4 mb-10">
                     <div className="mb-4 flex justify-center ">
-                        {" "}
+                        {' '}
                         <h1 className="font8-bold text-2xl">
-                            Restaurant {isLogin ? "Login" : "Signup"}
+                            {role} {isLogin ? 'Login' : 'Signup'}
                         </h1>
                     </div>
                     {!isLogin && (
@@ -116,7 +130,7 @@ const Auth = () => {
                                 name="name"
                                 value={input.name}
                                 onChange={changeEventHandler}
-                                placeholder="Enter your name"
+                                placeholder={`Enter your ${isRestaurantPage && 'restaurant'} name`}
                                 autoComplete="name"
                             />
                             {errors.name && (
@@ -138,9 +152,7 @@ const Auth = () => {
                             autoComplete="email"
                         />
                         {errors.email && (
-                            <Typography className="text-sm text-red-500">
-                                {errors.email}
-                            </Typography>
+                            <Typography className="text-sm text-red-500">{errors.email}</Typography>
                         )}
                     </div>
                     {!isLogin && (
@@ -193,49 +205,50 @@ const Auth = () => {
                             Please wait <LoaderCircle />
                         </label>
                     ) : isLogin ? (
-                        "Login"
+                        'Login'
                     ) : (
-                        "Signup"
+                        'Signup'
                     )}
                 </Button>
-                <div className="flex justify-end mt-2">
-                    <Link
-                        className="text-sm hover:text-blue-700"
-                        to="/forgot-password/email"
-                    >
-                        Forgot Password
-                    </Link>
-                </div>
+                {!isAdminPage && (
+                    <div className="flex justify-end mt-2">
+                        <Link className="text-sm hover:text-blue-700" to="/forgot-password/email">
+                            Forgot Password
+                        </Link>
+                    </div>
+                )}
 
-                <div className="mt-5">
-                    <Divider className="mt-5" />
-                    <Typography className="text-sm flex mt-3">
-                        {isLogin ? (
-                            <>
-                                Dont have an account?{" "}
-                                <p
-                                    onClick={handlePageSwitch}
-                                    className="ml-1 text-blue-700 hover:text-blue-500 cursor-pointer"
-                                >
-                                    signup
-                                </p>
-                            </>
-                        ) : (
-                            <>
-                                Already have an account?{" "}
-                                <p
-                                    onClick={handlePageSwitch}
-                                    className="ml-1 text-blue-700 hover:text-blue-500 cursor-pointer"
-                                >
-                                    signin
-                                </p>
-                            </>
-                        )}
-                    </Typography>
-                </div>
+                {!isAdminPage && (
+                    <div className="mt-5">
+                        <Divider className="mt-5" />
+                        <Typography className="text-sm flex mt-3">
+                            {isLogin ? (
+                                <>
+                                    Dont have an account?{' '}
+                                    <p
+                                        onClick={handlePageSwitch}
+                                        className="ml-1 text-blue-700 hover:text-blue-500 cursor-pointer"
+                                    >
+                                        signup
+                                    </p>
+                                </>
+                            ) : (
+                                <>
+                                    Already have an account?{' '}
+                                    <p
+                                        onClick={handlePageSwitch}
+                                        className="ml-1 text-blue-700 hover:text-blue-500 cursor-pointer"
+                                    >
+                                        signin
+                                    </p>
+                                </>
+                            )}
+                        </Typography>
+                    </div>
+                )}
             </form>
         </div>
-    );
-};
+    )
+}
 
-export default Auth;
+export default Auth

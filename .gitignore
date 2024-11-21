@@ -4,6 +4,7 @@ node_modules
 build
 error.log
 .vscode
+.vite
 coverage
 
 

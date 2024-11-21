@@ -6,5 +6,6 @@ export * from './order.model';
 export * from './ordered-item.model';
 export * from './otp.model';
 export * from './profile.model';
+export * from './restaurant-cuisine.model';
 export * from './restaurant.model';
 export * from './user.model';

@@ -1,6 +1,6 @@
 import { autoInjectable } from 'tsyringe';
 
-import { BadRequestError, NotFoundError } from '../errors';
+import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
 import { generateOtp, checkOtpIntervalCompleted, sendEmail, ROLES_CONSTANTS } from '../utils';
 import {
     OtpTokenRepository,
@@ -75,7 +75,7 @@ export class OtpService {
         const user: IUserDocument | null = await this.userRepository.findByEmail(email);
         if (!user) throw new NotFoundError('This user does not exist');
         if (!user.isVerified)
-            throw new BadRequestError('You are not verified. Please signup again with email to get verified');
+            throw new ForbiddenError('You are not verified. Please signup again with email to get verified');
 
         // Check if an OTP already exists and hasn't expired (optional, based on use case)
         const existToken: IOtpTokenDocument | null = await this.otpTokenRepository.findByUserId(user.id);

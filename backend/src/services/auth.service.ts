@@ -1,6 +1,6 @@
 import { autoInjectable } from 'tsyringe';
 
-import { BadRequestError, NotAuthorizedError, NotFoundError } from '../errors';
+import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
 import {
     checkOtpIntervalCompleted,
     generateOtp,
@@ -8,6 +8,7 @@ import {
     createJwtAccessToken,
     IJwtPayload,
     sendEmail,
+    ROLES_CONSTANTS,
 } from '../utils';
 import { OtpTokenRepository, UserRepository } from '../database/repository';
 import mongoose from 'mongoose';
@@ -85,27 +86,35 @@ export class UserService {
     }
 
     public async signIn(userSignInDto: ISignin): Promise<{ user: IUserDocument; accessToken: string }> {
-        const { email, password } = userSignInDto;
+        const { email, password, role } = userSignInDto;
 
         // Check if the user exists
         const existingUser: IUserDocument | null = await this.userRepository.findByEmail(email);
         if (!existingUser) throw new BadRequestError('Invalid email or password');
 
-        // Check if the user is verified
-        if (!existingUser.isVerified) {
-            throw new NotAuthorizedError(
-                'You are not verified yet. Pleas verify by signup again to get otp.',
-            );
-        }
+        if (existingUser.role !== role) throw new BadRequestError('Role is not matching');
 
-        // Check if the password is correct
-        const isSamePassword: boolean = await comparePassword(password, existingUser.password);
-        if (!isSamePassword) throw new BadRequestError('Invalid email or password');
+        if (role === ROLES_CONSTANTS.ADMIN) {
+            if (email !== existingUser.email && password !== existingUser.password)
+                throw new BadRequestError('Invalid email or password');
+        } else {
+            // Check if the user is verified
+            if (!existingUser.isVerified) {
+                throw new ForbiddenError(
+                    'You are not verified yet. Pleas verify by signup again to get otp.',
+                );
+            }
+
+            if (existingUser.isBlocked) throw new ForbiddenError('You are a blocked user');
+
+            // Check if the password is correct
+            const isSamePassword: boolean = await comparePassword(password, existingUser.password);
+            if (!isSamePassword) throw new BadRequestError('Invalid email or password');
+        }
 
         // Generate JWT
         const userPayload: IJwtPayload = {
             userId: existingUser.id,
-            name: existingUser.name,
             email: existingUser.email,
             role: existingUser.role,
         };

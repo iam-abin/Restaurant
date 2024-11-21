@@ -21,17 +21,16 @@ const restaurantSchema = new Schema<IRestaurantDocument>(
         },
         addressId: {
             type: Schema.Types.ObjectId,
-            ref: 'User',
-            required: true,
+            ref: 'Address',
             unique: true,
         },
         deliveryTime: {
             type: Number,
-            required: true,
+            default: 0,
         },
         imageUrl: {
             type: String,
-            required: true,
+            trim: true,
         },
     },
     {

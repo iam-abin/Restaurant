@@ -1,6 +1,6 @@
 export interface IAddress {
-    userId: string;
-    address: string;
-    city: string;
-    country: string;
+    userId: string
+    address: string
+    city: string
+    country: string
 }

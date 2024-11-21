@@ -1,4 +1,4 @@
-const AUTH_URL = `/auth`;
+const AUTH_URL = `/auth`
 
 const authApiUrls = {
     signinUrl: `${AUTH_URL}/signin`,
@@ -7,8 +7,8 @@ const authApiUrls = {
     resendOtpUrl: `${AUTH_URL}/resend-otp`,
     resetPasswordUrl: `${AUTH_URL}/password/reset`,
     verifyResetTokenUrl: `${AUTH_URL}/verify/reset-token`,
-    forgotPasswordUrl: `${AUTH_URL}/password/forgot`,
-    logoutUrl: `${AUTH_URL}/logout`,
-};
+    forgotPasswordEmailUrl: `${AUTH_URL}/password/forgot`,
+    logoutUrl: `${AUTH_URL}/logout`
+}
 
-export default authApiUrls;
+export default authApiUrls

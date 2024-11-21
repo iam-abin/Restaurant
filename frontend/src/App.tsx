@@ -1,108 +1,149 @@
-import MainLayout from "./layout/MainLayout";
-import Auth from "./pages/Auth";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ThemeProvider, createTheme, duration } from "@mui/material/styles";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import Otp from "./pages/Otp";
-import Landing from "./pages/Landing";
-import Profile from "./pages/Profile";
-import SearchResult from "./pages/SearchResult";
-import RestaurantDetails from "./pages/RestaurantDetails";
-import Cart from "./pages/Cart";
-import Restaurant from "./pages/admin/Restaurant";
-import Menu from "./pages/admin/Menu";
-import Orders from "./pages/admin/Orders";
-import Success from "./pages/Success";
-import { Toaster } from "react-hot-toast";
+import MainLayout from './layout/MainLayout'
+import Auth from './pages/Auth'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import ForgotPasswordEmail from './pages/ForgotPasswordEmail'
+import ResetPassword from './pages/ResetPassword'
+import Otp from './pages/Otp'
+import Landing from './pages/Landing'
+import Profile from './pages/Profile'
+import SearchResult from './pages/SearchResult'
+import RestaurantDetails from './pages/RestaurantDetails'
+import Cart from './pages/Cart'
+import Restaurant from './pages/restaurant/Restaurant'
+import Menu from './pages/restaurant/Menu'
+import Orders from './pages/restaurant/Orders'
+import Success from './pages/Success'
+import { Toaster } from 'react-hot-toast'
+import Error404 from './pages/Error404'
+import { RoleProtectedRoute } from './components/ProtectedRoute'
+import { ROLES_CONSTANTS } from './utils/constants'
+import { useAppSelector } from './redux/hooks'
 
-const darkTheme = createTheme({
-    palette: {
-        mode: "dark",
-    },
-});
+const AuthenticatedUser = ({ children }: { children: React.ReactNode }) => {
+    const authData = useAppSelector((state) => state.authReducer.authData)
+    const CURRENT_USER_ROLE = authData?.role
+    if (authData && authData.isVerified) {
+        const redirectPath =
+            CURRENT_USER_ROLE === ROLES_CONSTANTS.ADMIN
+                ? '/admin'
+                : CURRENT_USER_ROLE === ROLES_CONSTANTS.RESTAURANT
+                  ? '/restaurant'
+                  : '/'
+        return <Navigate to={redirectPath} replace />
+    }
+    return children
+}
 
 const appRouter = createBrowserRouter([
     {
-        path: "/",
-        element: <MainLayout />,
+        path: '/',
+        element: (
+            <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.USER]}>
+                <MainLayout />
+            </RoleProtectedRoute>
+        ),
         children: [
+            { path: '/', element: <Landing /> },
+            { path: '/profile', element: <Profile /> },
+            { path: '/search/:searchText', element: <SearchResult /> },
             {
-                path: "/",
-                element: <Landing />,
+                path: '/user/restaurant/:restaurantId',
+                element: <RestaurantDetails />
             },
-            {
-                path: "/profile",
-                element: <Profile />,
-            },
-            {
-                path: "/search/:searchKey",
-                element: <SearchResult />,
-            },
-            {
-                path: "/restaurant/:restaurantId",
-                element: <RestaurantDetails />,
-            },
-            {
-                path: "/cart",
-                element: <Cart />,
-            },
-            {
-                path: "/success",
-                element: <Success />,
-            },
-            // Admin routes
-            {
-                path: "/admin/restaurant",
-                element: <Restaurant />,
-            },
-            {
-                path: "/admin/menu",
-                element: <Menu />,
-            },
-            {
-                path: "/admin/orders",
-                element: <Orders />,
-            },
-        ],
+            { path: '/cart', element: <Cart /> },
+            { path: '/success', element: <Success /> },
+            { path: '*', element: <Error404 /> }
+        ]
     },
     {
-        path: "/auth",
-        element: <Auth />,
+        path: '/restaurant',
+        element: (
+            <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.RESTAURANT]}>
+                <MainLayout />
+            </RoleProtectedRoute>
+        ),
+        children: [
+            { path: 'details', element: <Restaurant /> }, // Correct relative path
+            { path: 'menu', element: <Menu /> },
+            { path: 'orders', element: <Orders /> }
+        ]
     },
     {
-        path: "/forgot-password/email",
-        element: <ForgotPassword />,
+        path: '/admin',
+        element: (
+            <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.ADMIN]}>
+                <MainLayout />
+            </RoleProtectedRoute>
+        ),
+        children: [
+            // { path: "/", element: <Dashboard /> },
+            // { path: "/users", element: <Users /> },
+            // { path: "/restaurants", element: <Restaurants /> },
+        ]
+    },
+
+    {
+        path: '/auth',
+        element: (
+            <AuthenticatedUser>
+                {' '}
+                <Auth />
+            </AuthenticatedUser>
+        )
     },
     {
-        path: "/reset-password/:uniqueId",
-        element: <ResetPassword />,
+        path: '/restaurant/auth',
+        element: (
+            <AuthenticatedUser>
+                {' '}
+                <Auth />
+            </AuthenticatedUser>
+        )
     },
     {
-        path: "/otp/forgot-password",
-        element: <Otp />,
+        path: 'admin/auth',
+        element: (
+            <AuthenticatedUser>
+                {' '}
+                <Auth />
+            </AuthenticatedUser>
+        )
     },
     {
-        path: "/otp/signup",
-        element: <Otp />,
+        path: '/forgot-password/email',
+        element: (
+            <AuthenticatedUser>
+                {' '}
+                <ForgotPasswordEmail />
+            </AuthenticatedUser>
+        )
     },
-]);
+    {
+        path: '/reset-password/:uniqueId',
+        element: <ResetPassword />
+    },
+    {
+        path: '/forgot-password/otp',
+        element: <Otp />
+    },
+    {
+        path: '/signup/otp',
+        element: <Otp />
+    }
+])
 
 export default function App() {
     return (
         <main>
-            {/* <ThemeProvider theme={darkTheme}> */}
             <Toaster
                 position="top-right"
                 toastOptions={{
-                    duration: 6000, // 6 seconds
-                    style: {
-                        marginTop: "80px", // Adjust the offset from the top
-                    },
+                    duration: 6000,
+                    style: { marginTop: '80px' }
                 }}
             />
-            <RouterProvider router={appRouter}></RouterProvider>
-            {/* </ThemeProvider> */}
+            <RouterProvider router={appRouter} />
         </main>
-    );
+    )
 }

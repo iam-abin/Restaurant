@@ -43,6 +43,11 @@ router.post(
     authController.resetPassword,
 );
 
-router.post('/logout', checkCurrentUser, auth(ROLES_CONSTANTS.USER), authController.logout);
+router.post(
+    '/logout',
+    checkCurrentUser,
+    auth([ROLES_CONSTANTS.USER, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.ADMIN]),
+    authController.logout,
+);
 
 export { router as authRoutes };

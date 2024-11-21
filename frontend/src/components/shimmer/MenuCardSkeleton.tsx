@@ -1,6 +1,6 @@
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import { Skeleton } from "@mui/material";
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import { Skeleton } from '@mui/material'
 
 const MenuCardSkeleton = () => {
     return (
@@ -23,7 +23,7 @@ const MenuCardSkeleton = () => {
                 <Skeleton variant="text" width="90%" height={50} />
             </div>
         </Card>
-    );
-};
+    )
+}
 
-export default MenuCardSkeleton;
+export default MenuCardSkeleton

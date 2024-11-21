@@ -3,7 +3,7 @@ import { ICuisine } from '../../types';
 import { omitDocFields } from '../../utils';
 
 export interface ICuisineDocument extends Document, ICuisine {
-    userId: Schema.Types.ObjectId;
+    _id: Schema.Types.ObjectId;
 }
 
 const cuisineSchema = new Schema<ICuisineDocument>(
@@ -11,10 +11,9 @@ const cuisineSchema = new Schema<ICuisineDocument>(
         name: {
             type: String,
             required: true,
-        },
-        description: {
-            type: String,
-            required: true,
+            trim: true,
+            lowercase: true,
+            unique: true,
         },
     },
     {

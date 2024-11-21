@@ -1,16 +1,20 @@
 import { Request, Response } from 'express';
 import { createSuccessResponse } from '../utils';
-import { IRestaurantDocument } from '../database/model';
+import { IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
 import { container } from 'tsyringe';
 import { RestaurantService } from '../services';
 import { IRestaurant } from '../types';
 
 const restaurantService = container.resolve(RestaurantService);
 
+export type RestaurantWithCuisines = {
+    restaurant: IRestaurantDocument | null;
+    cuisines: IRestaurantCuisineDocument[];
+};
+
 class RestaurantController {
     public async editRestaurant(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
-        // const { restaurantId } = req.params;
         const file: Express.Multer.File = req.file!;
         const restaurant: IRestaurantDocument | null = await restaurantService.updateRestaurant(
             userId,
@@ -22,7 +26,7 @@ class RestaurantController {
 
     public async getMyRestaurant(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
-        const restaurant: IRestaurantDocument | null = await restaurantService.getMyRestaurant(userId);
+        const restaurant: RestaurantWithCuisines = await restaurantService.getMyRestaurant(userId);
         res.status(200).json(createSuccessResponse('Your restaurant fetched successfully', restaurant));
     }
 

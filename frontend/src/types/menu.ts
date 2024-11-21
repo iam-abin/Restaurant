@@ -1,7 +1,8 @@
 export interface IMenu {
-    name: string;
-    description: string;
-    price: number;
-    imageUrl: string;
-    restaurantId: string;
+    id: string
+    name: string
+    description: string
+    price: number
+    imageUrl: string
+    restaurantId: string
 }

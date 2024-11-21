@@ -1,4 +1,4 @@
 export interface IProfile {
-    userId: string;
-    imageUrl: string;
+    userId: string
+    imageUrl: string
 }

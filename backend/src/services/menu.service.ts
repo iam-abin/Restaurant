@@ -19,13 +19,13 @@ export class MenuService {
     ): Promise<IMenuDocument> {
         const restaurant: IRestaurantDocument | null =
             await this.restaurantRepository.findMyRestaurant(userId);
+        if (!restaurant) throw new NotFoundError('Restaurant not found');
         if (restaurant?.isBlocked) throw new BadRequestError('This restaurant is blocked');
 
         const imageUrl: string = await uploadImageOnCloudinary(file);
-
         const menu: IMenuDocument | null = await this.menuRepository.create({
             ...menuData,
-            restaurantId: userId,
+            restaurantId: restaurant._id.toString(),
             imageUrl,
         });
 
@@ -33,6 +33,8 @@ export class MenuService {
     }
 
     public async getMenus(restaurantId: string): Promise<IMenuDocument[]> {
+        const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
+        if (!restaurant) throw new NotFoundError('Restaurant not found');
         const menus: IMenuDocument[] = await this.menuRepository.findMenus(restaurantId);
         return menus;
     }

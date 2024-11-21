@@ -1,90 +1,121 @@
-import { useParams } from "react-router-dom";
-import Filter from "../components/Filter";
-import { useState } from "react";
-import SearchIcon from "@mui/icons-material/Search";
-import { Button, Chip } from "@mui/material";
-import RestaurantCard from "../components/cards/RestaurantCard";
-import RestaurantCardSkeleton from "../components/shimmer/RestaurantCardSkeleton";
-import { NoResultFound } from "../components/NoResultFound";
+import { useParams } from 'react-router-dom'
+import Filter from '../components/Filter'
+import { ChangeEvent, MouseEvent, useEffect, useState } from 'react'
+import SearchIcon from '@mui/icons-material/Search'
+import { Button, Chip } from '@mui/material'
+import RestaurantCard from '../components/cards/RestaurantCard'
+import RestaurantCardSkeleton from '../components/shimmer/RestaurantCardSkeleton'
+import { NoResultFound } from '../components/NoResultFound'
+import { searchRestaurantApi } from '../api/apiMethods/restaurant'
+import LoaderCircle from '../components/Loader/LoaderCircle'
 
 const SearchResult = () => {
-    const params = useParams();
-    const [searchQuery, setSearchQuery] = useState<string>("");
-    console.log(params.searchKey);
+    const [searchQuery, setSearchQuery] = useState<string>('')
+    const [selectedFilters, setSelectedFilters] = useState<string[]>([])
+    const [searchResults, setSearchResults] = useState<any[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
-    const handleDelete = () => {};
-    const searchResults = [];
+    const params = useParams()
+    const searchText = params.searchText || ''
+
+    const fetchRestaurants = async () => {
+        setIsLoading(true)
+        try {
+            const response = await searchRestaurantApi({
+                searchText,
+                searchQuery,
+                selectedCuisines: selectedFilters
+            })
+            setSearchResults(response.data || [])
+        } catch (error) {
+            console.error('Error fetching search results:', error)
+            setSearchResults([])
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        fetchRestaurants()
+    }, [selectedFilters, searchText])
+
+    const handleDeleteChip = (filter: string) => {
+        setSelectedFilters((prev) => prev.filter((item) => item !== filter))
+    }
+
+    const handleSearch = () => {
+        if (searchQuery === '') return
+        fetchRestaurants()
+    }
+
+    const handleSearchKeyChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value === '') fetchRestaurants()
+        console.log(searchQuery)
+        setSearchQuery(e.target.value)
+    }
 
     return (
-        <div className=" max-w-7xl mx-auto my-5">
+        <div className="max-w-7xl mx-auto my-5">
             <div className="flex flex-col md:flex-row justify-between gap-10">
-                <Filter />
+                <Filter filterArray={selectedFilters} setSelectedFilters={setSelectedFilters} />
                 <div className="flex-1">
-                    {/* Search Input Field  */}
                     <div className="relative flex items-center gap-1">
                         <div className="w-full">
                             <SearchIcon className="absolute text-gray-500 inset-y-3 left-2" />
                             <input
                                 type="text"
                                 value={searchQuery}
-                                placeholder="Search by restaurant, & cuisines"
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="border-2 pl-10 h-11 w-full  border-black shadow-lg rounded-lg"
+                                placeholder="Search by restaurant & cuisines"
+                                onChange={(e) => handleSearchKeyChange(e)}
+                                onKeyPress={(e) => e.key === 'Enter' && fetchRestaurants()}
+                                className="border-2 pl-10 h-11 w-full border-black shadow-lg rounded-lg"
                             />
                         </div>
                         <Button
-                            // onClick={}
+                            onClick={handleSearch}
                             variant="contained"
-                            className="bg-orange-500 "
+                            disabled={isLoading}
+                            className="bg-orange-500 w-32"
                         >
-                            Search
+                            {isLoading ? <LoaderCircle /> : 'Search'}
                         </Button>
                     </div>
-                    {/* Searched Items display here  */}
+
                     <div>
-                        <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-2 my-3">
-                            <h1 className="font-medium text-lg">
-                                (3) Search result found
-                                <div className="flex flex-wrap gap-2 mb-4 md:mb-0">
-                                    {[
-                                        "biriyani",
-                                        "shawarma",
-                                        "Kuzhi mandhi",
-                                    ].map((selectedFlter, index) => (
-                                        <div
-                                            key={index}
-                                            className="relative inline-flex items-center max-w-full"
-                                        >
-                                            <Chip
-                                                label={selectedFlter}
-                                                variant="outlined"
-                                                onDelete={handleDelete}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                            </h1>
+                        <div className="flex flex-wrap gap-2 my-3">
+                            {selectedFilters.map((filter, index) => (
+                                <Chip
+                                    key={index}
+                                    label={filter}
+                                    variant="outlined"
+                                    onDelete={() => handleDeleteChip(filter)}
+                                />
+                            ))}
                         </div>
                     </div>
-                    {/* Restaurant Cards  */}
 
-                    {searchResults.length ? (
+                    {isLoading ? (
                         <div className="grid md:grid-cols-3 gap-4">
-                            <RestaurantCard />
                             <RestaurantCardSkeleton />
-                            <RestaurantCard />
                             <RestaurantCardSkeleton />
-                            <RestaurantCard />
-                            <RestaurantCardSkeleton />
-                            <RestaurantCard />
+                        </div>
+                    ) : searchResults.length ? (
+                        <div className="grid md:grid-cols-3 gap-4">
+                            {searchResults.map((restaurant, index) => (
+                                <RestaurantCard key={index} restaurant={restaurant} />
+                            ))}
                         </div>
                     ) : (
-                        <NoResultFound searchText="hi" />
+                        <NoResultFound
+                            searchText={searchText}
+                            searchQuery={searchQuery}
+                            filterList={selectedFilters}
+                        />
                     )}
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default SearchResult;
+export default SearchResult

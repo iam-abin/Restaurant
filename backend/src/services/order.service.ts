@@ -24,7 +24,7 @@ export class OrderService {
         private readonly addressRepository: AddressRepository,
     ) {}
 
-    public async createOrder(userId: string, orderData: IOrder): Promise<any | null> {
+    public async createOrder(userId: string, orderData: IOrder): Promise<IOrderDocument> {
         const session = await mongoose.startSession();
         session.startTransaction();
 
