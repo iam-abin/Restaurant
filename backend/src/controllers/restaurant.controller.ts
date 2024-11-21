@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { createSuccessResponse } from '../utils';
-import { IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
+import { IAddressDocument, ICuisineDocument, IMenuDocument, IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
 import { container } from 'tsyringe';
 import { RestaurantService } from '../services';
-import { IRestaurant } from '../types';
+import { ICuisine, IRestaurant } from '../types';
 
 const restaurantService = container.resolve(RestaurantService);
 
@@ -11,6 +11,12 @@ export type RestaurantWithCuisines = {
     restaurant: IRestaurantDocument | null;
     cuisines: IRestaurantCuisineDocument[];
 };
+
+// export interface IGetARestaurant extends IRestaurantDocument {
+//     address: IAddressDocument;
+//     menus: IMenuDocument[];
+//     cuisines: ICuisineDocument[];
+// }
 
 class RestaurantController {
     public async editRestaurant(req: Request, res: Response): Promise<void> {
@@ -32,7 +38,8 @@ class RestaurantController {
 
     public async getARestaurant(req: Request, res: Response): Promise<void> {
         const { restaurantId } = req.params;
-        const restaurant: IRestaurantDocument | null = await restaurantService.getARestaurant(restaurantId);
+        // const restaurant: GetARestaurant | null = await restaurantService.getARestaurant(restaurantId);
+        const restaurant: any | null = await restaurantService.getARestaurant(restaurantId);
         res.status(200).json(createSuccessResponse('Restaurant fetched successfully', restaurant));
     }
 

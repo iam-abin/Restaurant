@@ -11,4 +11,4 @@ export interface IUser {
 export interface ISignup extends IUser {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ISignin extends Omit<IUser, "name"> {}
+export interface ISignin extends Omit<IUser, 'name'> {}

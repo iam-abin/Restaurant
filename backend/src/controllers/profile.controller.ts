@@ -21,7 +21,7 @@ class ProfileController {
         const file: Express.Multer.File = req.file!;
         const user: IProfileDocument | null = await profileService.updateProfile(
             userId,
-            req.body as Partial<IProfile & IUser & IAddress>
+            req.body as Partial<IProfile & IUser & IAddress>,
         );
         res.status(200).json(createSuccessResponse('Profile updated successfully', user));
     }

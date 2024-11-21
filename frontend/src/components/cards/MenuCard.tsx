@@ -8,9 +8,16 @@ import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import EditMenuModal from '../modal/EditMenuModal'
 import { IMenu } from '../../types'
+import { useAppSelector } from '../../redux/hooks'
+import { ROLES_CONSTANTS } from '../../utils/constants'
 
 const MenuCard = ({ menu }: { menu: IMenu }) => {
-    const isAdmin = true
+
+    const authData = useAppSelector((store)=>store.authReducer.authData)
+    const isAdmin = authData.role === ROLES_CONSTANTS.ADMIN
+    const isUser = authData.role === ROLES_CONSTANTS.USER
+    const isRestaurant = authData.role === ROLES_CONSTANTS.RESTAURANT
+
     const [isEditMenuOpen, setIsEditMenuOpen] = useState(false)
     const handleEditMenuOpen = () => setIsEditMenuOpen(true)
     const handleEditMenuClose = () => setIsEditMenuOpen(false)
@@ -45,13 +52,13 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
                         </h2>
                     </CardContent>
                     <div className="flex items-center justify-center px-4 py-2">
-                        {!isAdmin ? (
+                        {isUser ? (
                             <Link to={`/restaurant/${menu.id}`} className="w-full">
                                 <Button className="w-full" variant="contained" size="small">
                                     Add to cart
                                 </Button>
                             </Link>
-                        ) : (
+                        ) : isRestaurant? (
                             <Button
                                 onClick={handleEditMenuOpen}
                                 className="w-full"
@@ -60,7 +67,7 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
                             >
                                 Edit
                             </Button>
-                        )}
+                        ): <></>}
                     </div>
                 </div>
             </Card>

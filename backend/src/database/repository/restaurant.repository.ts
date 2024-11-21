@@ -1,4 +1,4 @@
-import { ClientSession } from 'mongoose';
+import mongoose, { ClientSession } from 'mongoose';
 import { IRestaurant } from '../../types';
 import { IRestaurantDocument, RestaurantModel } from '../model';
 
@@ -8,8 +8,87 @@ export class RestaurantRepository {
         return restaurant;
     }
 
-    async findRestaurant(restaurantId: string): Promise<IRestaurantDocument | null> {
-        return await RestaurantModel.findById(restaurantId).populate(['ownerId', 'addressId']);
+    async findRestaurant(restaurantId: string): Promise<any | null> {
+        const restaurant = await RestaurantModel.aggregate([
+             // Match the restaurant by ID
+            {
+                $match: { _id: new mongoose.Types.ObjectId(restaurantId) },
+            },
+            // Lookup to join with the Address collection
+            {
+                $lookup: {
+                    from: 'addresses', // Address collection
+                    localField: 'addressId',
+                    foreignField: '_id',
+                    as: 'address',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$address',
+                    preserveNullAndEmptyArrays: true,  // Optional, if some restaurants may not have an address
+                },
+            },
+             // Lookup to join with the Menu collection
+            {
+                $lookup: {
+                    from: 'menus',
+                    localField: '_id',
+                    foreignField: 'restaurantId',
+                    as: 'menus',
+                },
+            },
+            // Lookup to join with the RestaurantCuisine collection
+            {
+                $lookup: {
+                    from: 'restaurantcuisines',
+                    localField: '_id',
+                    foreignField: 'restaurantId',
+                    as: 'restaurantCuisines',
+                },
+            },
+            // Lookup to join with the Cuisine collection
+            {
+                $lookup: {
+                    from: 'cuisines',
+                    localField: 'restaurantCuisines.cuisineId',
+                    foreignField: '_id',
+                    as: 'cuisines',
+                },
+            },
+           // Lookup to join with the users collection
+            {
+                $lookup: {
+                    from: 'users', // User collection (owners are stored here)
+                    localField: 'ownerId',
+                    foreignField: '_id',
+                    as: 'restaurant',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$restaurant',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    restaurant: {
+                        _id: 1,
+                        name: 1,
+                        email: 1,
+                    },
+                    address: 1,
+                    menus: 1,
+                    cuisines: 1,
+                    deliveryTime: 1,
+                    imageUrl: 1,
+                },
+            },
+        ]);
+        return restaurant[0]
     }
 
     async findMyRestaurant(ownerId: string): Promise<IRestaurantDocument | null> {

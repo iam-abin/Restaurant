@@ -1,4 +1,3 @@
-import FriedChicken from '../../assets/fried-chicken-french-fries-black-cement-floor (1).jpg'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
@@ -52,7 +51,7 @@ const RestaurantCard = ({ restaurant }: { restaurant: any }) => {
                 </div>
             </CardContent>
             <CardActions className="flex justify-end">
-                <Link to={`/restaurant/${restaurant._id}`}>
+                <Link to={`/user/restaurant/${restaurant._id}`}>
                     <Button variant="contained" size="small">
                         View Menus
                     </Button>

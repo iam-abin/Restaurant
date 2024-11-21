@@ -8,6 +8,7 @@ import LogoutIcon from '@mui/icons-material/Logout'
 import FlatwareIcon from '@mui/icons-material/Flatware'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
 import { ROLES_CONSTANTS } from '../../utils/constants'
+import { useAppSelector } from '../../redux/hooks'
 
 export interface IMenuItems {
     to: string
@@ -21,6 +22,9 @@ export interface IMenuItems2 {
 }
 
 const NavBar = ({ currentUser, handleLogout }: { currentUser: any; handleLogout: () => void }) => {
+
+    const {myProfile} = useAppSelector((store)=> store.profileReducer)
+
     const isAdmin = currentUser && currentUser.role === ROLES_CONSTANTS.ADMIN
     const isRestaurant = currentUser && currentUser.role === ROLES_CONSTANTS.RESTAURANT
     const isUser = currentUser && currentUser.role === ROLES_CONSTANTS.USER
@@ -94,7 +98,7 @@ const NavBar = ({ currentUser, handleLogout }: { currentUser: any; handleLogout:
                         </>
                     )}
 
-                    <Avatar src="/broken-image.jpg" />
+                    <Avatar src={`${myProfile?.imageUrl?myProfile?.imageUrl:"/broken-image.jpg"}`} />
                     <LogoutIcon onClick={handleLogout} style={{ cursor: 'pointer' }} />
                 </div>
                 {isAdmin && <FadeMenu menuItems={menuItemsAdmin} />}

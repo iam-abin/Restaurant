@@ -70,6 +70,7 @@ const Profile = () => {
         console.log({...profileData, image: selectedProfilePicture})
         dispatch(updateUserProfile({...profileData, image: selectedProfilePicture}))
         setIsLoading(false)
+        setSelectedProfilePicture('')
     }
     
 

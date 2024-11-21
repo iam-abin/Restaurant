@@ -10,7 +10,10 @@ import mongoose from 'mongoose';
 
 @autoInjectable()
 export class ProfileService {
-    constructor(private readonly profileRepository: ProfileRepository, private readonly addressRepository: AddressRepository,) {}
+    constructor(
+        private readonly profileRepository: ProfileRepository,
+        private readonly addressRepository: AddressRepository,
+    ) {}
 
     public async getProfile(userId: string): Promise<IProfileDocument | null> {
         const profile: IProfileDocument | null = await this.profileRepository.findByUserId(userId);
@@ -22,16 +25,15 @@ export class ProfileService {
         userId: string,
         updateData: Partial<IProfile & IUser & IAddress>,
     ): Promise<IProfileDocument | null> {
-        const { city, country, address, image  } = updateData;
+        const { city, country, address, image } = updateData;
 
         const session = await mongoose.startSession();
         session.startTransaction();
         try {
-            
-        let imageUrl: string | undefined;
-        if (image) {
-            imageUrl = await uploadImageOnCloudinary(image);
-        }
+            let imageUrl: string | undefined;
+            if (image) {
+                imageUrl = await uploadImageOnCloudinary(image);
+            }
 
             const addressData: IAddressDocument | null = await this.addressRepository.update(
                 userId,
@@ -39,23 +41,25 @@ export class ProfileService {
                 session,
             );
 
-        const profile: IProfileDocument | null = await this.profileRepository.update(userId, {
-            ...updateData,
-            addressId: addressData?._id.toString()!,
-            imageUrl,
-        }, session);
+            const profile: IProfileDocument | null = await this.profileRepository.update(
+                userId,
+                {
+                    ...updateData,
+                    addressId: addressData?._id.toString()!,
+                    imageUrl,
+                },
+                session,
+            );
 
-        
-        
-        // Commit the transaction
-        await session.commitTransaction();
-        return profile;
-           } catch (error) {
-               // Rollback the transaction if something goes wrong
-               await session.abortTransaction();
-               throw error;
-           } finally {
-               session.endSession();
-           }
+            // Commit the transaction
+            await session.commitTransaction();
+            return profile;
+        } catch (error) {
+            // Rollback the transaction if something goes wrong
+            await session.abortTransaction();
+            throw error;
+        } finally {
+            session.endSession();
+        }
     }
 }

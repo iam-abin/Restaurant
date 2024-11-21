@@ -4,8 +4,7 @@ import { omitDocFields } from '../../utils';
 
 export interface IProfileDocument extends Document, Omit<IProfile, 'userId' | 'addressId'> {
     userId: Schema.Types.ObjectId;
-    addressId:  Schema.Types.ObjectId;
-    
+    addressId: Schema.Types.ObjectId;
 }
 
 const profileSchema = new Schema<IProfileDocument>(

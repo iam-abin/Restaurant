@@ -21,6 +21,6 @@ export class ProfileRepository {
         updateData: Partial<IProfile>,
         session?: ClientSession,
     ): Promise<IProfileDocument | null> {
-        return await ProfileModel.findOneAndUpdate({userId}, updateData, { new: true, session });
+        return await ProfileModel.findOneAndUpdate({ userId }, updateData, { new: true, session });
     }
 }

@@ -13,10 +13,7 @@ export class MenuRepository {
     }
 
     async findMenus(restaurantId: string): Promise<IMenuDocument[]> {
-        console.log(restaurantId);
-
         const menu: IMenuDocument[] = await MenuModel.find({ restaurantId });
-        console.log(menu);
         return menu;
     }
 
