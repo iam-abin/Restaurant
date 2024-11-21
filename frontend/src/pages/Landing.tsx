@@ -7,8 +7,12 @@ import { useNavigate } from 'react-router-dom'
 const Landing = () => {
     const [searchText, setSearchText] = useState<string>('')
     const navigate = useNavigate()
-    const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-        setSearchText(e.target.value)
+
+    const handleSearchClick = () => {
+        if (!searchText) return
+        console.log(searchText)
+
+        navigate(`/search/${searchText}`)
     }
     return (
         <div className="flex flex-col md:flex-row max-w-7xl mx-auto md:p-10 rounded-lg items-center justify-center m-4 gap-20">
@@ -28,12 +32,14 @@ const Landing = () => {
                             type="text"
                             value={searchText}
                             placeholder="Search restaurant by name, city & country"
-                            onChange={handleSearch}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                setSearchText(e.target.value)
+                            }
                             className="border-2 pl-10 h-11 w-full  border-black shadow-lg rounded-lg"
                         />
                     </div>
                     <Button
-                        onClick={() => navigate(`/search/:${searchText}`)}
+                        onClick={handleSearchClick}
                         variant="contained"
                         className="bg-orange-500 "
                     >

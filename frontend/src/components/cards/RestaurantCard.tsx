@@ -10,7 +10,7 @@ import PublicIcon from '@mui/icons-material/Public'
 import { Chip } from '@mui/material'
 import { Link } from 'react-router-dom'
 
-const RestaurantCard = () => {
+const RestaurantCard = ({ restaurant }: { restaurant: any }) => {
     return (
         <Card sx={{ maxWidth: 345 }}>
             <div className="relative">
@@ -18,7 +18,7 @@ const RestaurantCard = () => {
                     component="img"
                     alt="green iguana"
                     className="w-full h-40  object-cover"
-                    image={FriedChicken}
+                    image={restaurant.imageUrl}
                 />
                 <div className="absolute top-2 left-2 bg-white dark:bg-gray-700 bg-opacity-75 rounded-lg px-3 py-1">
                     <Typography className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -28,28 +28,31 @@ const RestaurantCard = () => {
             </div>
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
-                    <h1 className="text-2xl font-bold text-gray-900">KFC store</h1>
+                    <h1 className="text-2xl font-bold text-gray-900">
+                        {restaurant.restaurantName}
+                    </h1>
                 </Typography>
                 <div className="mt-2 gap-1 flex items-center text-gray-600 dark:text-gray-400">
                     <LocationOnOutlinedIcon className="text-gray-500" />
                     <p className="text-sm">
-                        City: <Typography className="font-medium">Kochi</Typography>
+                        City: <Typography className="font-medium">{restaurant.city}</Typography>
                     </p>
                 </div>
                 <div className="mt-2 gap-1 flex items-center text-gray-600 dark:text-gray-400">
                     <PublicIcon />
                     <p className="text-sm">
-                        Country: <Typography className="font-medium">India</Typography>
+                        Country:{' '}
+                        <Typography className="font-medium">{restaurant.country}</Typography>
                     </p>
                 </div>
-                <div className="flex gap-2 mt-4 flex-wrap">
-                    {['biriyani', 'laddu', 'samoossa'].map((cuisine: string, index: number) => (
-                        <Chip key={index} label={cuisine} className="bg-black" variant="filled" />
+                <div className="flex flex-row gap-4 mt-4 flex-wrap">
+                    {restaurant.cuisines.map((cuisine: string, index: number) => (
+                        <Chip key={index} label={cuisine} variant="filled" />
                     ))}
                 </div>
             </CardContent>
             <CardActions className="flex justify-end">
-                <Link to={`/restaurant/${124}`}>
+                <Link to={`/restaurant/${restaurant._id}`}>
                     <Button variant="contained" size="small">
                         View Menus
                     </Button>

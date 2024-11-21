@@ -30,5 +30,5 @@ const menusSlice = createSlice({
     }
 })
 
-export const { clearMenus } = menusSlice.actions;
+export const { clearMenus } = menusSlice.actions
 export default menusSlice.reducer

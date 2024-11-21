@@ -14,13 +14,18 @@ export const updateRestaurantApi = async (data: FormData): Promise<IResponse> =>
     return await makeApiCall('patch', restaurantApiUrls.updateRestaurantUrl, data, true)
 }
 
-export const searchRestaurantApi = async (
-    searchText: string,
-    searchQuery: string,
-    selectedCuisines: string[]
-): Promise<IResponse> => {
+export interface ISearchRestaurantApi {
+    searchText: string
+    searchQuery?: string
+    selectedCuisines?: string[]
+}
+export const searchRestaurantApi = async ({
+    searchText,
+    searchQuery,
+    selectedCuisines
+}: ISearchRestaurantApi): Promise<IResponse> => {
     return await makeApiCall(
-        'patch',
-        restaurantApiUrls.searchRestaurantUrl(searchText, searchQuery, selectedCuisines)
+        'get',
+        restaurantApiUrls.searchRestaurantUrl({ searchText, searchQuery, selectedCuisines })
     )
 }

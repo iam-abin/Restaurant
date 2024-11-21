@@ -1,10 +1,11 @@
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined'
 import RestaurantKfcImg from '../assets/restaurant_KFC.png'
 import { Chip, Typography } from '@mui/material'
-import MenuCard from '../components/cards/MenuCard'
 import MenuCardSkeleton from '../components/shimmer/MenuCardSkeleton'
+import { useEffect } from 'react'
 
 const RestaurantDetails = () => {
+    useEffect(() => {}, [])
     return (
         <div className="max-w-6xl mx-auto my-10">
             <div className="w-full">
@@ -42,9 +43,9 @@ const RestaurantDetails = () => {
                 <div className="md:p-4">
                     <h1 className="text-xl md:text-2xl font-extrabold mb-6">Available Menus</h1>
                     <div className="grid md:grid-cols-3 space-y-4">
+                        {/* <MenuCard />
                         <MenuCard />
-                        <MenuCard />
-                        <MenuCard />
+                        <MenuCard /> */}
                         <MenuCardSkeleton />
                         <MenuCardSkeleton />
                         <MenuCardSkeleton />

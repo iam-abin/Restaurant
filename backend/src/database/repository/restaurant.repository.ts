@@ -13,8 +13,8 @@ export class RestaurantRepository {
     }
 
     async findMyRestaurant(ownerId: string): Promise<IRestaurantDocument | null> {
-        console.log("owner id ", ownerId);
-        
+        console.log('owner id ', ownerId);
+
         return await RestaurantModel.findOne({ ownerId }).populate(['ownerId', 'addressId']);
     }
 
@@ -35,7 +35,10 @@ export class RestaurantRepository {
     }
 
     async searchRestaurants(searchText: string, searchQuery: string, selectedCuisines: string[]) {
+        console.log(searchText, searchQuery, selectedCuisines);
+
         const pipeline = [
+            // Lookup address details
             {
                 $lookup: {
                     from: 'addresses',
@@ -45,6 +48,10 @@ export class RestaurantRepository {
                 },
             },
             {
+                $unwind: '$address',
+            },
+            // Lookup owner details
+            {
                 $lookup: {
                     from: 'users',
                     localField: 'ownerId',
@@ -53,19 +60,32 @@ export class RestaurantRepository {
                 },
             },
             {
-                $unwind: '$address',
-            },
-            {
                 $unwind: '$owner',
             },
+            // Lookup cuisines associated with the restaurant
+            {
+                $lookup: {
+                    from: 'restaurantcuisines',
+                    localField: '_id',
+                    foreignField: 'restaurantId',
+                    as: 'restaurantCuisines',
+                },
+            },
+            // {
+            //     $unwind: { path: '$restaurantCuisines', preserveNullAndEmptyArrays: true },
+            // },
             {
                 $lookup: {
                     from: 'cuisines',
-                    localField: '_id',
-                    foreignField: 'restaurantId', // Assuming `restaurantId` exists in Cuisine documents
+                    localField: 'restaurantCuisines.cuisineId',
+                    foreignField: '_id',
                     as: 'cuisines',
                 },
             },
+            // {
+            //     $unwind: { path: '$cuisines', preserveNullAndEmptyArrays: true },
+            // },
+            // Match conditions
             {
                 $match: {
                     $and: [
@@ -91,13 +111,26 @@ export class RestaurantRepository {
                     ],
                 },
             },
+            // Group results by restaurant to aggregate cuisines and avoid duplicates
+            {
+                $group: {
+                    _id: '$_id',
+                    restaurantName: { $first: '$owner.name' },
+                    city: { $first: '$address.city' },
+                    country: { $first: '$address.country' },
+                    imageUrl: { $first: '$imageUrl' },
+                    cuisines: { $addToSet: '$cuisines.name' },
+                },
+            },
+            // Optionally project only the required fields
             {
                 $project: {
-                    ownerId: 1,
-                    addressId: 1,
-                    deliveryTime: 1,
+                    _id: 1,
+                    restaurantName: 1,
+                    city: 1,
+                    country: 1,
                     imageUrl: 1,
-                    isBlocked: 1,
+                    cuisines: 1,
                 },
             },
         ];

@@ -76,9 +76,9 @@ export default function EditMenuModal({
 
             const response: IResponse = await editMenuApi(menu.id, formData)
             hotToastMessage(response.message, 'success')
-              // Re-fetch menus
-        dispatch(fetchMenus(menu.restaurantId));
-        handleClose()
+            // Re-fetch menus
+            dispatch(fetchMenus(menu.restaurantId))
+            handleClose()
         } finally {
             setIsLoading(false)
         }
@@ -180,7 +180,11 @@ export default function EditMenuModal({
                                 </Typography>
                             )}
                         </div>
-                        <Button type='submit' variant="contained" className=" h-10 w-full col-Typography-2 pt-5">
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            className=" h-10 w-full col-Typography-2 pt-5"
+                        >
                             {isLoading ? (
                                 <>
                                     Please wait

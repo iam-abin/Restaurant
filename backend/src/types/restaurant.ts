@@ -6,5 +6,5 @@ export interface IRestaurant {
     country: string;
     deliveryTime: number;
     imageUrl: string;
-    cuisines: string[];
+    cuisines: string;
 }

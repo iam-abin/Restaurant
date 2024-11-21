@@ -34,9 +34,7 @@ export class RestaurantService {
         return restaurant;
     }
 
-    public async getMyRestaurant(
-        userId: string,
-    ): Promise<RestaurantWithCuisines> {
+    public async getMyRestaurant(userId: string): Promise<RestaurantWithCuisines> {
         const restaurant: IRestaurantDocument | null =
             await this.restaurantRepository.findMyRestaurant(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
@@ -55,6 +53,11 @@ export class RestaurantService {
 
         const session = await mongoose.startSession();
         session.startTransaction();
+        const parsedCuisines = JSON.parse(cuisines!);
+        console.log(restaurantData);
+        console.log(parsedCuisines);
+        console.log(parsedCuisines?.length);
+
         try {
             // user
             await this.userRepository.updateUser(ownerId, { name }, session);
@@ -70,19 +73,22 @@ export class RestaurantService {
             if (file) {
                 imageUrl = await uploadImageOnCloudinary(file);
             }
-            
+
             const restaurant: IRestaurantDocument | null = await this.restaurantRepository.update(
                 ownerId,
                 { addressId: addressData?._id.toString(), deliveryTime, imageUrl },
                 session,
             );
             // cusine
-            if (cuisines) {
+            if (parsedCuisines) {
                 const existingCuisines: ICuisineDocument[] =
-                    await this.cuisineRepository.findArrayItems(cuisines);
+                    await this.cuisineRepository.findArrayItems(parsedCuisines);
 
                 // Filter out cuisines that already exist
-                const filteredCuisines: string[] = this.filterOutExistingCuisines(cuisines, existingCuisines);
+                const filteredCuisines: string[] = this.filterOutExistingCuisines(
+                    parsedCuisines,
+                    existingCuisines,
+                );
                 const cuisinesToInsert: {
                     name: string;
                 }[] = filteredCuisines.map((name: string) => ({ name }));
@@ -136,7 +142,24 @@ export class RestaurantService {
     ): Promise<any[]> {
         // search is based on ( name, city, country, cuisines )
 
-        const cuisinesArray: string[] = selectedCuisines.split(', ').filter((cuisine: string) => cuisine); // It avoid falsy values
+        console.log('-------------------');
+        console.log(
+            'searchText==> ',
+            searchText,
+            'searchQuery==> ',
+            searchQuery,
+            'selectedCuisines==> ',
+            selectedCuisines,
+        );
+        console.log('-------------------');
+        let cuisinesArray: string[] = selectedCuisines.split(',');
+        if (cuisinesArray.length) {
+            cuisinesArray = cuisinesArray.filter((cuisine: string) => cuisine); // It avoid falsy values
+            console.log(cuisinesArray, ' cuisinesArray');
+            console.log(cuisinesArray.length, ' cuisinesArray');
+        }
+
+        // const cuisinesArray: string[] = selectedCuisines.split(', ').filter((cuisine: string) => cuisine); // It avoid falsy values
 
         const restaurant = await this.restaurantRepository.searchRestaurants(
             searchText,

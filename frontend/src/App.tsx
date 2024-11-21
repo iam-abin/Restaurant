@@ -46,7 +46,7 @@ const appRouter = createBrowserRouter([
         children: [
             { path: '/', element: <Landing /> },
             { path: '/profile', element: <Profile /> },
-            { path: '/search/:searchKey', element: <SearchResult /> },
+            { path: '/search/:searchText', element: <SearchResult /> },
             {
                 path: '/user/restaurant/:restaurantId',
                 element: <RestaurantDetails />

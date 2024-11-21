@@ -80,9 +80,9 @@ export default function AddMenuModal({
                 price: 0,
                 image: undefined
             })
-                // Re-fetch menus
-        dispatch(fetchMenus(restaurantData.restaurant.id))
-        handleClose()
+            // Re-fetch menus
+            dispatch(fetchMenus(restaurantData.restaurant.id))
+            handleClose()
         } finally {
             setIsLoading(false)
         }

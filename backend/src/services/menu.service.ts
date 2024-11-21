@@ -22,8 +22,7 @@ export class MenuService {
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         if (restaurant?.isBlocked) throw new BadRequestError('This restaurant is blocked');
 
-        
-        let imageUrl: string = await uploadImageOnCloudinary(file);
+        const imageUrl: string = await uploadImageOnCloudinary(file);
         const menu: IMenuDocument | null = await this.menuRepository.create({
             ...menuData,
             restaurantId: restaurant._id.toString(),

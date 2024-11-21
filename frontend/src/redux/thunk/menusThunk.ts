@@ -7,8 +7,8 @@ export const fetchMenus = createAsyncThunk(
     async (restaurantId: string, { rejectWithValue }) => {
         // Use an underscore here as well
         try {
-            console.log("thunk ", restaurantId);
-            
+            console.log('thunk ', restaurantId)
+
             const menus = await getMenusApi(restaurantId)
             return menus.data
         } catch (error) {

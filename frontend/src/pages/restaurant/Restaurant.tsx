@@ -42,9 +42,9 @@ const Restaurant = () => {
             setInput((prevInput) => ({
                 ...prevInput,
                 name: restaurant.ownerId.name || '',
-                city: restaurant.addressId.city || '',
-                country: restaurant.addressId.country || '',
-                deliveryTime: restaurant.deliveryTime || 0,
+                city: restaurant?.addressId?.city || '',
+                country: restaurant?.addressId?.country || '',
+                deliveryTime: restaurant?.deliveryTime || 0,
                 cuisines: cuisines.map((cuisine) => (cuisine.cuisineId as ICuisine).name) || []
             }))
         }
