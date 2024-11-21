@@ -29,7 +29,7 @@ const Restaurant = () => {
     const [errors, setErrors] = useState<Partial<RestaurantFormSchema>>({})
 
     useEffect(() => {
-        ;(async () => {
+        (async () => {
             const response: IResponse = await getMyRestaurantApi()
             const { restaurant, cuisines } = response.data
             setRestaurant(restaurant)

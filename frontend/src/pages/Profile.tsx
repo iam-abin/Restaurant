@@ -1,11 +1,14 @@
 import { Avatar, Box, Button } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
-import { ChangeEvent, FormEvent, useRef, useState } from 'react'
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react'
 import LoaderCircle from '../components/Loader/LoaderCircle'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import EmailIcon from '@mui/icons-material/Email'
 import FlagIcon from '@mui/icons-material/Flag'
 import LocationSearchingIcon from '@mui/icons-material/LocationSearching'
+import { useAppDispatch, useAppSelector } from '../redux/hooks'
+import { fetchUserProfile, updateUserProfile } from '../redux/thunk/profileThunk'
+import { updateProfileApi } from '../api/apiMethods/profile'
 
 type ProfileDataState = {
     name: string
@@ -17,16 +20,26 @@ type ProfileDataState = {
 }
 
 const Profile = () => {
-    const imageRef = useRef<HTMLInputElement | null>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [selectedProfilePicture, setSelectedProfilePicture] = useState<string>('')
+    const dispatch = useAppDispatch() 
+    
+    const { authData } = useAppSelector((state) => state.authReducer)
+    const { myProfile } = useAppSelector((state) => state.profileReducer)
+    console.log('authData ', authData)
+    console.log('myProfile ', myProfile)
+    
+    useEffect(()=>{
+        dispatch(fetchUserProfile())
+    },[])
+    
+    const imageRef = useRef<HTMLInputElement | null>(null)
     const [profileData, setProfileData] = useState({
-        name: '',
-        email: '',
-        address: '',
-        city: '',
-        country: '',
-        image: ''
+        name: authData?.name || '',
+        address: myProfile?.addressId?.address || '',
+        city: myProfile?.addressId?.city || '',
+        country: myProfile?.addressId?.country  || '',
+        image: myProfile?.imageUrl || ''
     })
     const fileChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
@@ -53,19 +66,15 @@ const Profile = () => {
 
     const updateProfileHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        console.log(profileData)
-
-        // try {
-        //   setIsLoading(true);
-        //   await updateProfile(profileData);
-        //   setIsLoading(false);
-        // } catch (error) {
-        //   setIsLoading(false);
-        // }
+        setIsLoading(true)
+        console.log({...profileData, image: selectedProfilePicture})
+        dispatch(updateUserProfile({...profileData, image: selectedProfilePicture}))
+        setIsLoading(false)
     }
+    
 
     return (
-        <form className=" max-w-7xl mx-auto my-5">
+        <form onSubmit={updateProfileHandler} className=" max-w-7xl mx-auto my-5">
             <div className="flex items-center justify-between">
                 <div className="flex gap-2 items-center">
                     <div className="flex items-center gap-2 relative">
@@ -75,7 +84,7 @@ const Profile = () => {
                                 height: 80,
                                 md: { width: 112, height: 112 }
                             }}
-                            src="/broken-image.jpg"
+                            src={profileData.image || `/broken-image.jpg`}
                         />
                         {/* Overlay for hover effect */}
                         <Box
@@ -95,8 +104,7 @@ const Profile = () => {
                                 '&:hover': {
                                     opacity: 1
                                 }
-                            }}
-                        >
+                            }}>
                             <input
                                 type="file"
                                 ref={imageRef}
@@ -112,7 +120,9 @@ const Profile = () => {
                     </div>
                     <input
                         type="text"
-                        name={profileData.name}
+                        placeholder='update your name'
+                        name="name"
+                        value={profileData.name}
                         onChange={changeHandler}
                         className="h-8 font-bold outline-none border-none"
                     />
@@ -123,12 +133,10 @@ const Profile = () => {
                     <EmailIcon className="text-gray-500" />
                     <div className="w-full">
                         <label>Email</label>
-                        <input
-                            name="email"
-                            value={profileData.email}
-                            onChange={changeHandler}
-                            className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
-                        />
+                        <span
+                        
+                            className="w-full block text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
+                        >{authData.email}</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
@@ -137,6 +145,7 @@ const Profile = () => {
                         <label>Address</label>
                         <input
                             name="address"
+                        placeholder='update your address'
                             value={profileData.address}
                             onChange={changeHandler}
                             className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
@@ -149,6 +158,8 @@ const Profile = () => {
                         <label>City</label>
                         <input
                             name="city"
+                        placeholder='update your city'
+
                             value={profileData.city}
                             onChange={changeHandler}
                             className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
@@ -161,6 +172,8 @@ const Profile = () => {
                         <label>Country</label>
                         <input
                             name="country"
+                        placeholder='update your country'
+
                             value={profileData.country}
                             onChange={changeHandler}
                             className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
@@ -174,8 +187,7 @@ const Profile = () => {
                     type="submit"
                     disabled={isLoading}
                     className="w-2/6 mb-5 bg-orange-300"
-                    variant="contained"
-                >
+                    variant="contained">
                     {isLoading ? (
                         <label className="flex items-center gap-4">
                             Please wait <LoaderCircle />

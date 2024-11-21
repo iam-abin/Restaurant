@@ -54,9 +54,6 @@ export class RestaurantService {
         const session = await mongoose.startSession();
         session.startTransaction();
         const parsedCuisines = JSON.parse(cuisines!);
-        console.log(restaurantData);
-        console.log(parsedCuisines);
-        console.log(parsedCuisines?.length);
 
         try {
             // user
@@ -142,16 +139,16 @@ export class RestaurantService {
     ): Promise<any[]> {
         // search is based on ( name, city, country, cuisines )
 
-        console.log('-------------------');
-        console.log(
-            'searchText==> ',
-            searchText,
-            'searchQuery==> ',
-            searchQuery,
-            'selectedCuisines==> ',
-            selectedCuisines,
-        );
-        console.log('-------------------');
+        // console.log('-------------------');
+        // console.log(
+        //     'searchText==> ',
+        //     searchText,
+        //     'searchQuery==> ',
+        //     searchQuery,
+        //     'selectedCuisines==> ',
+        //     selectedCuisines,
+        // );
+        // console.log('-------------------');
         let cuisinesArray: string[] = selectedCuisines.split(',');
         if (cuisinesArray.length) {
             cuisinesArray = cuisinesArray.filter((cuisine: string) => cuisine); // It avoid falsy values

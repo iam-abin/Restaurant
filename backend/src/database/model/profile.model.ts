@@ -2,8 +2,10 @@ import mongoose, { Schema } from 'mongoose';
 import { IProfile } from '../../types';
 import { omitDocFields } from '../../utils';
 
-export interface IProfileDocument extends Document, Omit<IProfile, 'userId'> {
+export interface IProfileDocument extends Document, Omit<IProfile, 'userId' | 'addressId'> {
     userId: Schema.Types.ObjectId;
+    addressId:  Schema.Types.ObjectId;
+    
 }
 
 const profileSchema = new Schema<IProfileDocument>(
@@ -12,6 +14,11 @@ const profileSchema = new Schema<IProfileDocument>(
             type: Schema.Types.ObjectId,
             ref: 'User',
             required: true,
+            unique: true,
+        },
+        addressId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Address',
             unique: true,
         },
         imageUrl: String,

@@ -7,6 +7,8 @@ export const fetchUserProfile = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         // Use an underscore here as well
         try {
+            console.log("inside thunk ");
+            
             const profile = await getProfileApi()
             return profile.data
         } catch (error) {
