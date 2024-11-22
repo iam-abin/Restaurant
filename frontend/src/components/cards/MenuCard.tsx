@@ -26,8 +26,8 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
     const dispatch = useAppDispatch()
 
     const addItemToCartHandler = async (menuItemId: string) => {
-        console.log(menuItemId);
-        
+        console.log(menuItemId)
+
         dispatch(addToCart(menuItemId))
     }
 

@@ -37,10 +37,16 @@ export class CartService {
     ): Promise<ICartDocument | null> {
         const cartItem: ICartDocument | null = await this.cartRepository.findById(cartItemId);
         if (!cartItem) throw new NotFoundError('CartItem not found');
-        if (userId !== cartItem.userId.toString())
+        console.log('cartItem ', cartItem);
+
+        console.log('userId', userId, 'cartItemId', cartItemId, 'quantity', quantity);
+
+        if (userId !== (cartItem.userId as IUserDocument)._id.toString())
             throw new ForbiddenError('You cannot modify others cart item');
-        if (quantity !== 1 && quantity !== -1) throw new BadRequestError('quantity must be either 1 or -1');
+        if (quantity < 1) throw new BadRequestError('quantity must be grater than 0');
         const updatedCartItem: ICartDocument | null = await this.cartRepository.update(cartItemId, quantity);
+        console.log('after update updatedCartItem ', updatedCartItem);
+
         return updatedCartItem;
     }
 

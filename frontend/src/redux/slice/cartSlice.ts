@@ -1,6 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { addAsyncThunkCases } from '../../utils/addCase'
-import { addToCart, fetchCartItems, removeCartItem, removeCartItems } from '../thunk/cartThunk'
+import {
+    addToCart,
+    changeCartItemQuantity,
+    fetchCartItems,
+    removeCartItem,
+    removeCartItems
+} from '../thunk/cartThunk'
 
 interface ICartSlice {
     cartData: any | null
@@ -28,6 +34,17 @@ const cartSlice = createSlice({
             state.status = 'succeeded'
             state.cartData = [...state.cartData, action.payload]
         })
+
+        addAsyncThunkCases(builder, changeCartItemQuantity, (state, action) => {
+            // Remove the item with the given ID from cartData
+            state.status = 'succeeded'
+            state.cartData = state.cartData.map((item: any) =>
+                item.id === action.payload.cartItemId
+                    ? { ...item, quantity: action.payload.quantity }
+                    : item
+            )
+        })
+
         addAsyncThunkCases(builder, removeCartItem, (state, action) => {
             // Remove the item with the given ID from cartData
             state.status = 'succeeded'

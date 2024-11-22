@@ -1,5 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { addToCartApi, getCartItemsApi, removeCartItemApi, removeCartItemsApi } from '../../api/apiMethods/cart'
+import {
+    addToCartApi,
+    getCartItemsApi,
+    removeCartItemApi,
+    removeCartItemsApi,
+    updateQuantityApi
+} from '../../api/apiMethods/cart'
 import { hotToastMessage } from '../../utils/hotToast'
 
 // Async thunk for fetching user cart
@@ -31,6 +37,23 @@ export const addToCart = createAsyncThunk(
 )
 
 // Async thunk for updating user cart
+export const changeCartItemQuantity = createAsyncThunk(
+    'cart/changeCartItemQuantity',
+    async (
+        { cartItemId, quantity }: { cartItemId: string; quantity: number },
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await updateQuantityApi(cartItemId, quantity) // API call to remove item
+            hotToastMessage(response.message, 'success')
+            return { cartItemId, quantity } // Return the ID of the removed item
+        } catch (error) {
+            return rejectWithValue('Failed to remove cart item')
+        }
+    }
+)
+
+// Async thunk for updating user cart
 export const removeCartItem = createAsyncThunk(
     'cart/removeCartItem',
     async (cartItemId: string, { rejectWithValue }) => {
@@ -50,7 +73,7 @@ export const removeCartItems = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const response = await removeCartItemsApi()
-            hotToastMessage(response.message,'success')
+            hotToastMessage(response.message, 'success')
             return []
         } catch (error) {
             return rejectWithValue('Failed to update cart')

@@ -46,23 +46,22 @@ const initialRows = [
 
 export default function TableCart({
     cartItems,
-    removeCartItemHandler
+    removeCartItemHandler,
+    changeQuantityHandler
 }: {
     cartItems: any[]
     removeCartItemHandler: (cartItemId: string) => void
+    changeQuantityHandler: (cartItemId: string, quantity: number) => void
 }) {
     const [rows, setRows] = React.useState(initialRows)
 
-    const handleQuantityChange = (index: number, delta: number) => {
-        setRows((prevRows) =>
-            prevRows.map((row, i) =>
-                i === index ? { ...row, quantity: Math.max(1, row.quantity + delta) } : row
-            )
-        )
+    const handleQuantityChange = (item: any, quantityChange: number) => {
+        const newQuantity = item.quantity + quantityChange
+        if (newQuantity < 1) return // Ensure quantity doesn't go below 1
+        changeQuantityHandler(item.id, newQuantity) // Call the handler with the new quantity
     }
 
-    const handleRemoveItem = (cartItemId: string, index: number) => {
-        setRows((prevRows) => prevRows.filter((_, i) => i !== index))
+    const handleRemoveItem = (cartItemId: string) => {
         removeCartItemHandler(cartItemId)
     }
 
@@ -87,11 +86,11 @@ export default function TableCart({
                             <StyledTableCell align="center">{item.itemId.price}</StyledTableCell>
                             <StyledTableCell align="center">
                                 <div className="flex items-center justify-center">
-                                    <IconButton onClick={() => handleQuantityChange(index, -1)}>
+                                    <IconButton onClick={() => handleQuantityChange(item, -1)}>
                                         <RemoveIcon />
                                     </IconButton>
                                     <Typography>{item.quantity}</Typography>
-                                    <IconButton onClick={() => handleQuantityChange(index, 1)}>
+                                    <IconButton onClick={() => handleQuantityChange(item, 1)}>
                                         <AddIcon />
                                     </IconButton>
                                 </div>
@@ -100,7 +99,7 @@ export default function TableCart({
                                 {item.itemId.price * item.quantity}
                             </StyledTableCell>
                             <StyledTableCell align="center">
-                                <IconButton onClick={() => handleRemoveItem(item.id, index)}>
+                                <IconButton onClick={() => handleRemoveItem(item.id)}>
                                     <DeleteIcon />
                                 </IconButton>
                             </StyledTableCell>
