@@ -8,6 +8,8 @@ export class MenuRepository {
     }
 
     async findMenu(menuId: string): Promise<IMenuDocument | null> {
+        console.log(menuId);
+
         const menu: IMenuDocument | null = await MenuModel.findById(menuId);
         return menu;
     }

@@ -8,12 +8,14 @@ import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import EditMenuModal from '../modal/EditMenuModal'
 import { IMenu } from '../../types'
-import { useAppSelector } from '../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { ROLES_CONSTANTS } from '../../utils/constants'
+import { addToCartApi } from '../../api/apiMethods/cart'
+import { hotToastMessage } from '../../utils/hotToast'
+import { addToCart } from '../../redux/thunk/cartThunk'
 
 const MenuCard = ({ menu }: { menu: IMenu }) => {
-
-    const authData = useAppSelector((store)=>store.authReducer.authData)
+    const authData = useAppSelector((store) => store.authReducer.authData)
     const isAdmin = authData.role === ROLES_CONSTANTS.ADMIN
     const isUser = authData.role === ROLES_CONSTANTS.USER
     const isRestaurant = authData.role === ROLES_CONSTANTS.RESTAURANT
@@ -21,6 +23,14 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
     const [isEditMenuOpen, setIsEditMenuOpen] = useState(false)
     const handleEditMenuOpen = () => setIsEditMenuOpen(true)
     const handleEditMenuClose = () => setIsEditMenuOpen(false)
+    const dispatch = useAppDispatch()
+
+    const addItemToCartHandler = async (menuItemId: string) => {
+        console.log(menuItemId);
+        
+        dispatch(addToCart(menuItemId))
+    }
+
     return (
         <div className="flex justify-center bg-yellow-700">
             <Card sx={{ width: 10 / 12 }}>
@@ -53,12 +63,15 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
                     </CardContent>
                     <div className="flex items-center justify-center px-4 py-2">
                         {isUser ? (
-                            <Link to={`/restaurant/${menu.id}`} className="w-full">
-                                <Button className="w-full" variant="contained" size="small">
-                                    Add to cart
-                                </Button>
-                            </Link>
-                        ) : isRestaurant? (
+                            <Button
+                                onClick={() => addItemToCartHandler(menu._id)}
+                                className="w-full"
+                                variant="contained"
+                                size="small"
+                            >
+                                Add to cart
+                            </Button>
+                        ) : isRestaurant ? (
                             <Button
                                 onClick={handleEditMenuOpen}
                                 className="w-full"
@@ -67,7 +80,9 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
                             >
                                 Edit
                             </Button>
-                        ): <></>}
+                        ) : (
+                            <></>
+                        )}
                     </div>
                 </div>
             </Card>

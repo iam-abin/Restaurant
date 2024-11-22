@@ -37,7 +37,8 @@ const RestaurantDetails = () => {
                             {restaurant?.cuisines?.map((cusine: ICuisine, index: number) => (
                                 <div
                                     key={index}
-                                    className="relative inline-flex items-center max-w-full">
+                                    className="relative inline-flex items-center max-w-full"
+                                >
                                     <Chip label={cusine.name} variant="outlined" />
                                 </div>
                             ))}

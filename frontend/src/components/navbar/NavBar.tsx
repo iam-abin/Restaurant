@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import FadeMenu from '../list/FadeMenu'
 import { Avatar, Badge, IconButton, Typography } from '@mui/material'
@@ -8,7 +8,8 @@ import LogoutIcon from '@mui/icons-material/Logout'
 import FlatwareIcon from '@mui/icons-material/Flatware'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
 import { ROLES_CONSTANTS } from '../../utils/constants'
-import { useAppSelector } from '../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { fetchCartItems } from '../../redux/thunk/cartThunk'
 
 export interface IMenuItems {
     to: string
@@ -22,8 +23,13 @@ export interface IMenuItems2 {
 }
 
 const NavBar = ({ currentUser, handleLogout }: { currentUser: any; handleLogout: () => void }) => {
+    const { myProfile } = useAppSelector((store) => store.profileReducer)
+    const { cartData } = useAppSelector((store) => store.cartReducer)
 
-    const {myProfile} = useAppSelector((store)=> store.profileReducer)
+    const dispatch = useAppDispatch()
+    useEffect(() => {
+        dispatch(fetchCartItems())
+    }, [])
 
     const isAdmin = currentUser && currentUser.role === ROLES_CONSTANTS.ADMIN
     const isRestaurant = currentUser && currentUser.role === ROLES_CONSTANTS.RESTAURANT
@@ -55,8 +61,6 @@ const NavBar = ({ currentUser, handleLogout }: { currentUser: any; handleLogout:
                 icon: <ShoppingCartIcon />,
                 to: '/'
             },
-        // (currentUser && isUser)&&{ name: "Cart", icon: <ShoppingCartIcon />, to: "/cart" },
-        // (currentUser && isUser)&&{ name: "Cart", icon: <ShoppingCartIcon />, to: "/cart" },
         currentUser &&
             isRestaurant && {
                 name: 'Restaurant',
@@ -91,14 +95,18 @@ const NavBar = ({ currentUser, handleLogout }: { currentUser: any; handleLogout:
                             <Link to={'/order/status'}>Order</Link>
 
                             <IconButton aria-label="cart">
-                                <Badge badgeContent={4} color="primary">
-                                    <ShoppingCartIcon />
+                                <Badge badgeContent={cartData.length} color="primary">
+                                    <Link to={'/cart'}>
+                                        <ShoppingCartIcon />
+                                    </Link>
                                 </Badge>
                             </IconButton>
                         </>
                     )}
 
-                    <Avatar src={`${myProfile?.imageUrl?myProfile?.imageUrl:"/broken-image.jpg"}`} />
+                    <Avatar
+                        src={`${myProfile?.imageUrl ? myProfile?.imageUrl : '/broken-image.jpg'}`}
+                    />
                     <LogoutIcon onClick={handleLogout} style={{ cursor: 'pointer' }} />
                 </div>
                 {isAdmin && <FadeMenu menuItems={menuItemsAdmin} />}

@@ -10,7 +10,7 @@ export class RestaurantRepository {
 
     async findRestaurant(restaurantId: string): Promise<any | null> {
         const restaurant = await RestaurantModel.aggregate([
-             // Match the restaurant by ID
+            // Match the restaurant by ID
             {
                 $match: { _id: new mongoose.Types.ObjectId(restaurantId) },
             },
@@ -26,10 +26,10 @@ export class RestaurantRepository {
             {
                 $unwind: {
                     path: '$address',
-                    preserveNullAndEmptyArrays: true,  // Optional, if some restaurants may not have an address
+                    preserveNullAndEmptyArrays: true, // Optional, if some restaurants may not have an address
                 },
             },
-             // Lookup to join with the Menu collection
+            // Lookup to join with the Menu collection
             {
                 $lookup: {
                     from: 'menus',
@@ -56,7 +56,7 @@ export class RestaurantRepository {
                     as: 'cuisines',
                 },
             },
-           // Lookup to join with the users collection
+            // Lookup to join with the users collection
             {
                 $lookup: {
                     from: 'users', // User collection (owners are stored here)
@@ -88,7 +88,7 @@ export class RestaurantRepository {
                 },
             },
         ]);
-        return restaurant[0]
+        return restaurant[0];
     }
 
     async findMyRestaurant(ownerId: string): Promise<IRestaurantDocument | null> {

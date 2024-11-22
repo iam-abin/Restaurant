@@ -44,7 +44,13 @@ const initialRows = [
     createData('Gingerbread', 356, 16.0, 49, 3.9)
 ]
 
-export default function TableCart() {
+export default function TableCart({
+    cartItems,
+    removeCartItemHandler
+}: {
+    cartItems: any[]
+    removeCartItemHandler: (cartItemId: string) => void
+}) {
     const [rows, setRows] = React.useState(initialRows)
 
     const handleQuantityChange = (index: number, delta: number) => {
@@ -55,8 +61,9 @@ export default function TableCart() {
         )
     }
 
-    const handleRemoveItem = (index: number) => {
+    const handleRemoveItem = (cartItemId: string, index: number) => {
         setRows((prevRows) => prevRows.filter((_, i) => i !== index))
+        removeCartItemHandler(cartItemId)
     }
 
     return (
@@ -65,7 +72,6 @@ export default function TableCart() {
                 <TableHead>
                     <TableRow>
                         <StyledTableCell>Item</StyledTableCell>
-                        <StyledTableCell align="center">Title</StyledTableCell>
                         <StyledTableCell align="center">Price</StyledTableCell>
                         <StyledTableCell align="center">Quantity</StyledTableCell>
                         <StyledTableCell align="center">Total</StyledTableCell>
@@ -73,29 +79,28 @@ export default function TableCart() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row, index) => (
-                        <StyledTableRow key={row.name}>
-                            <StyledTableCell component="th" scope="row">
-                                {row.name}
+                    {cartItems.map((item, index) => (
+                        <StyledTableRow key={item.id}>
+                            <StyledTableCell component="th" scope="item">
+                                {item.itemId.name}
                             </StyledTableCell>
-                            <StyledTableCell align="center">{row.calories}</StyledTableCell>
-                            <StyledTableCell align="center">{row.fat}</StyledTableCell>
+                            <StyledTableCell align="center">{item.itemId.price}</StyledTableCell>
                             <StyledTableCell align="center">
                                 <div className="flex items-center justify-center">
                                     <IconButton onClick={() => handleQuantityChange(index, -1)}>
                                         <RemoveIcon />
                                     </IconButton>
-                                    <Typography>{row.quantity}</Typography>
+                                    <Typography>{item.quantity}</Typography>
                                     <IconButton onClick={() => handleQuantityChange(index, 1)}>
                                         <AddIcon />
                                     </IconButton>
                                 </div>
                             </StyledTableCell>
                             <StyledTableCell align="center">
-                                {row.fat * row.quantity}
+                                {item.itemId.price * item.quantity}
                             </StyledTableCell>
                             <StyledTableCell align="center">
-                                <IconButton onClick={() => handleRemoveItem(index)}>
+                                <IconButton onClick={() => handleRemoveItem(item.id, index)}>
                                     <DeleteIcon />
                                 </IconButton>
                             </StyledTableCell>

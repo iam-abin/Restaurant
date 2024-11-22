@@ -16,7 +16,7 @@ class MenuController {
             req.body as Omit<IMenu, 'imageUrl' | 'restaurantId'>,
             file,
         );
-        res.status(200).json(createSuccessResponse('Menu created successfully', menu));
+        res.status(201).json(createSuccessResponse('Menu created successfully', menu));
     }
 
     public async getMenus(req: Request, res: Response): Promise<void> {

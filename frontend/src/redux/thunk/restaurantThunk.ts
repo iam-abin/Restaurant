@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { getMyRestaurantApi, updateRestaurantApi } from '../../api/apiMethods/restaurant'
+import { hotToastMessage } from '../../utils/hotToast'
 
 // Async thunk for fetching user profile
 export const fetchMyRestaurant = createAsyncThunk(
@@ -21,6 +22,7 @@ export const updateMyRestaurant = createAsyncThunk(
     async (updateData: any, { rejectWithValue }) => {
         try {
             const updatedData = await updateRestaurantApi(updateData)
+            hotToastMessage(updatedData.message, 'success')
             return updatedData.data
         } catch (error) {
             return rejectWithValue('Failed to update profile')

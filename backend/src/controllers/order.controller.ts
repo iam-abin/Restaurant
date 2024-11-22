@@ -26,7 +26,7 @@ class OrderController {
             userId,
             checkoutSessionData as IOrder,
         );
-        res.status(200).json(createSuccessResponse('Order created successfully', order));
+        res.status(201).json(createSuccessResponse('Order created successfully', order));
     }
 
     public async getRestaurantOrders(req: Request, res: Response): Promise<void> {

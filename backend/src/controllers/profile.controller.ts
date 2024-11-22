@@ -18,10 +18,9 @@ class ProfileController {
 
     public async editProfile(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
-        const file: Express.Multer.File = req.file!;
         const user: IProfileDocument | null = await profileService.updateProfile(
             userId,
-            req.body as Partial<IProfile & IUser & IAddress>,
+            req.body as Partial<Pick<IProfile, 'image'> & Pick<IUser, 'name'> & Omit<IAddress, 'userId'>>,
         );
         res.status(200).json(createSuccessResponse('Profile updated successfully', user));
     }

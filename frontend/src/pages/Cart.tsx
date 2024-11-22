@@ -1,10 +1,14 @@
 import { Button, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import { useEffect, useState } from 'react'
 import TableCart from '../components/table/TableCart'
 import CheckoutReviewModal from '../components/modal/CheckoutReviewModal'
+import { useAppDispatch, useAppSelector } from '../redux/hooks'
+import { fetchCartItems, removeCartItem, removeCartItems } from '../redux/thunk/cartThunk'
 
 const Cart = () => {
     const [isOpen, setIsOpen] = useState(false)
+    const { cartData } = useAppSelector((store) => store.cartReducer)
+    const dispatch = useAppDispatch()
     const handleOpen = () => {
         setIsOpen(true)
     }
@@ -12,12 +16,27 @@ const Cart = () => {
     const handleClose = () => {
         setIsOpen(false)
     }
+
+    useEffect(() => {
+        dispatch(fetchCartItems())
+    }, [dispatch])
+
+    const removeCartItemsHandler = () => {
+        dispatch(removeCartItems())
+    }
+
+    const removeCartItemHandler = (cartItemId: string) => {
+        dispatch(removeCartItem(cartItemId))
+    }
+
     return (
         <div className="flex flex-col max-w-7xl mx-auto my-10">
             <div className="flex justify-end">
-                <Button variant="text">Clear all</Button>
+                <Button onClick={removeCartItemsHandler} variant="text">
+                    Clear all
+                </Button>
             </div>
-            <TableCart />
+            <TableCart cartItems={cartData} removeCartItemHandler={removeCartItemHandler} />
             <div className="mt-3 flex flex-row justify-end">
                 <div className="mt-3 flex flex-col items-end gap-5">
                     <div>

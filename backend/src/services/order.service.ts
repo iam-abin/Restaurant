@@ -66,9 +66,7 @@ export class OrderService {
                 cancel_url: appConfig.PAYMENT_CANCEL_URL,
                 metadata: {
                     orderId: order.id.toString(),
-                    images: JSON.stringify(
-                        cartItems.map((item) => (item.menuItemId as IMenuDocument).imageUrl),
-                    ),
+                    images: JSON.stringify(cartItems.map((item) => (item.itemId as IMenuDocument).imageUrl)),
                 },
             });
 
@@ -77,10 +75,10 @@ export class OrderService {
             }
 
             // Delete cart items in bulk
-            await this.cartRepository.deleteItems(userId, session);
+            await this.cartRepository.deleteAllItems(userId, session);
             const orderedItems = cartItems.map((item) => ({
                 menuItemId: item._id.toString(),
-                menuItemPrice: (item.menuItemId as IMenuDocument).price,
+                menuItemPrice: (item.itemId as IMenuDocument).price,
                 orderId: order.id,
                 userId,
             }));
@@ -101,7 +99,7 @@ export class OrderService {
     private createLineItems(cartItems: ICartDocument[]) {
         // create line items (line items will display in the stripe payment interface as list)
         const lineItems = cartItems.map((cartItem: ICartDocument) => {
-            const menuItem = cartItem.menuItemId as IMenuDocument;
+            const menuItem = cartItem.itemId as IMenuDocument;
             return {
                 price_data: {
                     currency: 'inr',
@@ -111,7 +109,7 @@ export class OrderService {
                     },
                     unit_amount: menuItem.price * 100, // Amount in cents (299 INR * 100)
                 },
-                quantity: cartItem.count,
+                quantity: cartItem.quantity,
             };
         });
 

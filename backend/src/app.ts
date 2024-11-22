@@ -10,6 +10,7 @@ import compression from 'compression';
 import { NotFoundError } from './errors';
 import { errorHandler, rateLimiter } from './middlewares';
 import { authRoutes } from './routes/auth.routes';
+import { cartRoutes } from './routes/cart.routes';
 import { menuRoutes } from './routes/menu.routes';
 import { orderRoutes } from './routes/order.routes';
 import { profileRoutes } from './routes/profile.routes';
@@ -40,6 +41,7 @@ if (!isProductionENV) app.use(morgan('dev'));
 // app.use(rateLimiter);
 // Routes
 app.use(`${appConfig.API_PREFIX}/auth`, authRoutes);
+app.use(`${appConfig.API_PREFIX}/cart`, cartRoutes);
 app.use(`${appConfig.API_PREFIX}/menu`, menuRoutes);
 app.use(`${appConfig.API_PREFIX}/order`, orderRoutes);
 app.use(`${appConfig.API_PREFIX}/profile`, profileRoutes);

@@ -22,23 +22,23 @@ type ProfileDataState = {
 const Profile = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [selectedProfilePicture, setSelectedProfilePicture] = useState<string>('')
-    const dispatch = useAppDispatch() 
-    
+    const dispatch = useAppDispatch()
+
     const { authData } = useAppSelector((state) => state.authReducer)
     const { myProfile } = useAppSelector((state) => state.profileReducer)
     console.log('authData ', authData)
     console.log('myProfile ', myProfile)
-    
-    useEffect(()=>{
+
+    useEffect(() => {
         dispatch(fetchUserProfile())
-    },[])
-    
+    }, [])
+
     const imageRef = useRef<HTMLInputElement | null>(null)
     const [profileData, setProfileData] = useState({
         name: authData?.name || '',
         address: myProfile?.addressId?.address || '',
         city: myProfile?.addressId?.city || '',
-        country: myProfile?.addressId?.country  || '',
+        country: myProfile?.addressId?.country || '',
         image: myProfile?.imageUrl || ''
     })
     const fileChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -67,12 +67,11 @@ const Profile = () => {
     const updateProfileHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setIsLoading(true)
-        console.log({...profileData, image: selectedProfilePicture})
-        dispatch(updateUserProfile({...profileData, image: selectedProfilePicture}))
+        console.log({ ...profileData, image: selectedProfilePicture })
+        dispatch(updateUserProfile({ ...profileData, image: selectedProfilePicture }))
         setIsLoading(false)
         setSelectedProfilePicture('')
     }
-    
 
     return (
         <form onSubmit={updateProfileHandler} className=" max-w-7xl mx-auto my-5">
@@ -105,7 +104,8 @@ const Profile = () => {
                                 '&:hover': {
                                     opacity: 1
                                 }
-                            }}>
+                            }}
+                        >
                             <input
                                 type="file"
                                 ref={imageRef}
@@ -121,7 +121,7 @@ const Profile = () => {
                     </div>
                     <input
                         type="text"
-                        placeholder='update your name'
+                        placeholder="update your name"
                         name="name"
                         value={profileData.name}
                         onChange={changeHandler}
@@ -134,10 +134,9 @@ const Profile = () => {
                     <EmailIcon className="text-gray-500" />
                     <div className="w-full">
                         <label>Email</label>
-                        <span
-                        
-                            className="w-full block text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
-                        >{authData.email}</span>
+                        <span className="w-full block text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none">
+                            {authData.email}
+                        </span>
                     </div>
                 </div>
                 <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
@@ -146,7 +145,7 @@ const Profile = () => {
                         <label>Address</label>
                         <input
                             name="address"
-                        placeholder='update your address'
+                            placeholder="update your address"
                             value={profileData.address}
                             onChange={changeHandler}
                             className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
@@ -159,8 +158,7 @@ const Profile = () => {
                         <label>City</label>
                         <input
                             name="city"
-                        placeholder='update your city'
-
+                            placeholder="update your city"
                             value={profileData.city}
                             onChange={changeHandler}
                             className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
@@ -173,8 +171,7 @@ const Profile = () => {
                         <label>Country</label>
                         <input
                             name="country"
-                        placeholder='update your country'
-
+                            placeholder="update your country"
                             value={profileData.country}
                             onChange={changeHandler}
                             className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
@@ -188,7 +185,8 @@ const Profile = () => {
                     type="submit"
                     disabled={isLoading}
                     className="w-2/6 mb-5 bg-orange-300"
-                    variant="contained">
+                    variant="contained"
+                >
                     {isLoading ? (
                         <label className="flex items-center gap-4">
                             Please wait <LoaderCircle />

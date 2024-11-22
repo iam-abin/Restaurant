@@ -3,7 +3,6 @@ import { IRestaurant } from '../types';
 import {
     AddressRepository,
     CuisineRepository,
-    MenuRepository,
     RestaurantCuisineRepository,
     RestaurantRepository,
     UserRepository,
@@ -11,7 +10,6 @@ import {
 import {
     IAddressDocument,
     ICuisineDocument,
-    IMenuDocument,
     IRestaurantCuisineDocument,
     IRestaurantDocument,
 } from '../database/model';
@@ -30,12 +28,10 @@ export class RestaurantService {
         private readonly restaurantCuisineRepository: RestaurantCuisineRepository,
     ) {}
 
-    public async getARestaurant(
-        restaurantId: string,
-    ): Promise<
-    // GetARestaurant
-    any
-     | null> {
+    public async getARestaurant(restaurantId: string): Promise<
+        // GetARestaurant
+        any | null
+    > {
         const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         return restaurant;

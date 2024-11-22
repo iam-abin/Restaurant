@@ -4,6 +4,7 @@ import { ISignup } from '../../types';
 import { ROLES_CONSTANTS } from '../../utils';
 
 export interface IUserDocument extends Document, ISignup {
+    _id: Schema.Types.ObjectId;
     isVerified: boolean;
     isBlocked: boolean;
 }

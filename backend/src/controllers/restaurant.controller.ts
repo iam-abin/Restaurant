@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { createSuccessResponse } from '../utils';
-import { IAddressDocument, ICuisineDocument, IMenuDocument, IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
+import { IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
 import { container } from 'tsyringe';
 import { RestaurantService } from '../services';
-import { ICuisine, IRestaurant } from '../types';
+import { IRestaurant } from '../types';
 
 const restaurantService = container.resolve(RestaurantService);
 
