@@ -18,6 +18,7 @@ export interface IAppConfig {
 
     STRIPE_SECRET_KEY: string;
     STRIPE_PUBLISHABLE_KEY: string;
+    STRIPE_WEBHOOK_ENDPOINT_SECRET: string;
 
     PAYMENT_SUCCESS_URL: string;
     PAYMENT_CANCEL_URL: string;
@@ -43,6 +44,7 @@ const appConfig: Readonly<IAppConfig> = Object.freeze({
 
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY!,
     STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY!,
+    STRIPE_WEBHOOK_ENDPOINT_SECRET: process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET!,
 
     PAYMENT_SUCCESS_URL: `${process.env.FRONTEND_URL}/order/status`,
     PAYMENT_CANCEL_URL: `${process.env.FRONTEND_URL}/cart`,

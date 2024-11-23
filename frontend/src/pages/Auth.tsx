@@ -14,6 +14,7 @@ import { hotToastMessage } from '../utils/hotToast'
 import { signupApi } from '../api/apiMethods/auth'
 import { ISignup } from '../types'
 import { fetchMyRestaurant } from '../redux/thunk/restaurantThunk'
+import { fetchUserProfile } from '../redux/thunk/profileThunk'
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true)
@@ -84,7 +85,13 @@ const Auth = () => {
                     })
                 )
 
-                await dispatch(fetchMyRestaurant())
+                if(role === ROLES_CONSTANTS.RESTAURANT){
+                    await dispatch(fetchMyRestaurant())
+                }
+
+                if(role === ROLES_CONSTANTS.USER){
+                    await dispatch(fetchUserProfile())
+                }
 
                 // Check if the action was rejected
                 if (response.meta.requestStatus !== 'rejected') {

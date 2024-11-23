@@ -18,7 +18,7 @@ const Success = () => {
                         Order Summary
                     </h2>
                 </div>
-                <Link to="/cart">
+                <Link to="/">
                     <Button className="bg-orange hover:bg-hoverOrange w-full py-3 rounded-md shadow-lg">
                         Continue Shopping
                     </Button>

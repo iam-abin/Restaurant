@@ -1,5 +1,6 @@
 import { autoInjectable } from 'tsyringe';
 import mongoose from 'mongoose';
+import Stripe from 'stripe';
 
 import { IOrder } from '../types';
 import {
@@ -10,7 +11,7 @@ import {
     AddressRepository,
 } from '../database/repository';
 import { ICartDocument, IMenuDocument, IOrderDocument } from '../database/model';
-import { ForbiddenError, NotFoundError } from '../errors';
+import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
 import { stripeInstance } from '../config/stripe';
 import { appConfig } from '../config/app.config';
 
@@ -24,30 +25,51 @@ export class OrderService {
         private readonly addressRepository: AddressRepository,
     ) {}
 
-    public async createOrder(userId: string, orderData: IOrder): Promise<IOrderDocument> {
+    public async createOrder(
+        userId: string,
+        orderData: IOrder,
+    ): Promise<Stripe.Response<Stripe.Checkout.Session>> {
         const session = await mongoose.startSession();
         session.startTransaction();
+        console.log(orderData);
 
         try {
             // Fetch restaurant and cart items in parallel
-            const [restaurant, cartItems, address] = await Promise.all([
-                this.restaurantRepository.findRestaurant(orderData.restaurantId),
+            // const [restaurant, cartItems, address] = await Promise.all([
+            //     this.restaurantRepository.findRestaurant(orderData.restaurantId),
+            //     this.cartRepository.findAllByUserId(userId),
+            //     this.addressRepository.findById(orderData.addressId),
+            // ]);
+
+            const [cartItems, address] = await Promise.all([
                 this.cartRepository.findAllByUserId(userId),
-                this.addressRepository.findById(orderData.addressId),
+                this.addressRepository.findByUserId(userId),
             ]);
 
-            if (!restaurant) throw new NotFoundError('Restaurant not found');
             if (cartItems.length === 0) throw new NotFoundError('Must contain cart items to place order');
+            const restaurantId = this.checkSameRestaurant(cartItems);
+            const restaurant = this.restaurantRepository.findRestaurant(restaurantId);
+            if (!restaurant) throw new NotFoundError('Restaurant not found');
+            const totalAmound = this.findTotalAmound(cartItems);
             if (!address) throw new NotFoundError('Address not found');
             if (address.userId.toString() !== userId)
                 throw new ForbiddenError('You cannot use others address');
 
+            //         userId: string;
+            // restaurantId: string;
+            // // cartId: string;
+            // addressId: string;
+            // totalAmound: number;
+            // status: 'pending' |
+
             // Create the order
             const order: IOrderDocument | null = await this.orderRepository.create(
                 {
-                    ...orderData,
-                    status: 'pending',
                     userId,
+                    restaurantId,
+                    addressId: address._id.toString(),
+                    totalAmound,
+                    status: 'pending',
                 },
                 session,
             );
@@ -70,6 +92,8 @@ export class OrderService {
                 },
             });
 
+            console.log('checkoutSession is ', checkoutSession);
+
             if (!checkoutSession.url) {
                 throw new Error('Error while creating checkout session');
             }
@@ -83,10 +107,11 @@ export class OrderService {
                 userId,
             }));
 
+            // Adding ordered items to OrderedItems collection
             await this.orderedItemRepository.create(orderedItems, session);
             // Commit the transaction
             await session.commitTransaction();
-            return order;
+            return checkoutSession;
         } catch (error) {
             // Rollback the transaction if something goes wrong
             await session.abortTransaction();
@@ -94,6 +119,37 @@ export class OrderService {
         } finally {
             session.endSession();
         }
+    }
+
+    private checkSameRestaurant(cartItems: ICartDocument[]) {
+        if (cartItems.length === 0) throw new Error('Cart is empty');
+
+        // Extract the restaurantId of the first cart item
+        const firstRestaurantId = (cartItems[0].itemId as IMenuDocument).restaurantId.toString();
+
+        // Check if all items in the cart have the same restaurantId
+        for (const item of cartItems) {
+            const currentRestaurantId = (item.itemId as IMenuDocument).restaurantId.toString();
+            if (currentRestaurantId !== firstRestaurantId) {
+                throw new Error('All items in the cart must be from the same restaurant');
+            }
+        }
+
+        // Return the restaurantId if all are the same
+        return firstRestaurantId;
+    }
+
+    private findTotalAmound(cartItems: ICartDocument[]) {
+        if (cartItems.length === 0) throw new Error('Cart is empty');
+
+        // Check if all items in the cart have the same restaurantId
+        const totalAmound = cartItems.reduce((acc: number, currItem: ICartDocument) => {
+            acc = acc + (currItem.itemId as IMenuDocument).price;
+            return acc;
+        }, 0);
+
+        // Return the restaurantId if all are the same
+        return totalAmound;
     }
 
     private createLineItems(cartItems: ICartDocument[]) {
@@ -131,11 +187,45 @@ export class OrderService {
         return restaurant;
     }
 
+    public async confirmOrder(
+        status: string,
+        requestBody: string | Buffer,
+        signature: string | string[] | Buffer,
+    ): Promise<IOrderDocument | null> {
+        const endpointSecret = appConfig.STRIPE_WEBHOOK_ENDPOINT_SECRET;
+        console.log("requestBody " ,requestBody);
+
+        // Construct the payload string for verification
+        const payloadString = typeof requestBody === 'string' || Buffer.isBuffer(requestBody) ? requestBody : JSON.stringify(requestBody);
+
+        const event: Stripe.Event  = stripeInstance.webhooks.constructEvent(payloadString, signature, endpointSecret);
+        console.log("event", event);
+        // Handle the checkout session completed event
+        if (event.type !== 'checkout.session.completed') {
+            throw new Error('Payment confirmation failed');
+        }
+        const session = event.data.object as Stripe.Checkout.Session;
+        console.log("session", session);
+        
+        const order: IOrderDocument | null = await this.orderRepository.findOrder(session.metadata?.orderId!);
+
+        if (!order) throw new NotFoundError('Order not found');
+
+        const confirmedOrder = this.orderRepository.updateStatus(order._id.toString(), status);
+        // Update the order with the amount and status
+        // if (session.amount_total) {
+        //     order.totalAmount = session.amount_total;
+        // }
+
+        return confirmedOrder;
+    }
+
     public async updateOrderStatus(
         orderId: string,
         status: string,
         ownerId: string,
     ): Promise<IOrderDocument | null> {
+        const endpointSecret = 'whsec_c85cb16f22e5a7c45a59a2695689d9b512aac6e21973a485f0d79c30f3dfcc73';
         const order: IOrderDocument | null = await this.orderRepository.findOrder(orderId);
         if (!order) throw new NotFoundError('Order not found');
         if ('ownerId' in order.restaurantId && order.restaurantId.ownerId.toString() !== ownerId)

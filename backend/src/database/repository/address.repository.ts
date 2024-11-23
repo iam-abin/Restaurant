@@ -12,6 +12,11 @@ export class AddressRepository {
         return await AddressModel.findById(addressId);
     }
 
+    async findByUserId(userId: string): Promise<IAddressDocument | null> {
+        return await AddressModel.findOne({userId});
+    }
+
+    
     async update(
         userId: string,
         updateData: Partial<IAddress>,

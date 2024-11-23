@@ -3,6 +3,7 @@ import { IUserRole } from './roles';
 export interface IUser {
     name: string;
     email: string;
+    phone: number;
     password: string;
     role: Partial<IUserRole>;
 }
@@ -11,4 +12,4 @@ export interface IUser {
 export interface ISignup extends IUser {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ISignin extends Omit<IUser, 'name'> {}
+export interface ISignin extends Omit<IUser, 'name' | 'phone'> {}

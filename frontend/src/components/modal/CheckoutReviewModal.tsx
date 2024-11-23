@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import IconButton from '@mui/material/IconButton'
@@ -6,6 +6,9 @@ import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
 import { Button } from '@mui/material'
 import LoaderCircle from '../Loader/LoaderCircle'
+import { useAppSelector } from '../../redux/hooks'
+import { checkoutOrderApi } from '../../api/apiMethods/order'
+
 
 const style = {
     position: 'absolute',
@@ -26,12 +29,48 @@ export default function CheckoutReviewModal({
     isOpen: boolean
     handleClose: () => void
 }) {
-    const [isLoading, setIsLoading] = useState(false)
-    const checkoutHandler = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-    }
+    const [isLoading, setIsLoading] = useState(false);
+    
+    const {authData} = useAppSelector((store)=> store.authReducer);
+    const {myProfile} = useAppSelector((store)=> store.profileReducer);
+    const {cartData} = useAppSelector((store)=> store.cartReducer);
+
+    const [input, setInput] = useState({
+        name: authData?.name || '',
+        email: authData?.email || '',
+        phone: authData?.phone ? authData.phone.toString() : '',
+        address: myProfile?.addressId?.address || '',
+        city: myProfile?.addressId?.city || "",
+        country: myProfile?.addressId?.country || "",
+    })
+
+
     const changeEventHandler = (e: FormEvent<HTMLInputElement>) => {
         // const {name, value} = e.target;
+    }
+
+    // useEffect(()=>{
+    //     (
+    //         async()=>{
+    //             const 
+    //         }
+    //     )()
+    // })
+
+    const paymentCheckoutHandler = async(e: FormEvent<HTMLFormElement>) => {
+        console.log(cartData);
+        
+        e.preventDefault()
+        setIsLoading(true)
+      
+        try {
+            const response = await checkoutOrderApi();
+            window.location.href = response.data.url
+
+        } finally{
+            setIsLoading(false)
+
+        }
     }
     return (
         <div>
@@ -65,7 +104,7 @@ export default function CheckoutReviewModal({
                     </Typography>
                     {/* Form */}
                     <form
-                        onSubmit={checkoutHandler}
+                        onSubmit={paymentCheckoutHandler}
                         className="mt-4 md:grid grid-cols-2 gap-2 space-y-1 md:space-y-0"
                     >
                         <div>
@@ -74,7 +113,7 @@ export default function CheckoutReviewModal({
                                 className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
                                 type="text"
                                 name="name"
-                                value={'abin'}
+                                value={input.name}
                                 onChange={changeEventHandler}
                             />
                         </div>
@@ -85,7 +124,7 @@ export default function CheckoutReviewModal({
                                 disabled
                                 type="email"
                                 name="email"
-                                value={'abin@123'}
+                                value={authData.email }
                                 onChange={changeEventHandler}
                             />
                         </div>
@@ -105,7 +144,7 @@ export default function CheckoutReviewModal({
                                 className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
                                 type="text"
                                 name="address"
-                                value={'kochi'}
+                                value={input.address}
                                 onChange={changeEventHandler}
                             />
                         </div>
@@ -115,7 +154,7 @@ export default function CheckoutReviewModal({
                                 className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
                                 type="text"
                                 name="city"
-                                value={'Kochi'}
+                                value={input.city}
                                 onChange={changeEventHandler}
                             />
                         </div>
@@ -125,11 +164,11 @@ export default function CheckoutReviewModal({
                                 className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
                                 type="text"
                                 name="country"
-                                value={'india'}
+                                value={input.country}
                                 onChange={changeEventHandler}
                             />
                         </div>
-                        <Button variant="contained" className=" h-10 col-Typography-2 pt-5">
+                        <Button type='submit' variant="contained" className=" h-10 col-Typography-2 pt-5">
                             {isLoading ? (
                                 <>
                                     Please wait

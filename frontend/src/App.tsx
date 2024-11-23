@@ -1,7 +1,6 @@
 import MainLayout from './layout/MainLayout'
 import Auth from './pages/Auth'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
 import ForgotPasswordEmail from './pages/ForgotPasswordEmail'
 import ResetPassword from './pages/ResetPassword'
 import Otp from './pages/Otp'
@@ -52,7 +51,7 @@ const appRouter = createBrowserRouter([
                 element: <RestaurantDetails />
             },
             { path: '/cart', element: <Cart /> },
-            { path: '/success', element: <Success /> },
+            { path: '/order/status', element: <Success /> },
             { path: '*', element: <Error404 /> }
         ]
     },

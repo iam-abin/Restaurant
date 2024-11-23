@@ -74,7 +74,7 @@ export default function EditMenuModal({
                 formData.append('image', inputData.image)
             }
 
-            const response: IResponse = await editMenuApi(menu.id, formData)
+            const response: IResponse = await editMenuApi(menu._id.toString(), formData)
             hotToastMessage(response.message, 'success')
             // Re-fetch menus
             dispatch(fetchMenus(menu.restaurantId))

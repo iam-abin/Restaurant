@@ -13,6 +13,7 @@ import {
 const Cart = () => {
     const [isOpen, setIsOpen] = useState(false)
     const { cartData } = useAppSelector((store) => store.cartReducer)
+    const { myProfile } = useAppSelector((store) => store.profileReducer)
     const dispatch = useAppDispatch()
 
     const handleOpen = () => {

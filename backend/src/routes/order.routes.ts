@@ -7,8 +7,9 @@ const router: Router = express.Router();
 
 router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.USER), orderController.getMyOrders);
 
-router.post('/payment', checkCurrentUser, auth(ROLES_CONSTANTS.USER), orderController.addOrder);
-// router.post('/webhook', checkCurrentUser, auth(ROLES_CONSTANTS.USER), orderController.);
+router.post('/payment/checkout', checkCurrentUser, auth(ROLES_CONSTANTS.USER), orderController.addOrder);
+
+router.post('/webhook', express.raw({type: 'application/json'}), orderController.confirmOrderStripeWebhook)
 
 router.get(
     '/restaurant/:restaurantId',

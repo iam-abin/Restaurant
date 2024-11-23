@@ -23,6 +23,11 @@ const userSchema = new Schema<IUserDocument>(
             lowercase: true,
             trim: true,
         },
+        phone: {
+            type: Number,
+            required: true,
+            trim: true,
+        },
         password: {
             type: String,
             required: true,
