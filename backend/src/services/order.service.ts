@@ -190,23 +190,25 @@ export class OrderService {
     public async confirmOrder(
         status: string,
         requestBody: string | Buffer,
-        signature: string | string[] | Buffer,
+        signature: string | Buffer | Array<string>,
     ): Promise<IOrderDocument | null> {
-        const endpointSecret = appConfig.STRIPE_WEBHOOK_ENDPOINT_SECRET;
-        console.log("requestBody " ,requestBody);
-
-        // Construct the payload string for verification
-        const payloadString = typeof requestBody === 'string' || Buffer.isBuffer(requestBody) ? requestBody : JSON.stringify(requestBody);
-
-        const event: Stripe.Event  = stripeInstance.webhooks.constructEvent(payloadString, signature, endpointSecret);
-        console.log("event", event);
+        const webhookEndPointSecret: string = appConfig.STRIPE_WEBHOOK_ENDPOINT_SECRET;
+        console.log("webhookEndPointSecret", webhookEndPointSecret);
+        
+        
+        const event: Stripe.Event = stripeInstance.webhooks.constructEvent(
+            JSON.stringify(requestBody),
+            signature,
+            webhookEndPointSecret,
+        );
+        console.log('event', event);
         // Handle the checkout session completed event
         if (event.type !== 'checkout.session.completed') {
             throw new Error('Payment confirmation failed');
         }
         const session = event.data.object as Stripe.Checkout.Session;
-        console.log("session", session);
-        
+        // console.log('session', session);
+
         const order: IOrderDocument | null = await this.orderRepository.findOrder(session.metadata?.orderId!);
 
         if (!order) throw new NotFoundError('Order not found');
@@ -225,7 +227,6 @@ export class OrderService {
         status: string,
         ownerId: string,
     ): Promise<IOrderDocument | null> {
-        const endpointSecret = 'whsec_c85cb16f22e5a7c45a59a2695689d9b512aac6e21973a485f0d79c30f3dfcc73';
         const order: IOrderDocument | null = await this.orderRepository.findOrder(orderId);
         if (!order) throw new NotFoundError('Order not found');
         if ('ownerId' in order.restaurantId && order.restaurantId.ownerId.toString() !== ownerId)

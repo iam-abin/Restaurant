@@ -1,5 +1,5 @@
 import { autoInjectable } from 'tsyringe';
-import { IRestaurant } from '../types';
+import { IRestaurantUpdate } from '../types';
 import {
     AddressRepository,
     CuisineRepository,
@@ -49,7 +49,7 @@ export class RestaurantService {
 
     public async updateRestaurant(
         ownerId: string,
-        restaurantData: Partial<Omit<IRestaurant, 'userId' | 'imageUrl'>>,
+        restaurantData: IRestaurantUpdate,
         file?: Express.Multer.File,
     ): Promise<IRestaurantDocument | null> {
         const { name, city, country, deliveryTime, cuisines } = restaurantData;

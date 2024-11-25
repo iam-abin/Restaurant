@@ -1,7 +1,7 @@
 export interface IOtpToken {
     userId: string;
-    otp?: string;
-    resetToken?: string;
+    otp: string;
+    resetToken: string;
 }
 
 export interface IEmailTemplate {

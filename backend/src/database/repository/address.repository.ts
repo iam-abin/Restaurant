@@ -13,10 +13,9 @@ export class AddressRepository {
     }
 
     async findByUserId(userId: string): Promise<IAddressDocument | null> {
-        return await AddressModel.findOne({userId});
+        return await AddressModel.findOne({ userId });
     }
 
-    
     async update(
         userId: string,
         updateData: Partial<IAddress>,

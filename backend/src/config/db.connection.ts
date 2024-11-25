@@ -13,7 +13,7 @@ const connectDb = async () => {
             socketTimeoutMS: 45000, // Increase socket timeout to 45 seconds
         });
         console.log('connected to mongodb...🛢');
-    } catch (error) {
+    } catch (error: unknown) {
         console.error(error);
         throw new DatabaseConnectionError();
     }

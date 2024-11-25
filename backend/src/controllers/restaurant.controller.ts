@@ -3,7 +3,7 @@ import { createSuccessResponse } from '../utils';
 import { IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
 import { container } from 'tsyringe';
 import { RestaurantService } from '../services';
-import { IRestaurant } from '../types';
+import { IRestaurantUpdate } from '../types';
 
 const restaurantService = container.resolve(RestaurantService);
 
@@ -12,19 +12,13 @@ export type RestaurantWithCuisines = {
     cuisines: IRestaurantCuisineDocument[];
 };
 
-// export interface IGetARestaurant extends IRestaurantDocument {
-//     address: IAddressDocument;
-//     menus: IMenuDocument[];
-//     cuisines: ICuisineDocument[];
-// }
-
 class RestaurantController {
     public async editRestaurant(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
         const file: Express.Multer.File = req.file!;
         const restaurant: IRestaurantDocument | null = await restaurantService.updateRestaurant(
             userId,
-            req.body as Partial<Omit<IRestaurant, 'userId' | 'imageUrl'>>,
+            req.body as IRestaurantUpdate,
             file,
         );
         res.status(200).json(createSuccessResponse('Restaurant updated successfully', restaurant));
@@ -38,7 +32,6 @@ class RestaurantController {
 
     public async getARestaurant(req: Request, res: Response): Promise<void> {
         const { restaurantId } = req.params;
-        // const restaurant: GetARestaurant | null = await restaurantService.getARestaurant(restaurantId);
         const restaurant: any | null = await restaurantService.getARestaurant(restaurantId);
         res.status(200).json(createSuccessResponse('Restaurant fetched successfully', restaurant));
     }

@@ -5,7 +5,8 @@ import { IUserDocument } from './user.model';
 import { IRestaurantDocument } from './restaurant.model';
 
 export interface IOrderDocument
-    extends Document, Omit<IOrder, 'userId' | 'restaurantId' | 'cartId' | 'addressId'> {
+    extends Document,
+        Omit<IOrder, 'userId' | 'restaurantId' | 'cartId' | 'addressId'> {
     _id: Schema.Types.ObjectId;
     userId: Schema.Types.ObjectId | IUserDocument;
     restaurantId: Schema.Types.ObjectId | IRestaurantDocument;

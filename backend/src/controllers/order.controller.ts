@@ -22,24 +22,23 @@ class OrderController {
     public async addOrder(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
         const checkoutSessionData = req.body;
-        const order = await orderService.createOrder(
-            userId,
-            checkoutSessionData as IOrder,
-        );
+        const order = await orderService.createOrder(userId, checkoutSessionData as IOrder);
         res.status(201).json(createSuccessResponse('Order created successfully', order));
     }
 
     public async confirmOrderStripeWebhook(req: Request, res: Response): Promise<void> {
-        const sig = req.headers['stripe-signature'] as (string | string[] | Buffer );
+        const signature = req.headers['stripe-signature'] as string | Buffer | Array<string>;
+        console.log('req.body ===>', req.body);
+        console.log('sig ===>', signature);
+
         const order = await orderService.confirmOrder(
-            "confirmed",
+            'confirmed',
             req.body,
-            sig,
+            signature,
             // userId,
         );
         res.status(201).json(createSuccessResponse('Order Confirmed successfully', order));
     }
-    
 
     public async getRestaurantOrders(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;

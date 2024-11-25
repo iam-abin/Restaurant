@@ -8,9 +8,11 @@ const limits = { fileSize: 10 * 1024 * 1024 }; // 10 MB limit (adjust as needed)
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
 const fileFilter = (req: Request, file: Express.Multer.File, cb: any) => {
-    const extension = path.extname(file.originalname);
-    if (!['.jpg', '.jpeg', '.png'].includes(extension.toLowerCase())) {
-        cb(new Error(`${extension} is unsupported file type!`), false);
+    const extension = path.extname(file.originalname).toLowerCase();
+    const mimeType = file.mimetype;
+
+    if (!['.jpg', '.jpeg', '.png'].includes(extension) || !mimeType.startsWith('image/')) {
+        cb(new Error(`${extension} is unsupported file type! Only jpeg, jgp, and png are allowed.`), false);
         return;
     }
     cb(null, true);

@@ -8,3 +8,6 @@ export interface IRestaurant {
     imageUrl: string;
     cuisines: string;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface IRestaurantUpdate extends Omit<IRestaurant, 'ownerId' | 'addressId' | 'imageUrl'> {}

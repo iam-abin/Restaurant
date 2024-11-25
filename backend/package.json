@@ -8,7 +8,7 @@
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write 'src/**/*.ts'",
     "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
-    "build": "tsc && npm run copy-swagger",
+    "build": "tsc",
     "start": "cross-env NODE_ENV=production node build/src/index.js"
   },
   "author": "abin",
