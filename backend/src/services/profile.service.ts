@@ -21,6 +21,11 @@ export class ProfileService {
         return profile;
     }
 
+    public async getUserProfiles(): Promise<IProfileDocument[]> {
+        const profile: IProfileDocument[] = await this.profileRepository.find();
+        return profile;
+    }
+
     public async updateProfile(
         userId: string,
         updateData: Partial<IProfile & IUser & IAddress>,

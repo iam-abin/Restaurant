@@ -6,6 +6,8 @@ export interface IUser {
     phone: number;
     password: string;
     role: Partial<IUserRole>;
+    isBlocked: boolean;
+    isVerified: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type

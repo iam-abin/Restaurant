@@ -59,6 +59,12 @@ class AuthController {
         res.status(200).json(createSuccessResponse(`Password reseted successfully`, user));
     }
 
+    public async blockUnblockUser(req: Request, res: Response): Promise<void> {
+        const { userId } = req.params;
+        const user: IUserDocument | null = await userService.blockUnblockUser(userId);
+        res.status(200).json(createSuccessResponse(`candidate ${user?.isBlocked ? 'unBlocked' : 'Blocked'}  successfully`, user));
+    }
+
     public async logout(req: Request, res: Response): Promise<void> {
         res.clearCookie(JWT_KEYS_CONSTANTS.JWT_TOKEN);
         res.status(200).json(createSuccessResponse('Successfully logged out'));

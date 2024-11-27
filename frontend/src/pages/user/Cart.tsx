@@ -1,14 +1,14 @@
 import { Button, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
-import TableCart from '../components/table/TableCart'
-import CheckoutReviewModal from '../components/modal/CheckoutReviewModal'
-import { useAppDispatch, useAppSelector } from '../redux/hooks'
+import TableCart from '../../components/table/TableCart'
+import CheckoutReviewModal from '../../components/modal/CheckoutReviewModal'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import {
     changeCartItemQuantity,
     fetchCartItems,
     removeCartItem,
     removeCartItems
-} from '../redux/thunk/cartThunk'
+} from '../../redux/thunk/cartThunk'
 
 const Cart = () => {
     const [isOpen, setIsOpen] = useState(false)

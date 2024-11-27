@@ -1,12 +1,12 @@
 import { Button, Input, Typography } from '@mui/material'
 import EmailIcon from '@mui/icons-material/Email'
 import { ChangeEvent, FormEvent, useState } from 'react'
-import { emailSchema } from '../utils/schema/userSchema'
-import LoaderCircle from '../components/Loader/LoaderCircle'
+import { emailSchema } from '../../utils/schema/userSchema'
+import LoaderCircle from '../../components/Loader/LoaderCircle'
 import { Link, useNavigate } from 'react-router-dom'
-import { ForgotPasswordEmailApi } from '../api/apiMethods/auth'
-import { IResponse } from '../types/api'
-import { hotToastMessage } from '../utils/hotToast'
+import { ForgotPasswordEmailApi } from '../../api/apiMethods/auth'
+import { IResponse } from '../../types/api'
+import { hotToastMessage } from '../../utils/hotToast'
 
 export interface IForgotPasswordEmail {
     email: string

@@ -123,9 +123,12 @@ export class UserService {
         return { user: existingUser, accessToken: jwt };
     }
 
-    public async getProfile(userId: string): Promise<IUserDocument | null> {
+    public async blockUnblockUser(userId: string): Promise<IUserDocument | null> {
         const user: IUserDocument | null = await this.userRepository.findUserById(userId);
         if (!user) throw new NotFoundError('This user does not exist');
-        return user;
+
+        // Update the user's verification status
+        const updatedUser: IUserDocument | null = await this.userRepository.updateUser(userId, { isBlocked: !user.isBlocked });
+        return updatedUser;
     }
 }

@@ -8,6 +8,12 @@ export class RestaurantRepository {
         return restaurant;
     }
 
+    async findRestaurants(): Promise<IRestaurantDocument[]> {
+        const restaurants = await RestaurantModel.find().populate('ownerId')
+        return restaurants;
+    }
+    
+
     async findRestaurant(restaurantId: string): Promise<any | null> {
         const restaurant = await RestaurantModel.aggregate([
             // Match the restaurant by ID

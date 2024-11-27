@@ -1,11 +1,11 @@
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined'
 import { Chip, Typography } from '@mui/material'
-import MenuCardSkeleton from '../components/shimmer/MenuCardSkeleton'
+import MenuCardSkeleton from '../../components/shimmer/MenuCardSkeleton'
 import { useEffect, useState } from 'react'
-import { getARestaurantApi } from '../api/apiMethods/restaurant'
+import { getARestaurantApi } from '../../api/apiMethods/restaurant'
 import { useParams } from 'react-router-dom'
-import { ICuisine, IMenu } from '../types'
-import MenuCard from '../components/cards/MenuCard'
+import { ICuisine, IMenu } from '../../types'
+import MenuCard from '../../components/cards/MenuCard'
 // import { IRestaurant } from '../types'
 
 const RestaurantDetails = () => {

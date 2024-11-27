@@ -16,6 +16,10 @@ export class ProfileRepository {
         return await ProfileModel.findById(profileId).populate('userId');
     }
 
+    async find(): Promise<IProfileDocument[]> {
+        return await ProfileModel.find().populate('userId');
+    }
+
     async update(
         userId: string,
         updateData: Partial<IProfile>,

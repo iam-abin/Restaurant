@@ -16,6 +16,11 @@ class ProfileController {
         res.status(200).json(createSuccessResponse('User Profile', user));
     }
 
+    public async getProfiles(req: Request, res: Response): Promise<void> {
+        const user: IProfileDocument[] = await profileService.getUserProfiles();
+        res.status(200).json(createSuccessResponse('User Profiles fetched successfully', user));
+    }
+
     public async editProfile(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
         const user: IProfileDocument | null = await profileService.updateProfile(

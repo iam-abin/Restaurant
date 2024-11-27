@@ -1,10 +1,10 @@
 import { Button } from '@mui/material'
 import { FormEvent, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import LoaderCircle from '../components/Loader/LoaderCircle'
-import { verifyOtpApi } from '../api/apiMethods/auth'
-import { hotToastMessage } from '../utils/hotToast'
-import { ROLES_CONSTANTS } from '../utils/constants'
+import LoaderCircle from '../../components/Loader/LoaderCircle'
+import { verifyOtpApi } from '../../api/apiMethods/auth'
+import { hotToastMessage } from '../../utils/hotToast'
+import { ROLES_CONSTANTS } from '../../utils/constants'
 
 const Otp = () => {
     const inputRef = useRef<any>([])

@@ -1,13 +1,13 @@
 import { Button, Input, Typography } from '@mui/material'
 import LockIcon from '@mui/icons-material/Lock'
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
-import { resetPasswordSchema } from '../utils/schema/userSchema'
-import LoaderCircle from '../components/Loader/LoaderCircle'
+import { resetPasswordSchema } from '../../utils/schema/userSchema'
+import LoaderCircle from '../../components/Loader/LoaderCircle'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import { resetPasswordApi, verifyOtpApi, verifyResetTokenApi } from '../api/apiMethods/auth'
-import { IResetPassword, IUser } from '../types'
-import { IResponse } from '../types/api'
-import { hotToastMessage } from '../utils/hotToast'
+import { resetPasswordApi, verifyOtpApi, verifyResetTokenApi } from '../../api/apiMethods/auth'
+import { IResetPassword, IUser } from '../../types'
+import { IResponse } from '../../types/api'
+import { hotToastMessage } from '../../utils/hotToast'
 
 const ResetPassword = () => {
     const navigate = useNavigate()

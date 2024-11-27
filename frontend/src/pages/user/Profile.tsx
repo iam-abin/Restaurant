@@ -1,14 +1,14 @@
 import { Avatar, Box, Button } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react'
-import LoaderCircle from '../components/Loader/LoaderCircle'
+import LoaderCircle from '../../components/Loader/LoaderCircle'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import EmailIcon from '@mui/icons-material/Email'
 import FlagIcon from '@mui/icons-material/Flag'
 import LocationSearchingIcon from '@mui/icons-material/LocationSearching'
-import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { fetchUserProfile, updateUserProfile } from '../redux/thunk/profileThunk'
-import { updateProfileApi } from '../api/apiMethods/profile'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { fetchUserProfile, updateUserProfile } from '../../redux/thunk/profileThunk'
+import { updateProfileApi } from '../../api/apiMethods/profile'
 
 type ProfileDataState = {
     name: string

@@ -10,6 +10,10 @@ export const getMyRestaurantApi = async (): Promise<IResponse> => {
     return await makeApiCall('get', restaurantApiUrls.getMyRestaurantUrl)
 }
 
+export const getRestaurantsApi = async (): Promise<IResponse> => {
+    return await makeApiCall('get', restaurantApiUrls.getRestaurantsUrl)
+}
+
 export const updateRestaurantApi = async (data: FormData): Promise<IResponse> => {
     return await makeApiCall('patch', restaurantApiUrls.updateRestaurantUrl, data, true)
 }

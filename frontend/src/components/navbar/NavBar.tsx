@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import FadeMenu from '../list/FadeMenu'
-import { Avatar, Badge, IconButton, Typography } from '@mui/material'
+import { Avatar, Badge, IconButton } from '@mui/material'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import RightDrawer from '../drawer/RightDrawer'
 import LogoutIcon from '@mui/icons-material/Logout'
@@ -10,6 +10,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook'
 import { ROLES_CONSTANTS } from '../../utils/constants'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { fetchCartItems } from '../../redux/thunk/cartThunk'
+import ConfirmationDialogue from '../alert/ConfirmationDialogue'
 
 export interface IMenuItems {
     to: string
@@ -24,11 +25,18 @@ export interface IMenuItems2 {
 
 const NavBar = ({ currentUser, handleLogout }: { currentUser: any; handleLogout: () => void }) => {
     const { myProfile } = useAppSelector((store) => store.profileReducer)
-    const { cartData } = useAppSelector((store) => store.cartReducer)
+    let cartData;
+    if(currentUser.role === ROLES_CONSTANTS.USER){
+        cartData  = useAppSelector((store) => store.cartReducer.cartData)
+
+    }
 
     const dispatch = useAppDispatch()
     useEffect(() => {
-        dispatch(fetchCartItems())
+        if(currentUser.role === ROLES_CONSTANTS.USER){
+            dispatch(fetchCartItems())
+        }
+
     }, [])
 
     const isAdmin = currentUser && currentUser.role === ROLES_CONSTANTS.ADMIN
@@ -36,9 +44,8 @@ const NavBar = ({ currentUser, handleLogout }: { currentUser: any; handleLogout:
     const isUser = currentUser && currentUser.role === ROLES_CONSTANTS.USER
 
     const menuItemsAdmin: (IMenuItems | boolean)[] = [
-        isAdmin && { to: '/admin/restaurant', value: 'Restaurant' },
-        isAdmin && { to: '/admin/menu', value: 'Menu' },
-        isAdmin && { to: '/admin/orders', value: 'Order' }
+        isAdmin && { to: '/admin/users', value: 'Users' },
+        isAdmin && { to: '/admin/restaurants', value: 'Restaurants' },
     ].filter(Boolean) // Ensures no false or undefined values
 
     const menuItems: (Partial<IMenuItems2> | boolean)[] = [
@@ -81,12 +88,28 @@ const NavBar = ({ currentUser, handleLogout }: { currentUser: any; handleLogout:
             },
         { name: 'logout', icon: <LogoutIcon /> }
     ]
+
+    const [open, setOpen] = React.useState(false)
+    const navigate = useNavigate()
+
+    const handleLogoutButton = () => {
+        setOpen(true)
+    }
     return (
         <div className="w-4/5 mx-3 md:mx-auto">
             <div className="flex items-center justify-between h-14">
                 <Link to="/">
                     <h1 className="font-bold md:font-extrabold text-2xl">Restaurant App</h1>
                 </Link>
+                <ConfirmationDialogue
+                    open={open}
+                    setOpen={setOpen}
+                    title="Do you want to logout"
+                    description="Are you sure?"
+                    onAgree={handleLogout}
+                    closeText="No"
+                    okayText="Yes Logout "
+                />
                 <div className="hidden md:flex gap-10 items-center ">
                     {currentUser && isUser && (
                         <>
@@ -107,13 +130,13 @@ const NavBar = ({ currentUser, handleLogout }: { currentUser: any; handleLogout:
                     <Avatar
                         src={`${myProfile?.imageUrl ? myProfile?.imageUrl : '/broken-image.jpg'}`}
                     />
-                    <LogoutIcon onClick={handleLogout} style={{ cursor: 'pointer' }} />
+                    <LogoutIcon onClick={handleLogoutButton} style={{ cursor: 'pointer' }} />
                 </div>
                 {isAdmin && <FadeMenu menuItems={menuItemsAdmin} />}
                 {/* Mobile responsiveness */}
                 {!isAdmin && (
                     <div className="md:hidden">
-                        <RightDrawer onClickFn={handleLogout} menuItems={menuItems} />
+                        <RightDrawer onClickFn={handleLogoutButton} menuItems={menuItems} />
                     </div>
                 )}
             </div>

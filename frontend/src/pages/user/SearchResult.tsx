@@ -1,13 +1,13 @@
 import { useParams } from 'react-router-dom'
-import Filter from '../components/Filter'
-import { ChangeEvent, MouseEvent, useEffect, useState } from 'react'
+import Filter from '../../components/Filter'
+import { ChangeEvent, useEffect, useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search'
 import { Button, Chip } from '@mui/material'
-import RestaurantCard from '../components/cards/RestaurantCard'
-import RestaurantCardSkeleton from '../components/shimmer/RestaurantCardSkeleton'
-import { NoResultFound } from '../components/NoResultFound'
-import { searchRestaurantApi } from '../api/apiMethods/restaurant'
-import LoaderCircle from '../components/Loader/LoaderCircle'
+import RestaurantCard from '../../components/cards/RestaurantCard'
+import RestaurantCardSkeleton from '../../components/shimmer/RestaurantCardSkeleton'
+import { NoResultFound } from '../../components/NoResultFound'
+import { searchRestaurantApi } from '../../api/apiMethods/restaurant'
+import LoaderCircle from '../../components/Loader/LoaderCircle'
 
 const SearchResult = () => {
     const [searchQuery, setSearchQuery] = useState<string>('')

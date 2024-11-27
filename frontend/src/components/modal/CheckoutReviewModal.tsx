@@ -9,7 +9,6 @@ import LoaderCircle from '../Loader/LoaderCircle'
 import { useAppSelector } from '../../redux/hooks'
 import { checkoutOrderApi } from '../../api/apiMethods/order'
 
-
 const style = {
     position: 'absolute',
     top: '50%',
@@ -29,21 +28,20 @@ export default function CheckoutReviewModal({
     isOpen: boolean
     handleClose: () => void
 }) {
-    const [isLoading, setIsLoading] = useState(false);
-    
-    const {authData} = useAppSelector((store)=> store.authReducer);
-    const {myProfile} = useAppSelector((store)=> store.profileReducer);
-    const {cartData} = useAppSelector((store)=> store.cartReducer);
+    const [isLoading, setIsLoading] = useState(false)
+
+    const { authData } = useAppSelector((store) => store.authReducer)
+    const { myProfile } = useAppSelector((store) => store.profileReducer)
+    const { cartData } = useAppSelector((store) => store.cartReducer)
 
     const [input, setInput] = useState({
         name: authData?.name || '',
         email: authData?.email || '',
         phone: authData?.phone ? authData.phone.toString() : '',
         address: myProfile?.addressId?.address || '',
-        city: myProfile?.addressId?.city || "",
-        country: myProfile?.addressId?.country || "",
+        city: myProfile?.addressId?.city || '',
+        country: myProfile?.addressId?.country || ''
     })
-
 
     const changeEventHandler = (e: FormEvent<HTMLInputElement>) => {
         // const {name, value} = e.target;
@@ -52,24 +50,22 @@ export default function CheckoutReviewModal({
     // useEffect(()=>{
     //     (
     //         async()=>{
-    //             const 
+    //             const
     //         }
     //     )()
     // })
 
-    const paymentCheckoutHandler = async(e: FormEvent<HTMLFormElement>) => {
-        console.log(cartData);
-        
+    const paymentCheckoutHandler = async (e: FormEvent<HTMLFormElement>) => {
+        console.log(cartData)
+
         e.preventDefault()
         setIsLoading(true)
-      
+
         try {
-            const response = await checkoutOrderApi();
+            const response = await checkoutOrderApi()
             window.location.href = response.data.url
-
-        } finally{
+        } finally {
             setIsLoading(false)
-
         }
     }
     return (
@@ -124,7 +120,7 @@ export default function CheckoutReviewModal({
                                 disabled
                                 type="email"
                                 name="email"
-                                value={authData.email }
+                                value={authData.email}
                                 onChange={changeEventHandler}
                             />
                         </div>
@@ -168,7 +164,11 @@ export default function CheckoutReviewModal({
                                 onChange={changeEventHandler}
                             />
                         </div>
-                        <Button type='submit' variant="contained" className=" h-10 col-Typography-2 pt-5">
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            className=" h-10 col-Typography-2 pt-5"
+                        >
                             {isLoading ? (
                                 <>
                                     Please wait

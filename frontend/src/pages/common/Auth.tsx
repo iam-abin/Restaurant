@@ -4,17 +4,17 @@ import PersonIcon from '@mui/icons-material/Person'
 import LockIcon from '@mui/icons-material/Lock'
 import Divider from '@mui/material/Divider'
 import { ChangeEvent, FormEvent, useState } from 'react'
-import LoaderCircle from '../components/Loader/LoaderCircle'
-import { signInSchema, signUpSchema } from '../utils/schema/userSchema'
+import LoaderCircle from '../../components/Loader/LoaderCircle'
+import { signInSchema, signUpSchema } from '../../utils/schema/userSchema'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { ROLES_CONSTANTS } from '../utils/constants'
-import { useAppDispatch } from '../redux/hooks'
-import { signinUser } from '../redux/thunk/authThunk'
-import { hotToastMessage } from '../utils/hotToast'
-import { signupApi } from '../api/apiMethods/auth'
-import { ISignup } from '../types'
-import { fetchMyRestaurant } from '../redux/thunk/restaurantThunk'
-import { fetchUserProfile } from '../redux/thunk/profileThunk'
+import { ROLES_CONSTANTS } from '../../utils/constants'
+import { useAppDispatch } from '../../redux/hooks'
+import { signinUser } from '../../redux/thunk/authThunk'
+import { hotToastMessage } from '../../utils/hotToast'
+import { signupApi } from '../../api/apiMethods/auth'
+import { ISignup } from '../../types'
+import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk'
+import { fetchUserProfile } from '../../redux/thunk/profileThunk'
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true)
@@ -85,11 +85,11 @@ const Auth = () => {
                     })
                 )
 
-                if(role === ROLES_CONSTANTS.RESTAURANT){
+                if (role === ROLES_CONSTANTS.RESTAURANT) {
                     await dispatch(fetchMyRestaurant())
                 }
 
-                if(role === ROLES_CONSTANTS.USER){
+                if (role === ROLES_CONSTANTS.USER) {
                     await dispatch(fetchUserProfile())
                 }
 

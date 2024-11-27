@@ -1,12 +1,10 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { generateHashedPassword, omitDocFields } from '../../utils';
-import { ISignup } from '../../types';
+import { ISignup, IUser } from '../../types';
 import { ROLES_CONSTANTS } from '../../utils';
 
-export interface IUserDocument extends Document, ISignup {
+export interface IUserDocument extends Document, IUser {
     _id: Schema.Types.ObjectId;
-    isVerified: boolean;
-    isBlocked: boolean;
 }
 
 const userSchema = new Schema<IUserDocument>(

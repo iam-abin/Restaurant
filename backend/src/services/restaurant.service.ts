@@ -47,6 +47,11 @@ export class RestaurantService {
         return { restaurant, cuisines };
     }
 
+    public async getRestaurants(): Promise<IRestaurantDocument[]> {
+        const profile: IRestaurantDocument[] = await this.restaurantRepository.findRestaurants();
+        return profile;
+    }
+
     public async updateRestaurant(
         ownerId: string,
         restaurantData: IRestaurantUpdate,

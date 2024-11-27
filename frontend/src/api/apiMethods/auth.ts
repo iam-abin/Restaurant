@@ -2,7 +2,7 @@ import makeApiCall from '../apiCalls'
 import authApiUrls from '../urls/auth'
 import { IResponse } from '../../types/api'
 import { IResetPasswordRequest, ISignin, ISignup } from '../../types'
-import { IForgotPasswordEmail } from '../../pages/ForgotPasswordEmail'
+import { IForgotPasswordEmail } from '../../pages/common/ForgotPasswordEmail'
 
 export const signinApi = async (data: ISignin): Promise<IResponse> => {
     return await makeApiCall('post', authApiUrls.signinUrl, data)
@@ -30,6 +30,10 @@ export const verifyResetTokenApi = async (data: { resetToken: string }): Promise
 
 export const resetPasswordApi = async (data: IResetPasswordRequest): Promise<IResponse> => {
     return await makeApiCall('post', authApiUrls.resetPasswordUrl, data)
+}
+
+export const blockUnblockUserApi = async (userId: string): Promise<IResponse> => {
+    return await makeApiCall('patch', authApiUrls.blockUnblockUserUrl(userId))
 }
 
 export const logoutApi = async (): Promise<IResponse> => {

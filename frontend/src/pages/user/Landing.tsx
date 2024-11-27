@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search'
 import { Button } from '@mui/material'
-import PizzaImage from '../assets/hero_pizza.png'
+import PizzaImage from '../../assets/hero_pizza.png'
 import { useNavigate } from 'react-router-dom'
 
 const Landing = () => {

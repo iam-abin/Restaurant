@@ -1,23 +1,26 @@
 import MainLayout from './layout/MainLayout'
-import Auth from './pages/Auth'
+import Auth from './pages/common/Auth'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
-import ForgotPasswordEmail from './pages/ForgotPasswordEmail'
-import ResetPassword from './pages/ResetPassword'
-import Otp from './pages/Otp'
-import Landing from './pages/Landing'
-import Profile from './pages/Profile'
-import SearchResult from './pages/SearchResult'
-import RestaurantDetails from './pages/RestaurantDetails'
-import Cart from './pages/Cart'
+import ForgotPasswordEmail from './pages/common/ForgotPasswordEmail'
+import ResetPassword from './pages/common/ResetPassword'
+import Otp from './pages/common/Otp'
+import Landing from './pages/user/Landing'
+import Profile from './pages/user/Profile'
+import SearchResult from './pages/user/SearchResult'
+import RestaurantDetails from './pages/common/RestaurantDetails'
+import Cart from './pages/user/Cart'
 import Restaurant from './pages/restaurant/Restaurant'
 import Menu from './pages/restaurant/Menu'
 import Orders from './pages/restaurant/Orders'
-import Success from './pages/Success'
+import Success from './pages/user/Success'
 import { Toaster } from 'react-hot-toast'
-import Error404 from './pages/Error404'
+import Error404 from './pages/common/Error404'
 import { RoleProtectedRoute } from './components/ProtectedRoute'
 import { ROLES_CONSTANTS } from './utils/constants'
 import { useAppSelector } from './redux/hooks'
+import Dashboard from './pages/admin/Dashboard'
+import Users from './pages/admin/UsersList'
+import RestaurantsList from './pages/admin/RestaurantsList'
 
 const AuthenticatedUser = ({ children }: { children: React.ReactNode }) => {
     const authData = useAppSelector((state) => state.authReducer.authData)
@@ -76,9 +79,9 @@ const appRouter = createBrowserRouter([
             </RoleProtectedRoute>
         ),
         children: [
-            // { path: "/", element: <Dashboard /> },
-            // { path: "/users", element: <Users /> },
-            // { path: "/restaurants", element: <Restaurants /> },
+            { path: "", element: <Dashboard /> },
+            { path: "users", element: <Users /> },
+            { path: "restaurants", element: <RestaurantsList /> },
         ]
     },
 

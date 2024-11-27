@@ -9,6 +9,7 @@ import {
     resetPasswordRequestBodyValidator,
     ROLES_CONSTANTS,
     verifyTokenRequestBodyValidator,
+    paramsIdValidator,
 } from '../utils';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
 
@@ -41,6 +42,13 @@ router.post(
     resetPasswordRequestBodyValidator,
     validateRequest,
     authController.resetPassword,
+);
+
+router.patch(
+    '/block-unblock/:userId',
+    paramsIdValidator('userId'),
+    validateRequest,
+    authController.blockUnblockUser,
 );
 
 router.post(

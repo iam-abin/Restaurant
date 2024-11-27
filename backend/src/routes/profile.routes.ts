@@ -7,6 +7,8 @@ const router: Router = express.Router();
 
 router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.USER), profileController.getProfile);
 
+router.get('/users', checkCurrentUser, auth(ROLES_CONSTANTS.ADMIN), profileController.getProfiles);
+
 router.patch(
     '/',
     checkCurrentUser,
