@@ -4,19 +4,16 @@ import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import EditMenuModal from '../modal/EditMenuModal'
 import { IMenu } from '../../types'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { ROLES_CONSTANTS } from '../../utils/constants'
-import { addToCartApi } from '../../api/apiMethods/cart'
-import { hotToastMessage } from '../../utils/hotToast'
 import { addToCart } from '../../redux/thunk/cartThunk'
+import { useParams } from 'react-router-dom'
 
 const MenuCard = ({ menu }: { menu: IMenu }) => {
     const authData = useAppSelector((store) => store.authReducer.authData)
-    const isAdmin = authData.role === ROLES_CONSTANTS.ADMIN
     const isUser = authData.role === ROLES_CONSTANTS.USER
     const isRestaurant = authData.role === ROLES_CONSTANTS.RESTAURANT
 
@@ -24,11 +21,10 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
     const handleEditMenuOpen = () => setIsEditMenuOpen(true)
     const handleEditMenuClose = () => setIsEditMenuOpen(false)
     const dispatch = useAppDispatch()
+    const params = useParams()
 
     const addItemToCartHandler = async (menuItemId: string) => {
-        console.log(menuItemId)
-
-        dispatch(addToCart(menuItemId))
+        dispatch(addToCart({itemId: menuItemId, restaurantId:  params.restaurantId!},))
     }
 
     return (

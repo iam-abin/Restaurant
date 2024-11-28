@@ -123,5 +123,4 @@ export class OtpService {
         const updatedUser: IUserDocument | null = await this.userRepository.updateUser(user.id, { password });
         return updatedUser;
     }
-
 }

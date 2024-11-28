@@ -11,11 +11,14 @@ export class CartService {
         private readonly menuRepository: MenuRepository,
     ) {}
 
-    public async createCartItem(userId: string, cartData: Pick<ICart, 'itemId'>): Promise<ICartDocument> {
-        const { itemId } = cartData;
+    public async createCartItem(
+        userId: string,
+        cartData: Pick<ICart, 'itemId' | 'restaurantId'>,
+    ): Promise<ICartDocument> {
+        const { itemId, restaurantId } = cartData;
         const menuItem: IMenuDocument | null = await this.menuRepository.findMenu(itemId);
         if (!menuItem) throw new NotFoundError('MenuItem not found');
-        const cartItem: ICartDocument | null = await this.cartRepository.find(userId, itemId);
+        const cartItem: ICartDocument | null = await this.cartRepository.find(userId, restaurantId, itemId);
         if (cartItem) throw new BadRequestError('CartItem already exist');
         const addedCartItem: ICartDocument = await this.cartRepository.create({
             ...cartData,
@@ -25,8 +28,8 @@ export class CartService {
         return addedCartItem;
     }
 
-    public async getCartItems(userId: string): Promise<ICartDocument[]> {
-        const cartItems = await this.cartRepository.findAllByUserId(userId);
+    public async getCartItemsByRestaurant(userId: string, restaurantId: string): Promise<ICartDocument[]> {
+        const cartItems = await this.cartRepository.getCartItemsByRestaurant(userId, restaurantId);
         return cartItems;
     }
 

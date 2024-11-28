@@ -1,6 +1,11 @@
 import express, { Router } from 'express';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
-import { ROLES_CONSTANTS, addToCartRequestBodyValidator, paramsIdValidator, updateCartRequestBodyValidator } from '../utils';
+import {
+    ROLES_CONSTANTS,
+    addToCartRequestBodyValidator,
+    paramsIdValidator,
+    updateCartRequestBodyValidator,
+} from '../utils';
 import { cartController } from '../controllers/cart.controller';
 
 const router: Router = express.Router();
@@ -14,7 +19,14 @@ router.post(
     cartController.addToCart,
 );
 
-router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.USER), cartController.getCartItems);
+router.get(
+    '/:restaurantId',
+    paramsIdValidator('restaurantId'),
+    validateRequest,
+    checkCurrentUser,
+    auth(ROLES_CONSTANTS.USER),
+    cartController.getCartItems,
+);
 
 router.patch(
     '/:cartItemId',

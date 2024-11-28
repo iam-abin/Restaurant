@@ -8,16 +8,16 @@ export class CartRepository {
         return cartItem;
     }
 
-    async find(userId: string, itemId: string): Promise<ICartDocument | null> {
-        return await CartModel.findOne({ userId, itemId });
+    async find(userId: string, restaurantId: string, itemId: string): Promise<ICartDocument | null> {
+        return await CartModel.findOne({ userId, restaurantId, itemId });
     }
 
     async findById(cartItemId: string): Promise<ICartDocument | null> {
         return await CartModel.findById(cartItemId).populate('userId').populate('itemId');
     }
 
-    async findAllByUserId(userId: string): Promise<ICartDocument[]> {
-        return await CartModel.find({ userId }).populate('itemId');
+    async getCartItemsByRestaurant(userId: string, restaurantId: string): Promise<ICartDocument[]> {
+        return await CartModel.find({ userId, restaurantId }).populate('itemId');
     }
 
     async update(cartItemId: string, quantity: number): Promise<ICartDocument | null> {

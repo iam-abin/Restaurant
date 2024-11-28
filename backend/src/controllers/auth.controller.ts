@@ -62,7 +62,12 @@ class AuthController {
     public async blockUnblockUser(req: Request, res: Response): Promise<void> {
         const { userId } = req.params;
         const user: IUserDocument | null = await userService.blockUnblockUser(userId);
-        res.status(200).json(createSuccessResponse(`candidate ${user?.isBlocked ? 'unBlocked' : 'Blocked'}  successfully`, user));
+        res.status(200).json(
+            createSuccessResponse(
+                `candidate ${user?.isBlocked ? 'unBlocked' : 'Blocked'}  successfully`,
+                user,
+            ),
+        );
     }
 
     public async logout(req: Request, res: Response): Promise<void> {

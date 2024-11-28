@@ -20,7 +20,13 @@ router.post(
     menuController.addMenu,
 );
 
-router.get('/:menuId', paramsIdValidator('menuId'), validateRequest, checkCurrentUser, menuController.getMenu);
+router.get(
+    '/:menuId',
+    paramsIdValidator('menuId'),
+    validateRequest,
+    checkCurrentUser,
+    menuController.getMenu,
+);
 
 router.get(
     '/restaurant/:restaurantId',

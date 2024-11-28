@@ -9,11 +9,12 @@ import {
     removeCartItem,
     removeCartItems
 } from '../../redux/thunk/cartThunk'
+import { useParams } from 'react-router-dom'
 
 const Cart = () => {
     const [isOpen, setIsOpen] = useState(false)
+    const params = useParams()
     const { cartData } = useAppSelector((store) => store.cartReducer)
-    const { myProfile } = useAppSelector((store) => store.profileReducer)
     const dispatch = useAppDispatch()
 
     const handleOpen = () => {
@@ -23,9 +24,9 @@ const Cart = () => {
         setIsOpen(false)
     }
 
-    useEffect(() => {
-        dispatch(fetchCartItems())
-    }, [dispatch])
+    // useEffect(() => {
+    //     dispatch(fetchCartItems(params.restaurantId!))
+    // }, [dispatch])
 
     const removeCartItemsHandler = () => {
         dispatch(removeCartItems())

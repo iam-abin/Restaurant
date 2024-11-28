@@ -42,7 +42,7 @@ const Menu = () => {
             {menus && menus.length && (
                 <div className="flex flex-wrap justify-center gap-5 mx-5 bg-green-300">
                     {menus.map((menu: IMenu, index: number) => (
-                        <MenuCard key={menu.id} menu={menu} />
+                        <MenuCard key={menu._id} menu={menu} />
                     ))}
                 </div>
             )}

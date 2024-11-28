@@ -1,15 +1,14 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import FadeMenu from '../list/FadeMenu'
-import { Avatar, Badge, IconButton } from '@mui/material'
+import { Avatar,  } from '@mui/material'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import RightDrawer from '../drawer/RightDrawer'
 import LogoutIcon from '@mui/icons-material/Logout'
 import FlatwareIcon from '@mui/icons-material/Flatware'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
 import { ROLES_CONSTANTS } from '../../utils/constants'
-import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { fetchCartItems } from '../../redux/thunk/cartThunk'
+import {  useAppSelector } from '../../redux/hooks'
 import ConfirmationDialogue from '../alert/ConfirmationDialogue'
 
 export interface IMenuItems {
@@ -24,20 +23,7 @@ export interface IMenuItems2 {
 }
 
 const NavBar = ({ currentUser, handleLogout }: { currentUser: any; handleLogout: () => void }) => {
-    const { myProfile } = useAppSelector((store) => store.profileReducer)
-    let cartData;
-    if(currentUser.role === ROLES_CONSTANTS.USER){
-        cartData  = useAppSelector((store) => store.cartReducer.cartData)
-
-    }
-
-    const dispatch = useAppDispatch()
-    useEffect(() => {
-        if(currentUser.role === ROLES_CONSTANTS.USER){
-            dispatch(fetchCartItems())
-        }
-
-    }, [])
+    const { myProfile } = useAppSelector((store) => store.profileReducer);
 
     const isAdmin = currentUser && currentUser.role === ROLES_CONSTANTS.ADMIN
     const isRestaurant = currentUser && currentUser.role === ROLES_CONSTANTS.RESTAURANT
@@ -116,14 +102,6 @@ const NavBar = ({ currentUser, handleLogout }: { currentUser: any; handleLogout:
                             <Link to={'/'}>Home</Link>
                             <Link to={'/profile'}>Profile</Link>
                             <Link to={'/order/status'}>Order</Link>
-
-                            <IconButton aria-label="cart">
-                                <Badge badgeContent={cartData.length} color="primary">
-                                    <Link to={'/cart'}>
-                                        <ShoppingCartIcon />
-                                    </Link>
-                                </Badge>
-                            </IconButton>
                         </>
                     )}
 

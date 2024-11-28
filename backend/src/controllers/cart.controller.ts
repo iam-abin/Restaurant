@@ -12,14 +12,15 @@ class CartController {
         const { userId } = req.currentUser!;
         const cartItem: ICartDocument = await cartService.createCartItem(
             userId,
-            req.body as Pick<ICart, 'itemId'>,
+            req.body as Pick<ICart, 'itemId' | 'restaurantId'>,
         );
         res.status(201).json(createSuccessResponse('Item added to cart successfully', cartItem));
     }
 
     public async getCartItems(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
-        const cartItems: ICartDocument[] = await cartService.getCartItems(userId);
+        const { restaurantId } = req.params;
+        const cartItems: ICartDocument[] = await cartService.getCartItemsByRestaurant(userId, restaurantId);
         res.status(200).json(createSuccessResponse('Cart item fetched successfully', cartItems));
     }
 

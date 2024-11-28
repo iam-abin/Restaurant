@@ -31,18 +31,11 @@ export class OrderService {
     ): Promise<Stripe.Response<Stripe.Checkout.Session>> {
         const session = await mongoose.startSession();
         session.startTransaction();
-        console.log(orderData);
-
         try {
             // Fetch restaurant and cart items in parallel
-            // const [restaurant, cartItems, address] = await Promise.all([
-            //     this.restaurantRepository.findRestaurant(orderData.restaurantId),
-            //     this.cartRepository.findAllByUserId(userId),
-            //     this.addressRepository.findById(orderData.addressId),
-            // ]);
 
             const [cartItems, address] = await Promise.all([
-                this.cartRepository.findAllByUserId(userId),
+                this.cartRepository.getCartItemsByRestaurant(userId, orderData.restaurantId),
                 this.addressRepository.findByUserId(userId),
             ]);
 
@@ -193,9 +186,8 @@ export class OrderService {
         signature: string | Buffer | Array<string>,
     ): Promise<IOrderDocument | null> {
         const webhookEndPointSecret: string = appConfig.STRIPE_WEBHOOK_ENDPOINT_SECRET;
-        console.log("webhookEndPointSecret", webhookEndPointSecret);
-        
-        
+        console.log('webhookEndPointSecret', webhookEndPointSecret);
+
         const event: Stripe.Event = stripeInstance.webhooks.constructEvent(
             JSON.stringify(requestBody),
             signature,

@@ -9,7 +9,7 @@ router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.USER), orderController.ge
 
 router.post('/payment/checkout', checkCurrentUser, auth(ROLES_CONSTANTS.USER), orderController.addOrder);
 
-router.post('/webhook', express.raw({type: 'application/json'}), orderController.confirmOrderStripeWebhook);
+router.post('/webhook', express.raw({ type: 'application/json' }), orderController.confirmOrderStripeWebhook);
 
 router.get(
     '/restaurant/:restaurantId',

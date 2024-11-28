@@ -3,11 +3,13 @@ import { ICart } from '../../types';
 import { omitDocFields } from '../../utils';
 import { IMenuDocument } from './menu.model';
 import { IUserDocument } from './user.model';
+import { IRestaurantDocument } from './restaurant.model';
 
-export interface ICartDocument extends Document, Omit<ICart, 'userId' | 'itemId'> {
+export interface ICartDocument extends Document, Omit<ICart, 'userId' | 'itemId' | 'restaurantId'> {
     _id: Schema.Types.ObjectId;
     userId: Schema.Types.ObjectId | IUserDocument;
     itemId: Schema.Types.ObjectId | IMenuDocument;
+    restaurantId: Schema.Types.ObjectId | IRestaurantDocument;
 }
 
 const cartSchema = new Schema<ICartDocument>(
@@ -15,6 +17,12 @@ const cartSchema = new Schema<ICartDocument>(
         userId: {
             type: Schema.Types.ObjectId,
             ref: 'User',
+            required: true,
+            index: true,
+        },
+        restaurantId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Restaurant',
             required: true,
             index: true,
         },

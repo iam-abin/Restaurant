@@ -10,10 +10,14 @@ import { restaurantController } from '../controllers/restaurant.controller';
 
 const router: Router = express.Router();
 
-
 router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.RESTAURANT), restaurantController.getMyRestaurant);
 
-router.get('/restaurants', checkCurrentUser, auth(ROLES_CONSTANTS.ADMIN), restaurantController.getRestaurants);
+router.get(
+    '/restaurants',
+    checkCurrentUser,
+    auth(ROLES_CONSTANTS.ADMIN),
+    restaurantController.getRestaurants,
+);
 
 router.get(
     '/:restaurantId',

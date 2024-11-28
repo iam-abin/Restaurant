@@ -40,7 +40,6 @@ class RestaurantController {
         const restaurants: IRestaurantDocument[] | null = await restaurantService.getRestaurants();
         res.status(200).json(createSuccessResponse('Restaurant fetched successfully', restaurants));
     }
-    
 
     public async searchRestaurant(req: Request, res: Response): Promise<void> {
         const searchText: string = req.params.searchText || ''; // From home page search bar

@@ -1,6 +1,8 @@
 import { body, param } from 'express-validator';
 
-export const addToCartRequestBodyValidator = [body('itemId').isMongoId().withMessage('Invalid ID format')];
+export const addToCartRequestBodyValidator = [body('itemId').isMongoId().withMessage('Invalid ID format'),
+    body('restaurantId').isMongoId().withMessage('Invalid ID format')
+];
 
 export const updateCartRequestBodyValidator = [
     body('quantity')

@@ -11,10 +11,10 @@ import { hotToastMessage } from '../../utils/hotToast'
 // Async thunk for fetching user cart
 export const fetchCartItems = createAsyncThunk(
     'cart/fetchCartItems',
-    async (_, { rejectWithValue }) => {
+    async (restaurantId: string, { rejectWithValue }) => {
         // Use an underscore here as well
         try {
-            const cart = await getCartItemsApi()
+            const cart = await getCartItemsApi(restaurantId)
             return cart.data
         } catch (error) {
             return rejectWithValue('Failed to fetch cart')
@@ -24,10 +24,10 @@ export const fetchCartItems = createAsyncThunk(
 
 export const addToCart = createAsyncThunk(
     'cart/addToCart',
-    async (itemId: string, { rejectWithValue }) => {
+    async ({itemId, restaurantId}:{ itemId: string, restaurantId: string}, { rejectWithValue }) => {
         // Use an underscore here as well
         try {
-            const cart = await addToCartApi(itemId)
+            const cart = await addToCartApi(itemId, restaurantId)
             hotToastMessage(cart.message, 'success')
             return cart.data
         } catch (error) {

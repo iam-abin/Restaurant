@@ -1,24 +1,38 @@
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined'
-import { Chip, Typography } from '@mui/material'
+import { Badge, Chip, IconButton, Typography } from '@mui/material'
 import MenuCardSkeleton from '../../components/shimmer/MenuCardSkeleton'
 import { useEffect, useState } from 'react'
 import { getARestaurantApi } from '../../api/apiMethods/restaurant'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { ICuisine, IMenu } from '../../types'
 import MenuCard from '../../components/cards/MenuCard'
-// import { IRestaurant } from '../types'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
+import { fetchCartItems } from '../../redux/thunk/cartThunk'
+import { ROLES_CONSTANTS } from '../../utils/constants'
 
 const RestaurantDetails = () => {
     const params = useParams()
     const [restaurant, setRestaurant] = useState<any | null>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const dispatch = useAppDispatch()
+    const cartData = useAppSelector((state) => state.cartReducer.cartData)
+    const authData = useAppSelector((state) => state.authReducer.authData)
+    const {restaurantId} = params;
     useEffect(() => {
-        ;(async () => {
+        (async () => {
             setIsLoading(true)
-            const response = await getARestaurantApi(params.restaurantId!)
+            const response = await getARestaurantApi(restaurantId!)
             setRestaurant(response.data)
             setIsLoading(false)
         })()
+    }, [])
+
+    useEffect(() => {
+        if(authData.role === ROLES_CONSTANTS.USER){
+            dispatch(fetchCartItems(restaurantId!))
+        }
+
     }, [])
     return (
         <div className="max-w-6xl mx-auto my-10">
@@ -33,16 +47,27 @@ const RestaurantDetails = () => {
                 <div className="flex flex-col md:flex-row justify-between">
                     <div className="my-5">
                         <div className="font-medium text-xl">{restaurant?.restaurant?.name}</div>
-                        <div className="flex gap-2 my-2">
-                            {restaurant?.cuisines?.map((cusine: ICuisine, index: number) => (
-                                <div
-                                    key={index}
-                                    className="relative inline-flex items-center max-w-full"
-                                >
-                                    <Chip label={cusine.name} variant="outlined" />
-                                </div>
-                            ))}
+                        <div className="flex gap-2 my-2 items-center justify-between bg-green-200">
+                            <div>
+                                {restaurant?.cuisines?.map((cusine: ICuisine, index: number) => (
+                                    <div
+                                        key={index}
+                                        className="relative inline-flex items-center max-w-full">
+                                        <Chip label={cusine.name} variant="outlined" />
+                                    </div>
+                                ))}
+                            </div>
+                            <div>
+                                <IconButton aria-label="cart">
+                                    <Badge badgeContent={cartData.length} color="primary">
+                                        <Link to={'/cart'}>
+                                            <ShoppingCartIcon />
+                                        </Link>
+                                    </Badge>
+                                </IconButton>
+                            </div>
                         </div>
+
                         <div className="flex md:flex-row flex-col gap-2 my-5">
                             <div className="flex items-center gap-2">
                                 <TimerOutlinedIcon className="w-5 h-5" />

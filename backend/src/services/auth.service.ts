@@ -128,7 +128,9 @@ export class UserService {
         if (!user) throw new NotFoundError('This user does not exist');
 
         // Update the user's verification status
-        const updatedUser: IUserDocument | null = await this.userRepository.updateUser(userId, { isBlocked: !user.isBlocked });
+        const updatedUser: IUserDocument | null = await this.userRepository.updateUser(userId, {
+            isBlocked: !user.isBlocked,
+        });
         return updatedUser;
     }
 }
