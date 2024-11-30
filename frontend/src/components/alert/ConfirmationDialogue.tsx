@@ -1,21 +1,21 @@
-import * as React from 'react'
-import Button from '@mui/material/Button'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
-import DialogTitle from '@mui/material/DialogTitle'
-import Slide from '@mui/material/Slide'
-import { TransitionProps } from '@mui/material/transitions'
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
-        children: React.ReactElement<any, any>
+        children: React.ReactElement;
     },
     ref: React.Ref<unknown>
 ) {
-    return <Slide direction="up" ref={ref} {...props} />
-})
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 export default function ConfirmationDialogue({
     open,
     setOpen,
@@ -26,18 +26,18 @@ export default function ConfirmationDialogue({
     closeText = 'Close',
     okayText = 'Agree'
 }: {
-    open: boolean
-    setOpen: (value: boolean) => void
-    title: string
-    description: string
-    onAgree: () => void
-    onDisagree?: () => void
-    closeText?: string
-    okayText?: string
+    open: boolean;
+    setOpen: (value: boolean) => void;
+    title: string;
+    description: string;
+    onAgree: () => void;
+    onDisagree?: () => void;
+    closeText?: string;
+    okayText?: string;
 }) {
     const handleClose = () => {
-        setOpen(false)
-    }
+        setOpen(false);
+    };
 
     return (
         <Dialog
@@ -57,16 +57,16 @@ export default function ConfirmationDialogue({
             <DialogActions>
                 <Button
                     onClick={() => {
-                        onDisagree?.()
-                        handleClose()
+                        onDisagree?.();
+                        handleClose();
                     }}
                 >
                     {closeText}
                 </Button>
                 <Button
                     onClick={() => {
-                        onAgree()
-                        handleClose()
+                        onAgree();
+                        handleClose();
                     }}
                     color="primary"
                 >
@@ -74,5 +74,5 @@ export default function ConfirmationDialogue({
                 </Button>
             </DialogActions>
         </Dialog>
-    )
+    );
 }

@@ -1,13 +1,13 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Box, Typography, Button } from '@mui/material'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Typography, Button } from '@mui/material';
 
 const Error404: React.FC = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const handleGoHome = () => {
-        navigate('/') // Redirects to the home page
-    }
+        navigate('/'); // Redirects to the home page
+    };
 
     return (
         <Box
@@ -25,7 +25,7 @@ const Error404: React.FC = () => {
                 404
             </Typography>
             <Typography variant="h5" gutterBottom>
-                Oops! The page you're looking for doesn't exist.
+                Oops! The page you&apos;re looking for doesn&apos;t exist.
             </Typography>
             <Typography variant="body1" mb={3}>
                 It might have been moved or deleted.
@@ -39,7 +39,7 @@ const Error404: React.FC = () => {
                 Go Back Home
             </Button>
         </Box>
-    )
-}
+    );
+};
 
-export default Error404
+export default Error404;

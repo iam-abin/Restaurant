@@ -4,7 +4,7 @@ import {
     ROLES_CONSTANTS,
     addMenuRequestBodyValidator,
     updateMenuRequestBodyValidator,
-    paramsIdValidator,
+    mongoIdParamsValidator,
 } from '../utils';
 import { menuController } from '../controllers/menu.controller';
 
@@ -22,7 +22,7 @@ router.post(
 
 router.get(
     '/:menuId',
-    paramsIdValidator('menuId'),
+    mongoIdParamsValidator('menuId'),
     validateRequest,
     checkCurrentUser,
     menuController.getMenu,
@@ -30,7 +30,7 @@ router.get(
 
 router.get(
     '/restaurant/:restaurantId',
-    paramsIdValidator('restaurantId'),
+    mongoIdParamsValidator('restaurantId'),
     validateRequest,
     checkCurrentUser,
     menuController.getMenus,
@@ -38,7 +38,7 @@ router.get(
 
 router.patch(
     '/:menuId',
-    paramsIdValidator('menuId'),
+    mongoIdParamsValidator('menuId'),
     updateMenuRequestBodyValidator,
     validateRequest,
     checkCurrentUser,

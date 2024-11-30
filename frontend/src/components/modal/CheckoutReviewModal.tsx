@@ -1,13 +1,14 @@
-import { FormEvent, useEffect, useState } from 'react'
-import Box from '@mui/material/Box'
-import Modal from '@mui/material/Modal'
-import IconButton from '@mui/material/IconButton'
-import CloseIcon from '@mui/icons-material/Close'
-import Typography from '@mui/material/Typography'
-import { Button } from '@mui/material'
-import LoaderCircle from '../Loader/LoaderCircle'
-import { useAppSelector } from '../../redux/hooks'
-import { checkoutOrderApi } from '../../api/apiMethods/order'
+import { FormEvent, useState } from 'react';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Typography from '@mui/material/Typography';
+import { Button } from '@mui/material';
+import LoaderCircle from '../Loader/LoaderCircle';
+import { useAppSelector } from '../../redux/hooks';
+import { checkoutOrderApi } from '../../api/apiMethods/order';
+import { IAddress, ICheckoutResponse } from '../../types';
 
 const style = {
     position: 'absolute',
@@ -19,33 +20,29 @@ const style = {
     border: '2px solid #000',
     boxShadow: 24,
     p: 4
-}
+};
 
 export default function CheckoutReviewModal({
     isOpen,
     handleClose
 }: {
-    isOpen: boolean
-    handleClose: () => void
+    isOpen: boolean;
+    handleClose: () => void;
 }) {
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
 
-    const { authData } = useAppSelector((store) => store.authReducer)
-    const { myProfile } = useAppSelector((store) => store.profileReducer)
-    const { cartData } = useAppSelector((store) => store.cartReducer)
+    const { authData } = useAppSelector((store) => store.authReducer);
+    const { myProfile } = useAppSelector((store) => store.profileReducer);
+    const { cartData } = useAppSelector((store) => store.cartReducer);
 
     const [input, setInput] = useState({
         name: authData?.name || '',
         email: authData?.email || '',
         phone: authData?.phone ? authData.phone.toString() : '',
-        address: myProfile?.addressId?.address || '',
-        city: myProfile?.addressId?.city || '',
-        country: myProfile?.addressId?.country || ''
-    })
-
-    const changeEventHandler = (e: FormEvent<HTMLInputElement>) => {
-        // const {name, value} = e.target;
-    }
+        address: (myProfile?.addressId as IAddress)?.address || '',
+        city: (myProfile?.addressId as IAddress)?.city || '',
+        country: (myProfile?.addressId as IAddress)?.country || ''
+    });
 
     // useEffect(()=>{
     //     (
@@ -56,18 +53,18 @@ export default function CheckoutReviewModal({
     // })
 
     const paymentCheckoutHandler = async (e: FormEvent<HTMLFormElement>) => {
-        console.log(cartData)
+        console.log(cartData);
 
-        e.preventDefault()
-        setIsLoading(true)
+        e.preventDefault();
+        setIsLoading(true);
 
         try {
-            const response = await checkoutOrderApi()
-            window.location.href = response.data.url
+            const response = await checkoutOrderApi();
+            window.location.href = (response.data as ICheckoutResponse).stripePaymentUrl;
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
     return (
         <div>
             <Modal
@@ -110,7 +107,7 @@ export default function CheckoutReviewModal({
                                 type="text"
                                 name="name"
                                 value={input.name}
-                                onChange={changeEventHandler}
+                                // onChange={changeEventHandler}
                             />
                         </div>
                         <div>
@@ -120,8 +117,8 @@ export default function CheckoutReviewModal({
                                 disabled
                                 type="email"
                                 name="email"
-                                value={authData.email}
-                                onChange={changeEventHandler}
+                                value={authData?.email}
+                                // onChange={changeEventHandler}
                             />
                         </div>
                         <div>
@@ -131,7 +128,7 @@ export default function CheckoutReviewModal({
                                 type="text"
                                 name="contact"
                                 value={'73054654351'}
-                                onChange={changeEventHandler}
+                                // onChange={changeEventHandler}
                             />
                         </div>
                         <div>
@@ -141,7 +138,7 @@ export default function CheckoutReviewModal({
                                 type="text"
                                 name="address"
                                 value={input.address}
-                                onChange={changeEventHandler}
+                                // onChange={changeEventHandler}
                             />
                         </div>
                         <div>
@@ -151,7 +148,7 @@ export default function CheckoutReviewModal({
                                 type="text"
                                 name="city"
                                 value={input.city}
-                                onChange={changeEventHandler}
+                                // onChange={changeEventHandler}
                             />
                         </div>
                         <div>
@@ -161,7 +158,7 @@ export default function CheckoutReviewModal({
                                 type="text"
                                 name="country"
                                 value={input.country}
-                                onChange={changeEventHandler}
+                                // onChange={changeEventHandler}
                             />
                         </div>
                         <Button
@@ -182,5 +179,5 @@ export default function CheckoutReviewModal({
                 </Box>
             </Modal>
         </div>
-    )
+    );
 }

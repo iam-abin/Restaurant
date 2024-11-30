@@ -1,19 +1,19 @@
-import { ChangeEvent, useState } from 'react'
-import SearchIcon from '@mui/icons-material/Search'
-import { Button } from '@mui/material'
-import PizzaImage from '../../assets/hero_pizza.png'
-import { useNavigate } from 'react-router-dom'
+import { ChangeEvent, useState } from 'react';
+import SearchIcon from '@mui/icons-material/Search';
+import { Button } from '@mui/material';
+import PizzaImage from '../../assets/hero_pizza.png';
+import { useNavigate } from 'react-router-dom';
 
 const Landing = () => {
-    const [searchText, setSearchText] = useState<string>('')
-    const navigate = useNavigate()
+    const [searchText, setSearchText] = useState<string>('');
+    const navigate = useNavigate();
 
     const handleSearchClick = () => {
-        if (!searchText) return
-        console.log(searchText)
+        if (!searchText) return;
+        console.log(searchText);
 
-        navigate(`/search/${searchText}`)
-    }
+        navigate(`/search/${searchText}`);
+    };
     return (
         <div className="flex flex-col md:flex-row max-w-7xl mx-auto md:p-10 rounded-lg items-center justify-center m-4 gap-20">
             <div className="flex flex-col gap-10 md:w-[41%]">
@@ -51,7 +51,7 @@ const Landing = () => {
                 <img src={PizzaImage} className="w-full max-h-[500px] max-w-90%" alt="LandingImg" />
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Landing
+export default Landing;

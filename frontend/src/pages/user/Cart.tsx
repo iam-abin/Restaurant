@@ -1,52 +1,46 @@
-import { Button, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
-import TableCart from '../../components/table/TableCart'
-import CheckoutReviewModal from '../../components/modal/CheckoutReviewModal'
-import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { Button, Typography } from '@mui/material';
+import { useState } from 'react';
+import TableCart from '../../components/table/TableCart';
+import CheckoutReviewModal from '../../components/modal/CheckoutReviewModal';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
     changeCartItemQuantity,
-    fetchCartItems,
     removeCartItem,
     removeCartItems
-} from '../../redux/thunk/cartThunk'
-import { useParams } from 'react-router-dom'
+} from '../../redux/thunk/cartThunk';
+import { ICart } from '../../types';
 
 const Cart = () => {
-    const [isOpen, setIsOpen] = useState(false)
-    const params = useParams()
-    const { cartData } = useAppSelector((store) => store.cartReducer)
-    const dispatch = useAppDispatch()
+    const [isOpen, setIsOpen] = useState(false);
+    const { cartData } = useAppSelector((store) => store.cartReducer);
+    const dispatch = useAppDispatch();
 
     const handleOpen = () => {
-        setIsOpen(true)
-    }
+        setIsOpen(true);
+    };
     const handleClose = () => {
-        setIsOpen(false)
-    }
-
-    // useEffect(() => {
-    //     dispatch(fetchCartItems(params.restaurantId!))
-    // }, [dispatch])
+        setIsOpen(false);
+    };
 
     const removeCartItemsHandler = () => {
-        dispatch(removeCartItems())
-    }
+        dispatch(removeCartItems());
+    };
 
     const removeCartItemHandler = (cartItemId: string) => {
-        dispatch(removeCartItem(cartItemId))
-    }
+        dispatch(removeCartItem(cartItemId));
+    };
 
     const changeQuantityHandler = (cartItemId: string, quantity: number) => {
-        dispatch(changeCartItemQuantity({ cartItemId, quantity }))
-    }
+        dispatch(changeCartItemQuantity({ cartItemId, quantity }));
+    };
 
-    const findTotalAmound = (cartItems: any) => {
-        const totalAmound = cartItems.reduce((acc: any, currItem: any) => {
-            acc += currItem?.itemId.price * currItem.quantity
-            return acc
-        }, 0)
-        return totalAmound
-    }
+    const findTotalAmound = (cartItems: ICart[]) => {
+        const totalAmound = cartItems.reduce((acc: number, currItem: ICart) => {
+            acc += currItem?.itemId.price * currItem.quantity;
+            return acc;
+        }, 0);
+        return totalAmound;
+    };
 
     return (
         <div className="flex flex-col max-w-7xl mx-auto my-10">
@@ -78,7 +72,7 @@ const Cart = () => {
                 {isOpen && <CheckoutReviewModal isOpen={isOpen} handleClose={handleClose} />}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Cart
+export default Cart;

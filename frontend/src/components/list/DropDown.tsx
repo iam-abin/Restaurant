@@ -1,14 +1,14 @@
-import * as React from 'react'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
+import * as React from 'react';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 export default function DropDown({ statusList }: { statusList: string[] }) {
-    const [status, setStatus] = React.useState('')
+    const [status, setStatus] = React.useState('');
 
     const handleChange = (event: SelectChangeEvent) => {
-        setStatus(event.target.value)
-    }
+        setStatus(event.target.value);
+    };
 
     return (
         <div>
@@ -31,5 +31,5 @@ export default function DropDown({ statusList }: { statusList: string[] }) {
                 </Select>
             </FormControl>
         </div>
-    )
+    );
 }

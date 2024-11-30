@@ -1,79 +1,79 @@
-import { Button } from '@mui/material'
-import { FormEvent, useRef, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import LoaderCircle from '../../components/Loader/LoaderCircle'
-import { verifyOtpApi } from '../../api/apiMethods/auth'
-import { hotToastMessage } from '../../utils/hotToast'
-import { ROLES_CONSTANTS } from '../../utils/constants'
+import { Button } from '@mui/material';
+import { FormEvent, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import LoaderCircle from '../../components/Loader/LoaderCircle';
+import { verifyOtpApi } from '../../api/apiMethods/auth';
+import { hotToastMessage } from '../../utils/hotToast';
+import { ROLES_CONSTANTS } from '../../utils/constants';
 
 const Otp = () => {
-    const inputRef = useRef<any>([])
-    const navigate = useNavigate()
-    const [otp, setOtp] = useState<string[]>(['', '', '', '', '', ''])
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const location = useLocation()
-    const { userId, role } = location.state
-    console.log('userId ', userId)
-    console.log('role ', role)
+    const inputRef = useRef<any>([]);
+    const navigate = useNavigate();
+    const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const location = useLocation();
+    const { userId, role } = location.state;
+    console.log('userId ', userId);
+    console.log('role ', role);
 
-    const isUser = role === ROLES_CONSTANTS.USER
-    const isRestaurant = role === ROLES_CONSTANTS.RESTAURANT
+    const isUser = role === ROLES_CONSTANTS.USER;
+    const isRestaurant = role === ROLES_CONSTANTS.RESTAURANT;
 
-    const isSignupOtpPage = location.pathname == '/signup/otp'
-    const isForgotPasswordEmailOtpPage = location.pathname == '/forgot-password/otp'
+    const isSignupOtpPage = location.pathname == '/signup/otp';
+    const isForgotPasswordEmailOtpPage = location.pathname == '/forgot-password/otp';
 
     const handleChange = (index: number, value: string) => {
         if (/^[a-zA-Z0-9]$/.test(value) || value === '') {
-            const otps = [...otp]
-            otps[index] = value
-            setOtp(otps)
+            const otps = [...otp];
+            otps[index] = value;
+            setOtp(otps);
         }
         // Move to the next input field
         if (value !== '' && index < 5) {
-            inputRef.current[index + 1].focus()
+            inputRef.current[index + 1].focus();
         }
-    }
+    };
 
     // to handle backSpace
     const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Backspace' && !otp[index] && index > 0) {
-            inputRef.current[index - 1].focus()
+            inputRef.current[index - 1].focus();
         }
-    }
+    };
 
     const handleSubmit = async (e: FormEvent) => {
         try {
-            setIsLoading(true)
-            e.preventDefault()
+            setIsLoading(true);
+            e.preventDefault();
             if (otp.length < 6 || otp.length > 6) {
-                return
+                return;
             }
 
-            const otpString = otp.join('')
-            const response = await verifyOtpApi({ userId, otp: otpString })
+            const otpString = otp.join('');
+            const response = await verifyOtpApi({ userId, otp: otpString });
             if (response.data) {
-                hotToastMessage(response.message, 'success')
+                hotToastMessage(response.message, 'success');
                 if (isSignupOtpPage) {
-                    console.log('signupOtpPage isRestaurant ', isRestaurant)
-                    console.log('signupOtpPage isUser ', isUser)
+                    console.log('signupOtpPage isRestaurant ', isRestaurant);
+                    console.log('signupOtpPage isUser ', isUser);
 
                     if (isRestaurant) {
-                        navigate('/restaurant/auth')
+                        navigate('/restaurant/auth');
                     }
 
                     if (isUser) {
-                        navigate('/auth')
+                        navigate('/auth');
                     }
                 }
 
                 if (isForgotPasswordEmailOtpPage) {
-                    navigate('/reset-password', { state: { userId } })
+                    navigate('/reset-password', { state: { userId } });
                 }
             }
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
 
     return (
         <div className="flex items-center justify-center w-full h-screen">
@@ -131,7 +131,7 @@ const Otp = () => {
                 </form>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Otp
+export default Otp;

@@ -1,77 +1,68 @@
-import { Avatar, Box, Button } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react'
-import LoaderCircle from '../../components/Loader/LoaderCircle'
-import LocationOnIcon from '@mui/icons-material/LocationOn'
-import EmailIcon from '@mui/icons-material/Email'
-import FlagIcon from '@mui/icons-material/Flag'
-import LocationSearchingIcon from '@mui/icons-material/LocationSearching'
-import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { fetchUserProfile, updateUserProfile } from '../../redux/thunk/profileThunk'
-import { updateProfileApi } from '../../api/apiMethods/profile'
-
-type ProfileDataState = {
-    name: string
-    email: string
-    address: string
-    city: string
-    country: string
-    image: string
-}
+import { Avatar, Box, Button } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+import LoaderCircle from '../../components/Loader/LoaderCircle';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import EmailIcon from '@mui/icons-material/Email';
+import FlagIcon from '@mui/icons-material/Flag';
+import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { fetchUserProfile, updateUserProfile } from '../../redux/thunk/profileThunk';
+import { IAddress } from '../../types';
 
 const Profile = () => {
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [selectedProfilePicture, setSelectedProfilePicture] = useState<string>('')
-    const dispatch = useAppDispatch()
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [selectedProfilePicture, setSelectedProfilePicture] = useState<string>('');
+    const dispatch = useAppDispatch();
 
-    const { authData } = useAppSelector((state) => state.authReducer)
-    const { myProfile } = useAppSelector((state) => state.profileReducer)
-    console.log('authData ', authData)
-    console.log('myProfile ', myProfile)
+    const { authData } = useAppSelector((state) => state.authReducer);
+    const { myProfile } = useAppSelector((state) => state.profileReducer);
+    console.log('authData ', authData);
+    console.log('myProfile ', myProfile);
 
     useEffect(() => {
-        dispatch(fetchUserProfile())
-    }, [])
+        dispatch(fetchUserProfile());
+    }, []);
 
-    const imageRef = useRef<HTMLInputElement | null>(null)
+    const imageRef = useRef<HTMLInputElement | null>(null);
     const [profileData, setProfileData] = useState({
         name: authData?.name || '',
-        address: myProfile?.addressId?.address || '',
-        city: myProfile?.addressId?.city || '',
-        country: myProfile?.addressId?.country || '',
+        address: (myProfile?.addressId as IAddress)?.address || '',
+        city: (myProfile?.addressId as IAddress)?.city || '',
+        country: (myProfile?.addressId as IAddress)?.country || '',
         image: myProfile?.imageUrl || ''
-    })
+    });
     const fileChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0]
+        const file = e.target.files?.[0];
         if (!file) {
-            return
+            return;
         }
 
-        const reader = new FileReader()
+        const reader = new FileReader();
         reader.onloadend = () => {
-            const result = reader.result as string
-            setSelectedProfilePicture(result)
+            const result = reader.result as string;
+            setSelectedProfilePicture(result);
             setProfileData((prevData) => ({
                 ...prevData,
                 image: result
-            }))
-        }
-        reader.readAsDataURL(file)
-    }
+            }));
+        };
+        reader.readAsDataURL(file);
+    };
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
-        setProfileData({ ...profileData, [name]: value })
-    }
+        const { name, value } = e.target;
+        setProfileData({ ...profileData, [name]: value });
+    };
 
     const updateProfileHandler = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        setIsLoading(true)
-        console.log({ ...profileData, image: selectedProfilePicture })
-        dispatch(updateUserProfile({ ...profileData, image: selectedProfilePicture }))
-        setIsLoading(false)
-        setSelectedProfilePicture('')
-    }
+        e.preventDefault();
+        setIsLoading(true);
+        console.log({ ...profileData, image: selectedProfilePicture });
+        dispatch(updateUserProfile({ ...profileData, image: selectedProfilePicture }));
+        setIsLoading(false);
+        setSelectedProfilePicture('');
+    };
 
     return (
         <form onSubmit={updateProfileHandler} className=" max-w-7xl mx-auto my-5">
@@ -135,7 +126,7 @@ const Profile = () => {
                     <div className="w-full">
                         <label>Email</label>
                         <span className="w-full block text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none">
-                            {authData.email}
+                            {authData && authData.email}
                         </span>
                     </div>
                 </div>
@@ -197,7 +188,7 @@ const Profile = () => {
                 </Button>
             </div>
         </form>
-    )
-}
+    );
+};
 
-export default Profile
+export default Profile;

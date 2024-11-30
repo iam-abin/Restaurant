@@ -11,7 +11,7 @@ export interface IUser {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ISignup extends IUser {}
+export interface ISignup extends Omit<IUser, 'isBlocked' | 'isVerified'> {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ISignin extends Omit<IUser, 'name' | 'phone'> {}
+export interface ISignin extends Pick<IUser, 'email' | 'password' | 'role'> {}

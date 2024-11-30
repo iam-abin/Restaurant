@@ -1,4 +1,4 @@
-const AUTH_URL = `/auth`
+const AUTH_URL = `/auth`;
 
 const authApiUrls = {
     signinUrl: `${AUTH_URL}/signin`,
@@ -10,6 +10,6 @@ const authApiUrls = {
     forgotPasswordEmailUrl: `${AUTH_URL}/password/forgot`,
     blockUnblockUserUrl: (userId: string) => `${AUTH_URL}/block-unblock/${userId}`,
     logoutUrl: `${AUTH_URL}/logout`
-}
+};
 
-export default authApiUrls
+export default authApiUrls;

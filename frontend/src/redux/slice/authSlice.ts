@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { addAsyncThunkCases } from '../../utils/addCase';
 import { signinUser, logoutUser } from '../thunk/authThunk';
+import { IUser } from '../../types';
 
 interface IAuthSlice {
-    authData: any | null;
+    authData: Omit<IUser, 'password'> | null;
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
 }
@@ -20,12 +21,12 @@ const authSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         // Signin logic
-        addAsyncThunkCases<IAuthSlice>(builder, signinUser, (state, action) => {
+        addAsyncThunkCases(builder, signinUser, (state, action) => {
             state.authData = action.payload;
         });
 
         // Logout logic
-        addAsyncThunkCases<IAuthSlice>(builder, logoutUser, (state) => {
+        addAsyncThunkCases(builder, logoutUser, (state) => {
             state.authData = null;
             state.error = null;
             state.status = 'idle';

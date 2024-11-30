@@ -1,4 +1,5 @@
 import { body } from 'express-validator';
+import { mongoIdBodyValidator } from './mongodb-id.validation';
 
 export const verifyOtpRequestBodyValidator = [
     body('otp')
@@ -8,9 +9,7 @@ export const verifyOtpRequestBodyValidator = [
         .isLength({ min: 6, max: 6 })
         .withMessage('Otp length must be 6')
         .escape(),
-    body('userId').isMongoId().withMessage('Invalid ID format').trim().escape(),
+    ...mongoIdBodyValidator('userId'),
 ];
 
-export const resendOtpRequestBodyValidator = [
-    body('userId').isMongoId().withMessage('Invalid ID format').trim().escape(),
-];
+export const resendOtpRequestBodyValidator = [...mongoIdBodyValidator('userId')];

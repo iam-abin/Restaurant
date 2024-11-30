@@ -1,34 +1,32 @@
-import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { ROLES_CONSTANTS } from '../../utils/constants'
-import { IUser } from '../../types'
-import { IResponse } from '../../types/api'
-import SearchBar from '../../components/search/SearchBar'
-import Table from '../../components/table/Table'
-import ConfirmationDialogue from '../../components/alert/ConfirmationDialogue'
-import { hotToastMessage } from '../../utils/hotToast'
-import { getProfilesApi } from '../../api/apiMethods/profile'
-import { blockUnblockUserApi } from '../../api/apiMethods/auth'
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { ROLES_CONSTANTS } from '../../utils/constants';
+import { IUser } from '../../types';
+import { IResponse } from '../../types/api';
+import SearchBar from '../../components/search/SearchBar';
+import Table from '../../components/table/Table';
+import { hotToastMessage } from '../../utils/hotToast';
+import { getProfilesApi } from '../../api/apiMethods/profile';
+import { blockUnblockUserApi } from '../../api/apiMethods/auth';
 
 function UsersList() {
-    const navigate = useNavigate()
-    const [usersData, setUsersData] = useState<IUser[]>([])
-    const [numberOfPages, setNumberOfPages] = useState(1)
-    const [currentPage, setCurrentPage] = useState(1)
-    const [searchKey, setSearchKey] = useState('')
+    const navigate = useNavigate();
+    const [usersData, setUsersData] = useState<IUser[]>([]);
+    const [numberOfPages, setNumberOfPages] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchKey, setSearchKey] = useState('');
 
-    const USERS_PER_PAGE: number = 2
+    const USERS_PER_PAGE: number = 2;
 
     const fetchUsers = async (currentPage: number) => {
-        let usersData: IResponse | [] = []
+        let usersData: IResponse | [] = [];
         // if (!searchKey) {
-        console.log('no search key')
-        usersData =
-            await getProfilesApi()
-            // currentPage,
-            // USERS_PER_PAGE
-        setUsersData(usersData?.data)
-    }
+        console.log('no search key');
+        usersData = await getProfilesApi();
+        // currentPage,
+        // USERS_PER_PAGE
+        setUsersData(usersData?.data as IUser[]);
+    };
 
     useEffect(() => {
         fetchUsers(1); // Fetch initial data for the first page
@@ -40,10 +38,10 @@ function UsersList() {
     // };
 
     const handleBlockUnblock = async (userId: string) => {
-        let updatedUser: IResponse | null = await blockUnblockUserApi(userId)
+        const updatedUser: IResponse | null = await blockUnblockUserApi(userId);
 
         if (updatedUser) {
-            hotToastMessage(updatedUser.message, 'success')
+            hotToastMessage(updatedUser.message, 'success');
 
             // const users = usersData.map((user) => {
             //     if (user.id === userId) {
@@ -58,10 +56,10 @@ function UsersList() {
 
             // setUsersData(users);
         }
-    }
+    };
 
     console.log(usersData);
-    
+
     const columns = [
         { Header: 'Name', accessor: 'userId.name' },
         { Header: 'Email', accessor: 'userId.email' },
@@ -78,7 +76,7 @@ function UsersList() {
         },
         {
             Header: 'Status',
-            button: (row: {userId?: { isBlocked: string }}) => (
+            button: (row: { userId?: { isBlocked: string } }) => (
                 <div
                     className={`badge ${
                         row?.userId?.isBlocked
@@ -131,7 +129,7 @@ function UsersList() {
                     okayText={isBlocked ? "active" : "inActive"}
                 /> */}
         </div>
-    )
+    );
 }
 
-export default UsersList
+export default UsersList;

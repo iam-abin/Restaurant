@@ -1,38 +1,45 @@
-import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import FadeMenu from '../list/FadeMenu'
-import { Avatar,  } from '@mui/material'
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
-import RightDrawer from '../drawer/RightDrawer'
-import LogoutIcon from '@mui/icons-material/Logout'
-import FlatwareIcon from '@mui/icons-material/Flatware'
-import MenuBookIcon from '@mui/icons-material/MenuBook'
-import { ROLES_CONSTANTS } from '../../utils/constants'
-import {  useAppSelector } from '../../redux/hooks'
-import ConfirmationDialogue from '../alert/ConfirmationDialogue'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import FadeMenu from '../list/FadeMenu';
+import { Avatar } from '@mui/material';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import RightDrawer from '../drawer/RightDrawer';
+import LogoutIcon from '@mui/icons-material/Logout';
+import FlatwareIcon from '@mui/icons-material/Flatware';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import { ROLES_CONSTANTS } from '../../utils/constants';
+import { useAppSelector } from '../../redux/hooks';
+import ConfirmationDialogue from '../alert/ConfirmationDialogue';
+import { IUser } from '../../types';
 
 export interface IMenuItems {
-    to: string
-    value: string
+    to: string;
+    value: string;
 }
 
 export interface IMenuItems2 {
-    name: string
-    icon: React.ReactElement
-    to: string
+    name: string;
+    icon: React.ReactElement;
+    to: string;
 }
 
-const NavBar = ({ currentUser, handleLogout }: { currentUser: any; handleLogout: () => void }) => {
+const NavBar = ({
+    currentUser,
+    handleLogout
+}: {
+    currentUser: IUser;
+    handleLogout: () => void;
+}) => {
     const { myProfile } = useAppSelector((store) => store.profileReducer);
 
-    const isAdmin = currentUser && currentUser.role === ROLES_CONSTANTS.ADMIN
-    const isRestaurant = currentUser && currentUser.role === ROLES_CONSTANTS.RESTAURANT
-    const isUser = currentUser && currentUser.role === ROLES_CONSTANTS.USER
+    const isAdmin = currentUser && currentUser.role === ROLES_CONSTANTS.ADMIN;
+    const isRestaurant = currentUser && currentUser.role === ROLES_CONSTANTS.RESTAURANT;
+    const isUser = currentUser && currentUser.role === ROLES_CONSTANTS.USER;
 
     const menuItemsAdmin: (IMenuItems | boolean)[] = [
         isAdmin && { to: '/admin/users', value: 'Users' },
-        isAdmin && { to: '/admin/restaurants', value: 'Restaurants' },
-    ].filter(Boolean) // Ensures no false or undefined values
+        isAdmin && { to: '/admin/restaurants', value: 'Restaurants' }
+    ].filter(Boolean); // Ensures no false or undefined values
 
     const menuItems: (Partial<IMenuItems2> | boolean)[] = [
         currentUser &&
@@ -73,14 +80,13 @@ const NavBar = ({ currentUser, handleLogout }: { currentUser: any; handleLogout:
                 to: '/restaurant/orders'
             },
         { name: 'logout', icon: <LogoutIcon /> }
-    ]
+    ];
 
-    const [open, setOpen] = React.useState(false)
-    const navigate = useNavigate()
+    const [open, setOpen] = React.useState(false);
 
     const handleLogoutButton = () => {
-        setOpen(true)
-    }
+        setOpen(true);
+    };
     return (
         <div className="w-4/5 mx-3 md:mx-auto">
             <div className="flex items-center justify-between h-14">
@@ -105,6 +111,15 @@ const NavBar = ({ currentUser, handleLogout }: { currentUser: any; handleLogout:
                         </>
                     )}
 
+                    {currentUser && isRestaurant && (
+                        <>
+                            <Link to={'/restaurant'}>Home</Link>
+                            <Link to={'/restaurant/menu'}>Menu</Link>
+                            <Link to={'/restaurant/details'}>Details</Link>
+                            <Link to={'/order/orders'}>Orders</Link>
+                        </>
+                    )}
+
                     <Avatar
                         src={`${myProfile?.imageUrl ? myProfile?.imageUrl : '/broken-image.jpg'}`}
                     />
@@ -119,7 +134,7 @@ const NavBar = ({ currentUser, handleLogout }: { currentUser: any; handleLogout:
                 )}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default NavBar
+export default NavBar;

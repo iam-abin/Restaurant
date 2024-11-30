@@ -1,26 +1,26 @@
-import makeApiCall from '../apiCalls'
-import { IResponse } from '../../types/api'
-import cartApiUrls from '../urls/cart'
+import makeApiCall from '../apiCalls';
+import { IResponse } from '../../types/api';
+import cartApiUrls from '../urls/cart';
 
 export const addToCartApi = async (itemId: string, restaurantId: string): Promise<IResponse> => {
-    return await makeApiCall('post', cartApiUrls.addToCartUrl, { itemId, restaurantId })
-}
+    return await makeApiCall('post', cartApiUrls.addToCartUrl, { itemId, restaurantId });
+};
 
 export const getCartItemsApi = async (restaurantId: string): Promise<IResponse> => {
-    return await makeApiCall('get', cartApiUrls.getCartItemsUrl(restaurantId))
-}
+    return await makeApiCall('get', cartApiUrls.getCartItemsUrl(restaurantId));
+};
 
 export const updateQuantityApi = async (
     cartItemId: string,
     quantity: number
 ): Promise<IResponse> => {
-    return await makeApiCall('patch', cartApiUrls.updateQuantityUrl(cartItemId), { quantity })
-}
+    return await makeApiCall('patch', cartApiUrls.updateQuantityUrl(cartItemId), { quantity });
+};
 
 export const removeCartItemsApi = async (): Promise<IResponse> => {
-    return await makeApiCall('delete', cartApiUrls.removeCartItemsUrl)
-}
+    return await makeApiCall('delete', cartApiUrls.removeCartItemsUrl);
+};
 
 export const removeCartItemApi = async (cartItemId: string): Promise<IResponse> => {
-    return await makeApiCall('delete', cartApiUrls.removeCartItemUrl(cartItemId))
-}
+    return await makeApiCall('delete', cartApiUrls.removeCartItemUrl(cartItemId));
+};

@@ -16,7 +16,10 @@ import { winstonLogError } from './utils';
 const REQUIRED_ENV_VARIABLES = Object.keys(appConfig) as (keyof IAppConfig)[];
 const missingEnvVariables: string[] = REQUIRED_ENV_VARIABLES.filter((key) => !appConfig[key]);
 if (missingEnvVariables.length) {
-    console.error(`Missing following required environment variables: ${missingEnvVariables.join(', ')}`);
+    console.error(
+        `🚨 Missing the following required environment variable${missingEnvVariables.length === 1 ? '' : 's'}: ` +
+            `${missingEnvVariables.map((variable) => `"${variable}"`).join(', ')} `,
+    );
     process.exit(1);
 }
 

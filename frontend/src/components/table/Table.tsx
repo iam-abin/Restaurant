@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
 const Table = ({
     columns,
@@ -6,25 +6,25 @@ const Table = ({
     numberOfPages,
     fetchData
 }: {
-    columns: any
-    data: any
-    numberOfPages: number
-    fetchData: (page: number) => Promise<void>
+    columns: any;
+    data: any;
+    numberOfPages: number;
+    fetchData: (page: number) => Promise<void>;
 }) => {
-    const [currentPage, setCurrentPage] = useState(1)
+    const [currentPage, setCurrentPage] = useState(1);
 
     const getNestedValue = (nestedObj: any, path: string) => {
-        return path.split('.').reduce((acc: any, curr: string) => acc && acc[curr], nestedObj)
-    }
+        return path.split('.').reduce((acc: any, curr: string) => acc && acc[curr], nestedObj);
+    };
 
     const handlePageChange = async (pageNumber: number) => {
-        setCurrentPage(pageNumber)
-        await fetchData(pageNumber) // Fetch data for the new page
-    }
+        setCurrentPage(pageNumber);
+        await fetchData(pageNumber); // Fetch data for the new page
+    };
 
     useEffect(() => {
-        setCurrentPage(currentPage)
-    }, [data])
+        setCurrentPage(currentPage);
+    }, [data]);
 
     return (
         <>
@@ -98,7 +98,7 @@ const Table = ({
                 </button>
             </div>
         </>
-    )
-}
+    );
+};
 
-export default Table
+export default Table;

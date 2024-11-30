@@ -7,16 +7,16 @@ import { IOrder } from '../types';
 
 const orderService = container.resolve(OrderService);
 
-type CheckoutSessionRequest = {
-    cartItems: { menuId: string }[];
-    deliveryDetails: {
-        name: string;
-        email: string;
-        address: string;
-        city: string;
-    };
-    restaurantId: string;
-};
+// type CheckoutSessionRequest = {
+//     cartItems: { menuId: string }[];
+//     deliveryDetails: {
+//         name: string;
+//         email: string;
+//         address: string;
+//         city: string;
+//     };
+//     restaurantId: string;
+// };
 
 class OrderController {
     public async addOrder(req: Request, res: Response): Promise<void> {

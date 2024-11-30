@@ -1,5 +1,5 @@
-import { Button, Typography } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Button, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const Success = () => {
     return (
@@ -25,7 +25,7 @@ const Success = () => {
                 </Link>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Success
+export default Success;

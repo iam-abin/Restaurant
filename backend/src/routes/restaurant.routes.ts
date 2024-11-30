@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
 import { checkCurrentUser, auth, multerUpload, validateRequest } from '../middlewares';
 import {
-    paramsIdValidator,
+    mongoIdParamsValidator,
     restaurantUpdateValidator,
     ROLES_CONSTANTS,
     searchRestaurantValidator,
@@ -21,7 +21,7 @@ router.get(
 
 router.get(
     '/:restaurantId',
-    paramsIdValidator('restaurantId'),
+    mongoIdParamsValidator('restaurantId'),
     validateRequest,
     checkCurrentUser,
     restaurantController.getARestaurant,

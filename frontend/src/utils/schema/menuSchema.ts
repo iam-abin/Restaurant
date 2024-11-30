@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 export const menuSchema = z.object({
     name: z.string().min(1, { message: 'Name is required' }),
@@ -10,5 +10,5 @@ export const menuSchema = z.object({
         .refine((file) => file?.size !== 0, {
             message: 'Image file is required'
         })
-})
-export type MenuFormSchema = z.infer<typeof menuSchema>
+});
+export type MenuFormSchema = z.infer<typeof menuSchema>;

@@ -10,7 +10,7 @@ export * from './upload';
 export * from './validation/cart.validation';
 export * from './validation/menu.validation';
 export * from './validation/otp.validation';
-export * from './validation/params-id.validation';
+export * from './validation/mongodb-id.validation';
 export * from './validation/password.validation';
 export * from './validation/profile.validaton';
 export * from './validation/restaurant.validation';

@@ -1,18 +1,18 @@
-import { ChangeEvent, FormEvent, useState } from 'react'
-import Box from '@mui/material/Box'
-import Modal from '@mui/material/Modal'
-import IconButton from '@mui/material/IconButton'
-import CloseIcon from '@mui/icons-material/Close'
-import Typography from '@mui/material/Typography'
-import { Button } from '@mui/material'
-import LoaderCircle from '../Loader/LoaderCircle'
-import { MenuFormSchema, menuSchema } from '../../utils/schema/menuSchema'
-import { IMenu } from '../../types'
-import { IResponse } from '../../types/api'
-import { hotToastMessage } from '../../utils/hotToast'
-import { editMenuApi } from '../../api/apiMethods/menu'
-import { fetchMenus } from '../../redux/thunk/menusThunk'
-import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { ChangeEvent, FormEvent, useState } from 'react';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Typography from '@mui/material/Typography';
+import { Button } from '@mui/material';
+import LoaderCircle from '../Loader/LoaderCircle';
+import { MenuFormSchema, menuSchema } from '../../utils/schema/menuSchema';
+import { IMenu } from '../../types';
+import { IResponse } from '../../types/api';
+import { hotToastMessage } from '../../utils/hotToast';
+import { editMenuApi } from '../../api/apiMethods/menu';
+import { fetchMenus } from '../../redux/thunk/menusThunk';
+import { useAppDispatch } from '../../redux/hooks';
 
 const style = {
     position: 'absolute',
@@ -25,71 +25,71 @@ const style = {
     border: '2px solid #000',
     boxShadow: 24,
     p: 4
-}
+};
 
 export default function EditMenuModal({
     menu,
     isOpen,
     handleClose
 }: {
-    menu: IMenu
-    isOpen: boolean
-    handleClose: () => void
+    menu: IMenu;
+    isOpen: boolean;
+    handleClose: () => void;
 }) {
-    const [errors, setErrors] = useState<Partial<MenuFormSchema>>({})
-    const [isLoading, setIsLoading] = useState(false)
-    const dispatch = useAppDispatch()
+    const [errors, setErrors] = useState<Partial<MenuFormSchema>>({});
+    const [isLoading, setIsLoading] = useState(false);
+    const dispatch = useAppDispatch();
     const [input, setInput] = useState<MenuFormSchema>({
         name: menu.name,
         description: menu.description,
         price: menu.price,
         image: undefined
-    })
+    });
 
     const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        setIsLoading(true)
+        e.preventDefault();
+        setIsLoading(true);
         // Clear existing errors
-        setErrors({})
+        setErrors({});
         const inputData = {
             ...input,
             price: input.price ? Number(input.price) : undefined
-        }
+        };
 
-        const result = menuSchema.safeParse({ ...inputData })
-        console.log(input)
+        const result = menuSchema.safeParse({ ...inputData });
+        console.log(input);
 
         if (!result.success) {
-            const fieldErrors = result.error.formErrors.fieldErrors
-            setErrors(fieldErrors as Partial<MenuFormSchema>)
-            setIsLoading(false)
-            return
+            const fieldErrors = result.error.formErrors.fieldErrors;
+            setErrors(fieldErrors as Partial<MenuFormSchema>);
+            setIsLoading(false);
+            return;
         }
         try {
-            const formData = new FormData()
-            formData.append('name', inputData.name)
-            formData.append('description', inputData.description)
-            formData.append('price', inputData.price?.toString()!)
+            const formData = new FormData();
+            formData.append('name', inputData.name);
+            formData.append('description', inputData.description);
+            formData.append('price', inputData.price?.toString()!);
             if (inputData.image) {
-                formData.append('image', inputData.image)
+                formData.append('image', inputData.image);
             }
 
-            const response: IResponse = await editMenuApi(menu._id.toString(), formData)
-            hotToastMessage(response.message, 'success')
+            const response: IResponse = await editMenuApi(menu._id.toString(), formData);
+            hotToastMessage(response.message, 'success');
             // Re-fetch menus
-            dispatch(fetchMenus(menu.restaurantId))
-            handleClose()
+            dispatch(fetchMenus({ restaurantId: menu.restaurantId }));
+            handleClose();
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
     const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
+        const { name, value } = e.target;
         setInput({
             ...input,
             [name]: value
-        })
-    }
+        });
+    };
 
     return (
         <div>
@@ -198,5 +198,5 @@ export default function EditMenuModal({
                 </Box>
             </Modal>
         </div>
-    )
+    );
 }

@@ -1,8 +1,8 @@
-import { Typography } from '@mui/material'
-import DropDown from '../../components/list/DropDown'
+import { Typography } from '@mui/material';
+import DropDown from '../../components/list/DropDown';
 
 const Orders = () => {
-    const statusList = ['Pending', 'Confirmed', 'Preparing', 'OutForDelivery', 'Delivered']
+    const statusList = ['Pending', 'Confirmed', 'Preparing', 'OutForDelivery', 'Delivered'];
 
     return (
         <div className="max-w-6xl mx-auto py-10 px-6">
@@ -30,7 +30,7 @@ const Orders = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Orders
+export default Orders;

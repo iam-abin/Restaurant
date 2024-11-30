@@ -1,25 +1,29 @@
-import { useEffect, useState } from 'react'
-import AddMenuModal from '../../components/modal/AddMenuModal'
-import { Button, Typography } from '@mui/material'
-import MenuCard from '../../components/cards/MenuCard'
-import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { fetchMenus } from '../../redux/thunk/menusThunk'
-import { IMenu } from '../../types'
+import { useEffect, useState } from 'react';
+import AddMenuModal from '../../components/modal/AddMenuModal';
+import { Button, Typography } from '@mui/material';
+import MenuCard from '../../components/cards/MenuCard';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { fetchMenus } from '../../redux/thunk/menusThunk';
+import { IMenu, IRestaurantResponse } from '../../types';
 
 const Menu = () => {
-    const [isAddMenuOpen, setIsAddMenuOpen] = useState(false)
-    const handleAddMenuOpen = () => setIsAddMenuOpen(true)
-    const handleAddMenuClose = () => setIsAddMenuOpen(false)
-    const dispatch = useAppDispatch()
+    const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
+    const handleAddMenuOpen = () => setIsAddMenuOpen(true);
+    const handleAddMenuClose = () => setIsAddMenuOpen(false);
+    const dispatch = useAppDispatch();
 
-    const restaurantData = useAppSelector((state) => state.restaurantReducer.restaurantData)
-    const menus = useAppSelector((state) => state.menusReducer.menusData)
+    const restaurantData: IRestaurantResponse | null = useAppSelector(
+        (state) => state.restaurantReducer.restaurantData
+    );
+    const menus = useAppSelector((state) => state.menusReducer.menusData);
 
     useEffect(() => {
-        if (restaurantData?.restaurant?.id) {
-            dispatch(fetchMenus(restaurantData.restaurant.id))
+        if (restaurantData?.restaurant._id) {
+            console.log(' ===== ', restaurantData, ' ===== ');
+
+            dispatch(fetchMenus({ restaurantId: restaurantData.restaurant._id }));
         }
-    }, [dispatch, restaurantData])
+    }, [dispatch, restaurantData]);
 
     return (
         <div className="my-5">
@@ -41,13 +45,13 @@ const Menu = () => {
             </div>
             {menus && menus.length && (
                 <div className="flex flex-wrap justify-center gap-5 mx-5 bg-green-300">
-                    {menus.map((menu: IMenu, index: number) => (
+                    {menus.map((menu: IMenu) => (
                         <MenuCard key={menu._id} menu={menu} />
                     ))}
                 </div>
             )}
         </div>
-    )
-}
+    );
+};
 
-export default Menu
+export default Menu;

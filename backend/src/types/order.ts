@@ -1,10 +1,11 @@
+type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'outfordelivery' | 'delivered';
+
 export interface IOrder {
     userId: string;
     restaurantId: string;
-    // cartId: string;
     addressId: string;
     totalAmound: number;
-    status: 'pending' | 'confirmed' | 'preparing' | 'outfordelivery' | 'delivered';
+    status: OrderStatus;
 }
 
 export interface IOrderedItem {

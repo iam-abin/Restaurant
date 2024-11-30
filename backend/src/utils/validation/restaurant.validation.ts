@@ -4,21 +4,17 @@ import { body } from 'express-validator';
 
 export const restaurantUpdateValidator = [
     body('name').isString().withMessage('Name must be a string').notEmpty().withMessage('Name is required'),
-
     body('city').isString().withMessage('City must be a string').notEmpty().withMessage('City is required'),
-
     body('country')
         .isString()
         .withMessage('Country must be a string')
         .notEmpty()
         .withMessage('Country is required'),
-
     body('deliveryTime')
         .isInt({ min: 1 })
         .withMessage('Delivery time must be a positive integer')
         .notEmpty()
         .withMessage('Delivery time is required'),
-
     body('cuisines')
         .isArray({ min: 1 })
         .withMessage('Cuisines must be a non-empty array')

@@ -3,7 +3,7 @@ import { createSuccessResponse } from '../utils';
 import { IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
 import { container } from 'tsyringe';
 import { RestaurantService } from '../services';
-import { IRestaurantUpdate } from '../types';
+import { IRestaurantResponse, IRestaurantUpdate, ISearchResult } from '../types';
 
 const restaurantService = container.resolve(RestaurantService);
 
@@ -32,7 +32,7 @@ class RestaurantController {
 
     public async getARestaurant(req: Request, res: Response): Promise<void> {
         const { restaurantId } = req.params;
-        const restaurant: any | null = await restaurantService.getARestaurant(restaurantId);
+        const restaurant: IRestaurantResponse | null = await restaurantService.getARestaurant(restaurantId);
         res.status(200).json(createSuccessResponse('Restaurant fetched successfully', restaurant));
     }
 
@@ -45,7 +45,7 @@ class RestaurantController {
         const searchText: string = req.params.searchText || ''; // From home page search bar
         const searchQuery: string = (req.query.searchQuery as string) || ''; // From search page search bar
         const selectedCuisines: string = (req.query.selectedCuisines as string) || ''; // From filter area
-        const restaurant: any[] = await restaurantService.searchRestaurant(
+        const restaurant: ISearchResult[] = await restaurantService.searchRestaurant(
             searchText,
             searchQuery,
             selectedCuisines,

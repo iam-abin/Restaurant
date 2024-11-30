@@ -11,7 +11,7 @@ import {
     AddressRepository,
 } from '../database/repository';
 import { ICartDocument, IMenuDocument, IOrderDocument } from '../database/model';
-import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
+import { ForbiddenError, NotFoundError } from '../errors';
 import { stripeInstance } from '../config/stripe';
 import { appConfig } from '../config/app.config';
 
@@ -25,10 +25,7 @@ export class OrderService {
         private readonly addressRepository: AddressRepository,
     ) {}
 
-    public async createOrder(
-        userId: string,
-        orderData: IOrder,
-    ): Promise<Stripe.Response<Stripe.Checkout.Session>> {
+    public async createOrder(userId: string, orderData: IOrder): Promise<{ stripePaymentUrl: string }> {
         const session = await mongoose.startSession();
         session.startTransaction();
         try {
@@ -104,7 +101,7 @@ export class OrderService {
             await this.orderedItemRepository.create(orderedItems, session);
             // Commit the transaction
             await session.commitTransaction();
-            return checkoutSession;
+            return { stripePaymentUrl: checkoutSession.url };
         } catch (error) {
             // Rollback the transaction if something goes wrong
             await session.abortTransaction();
@@ -169,7 +166,7 @@ export class OrderService {
     public async getOrders(restaurantId: string, ownerId: string): Promise<IOrderDocument[]> {
         const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
-        if ('id' in restaurant.ownerId && restaurant.ownerId.id.toString() !== ownerId)
+        if ('_id' in restaurant.owner! && restaurant.owner._id.toString() !== ownerId)
             throw new ForbiddenError('You cannot access other restaurant orders');
         const orders: IOrderDocument[] = await this.orderRepository.findOrders(restaurantId);
         return orders;
@@ -199,9 +196,10 @@ export class OrderService {
             throw new Error('Payment confirmation failed');
         }
         const session = event.data.object as Stripe.Checkout.Session;
-        // console.log('session', session);
 
-        const order: IOrderDocument | null = await this.orderRepository.findOrder(session.metadata?.orderId!);
+        if (!session.metadata?.orderId) throw new Error('Order ID is missing in the session metadata');
+
+        const order: IOrderDocument | null = await this.orderRepository.findOrder(session.metadata.orderId!);
 
         if (!order) throw new NotFoundError('Order not found');
 

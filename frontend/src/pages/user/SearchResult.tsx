@@ -1,58 +1,59 @@
-import { useParams } from 'react-router-dom'
-import Filter from '../../components/Filter'
-import { ChangeEvent, useEffect, useState } from 'react'
-import SearchIcon from '@mui/icons-material/Search'
-import { Button, Chip } from '@mui/material'
-import RestaurantCard from '../../components/cards/RestaurantCard'
-import RestaurantCardSkeleton from '../../components/shimmer/RestaurantCardSkeleton'
-import { NoResultFound } from '../../components/NoResultFound'
-import { searchRestaurantApi } from '../../api/apiMethods/restaurant'
-import LoaderCircle from '../../components/Loader/LoaderCircle'
+import { useParams } from 'react-router-dom';
+import Filter from '../../components/Filter';
+import { ChangeEvent, useEffect, useState } from 'react';
+import SearchIcon from '@mui/icons-material/Search';
+import { Button, Chip } from '@mui/material';
+import RestaurantCard from '../../components/cards/RestaurantCard';
+import RestaurantCardSkeleton from '../../components/shimmer/RestaurantCardSkeleton';
+import { NoResultFound } from '../../components/NoResultFound';
+import { searchRestaurantApi } from '../../api/apiMethods/restaurant';
+import LoaderCircle from '../../components/Loader/LoaderCircle';
+import { ISearchResult } from '../../types';
 
 const SearchResult = () => {
-    const [searchQuery, setSearchQuery] = useState<string>('')
-    const [selectedFilters, setSelectedFilters] = useState<string[]>([])
-    const [searchResults, setSearchResults] = useState<any[]>([])
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [searchQuery, setSearchQuery] = useState<string>('');
+    const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+    const [searchResults, setSearchResults] = useState<ISearchResult[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const params = useParams()
-    const searchText = params.searchText || ''
+    const params = useParams();
+    const searchText = params.searchText || '';
 
     const fetchRestaurants = async () => {
-        setIsLoading(true)
+        setIsLoading(true);
         try {
             const response = await searchRestaurantApi({
                 searchText,
                 searchQuery,
                 selectedCuisines: selectedFilters
-            })
-            setSearchResults(response.data || [])
+            });
+            setSearchResults((response.data as ISearchResult[]) || []);
         } catch (error) {
-            console.error('Error fetching search results:', error)
-            setSearchResults([])
+            console.error('Error fetching search results:', error);
+            setSearchResults([]);
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
 
     useEffect(() => {
-        fetchRestaurants()
-    }, [selectedFilters, searchText])
+        fetchRestaurants();
+    }, [selectedFilters, searchText]);
 
     const handleDeleteChip = (filter: string) => {
-        setSelectedFilters((prev) => prev.filter((item) => item !== filter))
-    }
+        setSelectedFilters((prev) => prev.filter((item) => item !== filter));
+    };
 
     const handleSearch = () => {
-        if (searchQuery === '') return
-        fetchRestaurants()
-    }
+        if (searchQuery === '') return;
+        fetchRestaurants();
+    };
 
     const handleSearchKeyChange = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value === '') fetchRestaurants()
-        console.log(searchQuery)
-        setSearchQuery(e.target.value)
-    }
+        if (e.target.value === '') fetchRestaurants();
+        console.log(searchQuery);
+        setSearchQuery(e.target.value);
+    };
 
     return (
         <div className="max-w-7xl mx-auto my-5">
@@ -115,7 +116,7 @@ const SearchResult = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default SearchResult
+export default SearchResult;

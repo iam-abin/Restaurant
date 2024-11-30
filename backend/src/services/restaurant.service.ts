@@ -1,5 +1,5 @@
 import { autoInjectable } from 'tsyringe';
-import { IRestaurantUpdate } from '../types';
+import { IRestaurantResponse, IRestaurantUpdate, ISearchResult } from '../types';
 import {
     AddressRepository,
     CuisineRepository,
@@ -28,11 +28,9 @@ export class RestaurantService {
         private readonly restaurantCuisineRepository: RestaurantCuisineRepository,
     ) {}
 
-    public async getARestaurant(restaurantId: string): Promise<
-        // GetARestaurant
-        any | null
-    > {
-        const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
+    public async getARestaurant(restaurantId: string): Promise<IRestaurantResponse | null> {
+        const restaurant: IRestaurantResponse | null =
+            await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         return restaurant;
     }
@@ -144,7 +142,7 @@ export class RestaurantService {
         searchText: string,
         searchQuery: string,
         selectedCuisines: string,
-    ): Promise<any[]> {
+    ): Promise<ISearchResult[]> {
         // search is based on ( name, city, country, cuisines )
 
         // console.log('-------------------');
@@ -166,7 +164,7 @@ export class RestaurantService {
 
         // const cuisinesArray: string[] = selectedCuisines.split(', ').filter((cuisine: string) => cuisine); // It avoid falsy values
 
-        const restaurant = await this.restaurantRepository.searchRestaurants(
+        const restaurant: ISearchResult[] = await this.restaurantRepository.searchRestaurants(
             searchText,
             searchQuery,
             cuisinesArray,

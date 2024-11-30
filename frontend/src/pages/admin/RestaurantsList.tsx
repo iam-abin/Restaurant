@@ -1,35 +1,29 @@
-import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { ROLES_CONSTANTS } from '../../utils/constants'
-import { IUser } from '../../types'
-import { IResponse } from '../../types/api'
-import SearchBar from '../../components/search/SearchBar'
-import Table from '../../components/table/Table'
-import ConfirmationDialogue from '../../components/alert/ConfirmationDialogue'
-import { hotToastMessage } from '../../utils/hotToast'
-import { getProfilesApi } from '../../api/apiMethods/profile'
-import { blockUnblockUserApi } from '../../api/apiMethods/auth'
-import { getRestaurantsApi } from '../../api/apiMethods/restaurant'
+import { useEffect, useState } from 'react';
+import { IRestaurant, IUser } from '../../types';
+import { IResponse } from '../../types/api';
+import SearchBar from '../../components/search/SearchBar';
+import Table from '../../components/table/Table';
+import { hotToastMessage } from '../../utils/hotToast';
+import { blockUnblockUserApi } from '../../api/apiMethods/auth';
+import { getRestaurantsApi } from '../../api/apiMethods/restaurant';
 
 function RestaurantsList() {
-    const navigate = useNavigate()
-    const [usersData, setUsersData] = useState<IUser[]>([])
-    const [numberOfPages, setNumberOfPages] = useState(1)
-    const [currentPage, setCurrentPage] = useState(1)
-    const [searchKey, setSearchKey] = useState('')
+    const [usersData, setUsersData] = useState<IUser[]>([]);
+    const [numberOfPages, setNumberOfPages] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchKey, setSearchKey] = useState('');
 
-    const USERS_PER_PAGE: number = 2
+    const USERS_PER_PAGE: number = 2;
 
     const fetchUsers = async (currentPage: number) => {
-        let usersData: IResponse | [] = []
+        let usersData: IResponse | [] = [];
         // if (!searchKey) {
-        console.log('no search key')
-        usersData =
-            await getRestaurantsApi()
-            // currentPage,
-            // USERS_PER_PAGE
-        setUsersData(usersData?.data)
-    }
+        console.log('no search key');
+        usersData = await getRestaurantsApi();
+        // currentPage,
+        // USERS_PER_PAGE
+        setUsersData(usersData?.data as IUser[]);
+    };
 
     useEffect(() => {
         fetchUsers(1); // Fetch initial data for the first page
@@ -41,10 +35,10 @@ function RestaurantsList() {
     // };
 
     const handleBlockUnblock = async (userId: string) => {
-        let updatedUser: IResponse | null = await blockUnblockUserApi(userId)
+        const updatedUser: IResponse | null = await blockUnblockUserApi(userId);
 
         if (updatedUser) {
-            hotToastMessage(updatedUser.message, 'success')
+            hotToastMessage(updatedUser.message, 'success');
 
             // const users = usersData.map((user) => {
             //     if (user.id === userId) {
@@ -59,10 +53,10 @@ function RestaurantsList() {
 
             // setUsersData(users);
         }
-    }
+    };
 
     console.log(usersData);
-    
+
     const columns = [
         { Header: 'Name', accessor: 'ownerId.name' },
         { Header: 'Email', accessor: 'ownerId.email' },
@@ -79,7 +73,7 @@ function RestaurantsList() {
         },
         {
             Header: 'Status',
-            button: (row: {ownerId?: { isBlocked: string }}) => (
+            button: (row: { ownerId?: { isBlocked: string } }) => (
                 <div
                     className={`badge ${
                         row?.ownerId?.isBlocked
@@ -132,7 +126,7 @@ function RestaurantsList() {
                     okayText={isBlocked ? "active" : "inActive"}
                 /> */}
         </div>
-    )
+    );
 }
 
-export default RestaurantsList
+export default RestaurantsList;

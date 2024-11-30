@@ -4,8 +4,7 @@ import { IProfileDocument } from '../database/model';
 
 import { createSuccessResponse } from '../utils';
 import { ProfileService } from '../services';
-import { IAddress, IProfile, IUser } from '../types';
-
+import { ProfileUpdate } from '../types';
 const profileService = container.resolve(ProfileService);
 
 class ProfileController {
@@ -25,7 +24,7 @@ class ProfileController {
         const { userId } = req.currentUser!;
         const user: IProfileDocument | null = await profileService.updateProfile(
             userId,
-            req.body as Partial<Pick<IProfile, 'image'> & Pick<IUser, 'name'> & Omit<IAddress, 'userId'>>,
+            req.body as ProfileUpdate,
         );
         res.status(200).json(createSuccessResponse('Profile updated successfully', user));
     }

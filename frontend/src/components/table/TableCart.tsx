@@ -1,17 +1,18 @@
-import * as React from 'react'
-import { styled } from '@mui/material/styles'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell, { tableCellClasses } from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import Paper from '@mui/material/Paper'
-import IconButton from '@mui/material/IconButton'
-import AddIcon from '@mui/icons-material/Add'
-import RemoveIcon from '@mui/icons-material/Remove'
-import DeleteIcon from '@mui/icons-material/Delete'
-import { Typography } from '@mui/material'
+import * as React from 'react';
+import { styled } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import IconButton from '@mui/material/IconButton';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Typography } from '@mui/material';
+import { ICart } from '../../types';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -21,7 +22,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14
     }
-}))
+}));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {
@@ -30,10 +31,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:last-child td, &:last-child th': {
         border: 0
     }
-}))
+}));
 
 function createData(name: string, calories: number, fat: number, carbs: number, protein: number) {
-    return { name, calories, fat, carbs, protein, quantity: 1 }
+    return { name, calories, fat, carbs, protein, quantity: 1 };
 }
 
 const initialRows = [
@@ -42,28 +43,28 @@ const initialRows = [
     createData('Eclair', 262, 16.0, 24, 6.0),
     createData('Cupcake', 305, 3.7, 67, 4.3),
     createData('Gingerbread', 356, 16.0, 49, 3.9)
-]
+];
 
 export default function TableCart({
     cartItems,
     removeCartItemHandler,
     changeQuantityHandler
 }: {
-    cartItems: any[]
-    removeCartItemHandler: (cartItemId: string) => void
-    changeQuantityHandler: (cartItemId: string, quantity: number) => void
+    cartItems: ICart[];
+    removeCartItemHandler: (cartItemId: string) => void;
+    changeQuantityHandler: (cartItemId: string, quantity: number) => void;
 }) {
-    const [rows, setRows] = React.useState(initialRows)
+    const [rows, setRows] = React.useState(initialRows);
 
     const handleQuantityChange = (item: any, quantityChange: number) => {
-        const newQuantity = item.quantity + quantityChange
-        if (newQuantity < 1) return // Ensure quantity doesn't go below 1
-        changeQuantityHandler(item.id, newQuantity) // Call the handler with the new quantity
-    }
+        const newQuantity = item.quantity + quantityChange;
+        if (newQuantity < 1) return; // Ensure quantity doesn't go below 1
+        changeQuantityHandler(item.id, newQuantity); // Call the handler with the new quantity
+    };
 
     const handleRemoveItem = (cartItemId: string) => {
-        removeCartItemHandler(cartItemId)
-    }
+        removeCartItemHandler(cartItemId);
+    };
 
     return (
         <TableContainer component={Paper}>
@@ -78,8 +79,8 @@ export default function TableCart({
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {cartItems.map((item, index) => (
-                        <StyledTableRow key={item.id}>
+                    {cartItems.map((item: ICart) => (
+                        <StyledTableRow key={item._id}>
                             <StyledTableCell component="th" scope="item">
                                 {item.itemId.name}
                             </StyledTableCell>
@@ -99,7 +100,7 @@ export default function TableCart({
                                 {item.itemId.price * item.quantity}
                             </StyledTableCell>
                             <StyledTableCell align="center">
-                                <IconButton onClick={() => handleRemoveItem(item.id)}>
+                                <IconButton onClick={() => handleRemoveItem(item._id)}>
                                     <DeleteIcon />
                                 </IconButton>
                             </StyledTableCell>
@@ -108,5 +109,5 @@ export default function TableCart({
                 </TableBody>
             </Table>
         </TableContainer>
-    )
+    );
 }

@@ -1,9 +1,9 @@
-import { Button, Checkbox } from '@mui/material'
+import { Button, Checkbox } from '@mui/material';
 
 export type FilterOptionsState = {
-    id: string
-    label: string
-}
+    id: string;
+    label: string;
+};
 
 const filterOptions: FilterOptionsState[] = [
     { id: 'burger', label: 'Burger' },
@@ -12,26 +12,26 @@ const filterOptions: FilterOptionsState[] = [
     { id: 'momos', label: 'Momos' },
     { id: 'chinese', label: 'chinese' },
     { id: 'african', label: 'african' }
-]
+];
 
 const Filter = ({
     filterArray,
     setSelectedFilters
 }: {
-    filterArray: string[]
-    setSelectedFilters: React.Dispatch<React.SetStateAction<string[]>>
+    filterArray: string[];
+    setSelectedFilters: React.Dispatch<React.SetStateAction<string[]>>;
 }) => {
     const applyFilterCheck = (item: string) => {
         setSelectedFilters((prevFilters) =>
             prevFilters.includes(item)
                 ? prevFilters.filter((filter) => filter !== item)
                 : [...prevFilters, item]
-        )
-    }
+        );
+    };
 
     const resetFilters = () => {
-        setSelectedFilters([])
-    }
+        setSelectedFilters([]);
+    };
 
     return (
         <div className="md:w-72">
@@ -55,7 +55,7 @@ const Filter = ({
                 </div>
             ))}
         </div>
-    )
-}
+    );
+};
 
-export default Filter
+export default Filter;

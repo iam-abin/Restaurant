@@ -1,14 +1,14 @@
-import { Button, Card, CardContent, Typography } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Button, Card, CardContent, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 export const NoResultFound = ({
     searchText,
     searchQuery,
     filterList = []
 }: {
-    searchText: string
-    searchQuery: string
-    filterList: string[]
+    searchText: string;
+    searchQuery: string;
+    filterList: string[];
 }) => {
     return (
         <Card className="max-w-md mx-auto mt-10 shadow-lg">
@@ -17,13 +17,13 @@ export const NoResultFound = ({
                     No results found
                 </Typography>
                 <Typography className="mt-2 text-gray-500 dark:text-gray-400">
-                    We couldn't find any results for '{searchText}'
+                    We couldn&apos;t find any results for &apos;{searchText}&apos;
                     {searchQuery && (
                         <>
-                            {filterList.length ? ',' : ' and'} '{searchQuery}'
+                            {filterList.length ? ',' : ' and'} &apos;{searchQuery}&apos;
                         </>
                     )}
-                    {filterList.length > 0 && <>and '{filterList.join(', ')}'</>}
+                    {filterList.length > 0 && <>and &apos;{filterList.join(', ')}&apos;</>}
                     . <br />
                     Try searching with a different term.
                 </Typography>
@@ -34,5 +34,5 @@ export const NoResultFound = ({
                 </Link>
             </CardContent>
         </Card>
-    )
-}
+    );
+};

@@ -9,7 +9,7 @@ import {
     resetPasswordRequestBodyValidator,
     ROLES_CONSTANTS,
     verifyTokenRequestBodyValidator,
-    paramsIdValidator,
+    mongoIdParamsValidator,
 } from '../utils';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
 
@@ -46,7 +46,7 @@ router.post(
 
 router.patch(
     '/block-unblock/:userId',
-    paramsIdValidator('userId'),
+    mongoIdParamsValidator('userId'),
     validateRequest,
     authController.blockUnblockUser,
 );

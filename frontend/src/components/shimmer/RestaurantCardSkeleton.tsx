@@ -1,9 +1,9 @@
-import Card from '@mui/material/Card'
-import CardActions from '@mui/material/CardActions'
-import CardContent from '@mui/material/CardContent'
-import { Skeleton } from '@mui/material'
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined'
-import PublicIcon from '@mui/icons-material/Public'
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import { Skeleton } from '@mui/material';
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import PublicIcon from '@mui/icons-material/Public';
 
 export default function RestaurantCardSkeleton() {
     return (
@@ -32,5 +32,5 @@ export default function RestaurantCardSkeleton() {
                 <Skeleton variant="rectangular" width={100} height={36} />
             </CardActions>
         </Card>
-    )
+    );
 }

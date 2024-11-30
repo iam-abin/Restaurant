@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 export const restaurantFromSchema = z.object({
     name: z.string().nonempty({ message: 'Restaurant name is required' }),
@@ -13,6 +13,6 @@ export const restaurantFromSchema = z.object({
         .refine((file) => file?.size !== 0, {
             message: 'Image file is required'
         })
-})
+});
 
-export type RestaurantFormSchema = z.infer<typeof restaurantFromSchema>
+export type RestaurantFormSchema = z.infer<typeof restaurantFromSchema>;

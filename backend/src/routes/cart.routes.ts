@@ -3,7 +3,7 @@ import { checkCurrentUser, auth, validateRequest } from '../middlewares';
 import {
     ROLES_CONSTANTS,
     addToCartRequestBodyValidator,
-    paramsIdValidator,
+    mongoIdParamsValidator,
     updateCartRequestBodyValidator,
 } from '../utils';
 import { cartController } from '../controllers/cart.controller';
@@ -21,7 +21,7 @@ router.post(
 
 router.get(
     '/:restaurantId',
-    paramsIdValidator('restaurantId'),
+    mongoIdParamsValidator('restaurantId'),
     validateRequest,
     checkCurrentUser,
     auth(ROLES_CONSTANTS.USER),
@@ -30,7 +30,7 @@ router.get(
 
 router.patch(
     '/:cartItemId',
-    paramsIdValidator('cartItemId'),
+    mongoIdParamsValidator('cartItemId'),
     updateCartRequestBodyValidator,
     validateRequest,
     checkCurrentUser,
@@ -42,7 +42,7 @@ router.delete('/', checkCurrentUser, auth(ROLES_CONSTANTS.USER), cartController.
 
 router.delete(
     '/:cartItemId',
-    paramsIdValidator('cartItemId'),
+    mongoIdParamsValidator('cartItemId'),
     validateRequest,
     checkCurrentUser,
     auth(ROLES_CONSTANTS.USER),

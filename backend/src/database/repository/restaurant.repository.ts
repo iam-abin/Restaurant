@@ -1,5 +1,5 @@
 import mongoose, { ClientSession } from 'mongoose';
-import { IRestaurant } from '../../types';
+import { IRestaurant, IRestaurantResponse, ISearchResult } from '../../types';
 import { IRestaurantDocument, RestaurantModel } from '../model';
 
 export class RestaurantRepository {
@@ -13,7 +13,7 @@ export class RestaurantRepository {
         return restaurants;
     }
 
-    async findRestaurant(restaurantId: string): Promise<any | null> {
+    async findRestaurant(restaurantId: string): Promise<IRestaurantResponse | null> {
         const restaurant = await RestaurantModel.aggregate([
             // Match the restaurant by ID
             {
@@ -67,12 +67,12 @@ export class RestaurantRepository {
                     from: 'users', // User collection (owners are stored here)
                     localField: 'ownerId',
                     foreignField: '_id',
-                    as: 'restaurant',
+                    as: 'owner',
                 },
             },
             {
                 $unwind: {
-                    path: '$restaurant',
+                    path: '$owner',
                     preserveNullAndEmptyArrays: true,
                 },
             },
@@ -80,7 +80,7 @@ export class RestaurantRepository {
                 $project: {
                     _id: 1,
                     name: 1,
-                    restaurant: {
+                    owner: {
                         _id: 1,
                         name: 1,
                         email: 1,
@@ -118,7 +118,11 @@ export class RestaurantRepository {
         return restaurant;
     }
 
-    async searchRestaurants(searchText: string, searchQuery: string, selectedCuisines: string[]) {
+    async searchRestaurants(
+        searchText: string,
+        searchQuery: string,
+        selectedCuisines: string[],
+    ): Promise<ISearchResult[]> {
         console.log(searchText, searchQuery, selectedCuisines);
 
         const pipeline = [
@@ -166,9 +170,9 @@ export class RestaurantRepository {
                     as: 'cuisines',
                 },
             },
-            // {
-            //     $unwind: { path: '$cuisines', preserveNullAndEmptyArrays: true },
-            // },
+            {
+                $unwind: { path: '$cuisines', preserveNullAndEmptyArrays: true },
+            },
             // Match conditions
             {
                 $match: {

@@ -64,7 +64,7 @@ class AuthController {
         const user: IUserDocument | null = await userService.blockUnblockUser(userId);
         res.status(200).json(
             createSuccessResponse(
-                `candidate ${user?.isBlocked ? 'unBlocked' : 'Blocked'}  successfully`,
+                `candidate ${user?.isBlocked ? 'blocked' : 'unBlocked'}  successfully`,
                 user,
             ),
         );

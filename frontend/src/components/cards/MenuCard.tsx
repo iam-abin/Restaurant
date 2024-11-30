@@ -1,31 +1,30 @@
-import FriedChicken from '../../assets/fried-chicken-french-fries-black-cement-floor (1).jpg'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import CardMedia from '@mui/material/CardMedia'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import { useState } from 'react'
-import EditMenuModal from '../modal/EditMenuModal'
-import { IMenu } from '../../types'
-import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { ROLES_CONSTANTS } from '../../utils/constants'
-import { addToCart } from '../../redux/thunk/cartThunk'
-import { useParams } from 'react-router-dom'
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import { useState } from 'react';
+import EditMenuModal from '../modal/EditMenuModal';
+import { IMenu } from '../../types';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { ROLES_CONSTANTS } from '../../utils/constants';
+import { addToCart } from '../../redux/thunk/cartThunk';
+import { useParams } from 'react-router-dom';
 
 const MenuCard = ({ menu }: { menu: IMenu }) => {
-    const authData = useAppSelector((store) => store.authReducer.authData)
-    const isUser = authData.role === ROLES_CONSTANTS.USER
-    const isRestaurant = authData.role === ROLES_CONSTANTS.RESTAURANT
+    const authData = useAppSelector((store) => store.authReducer.authData);
+    const isUser = authData?.role === ROLES_CONSTANTS.USER;
+    const isRestaurant = authData?.role === ROLES_CONSTANTS.RESTAURANT;
 
-    const [isEditMenuOpen, setIsEditMenuOpen] = useState(false)
-    const handleEditMenuOpen = () => setIsEditMenuOpen(true)
-    const handleEditMenuClose = () => setIsEditMenuOpen(false)
-    const dispatch = useAppDispatch()
-    const params = useParams()
+    const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
+    const handleEditMenuOpen = () => setIsEditMenuOpen(true);
+    const handleEditMenuClose = () => setIsEditMenuOpen(false);
+    const dispatch = useAppDispatch();
+    const params = useParams();
 
     const addItemToCartHandler = async (menuItemId: string) => {
-        dispatch(addToCart({itemId: menuItemId, restaurantId:  params.restaurantId!},))
-    }
+        dispatch(addToCart({ itemId: menuItemId, restaurantId: params.restaurantId! }));
+    };
 
     return (
         <div className="flex justify-center bg-yellow-700">
@@ -83,7 +82,7 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
                 </div>
             </Card>
         </div>
-    )
-}
+    );
+};
 
-export default MenuCard
+export default MenuCard;
