@@ -30,7 +30,7 @@ const Profile = () => {
         address: (myProfile?.addressId as IAddress)?.address || '',
         city: (myProfile?.addressId as IAddress)?.city || '',
         country: (myProfile?.addressId as IAddress)?.country || '',
-        image: myProfile?.imageUrl || ''
+        image: myProfile?.imageUrl || '',
     });
     const fileChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -44,7 +44,7 @@ const Profile = () => {
             setSelectedProfilePicture(result);
             setProfileData((prevData) => ({
                 ...prevData,
-                image: result
+                image: result,
             }));
         };
         reader.readAsDataURL(file);
@@ -73,7 +73,7 @@ const Profile = () => {
                             sx={{
                                 width: 80,
                                 height: 80,
-                                md: { width: 112, height: 112 }
+                                md: { width: 112, height: 112 },
                             }}
                             src={profileData.image || `/broken-image.jpg`}
                         />
@@ -93,8 +93,8 @@ const Profile = () => {
                                 opacity: 0,
                                 transition: 'opacity 0.3s',
                                 '&:hover': {
-                                    opacity: 1
-                                }
+                                    opacity: 1,
+                                },
                             }}
                         >
                             <input

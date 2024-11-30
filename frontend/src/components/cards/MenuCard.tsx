@@ -52,8 +52,7 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
 
                         <p>{menu.description}</p>
                         <h2 className="text-lg font-semibold mt-4">
-                            Price:{' '}
-                            <Typography className="text-yellow-600">₹{menu.price}</Typography>
+                            Price: <Typography className="text-yellow-600">₹{menu.price}</Typography>
                         </h2>
                     </CardContent>
                     <div className="flex items-center justify-center px-4 py-2">

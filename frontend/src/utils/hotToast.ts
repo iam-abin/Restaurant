@@ -16,8 +16,8 @@ export const hotToastMessage = (msg: string, type: HotToast): void => {
                 style: {
                     border: '1px solid #FFA500',
                     padding: '5px',
-                    color: '#00000'
-                }
+                    color: '#00000',
+                },
             });
             break;
 

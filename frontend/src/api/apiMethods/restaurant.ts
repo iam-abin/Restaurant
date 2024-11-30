@@ -26,10 +26,10 @@ export interface ISearchRestaurantApi {
 export const searchRestaurantApi = async ({
     searchText,
     searchQuery,
-    selectedCuisines
+    selectedCuisines,
 }: ISearchRestaurantApi): Promise<IResponse> => {
     return await makeApiCall(
         'get',
-        restaurantApiUrls.searchRestaurantUrl({ searchText, searchQuery, selectedCuisines })
+        restaurantApiUrls.searchRestaurantUrl({ searchText, searchQuery, selectedCuisines }),
     );
 };

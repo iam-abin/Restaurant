@@ -11,12 +11,12 @@ const filterOptions: FilterOptionsState[] = [
     { id: 'biryani', label: 'Biryani' },
     { id: 'momos', label: 'Momos' },
     { id: 'chinese', label: 'chinese' },
-    { id: 'african', label: 'african' }
+    { id: 'african', label: 'african' },
 ];
 
 const Filter = ({
     filterArray,
-    setSelectedFilters
+    setSelectedFilters,
 }: {
     filterArray: string[];
     setSelectedFilters: React.Dispatch<React.SetStateAction<string[]>>;
@@ -25,7 +25,7 @@ const Filter = ({
         setSelectedFilters((prevFilters) =>
             prevFilters.includes(item)
                 ? prevFilters.filter((filter) => filter !== item)
-                : [...prevFilters, item]
+                : [...prevFilters, item],
         );
     };
 
@@ -46,10 +46,7 @@ const Filter = ({
                         checked={filterArray.includes(option.label)}
                         onChange={() => applyFilterCheck(option.label)}
                     />
-                    <label
-                        htmlFor={option.id}
-                        className="text-sm font-medium leading-none cursor-pointer"
-                    >
+                    <label htmlFor={option.id} className="text-sm font-medium leading-none cursor-pointer">
                         {option.label}
                     </label>
                 </div>

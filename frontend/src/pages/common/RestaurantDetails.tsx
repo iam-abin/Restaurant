@@ -49,10 +49,7 @@ const RestaurantDetails = () => {
                         <div className="flex gap-2 my-2 items-center justify-between bg-green-200">
                             <div>
                                 {restaurant?.cuisines?.map((cusine: ICuisine, index: number) => (
-                                    <div
-                                        key={index}
-                                        className="relative inline-flex items-center max-w-full"
-                                    >
+                                    <div key={index} className="relative inline-flex items-center max-w-full">
                                         <Chip label={cusine.name} variant="outlined" />
                                     </div>
                                 ))}
@@ -92,9 +89,7 @@ const RestaurantDetails = () => {
                                 <MenuCardSkeleton />
                             </>
                         ) : restaurant?.menus ? (
-                            restaurant?.menus.map((menu: IMenu) => (
-                                <MenuCard key={menu._id} menu={menu} />
-                            ))
+                            restaurant?.menus.map((menu: IMenu) => <MenuCard key={menu._id} menu={menu} />)
                         ) : (
                             'No menus available'
                         )}

@@ -11,7 +11,7 @@ interface IMenusSlice {
 const initialState: IMenusSlice = {
     menusData: null,
     status: 'idle',
-    error: null
+    error: null,
 };
 
 const menusSlice = createSlice({
@@ -20,14 +20,14 @@ const menusSlice = createSlice({
     reducers: {
         clearMenus: (state) => {
             state.menusData = null;
-        }
+        },
     },
     extraReducers: (builder) => {
         addAsyncThunkCases(builder, fetchMenus, (state, action) => {
             state.status = 'succeeded';
             state.menusData = action.payload;
         });
-    }
+    },
 });
 
 export const { clearMenus } = menusSlice.actions;

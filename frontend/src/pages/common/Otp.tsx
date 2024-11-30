@@ -80,9 +80,7 @@ const Otp = () => {
             <div className="flex flex-col gap-10 p-8 rounded-md border border-gray-300 mx-2">
                 <div className="text-center">
                     <h1 className="font-extrabold text-2xl">verify email</h1>
-                    <p className="text-sm text-gray-600">
-                        Enter the 6 digit code sent to your email address
-                    </p>
+                    <p className="text-sm text-gray-600">Enter the 6 digit code sent to your email address</p>
                 </div>
                 <form onSubmit={handleSubmit}>
                     <div className="flex gap-2 justify-center">
@@ -115,8 +113,8 @@ const Otp = () => {
                             mt: 2,
                             backgroundColor: isLoading ? 'orange' : '#FF8C00',
                             '&:hover': {
-                                backgroundColor: isLoading ? 'orange' : '#FF8C00'
-                            }
+                                backgroundColor: isLoading ? 'orange' : '#FF8C00',
+                            },
                         }}
                         variant="contained"
                     >

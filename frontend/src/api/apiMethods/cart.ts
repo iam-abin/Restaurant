@@ -10,10 +10,7 @@ export const getCartItemsApi = async (restaurantId: string): Promise<IResponse> 
     return await makeApiCall('get', cartApiUrls.getCartItemsUrl(restaurantId));
 };
 
-export const updateQuantityApi = async (
-    cartItemId: string,
-    quantity: number
-): Promise<IResponse> => {
+export const updateQuantityApi = async (cartItemId: string, quantity: number): Promise<IResponse> => {
     return await makeApiCall('patch', cartApiUrls.updateQuantityUrl(cartItemId), { quantity });
 };
 

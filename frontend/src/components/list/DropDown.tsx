@@ -13,13 +13,7 @@ export default function DropDown({ statusList }: { statusList: string[] }) {
     return (
         <div>
             <FormControl sx={{ m: 1, minWidth: 150 }}>
-                <Select
-                    displayEmpty
-                    id="status-select"
-                    value={status}
-                    onChange={handleChange}
-                    autoWidth
-                >
+                <Select displayEmpty id="status-select" value={status} onChange={handleChange} autoWidth>
                     <MenuItem value="" disabled>
                         Select Status
                     </MenuItem>

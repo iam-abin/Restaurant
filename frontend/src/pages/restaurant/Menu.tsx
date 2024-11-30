@@ -13,7 +13,7 @@ const Menu = () => {
     const dispatch = useAppDispatch();
 
     const restaurantData: IRestaurantResponse | null = useAppSelector(
-        (state) => state.restaurantReducer.restaurantData
+        (state) => state.restaurantReducer.restaurantData,
     );
     const menus = useAppSelector((state) => state.menusReducer.menusData);
 
@@ -30,18 +30,11 @@ const Menu = () => {
             <div className="flex justify-between items-center">
                 <Typography className="text-xl font-extrabold">Available menus</Typography>
                 <div className="mt-3 flex flex-col items-end gap-5">
-                    <Button
-                        className="h-10"
-                        color="warning"
-                        variant="contained"
-                        onClick={handleAddMenuOpen}
-                    >
+                    <Button className="h-10" color="warning" variant="contained" onClick={handleAddMenuOpen}>
                         Add menu
                     </Button>
                 </div>
-                {isAddMenuOpen && (
-                    <AddMenuModal isOpen={isAddMenuOpen} handleClose={handleAddMenuClose} />
-                )}
+                {isAddMenuOpen && <AddMenuModal isOpen={isAddMenuOpen} handleClose={handleAddMenuClose} />}
             </div>
             {menus && menus.length && (
                 <div className="flex flex-wrap justify-center gap-5 mx-5 bg-green-300">

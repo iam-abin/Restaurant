@@ -5,7 +5,7 @@ const cartApiUrls = {
     getCartItemsUrl: (restaurantId: string) => `${CART_URL}/${restaurantId}`,
     updateQuantityUrl: (cartItemId: string) => `${CART_URL}/${cartItemId}`,
     removeCartItemsUrl: `${CART_URL}`,
-    removeCartItemUrl: (cartItemId: string) => `${CART_URL}/${cartItemId}`
+    removeCartItemUrl: (cartItemId: string) => `${CART_URL}/${cartItemId}`,
 };
 
 export default cartApiUrls;

@@ -14,7 +14,7 @@ type Anchor = 'right';
 
 export default function RightDrawer({
     onClickFn,
-    menuItems
+    menuItems,
 }: {
     menuItems: (Partial<IMenuItems2> | boolean)[];
     onClickFn: () => void;
@@ -47,14 +47,11 @@ export default function RightDrawer({
                 {menuItems
                     .filter(
                         (item: boolean | Partial<IMenuItems2>): item is Partial<IMenuItems2> =>
-                            typeof item === 'object' && item !== null
+                            typeof item === 'object' && item !== null,
                     )
                     .map((item) => (
                         <ListItem key={item.name} disablePadding>
-                            <ListItemButton
-                                onClick={() => handleClick(item)}
-                                className="flex gap-4"
-                            >
+                            <ListItemButton onClick={() => handleClick(item)} className="flex gap-4">
                                 {item.icon}
                                 {item.to ? <Link to={item.to}>{item.name}</Link> : item.name}
                             </ListItemButton>
@@ -72,11 +69,7 @@ export default function RightDrawer({
                     <Button onClick={toggleDrawer(anchor, true)}>
                         <LunchDiningIcon />
                     </Button>
-                    <Drawer
-                        anchor={anchor}
-                        open={state[anchor]}
-                        onClose={toggleDrawer(anchor, false)}
-                    >
+                    <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
                         {list(anchor)}
                     </Drawer>
                 </Fragment>

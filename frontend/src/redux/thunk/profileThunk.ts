@@ -14,7 +14,7 @@ export const fetchUserProfile = createAsyncThunk<IProfile, void, { rejectValue: 
         } catch (error: unknown) {
             return rejectWithValue((error as Error).message);
         }
-    }
+    },
 );
 
 // Async thunk for updating user profile

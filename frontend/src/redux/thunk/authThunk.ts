@@ -15,7 +15,7 @@ export const signinUser = createAsyncThunk<IUser, ISignin, { rejectValue: string
         } catch (error: unknown) {
             return rejectWithValue((error as Error).message);
         }
-    }
+    },
 );
 
 // Async thunk for user logout
@@ -33,5 +33,5 @@ export const logoutUser = createAsyncThunk<null, null, { rejectValue: string }>(
         } catch (error: unknown) {
             return rejectWithValue((error as Error).message);
         }
-    }
+    },
 );

@@ -17,6 +17,6 @@ createRoot(document.getElementById('root')!).render(
         <PersistGate persistor={persistor}>
             <App />
         </PersistGate>
-    </Provider>
+    </Provider>,
     // </StrictMode>,
 );

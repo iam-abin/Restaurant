@@ -7,12 +7,8 @@ const restaurantApiUrls = {
     getMyRestaurantUrl: `${RESTAURANT_URL}`,
     getRestaurantsUrl: `${RESTAURANT_URL}/restaurants`,
     updateRestaurantUrl: `${RESTAURANT_URL}`,
-    searchRestaurantUrl: ({
-        searchText,
-        searchQuery,
-        selectedCuisines
-    }: ISearchRestaurantApi): string =>
-        `${RESTAURANT_URL}/search/${searchText}?searchQuery=${searchQuery}&selectedCuisines=${selectedCuisines}`
+    searchRestaurantUrl: ({ searchText, searchQuery, selectedCuisines }: ISearchRestaurantApi): string =>
+        `${RESTAURANT_URL}/search/${searchText}?searchQuery=${searchQuery}&selectedCuisines=${selectedCuisines}`,
 };
 
 export default restaurantApiUrls;

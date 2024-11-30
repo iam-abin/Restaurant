@@ -18,7 +18,7 @@ const Restaurant = () => {
         country: '',
         deliveryTime: 0,
         cuisines: [],
-        image: undefined
+        image: undefined,
     });
     const [errors, setErrors] = useState<Partial<RestaurantFormSchema>>({});
 
@@ -39,7 +39,7 @@ const Restaurant = () => {
                 city: restaurant?.addressId?.city || '',
                 country: restaurant?.addressId?.country || '',
                 deliveryTime: restaurant?.deliveryTime || 0,
-                cuisines: cuisines.map((cuisine) => (cuisine.cuisineId as ICuisine).name) || []
+                cuisines: cuisines.map((cuisine) => (cuisine.cuisineId as ICuisine).name) || [],
             }));
         }
     }, [restaurant]);
@@ -48,7 +48,7 @@ const Restaurant = () => {
         const { name, value, type } = e.target;
         setInput({
             ...input,
-            [name]: type === 'number' ? Number(value) : value
+            [name]: type === 'number' ? Number(value) : value,
         });
     };
 
@@ -60,7 +60,7 @@ const Restaurant = () => {
 
         const result = restaurantFromSchema.safeParse({
             ...input,
-            cuisines: input.cuisines
+            cuisines: input.cuisines,
         });
         if (!result.success) {
             const fieldErrors = result.error.formErrors.fieldErrors;
@@ -109,9 +109,7 @@ const Restaurant = () => {
                                 placeholder="Enter your restaurant name"
                                 autoComplete="restaurant-name"
                             />
-                            {errors.name && (
-                                <span className="text-red-500 text-sm">{errors.name}</span>
-                            )}
+                            {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
                         </div>
 
                         {/* City */}
@@ -126,9 +124,7 @@ const Restaurant = () => {
                                 placeholder="Enter your city"
                                 autoComplete="city"
                             />
-                            {errors.city && (
-                                <span className="text-red-500 text-sm">{errors.city}</span>
-                            )}
+                            {errors.city && <span className="text-red-500 text-sm">{errors.city}</span>}
                         </div>
 
                         {/* Country */}
@@ -143,9 +139,7 @@ const Restaurant = () => {
                                 placeholder="Enter your country"
                                 autoComplete="country"
                             />
-                            {errors.country && (
-                                <span className="text-red-500 text-sm">{errors.country}</span>
-                            )}
+                            {errors.country && <span className="text-red-500 text-sm">{errors.country}</span>}
                         </div>
 
                         {/* Delivery Time */}
@@ -176,7 +170,7 @@ const Restaurant = () => {
                                 onChange={(e) =>
                                     setInput({
                                         ...input,
-                                        cuisines: e.target.value.split(',').map((c) => c.trim()) // Split and trim for state
+                                        cuisines: e.target.value.split(',').map((c) => c.trim()), // Split and trim for state
                                     })
                                 }
                                 placeholder="Enter cuisines (e.g. Momos, Biryani)"
@@ -198,7 +192,7 @@ const Restaurant = () => {
                                 onChange={(e) =>
                                     setInput({
                                         ...input,
-                                        image: e.target.files?.[0] || undefined
+                                        image: e.target.files?.[0] || undefined,
                                     })
                                 }
                             />

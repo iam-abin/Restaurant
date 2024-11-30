@@ -3,11 +3,7 @@ import { useState } from 'react';
 import TableCart from '../../components/table/TableCart';
 import CheckoutReviewModal from '../../components/modal/CheckoutReviewModal';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import {
-    changeCartItemQuantity,
-    removeCartItem,
-    removeCartItems
-} from '../../redux/thunk/cartThunk';
+import { changeCartItemQuantity, removeCartItem, removeCartItems } from '../../redux/thunk/cartThunk';
 import { ICart } from '../../types';
 
 const Cart = () => {
@@ -60,12 +56,7 @@ const Cart = () => {
                         <Typography className="font-extrabold text-xl">Total: </Typography>{' '}
                         <Typography className="text-xl">₹{findTotalAmound(cartData)}</Typography>
                     </div>
-                    <Button
-                        className="h-10"
-                        color="warning"
-                        variant="contained"
-                        onClick={handleOpen}
-                    >
+                    <Button className="h-10" color="warning" variant="contained" onClick={handleOpen}>
                         Proceed to checkout
                     </Button>
                 </div>

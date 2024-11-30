@@ -14,7 +14,7 @@ export default [
     {
         rules: {
             'react/react-in-jsx-scope': 'off', // Disable rule for JSX scope
-            'react/prop-types': 'off'
-        }
-    }
+            'react/prop-types': 'off',
+        },
+    },
 ];

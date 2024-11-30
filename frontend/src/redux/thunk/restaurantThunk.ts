@@ -19,16 +19,15 @@ export const fetchMyRestaurant = createAsyncThunk<
 });
 
 // Async thunk for updating user profile
-export const updateMyRestaurant = createAsyncThunk<
-    IRestaurantResponse,
-    FormData,
-    { rejectValue: string }
->('restaurant/updateMyRestaurant', async (updateData, { rejectWithValue }) => {
-    try {
-        const updatedData = await updateRestaurantApi(updateData);
-        hotToastMessage(updatedData.message, 'success');
-        return updatedData.data as IRestaurantResponse; // Ensure the response matches IRestaurant
-    } catch (error: unknown) {
-        return rejectWithValue((error as Error).message);
-    }
-});
+export const updateMyRestaurant = createAsyncThunk<IRestaurantResponse, FormData, { rejectValue: string }>(
+    'restaurant/updateMyRestaurant',
+    async (updateData, { rejectWithValue }) => {
+        try {
+            const updatedData = await updateRestaurantApi(updateData);
+            hotToastMessage(updatedData.message, 'success');
+            return updatedData.data as IRestaurantResponse; // Ensure the response matches IRestaurant
+        } catch (error: unknown) {
+            return rejectWithValue((error as Error).message);
+        }
+    },
+);

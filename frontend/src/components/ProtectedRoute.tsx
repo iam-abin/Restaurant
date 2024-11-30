@@ -9,10 +9,7 @@ interface RoleProtectedRouteProps {
     allowedRoles?: string[];
 }
 
-export const RoleProtectedRoute: React.FC<RoleProtectedRouteProps> = ({
-    children,
-    allowedRoles
-}) => {
+export const RoleProtectedRoute: React.FC<RoleProtectedRouteProps> = ({ children, allowedRoles }) => {
     const authData = useAppSelector((state: RootState) => state.authReducer.authData);
     console.log(1);
 

@@ -32,17 +32,11 @@ const Landing = () => {
                             type="text"
                             value={searchText}
                             placeholder="Search restaurant by name, city & country"
-                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                                setSearchText(e.target.value)
-                            }
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value)}
                             className="border-2 pl-10 h-11 w-full  border-black shadow-lg rounded-lg"
                         />
                     </div>
-                    <Button
-                        onClick={handleSearchClick}
-                        variant="contained"
-                        className="bg-orange-500 "
-                    >
+                    <Button onClick={handleSearchClick} variant="contained" className="bg-orange-500 ">
                         Search
                     </Button>
                 </div>

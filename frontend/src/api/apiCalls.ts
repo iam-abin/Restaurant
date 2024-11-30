@@ -13,7 +13,7 @@ const makeApiCall = async <T>(
     method: HttpMethod,
     url: string,
     data?: Record<string, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
-    isFileUpload: boolean = false
+    isFileUpload: boolean = false,
 ): Promise<IResponse<T>> => {
     try {
         const config = isFileUpload ? { headers: { 'Content-Type': 'multipart/form-data' } } : {};

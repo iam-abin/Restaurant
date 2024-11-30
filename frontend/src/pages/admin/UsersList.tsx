@@ -67,12 +67,8 @@ function UsersList() {
         {
             Header: 'Profile Image',
             button: (row: { imageUrl: string }) => (
-                <img
-                    src={row.imageUrl}
-                    alt="Profile"
-                    className="w-10 h-10 rounded-full object-cover"
-                />
-            )
+                <img src={row.imageUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
+            ),
         },
         {
             Header: 'Status',
@@ -86,7 +82,7 @@ function UsersList() {
                 >
                     {row?.userId?.isBlocked ? 'active' : 'inActive'}
                 </div>
-            )
+            ),
         },
         {
             Header: 'Action',
@@ -103,8 +99,8 @@ function UsersList() {
                 >
                     {row.isBlocked ? 'Block' : 'Unblock'}
                 </button>
-            )
-        }
+            ),
+        },
     ];
 
     return (
@@ -113,12 +109,7 @@ function UsersList() {
             <div className="flex flex-row justify-end my-2">
                 <SearchBar placeholder={'search with name'} onSearch={setSearchKey} />
             </div>
-            <Table
-                columns={columns}
-                data={usersData}
-                numberOfPages={numberOfPages}
-                fetchData={fetchUsers}
-            />
+            <Table columns={columns} data={usersData} numberOfPages={numberOfPages} fetchData={fetchUsers} />
             {/* <ConfirmationDialogue
                     open={open}
                     setOpen={setOpen}

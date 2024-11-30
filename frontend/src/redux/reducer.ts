@@ -10,7 +10,7 @@ const rootRedcucer = combineReducers({
     profileReducer: profileSlice,
     restaurantReducer: restaurantSlice,
     menusReducer: menusSlice,
-    cartReducer: cartSlice
+    cartReducer: cartSlice,
 });
 
 export default rootRedcucer;

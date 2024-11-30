@@ -12,7 +12,7 @@ interface IAuthSlice {
 const initialState: IAuthSlice = {
     authData: null,
     status: 'idle',
-    error: null
+    error: null,
 };
 
 const authSlice = createSlice({
@@ -31,7 +31,7 @@ const authSlice = createSlice({
             state.error = null;
             state.status = 'idle';
         });
-    }
+    },
 });
 
 export default authSlice.reducer;

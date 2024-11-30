@@ -7,7 +7,7 @@ import {
     PAUSE,
     PERSIST,
     PURGE,
-    REGISTER
+    REGISTER,
 } from 'redux-persist';
 import rootReducer from './reducer';
 import storage from 'redux-persist/lib/storage';
@@ -16,7 +16,7 @@ import storage from 'redux-persist/lib/storage';
 const persistConfig = {
     key: 'root', // key is required
     version: 1,
-    storage // storage is required
+    storage, // storage is required
 };
 
 // Create a persisted reducer using redux-persist
@@ -28,9 +28,9 @@ export const store = configureStore({
         getDefaultMiddleware({
             serializableCheck: {
                 // Ignore certain actions during serialization check
-                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
-            }
-        })
+                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+            },
+        }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

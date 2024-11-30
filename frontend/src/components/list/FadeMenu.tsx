@@ -37,7 +37,7 @@ const FadeMenu: React.FC<{ menuItems: (IMenuItems | boolean)[] }> = ({ menuItems
             <Menu
                 id="fade-menu"
                 MenuListProps={{
-                    'aria-labelledby': 'fade-button'
+                    'aria-labelledby': 'fade-button',
                 }}
                 anchorEl={anchorEl}
                 open={open}

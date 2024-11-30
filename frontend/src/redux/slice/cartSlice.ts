@@ -5,7 +5,7 @@ import {
     changeCartItemQuantity,
     fetchCartItems,
     removeCartItem,
-    removeCartItems
+    removeCartItems,
 } from '../thunk/cartThunk';
 import { ICart } from '../../types';
 
@@ -18,7 +18,7 @@ interface ICartSlice {
 const initialState: ICartSlice = {
     cartData: [],
     status: 'idle',
-    error: null
+    error: null,
 };
 
 const cartSlice = createSlice({
@@ -42,7 +42,7 @@ const cartSlice = createSlice({
             state.cartData = state.cartData.map((item: ICart) =>
                 item._id === action.payload.cartItemId
                     ? { ...item, quantity: action.payload.quantity }
-                    : item
+                    : item,
             );
         });
 
@@ -57,7 +57,7 @@ const cartSlice = createSlice({
             state.status = 'succeeded';
             state.cartData = [];
         });
-    }
+    },
 });
 
 export default cartSlice.reducer;

@@ -23,13 +23,7 @@ export interface IMenuItems2 {
     to: string;
 }
 
-const NavBar = ({
-    currentUser,
-    handleLogout
-}: {
-    currentUser: IUser;
-    handleLogout: () => void;
-}) => {
+const NavBar = ({ currentUser, handleLogout }: { currentUser: IUser; handleLogout: () => void }) => {
     const { myProfile } = useAppSelector((store) => store.profileReducer);
 
     const isAdmin = currentUser && currentUser.role === ROLES_CONSTANTS.ADMIN;
@@ -38,7 +32,7 @@ const NavBar = ({
 
     const menuItemsAdmin: (IMenuItems | boolean)[] = [
         isAdmin && { to: '/admin/users', value: 'Users' },
-        isAdmin && { to: '/admin/restaurants', value: 'Restaurants' }
+        isAdmin && { to: '/admin/restaurants', value: 'Restaurants' },
     ].filter(Boolean); // Ensures no false or undefined values
 
     const menuItems: (Partial<IMenuItems2> | boolean)[] = [
@@ -46,40 +40,40 @@ const NavBar = ({
             (isUser || isRestaurant) && {
                 name: 'profile',
                 icon: <Avatar src="/broken-image.jpg" />,
-                to: '/profile'
+                to: '/profile',
             },
         currentUser &&
             isUser && {
                 name: 'Orders',
                 icon: <FlatwareIcon />,
-                to: '/order/status'
+                to: '/order/status',
             },
         currentUser && isUser && { name: 'Cart', icon: <ShoppingCartIcon />, to: '/cart' },
         currentUser &&
             (isUser || isRestaurant) && {
                 name: 'Home',
                 icon: <ShoppingCartIcon />,
-                to: '/'
+                to: '/',
             },
         currentUser &&
             isRestaurant && {
                 name: 'Restaurant',
                 icon: <MenuBookIcon />,
-                to: '/restaurant'
+                to: '/restaurant',
             },
         currentUser &&
             isRestaurant && {
                 name: 'Menu',
                 icon: <MenuBookIcon />,
-                to: '/restaurant/menu'
+                to: '/restaurant/menu',
             },
         currentUser &&
             isRestaurant && {
                 name: 'Restaurant orders',
                 icon: <MenuBookIcon />,
-                to: '/restaurant/orders'
+                to: '/restaurant/orders',
             },
-        { name: 'logout', icon: <LogoutIcon /> }
+        { name: 'logout', icon: <LogoutIcon /> },
     ];
 
     const [open, setOpen] = React.useState(false);
@@ -120,9 +114,7 @@ const NavBar = ({
                         </>
                     )}
 
-                    <Avatar
-                        src={`${myProfile?.imageUrl ? myProfile?.imageUrl : '/broken-image.jpg'}`}
-                    />
+                    <Avatar src={`${myProfile?.imageUrl ? myProfile?.imageUrl : '/broken-image.jpg'}`} />
                     <LogoutIcon onClick={handleLogoutButton} style={{ cursor: 'pointer' }} />
                 </div>
                 {isAdmin && <FadeMenu menuItems={menuItemsAdmin} />}

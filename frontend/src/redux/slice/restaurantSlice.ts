@@ -12,7 +12,7 @@ interface IRestaurantSlice {
 const initialState: IRestaurantSlice = {
     restaurantData: null,
     status: 'idle',
-    error: null
+    error: null,
 };
 
 const restaurantSlice = createSlice({
@@ -21,7 +21,7 @@ const restaurantSlice = createSlice({
     reducers: {
         clearRestaurant: (state) => {
             state.restaurantData = null;
-        }
+        },
     },
     extraReducers: (builder) => {
         addAsyncThunkCases(builder, fetchMyRestaurant, (state, action) => {
@@ -32,7 +32,7 @@ const restaurantSlice = createSlice({
             state.status = 'succeeded';
             state.restaurantData = action.payload;
         });
-    }
+    },
 });
 
 export const { clearRestaurant } = restaurantSlice.actions;

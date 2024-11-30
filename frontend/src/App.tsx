@@ -51,12 +51,12 @@ const appRouter = createBrowserRouter([
             { path: '/search/:searchText', element: <SearchResult /> },
             {
                 path: '/user/restaurant/:restaurantId',
-                element: <RestaurantDetails />
+                element: <RestaurantDetails />,
             },
             { path: '/cart', element: <Cart /> },
             { path: '/order/status', element: <Success /> },
-            { path: '*', element: <Error404 /> }
-        ]
+            { path: '*', element: <Error404 /> },
+        ],
     },
     {
         path: '/restaurant',
@@ -68,8 +68,8 @@ const appRouter = createBrowserRouter([
         children: [
             { path: 'details', element: <Restaurant /> }, // Correct relative path
             { path: 'menu', element: <Menu /> },
-            { path: 'orders', element: <Orders /> }
-        ]
+            { path: 'orders', element: <Orders /> },
+        ],
     },
     {
         path: '/admin',
@@ -81,8 +81,8 @@ const appRouter = createBrowserRouter([
         children: [
             { path: '', element: <Dashboard /> },
             { path: 'users', element: <Users /> },
-            { path: 'restaurants', element: <RestaurantsList /> }
-        ]
+            { path: 'restaurants', element: <RestaurantsList /> },
+        ],
     },
 
     {
@@ -92,7 +92,7 @@ const appRouter = createBrowserRouter([
                 {' '}
                 <Auth />
             </AuthenticatedUser>
-        )
+        ),
     },
     {
         path: '/restaurant/auth',
@@ -101,7 +101,7 @@ const appRouter = createBrowserRouter([
                 {' '}
                 <Auth />
             </AuthenticatedUser>
-        )
+        ),
     },
     {
         path: 'admin/auth',
@@ -110,7 +110,7 @@ const appRouter = createBrowserRouter([
                 {' '}
                 <Auth />
             </AuthenticatedUser>
-        )
+        ),
     },
     {
         path: '/forgot-password/email',
@@ -119,20 +119,20 @@ const appRouter = createBrowserRouter([
                 {' '}
                 <ForgotPasswordEmail />
             </AuthenticatedUser>
-        )
+        ),
     },
     {
         path: '/reset-password/:uniqueId',
-        element: <ResetPassword />
+        element: <ResetPassword />,
     },
     {
         path: '/forgot-password/otp',
-        element: <Otp />
+        element: <Otp />,
     },
     {
         path: '/signup/otp',
-        element: <Otp />
-    }
+        element: <Otp />,
+    },
 ]);
 
 export default function App() {
@@ -142,7 +142,7 @@ export default function App() {
                 position="top-right"
                 toastOptions={{
                     duration: 6000,
-                    style: { marginTop: '80px' }
+                    style: { marginTop: '80px' },
                 }}
             />
             <RouterProvider router={appRouter} />

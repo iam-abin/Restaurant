@@ -24,13 +24,13 @@ const style = {
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
-    p: 4
+    p: 4,
 };
 
 export default function EditMenuModal({
     menu,
     isOpen,
-    handleClose
+    handleClose,
 }: {
     menu: IMenu;
     isOpen: boolean;
@@ -43,7 +43,7 @@ export default function EditMenuModal({
         name: menu.name,
         description: menu.description,
         price: menu.price,
-        image: undefined
+        image: undefined,
     });
 
     const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
@@ -53,7 +53,7 @@ export default function EditMenuModal({
         setErrors({});
         const inputData = {
             ...input,
-            price: input.price ? Number(input.price) : undefined
+            price: input.price ? Number(input.price) : undefined,
         };
 
         const result = menuSchema.safeParse({ ...inputData });
@@ -87,7 +87,7 @@ export default function EditMenuModal({
         const { name, value } = e.target;
         setInput({
             ...input,
-            [name]: value
+            [name]: value,
         });
     };
 
@@ -106,7 +106,7 @@ export default function EditMenuModal({
                         sx={{
                             position: 'absolute',
                             top: 8,
-                            right: 8
+                            right: 8,
                         }}
                         onClick={handleClose}
                     >
@@ -144,9 +144,7 @@ export default function EditMenuModal({
                                 onChange={changeEventHandler}
                             />
                             {errors && (
-                                <Typography className="text-sm text-red-500">
-                                    {errors.name!}
-                                </Typography>
+                                <Typography className="text-sm text-red-500">{errors.name!}</Typography>
                             )}
                         </div>
                         <div>
@@ -170,7 +168,7 @@ export default function EditMenuModal({
                                 onChange={(e) =>
                                     setInput({
                                         ...input,
-                                        image: e.target.files?.[0] || undefined
+                                        image: e.target.files?.[0] || undefined,
                                     })
                                 }
                             />

@@ -12,7 +12,7 @@ interface IProfileSlice {
 const initialState: IProfileSlice = {
     myProfile: null,
     status: 'idle',
-    error: null
+    error: null,
 };
 
 const profileSlice = createSlice({
@@ -28,7 +28,7 @@ const profileSlice = createSlice({
             state.status = 'succeeded';
             state.myProfile = action.payload;
         });
-    }
+    },
 });
 
 export default profileSlice.reducer;

@@ -4,7 +4,7 @@ import {
     getCartItemsApi,
     removeCartItemApi,
     removeCartItemsApi,
-    updateQuantityApi
+    updateQuantityApi,
 } from '../../api/apiMethods/cart';
 import { hotToastMessage } from '../../utils/hotToast';
 
@@ -29,10 +29,7 @@ export const addToCart = createAsyncThunk<
     { rejectValue: string } // The thunk API config
 >(
     'cart/addToCart',
-    async (
-        { itemId, restaurantId }: { itemId: string; restaurantId: string },
-        { rejectWithValue }
-    ) => {
+    async ({ itemId, restaurantId }: { itemId: string; restaurantId: string }, { rejectWithValue }) => {
         // Use an underscore here as well
         try {
             const cart = await addToCartApi(itemId, restaurantId);
@@ -41,7 +38,7 @@ export const addToCart = createAsyncThunk<
         } catch (error: unknown) {
             return rejectWithValue((error as Error).message);
         }
-    }
+    },
 );
 
 // Async thunk for updating user cart
@@ -51,10 +48,7 @@ export const changeCartItemQuantity = createAsyncThunk<
     { rejectValue: string } // Thunk config with rejectValue type
 >(
     'cart/changeCartItemQuantity',
-    async (
-        { cartItemId, quantity }: { cartItemId: string; quantity: number },
-        { rejectWithValue }
-    ) => {
+    async ({ cartItemId, quantity }: { cartItemId: string; quantity: number }, { rejectWithValue }) => {
         try {
             const response = await updateQuantityApi(cartItemId, quantity); // API call to remove item
             hotToastMessage(response.message, 'success');
@@ -62,7 +56,7 @@ export const changeCartItemQuantity = createAsyncThunk<
         } catch (error: unknown) {
             return rejectWithValue((error as Error).message);
         }
-    }
+    },
 );
 
 // Async thunk for updating user cart

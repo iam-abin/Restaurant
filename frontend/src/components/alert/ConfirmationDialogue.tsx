@@ -12,7 +12,7 @@ const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
         children: React.ReactElement;
     },
-    ref: React.Ref<unknown>
+    ref: React.Ref<unknown>,
 ) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -24,7 +24,7 @@ export default function ConfirmationDialogue({
     onAgree,
     onDisagree,
     closeText = 'Close',
-    okayText = 'Agree'
+    okayText = 'Agree',
 }: {
     open: boolean;
     setOpen: (value: boolean) => void;

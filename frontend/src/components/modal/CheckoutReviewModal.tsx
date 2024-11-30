@@ -19,12 +19,12 @@ const style = {
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
-    p: 4
+    p: 4,
 };
 
 export default function CheckoutReviewModal({
     isOpen,
-    handleClose
+    handleClose,
 }: {
     isOpen: boolean;
     handleClose: () => void;
@@ -41,7 +41,7 @@ export default function CheckoutReviewModal({
         phone: authData?.phone ? authData.phone.toString() : '',
         address: (myProfile?.addressId as IAddress)?.address || '',
         city: (myProfile?.addressId as IAddress)?.city || '',
-        country: (myProfile?.addressId as IAddress)?.country || ''
+        country: (myProfile?.addressId as IAddress)?.country || '',
     });
 
     // useEffect(()=>{
@@ -80,7 +80,7 @@ export default function CheckoutReviewModal({
                         sx={{
                             position: 'absolute',
                             top: 8,
-                            right: 8
+                            right: 8,
                         }}
                         onClick={handleClose}
                     >
@@ -92,8 +92,8 @@ export default function CheckoutReviewModal({
                         </Typography>
                     </div>
                     <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
-                        Double-check your delivery details and ensure everything is in order. When
-                        you are ready, hit confirm button to finalize your order
+                        Double-check your delivery details and ensure everything is in order. When you are
+                        ready, hit confirm button to finalize your order
                     </Typography>
                     {/* Form */}
                     <form
@@ -161,11 +161,7 @@ export default function CheckoutReviewModal({
                                 // onChange={changeEventHandler}
                             />
                         </div>
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            className=" h-10 col-Typography-2 pt-5"
-                        >
+                        <Button type="submit" variant="contained" className=" h-10 col-Typography-2 pt-5">
                             {isLoading ? (
                                 <>
                                     Please wait

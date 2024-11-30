@@ -37,7 +37,7 @@ const Auth = () => {
         email: '',
         phone: '',
         password: '',
-        role
+        role,
     });
     const [errors, setErrors] = useState<Partial<ISignup>>({});
 
@@ -58,18 +58,14 @@ const Auth = () => {
             setIsLoading(true);
             // Convert phone to number for validation if necessary
 
-            const filteredData = Object.fromEntries(
-                Object.entries(input).filter(([, value]) => value)
-            );
+            const filteredData = Object.fromEntries(Object.entries(input).filter(([, value]) => value));
             const inputData = {
                 ...input,
-                phone: input.phone ? Number(input.phone) : undefined
+                phone: input.phone ? Number(input.phone) : undefined,
             };
 
             // Form validation
-            const result = isLogin
-                ? signInSchema.safeParse(filteredData)
-                : signUpSchema.safeParse(inputData);
+            const result = isLogin ? signInSchema.safeParse(filteredData) : signUpSchema.safeParse(inputData);
 
             if (!result.success) {
                 const fieldErrors = result.error.formErrors.fieldErrors;
@@ -81,8 +77,8 @@ const Auth = () => {
                     signinUser({
                         email: input.email!,
                         password: input.password!,
-                        role: role!
-                    })
+                        role: role!,
+                    }),
                 );
 
                 if (role === ROLES_CONSTANTS.RESTAURANT) {
@@ -105,8 +101,8 @@ const Auth = () => {
                     naivgate('/signup/otp', {
                         state: {
                             userId: data._id,
-                            role: data.role
-                        }
+                            role: data.role,
+                        },
                     });
                 }
             }
@@ -142,9 +138,7 @@ const Auth = () => {
                                 autoComplete="name"
                             />
                             {errors.name && (
-                                <Typography className="text-sm text-red-500">
-                                    {errors.name}
-                                </Typography>
+                                <Typography className="text-sm text-red-500">{errors.name}</Typography>
                             )}
                         </div>
                     )}
@@ -177,9 +171,7 @@ const Auth = () => {
                                 autoComplete="phone"
                             />
                             {errors.phone && (
-                                <Typography className="text-sm text-red-500">
-                                    {errors.phone}
-                                </Typography>
+                                <Typography className="text-sm text-red-500">{errors.phone}</Typography>
                             )}
                         </div>
                     )}
@@ -196,9 +188,7 @@ const Auth = () => {
                             autoComplete="password"
                         />
                         {errors.password && (
-                            <Typography className="text-sm text-red-500">
-                                {errors.password}
-                            </Typography>
+                            <Typography className="text-sm text-red-500">{errors.password}</Typography>
                         )}
                     </div>
                 </div>

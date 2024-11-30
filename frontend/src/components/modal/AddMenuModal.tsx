@@ -23,22 +23,16 @@ const style = {
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
-    p: 4
+    p: 4,
 };
 
-export default function AddMenuModal({
-    isOpen,
-    handleClose
-}: {
-    isOpen: boolean;
-    handleClose: () => void;
-}) {
+export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean; handleClose: () => void }) {
     const [isLoading, setIsLoading] = useState(false);
     const [input, setInput] = useState<MenuFormSchema>({
         name: '',
         description: '',
         price: 0,
-        image: undefined
+        image: undefined,
     });
     const restaurantData = useAppSelector((state) => state.restaurantReducer.restaurantData);
     const [errors, setErrors] = useState<Partial<MenuFormSchema>>({});
@@ -51,7 +45,7 @@ export default function AddMenuModal({
         setErrors({});
         const inputData = {
             ...input,
-            price: input.price ? Number(input.price) : undefined
+            price: input.price ? Number(input.price) : undefined,
         };
 
         const result = menuSchema.safeParse({ ...inputData });
@@ -78,7 +72,7 @@ export default function AddMenuModal({
                 name: '',
                 description: '',
                 price: 0,
-                image: undefined
+                image: undefined,
             });
             // Re-fetch menus
 
@@ -94,7 +88,7 @@ export default function AddMenuModal({
         const { name, value } = e.target;
         setInput({
             ...input,
-            [name]: value
+            [name]: value,
         });
     };
 
@@ -113,7 +107,7 @@ export default function AddMenuModal({
                         sx={{
                             position: 'absolute',
                             top: 8,
-                            right: 8
+                            right: 8,
                         }}
                         onClick={handleClose}
                     >
@@ -139,9 +133,7 @@ export default function AddMenuModal({
                                 value={input.name}
                                 onChange={changeEventHandler}
                             />
-                            {errors.name && (
-                                <span className="text-red-500 text-sm">{errors.name}</span>
-                            )}
+                            {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
                         </div>
                         <div>
                             <label className="text-sm">Description</label>
@@ -167,9 +159,7 @@ export default function AddMenuModal({
                                 value={input.price}
                                 onChange={changeEventHandler}
                             />
-                            {errors.price && (
-                                <span className="text-red-500 text-sm">{errors.price}</span>
-                            )}
+                            {errors.price && <span className="text-red-500 text-sm">{errors.price}</span>}
                         </div>
                         <div>
                             <label>Upload Menu image</label>
@@ -181,15 +171,13 @@ export default function AddMenuModal({
                                 onChange={(e) =>
                                     setInput({
                                         ...input,
-                                        image: e.target.files?.[0] || undefined
+                                        image: e.target.files?.[0] || undefined,
                                     })
                                 }
                             />
                             {errors.image && (
                                 <span className="text-red-500 text-sm">
-                                    {typeof errors.image === 'string'
-                                        ? errors.image
-                                        : 'Invalid image'}
+                                    {typeof errors.image === 'string' ? errors.image : 'Invalid image'}
                                 </span>
                             )}
                         </div>

@@ -64,9 +64,7 @@ const ForgotPasswordEmail = () => {
             <form onSubmit={handleSubmit} className="flex flex-col  w-10/12  md:w-2/6 ">
                 <div className="text-center">
                     <h1 className="font-extrabold text-2xl mb-2">Forgot Password</h1>
-                    <p className="text-sm text-gray-600">
-                        Enter your email address to reset your password
-                    </p>
+                    <p className="text-sm text-gray-600">Enter your email address to reset your password</p>
                 </div>
                 <div className="items-center relative">
                     <EmailIcon className="ml-2 mr-2 absolute inset-y-7 pointer-events-none" />
@@ -79,9 +77,7 @@ const ForgotPasswordEmail = () => {
                         placeholder="Enter your email"
                         autoComplete="email"
                     />
-                    {errors && (
-                        <Typography className="text-sm text-red-500">{errors.email}</Typography>
-                    )}
+                    {errors && <Typography className="text-sm text-red-500">{errors.email}</Typography>}
                 </div>
                 <Button
                     type="submit"
@@ -92,8 +88,8 @@ const ForgotPasswordEmail = () => {
                         mt: 2,
                         backgroundColor: isLoading ? 'orange' : '#FF8C00',
                         '&:hover': {
-                            backgroundColor: isLoading ? 'orange' : '#FF8C00'
-                        }
+                            backgroundColor: isLoading ? 'orange' : '#FF8C00',
+                        },
                     }}
                     variant="contained"
                 >

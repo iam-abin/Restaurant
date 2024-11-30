@@ -9,9 +9,7 @@ interface UseApiRequestResult<T> {
 }
 
 // Make api call for non redux state management.
-function useApiRequest<T>(
-    apiFunction: (...args: any[]) => Promise<IResponse<T>>
-): UseApiRequestResult<T> {
+function useApiRequest<T>(apiFunction: (...args: any[]) => Promise<IResponse<T>>): UseApiRequestResult<T> {
     const [data, setData] = useState<T | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string | null>(null);

@@ -3,11 +3,11 @@ import { ActionReducerMapBuilder, AsyncThunk, PayloadAction, Draft } from '@redu
 export function addAsyncThunkCases<
     StateType extends { status: string; error: string | null },
     FulfilledPayload = void,
-    RejectedPayload extends string | null = string
+    RejectedPayload extends string | null = string,
 >(
     builder: ActionReducerMapBuilder<StateType>,
     asyncThunk: AsyncThunk<FulfilledPayload, any, { rejectValue: RejectedPayload }>,
-    onSuccess?: (state: Draft<StateType>, action: PayloadAction<FulfilledPayload>) => void
+    onSuccess?: (state: Draft<StateType>, action: PayloadAction<FulfilledPayload>) => void,
 ) {
     builder
         .addCase(asyncThunk.pending, (state) => {

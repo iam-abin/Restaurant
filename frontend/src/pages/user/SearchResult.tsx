@@ -25,7 +25,7 @@ const SearchResult = () => {
             const response = await searchRestaurantApi({
                 searchText,
                 searchQuery,
-                selectedCuisines: selectedFilters
+                selectedCuisines: selectedFilters,
             });
             setSearchResults((response.data as ISearchResult[]) || []);
         } catch (error) {

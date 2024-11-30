@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 export const NoResultFound = ({
     searchText,
     searchQuery,
-    filterList = []
+    filterList = [],
 }: {
     searchText: string;
     searchQuery: string;

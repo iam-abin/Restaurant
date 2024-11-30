@@ -4,7 +4,7 @@ const Table = ({
     columns,
     data,
     numberOfPages,
-    fetchData
+    fetchData,
 }: {
     columns: any;
     data: any;
@@ -47,9 +47,7 @@ const Table = ({
                             data.map((row: any, rowIndex: number) => (
                                 <tr
                                     key={rowIndex}
-                                    className={`${
-                                        rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-200'
-                                    } border-b`}
+                                    className={`${rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-200'} border-b`}
                                 >
                                     {columns.map((col: any, index: number) => (
                                         <td
@@ -66,10 +64,7 @@ const Table = ({
                             ))
                         ) : (
                             <tr>
-                                <td
-                                    colSpan={columns.length}
-                                    className="py-4 text-center text-gray-700"
-                                >
+                                <td colSpan={columns.length} className="py-4 text-center text-gray-700">
                                     No data available
                                 </td>
                             </tr>
