@@ -10,8 +10,8 @@ export const getMyRestaurantApi = async (): Promise<IResponse> => {
     return await makeApiCall('get', restaurantApiUrls.getMyRestaurantUrl);
 };
 
-export const getRestaurantsApi = async (): Promise<IResponse> => {
-    return await makeApiCall('get', restaurantApiUrls.getRestaurantsUrl);
+export const getRestaurantsApi = async (page: number, limit: number): Promise<IResponse> => {
+    return await makeApiCall('get', restaurantApiUrls.getRestaurantsUrl(page, limit));
 };
 
 export const updateRestaurantApi = async (data: FormData): Promise<IResponse> => {

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { ROLES_CONSTANTS } from '../../utils/constants';
+import { useEffect, useState } from 'react';
+// import { useLocation, useNavigate } from 'react-router-dom';
+// import { ROLES_CONSTANTS } from '../../utils/constants';
 import { IUser } from '../../types';
 import { IResponse } from '../../types/api';
 import SearchBar from '../../components/search/SearchBar';
@@ -10,7 +10,6 @@ import { getProfilesApi } from '../../api/apiMethods/profile';
 import { blockUnblockUserApi } from '../../api/apiMethods/auth';
 
 function UsersList() {
-    const navigate = useNavigate();
     const [usersData, setUsersData] = useState<IUser[]>([]);
     const [numberOfPages, setNumberOfPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
@@ -22,20 +21,24 @@ function UsersList() {
         let usersData: IResponse | [] = [];
         // if (!searchKey) {
         console.log('no search key');
-        usersData = await getProfilesApi();
+        usersData = await getProfilesApi(currentPage, USERS_PER_PAGE);
         // currentPage,
         // USERS_PER_PAGE
         setUsersData(usersData?.data as IUser[]);
+
+        if (usersData) {
+            setNumberOfPages(usersData.data.numberOfPages);
+        }
     };
 
     useEffect(() => {
         fetchUsers(1); // Fetch initial data for the first page
     }, [searchKey, currentPage]);
 
-    // const viewProfileDetails = async (userId: string) => {
-    //         navigate(`/admin/recruiter/viewProfileDetails/${userId}`);
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchKey]);
 
-    // };
 
     const handleBlockUnblock = async (userId: string) => {
         const updatedUser: IResponse | null = await blockUnblockUserApi(userId);

@@ -1,36 +1,120 @@
-import { Typography } from '@mui/material';
-import DropDown from '../../components/list/DropDown';
+import React, { useEffect, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Select,
+  MenuItem,
+  Typography,
+  Box,
+  Button,
+} from "@mui/material";
+import { getRestaurantOrdersApi } from "../../api/apiMethods/order";
+import { useAppSelector } from "../../redux/hooks";
 
-const Orders = () => {
-    const statusList = ['Pending', 'Confirmed', 'Preparing', 'OutForDelivery', 'Delivered'];
+// Dummy Data
+const dummyOrders = [
+    {
+        id: 1,
+        image: "https://via.placeholder.com/100",
+        name: "Margherita Pizza",
+    customer: "John Doe",
+    quantity: 2,
+    status: "Pending",
+  },
+  {
+    id: 2,
+    image: "https://via.placeholder.com/100",
+    name: "Chicken Burger",
+    customer: "Jane Smith",
+    quantity: 1,
+    status: "Preparing",
+},
+{
+    id: 3,
+    image: "https://via.placeholder.com/100",
+    name: "Caesar Salad",
+    customer: "Alice Johnson",
+    quantity: 3,
+    status: "Delivered",
+},
+];
 
-    return (
-        <div className="max-w-6xl mx-auto py-10 px-6">
-            <h1 className="text-3xl font-extrabold text-gray-900 mb-10">Orders overview</h1>
-            <div className="space-y-8">
-                {/* Restaurant orders display here */}
-                <div className="flex flex-col md:flex-row justify-between items-start sm:items-center bg-white shadow-lg rounded-xl p-6 md:p-8 border border-gray-200">
-                    <div className="flex-1 mb-6 sm:mb-0">
-                        <h1 className="text-xl font-semibold text-gray-800">Lorem ipsm</h1>
-                        <p className="text-gray-600 mt-2">
-                            <Typography className="font-semibold">Address: </Typography>
-                            {'kochi, kerala'}
-                        </p>
-                        <p className="text-gray-600  mt-2">
-                            <Typography className="font-semibold">Total Amount: </Typography>
-                            {1000 / 100}
-                        </p>
-                    </div>
-                    <div className="w-full sm:w-1/3">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray300 mb-2">
-                            Order Status
-                        </label>
-                        <DropDown statusList={statusList} />
-                    </div>
-                </div>
-            </div>
-        </div>
+const OrdersListPage: React.FC = () => {
+    const [orders, setOrders] = useState(dummyOrders);
+    const restaurant = useAppSelector((store)=> store.restaurantReducer.restaurantData?.restaurant)
+    
+    useEffect(()=>{
+    getRestaurantOrdersApi(restaurant?._id!)
+  },[])
+
+  const handleStatusChange = (id: number, newStatus: string) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.id === id ? { ...order, status: newStatus } : order
+      )
     );
+  };
+
+  return (
+    <Box sx={{ padding: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        Orders List
+      </Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Image</TableCell>
+              <TableCell>Item Name</TableCell>
+              <TableCell>Customer</TableCell>
+              <TableCell>Quantity</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {orders.map((order) => (
+              <TableRow key={order.id}>
+                <TableCell>
+                  <img
+                    src={order.image}
+                    alt={order.name}
+                    style={{ width: "50px", borderRadius: "5px" }}
+                  />
+                </TableCell>
+                <TableCell>{order.name}</TableCell>
+                <TableCell>{order.customer}</TableCell>
+                <TableCell>{order.quantity}</TableCell>
+                <TableCell>
+                  <Select
+                    value={order.status}
+                    onChange={(e) =>
+                      handleStatusChange(order.id, e.target.value)
+                    }
+                  >
+                    <MenuItem value="Pending">Pending</MenuItem>
+                    <MenuItem value="Preparing">Preparing</MenuItem>
+                    <MenuItem value="Delivered">Delivered</MenuItem>
+                  </Select>
+                </TableCell>
+                <TableCell>
+                  <Button variant="contained" color="primary" size="small">
+                    View Details
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
+  );
 };
 
-export default Orders;
+export default OrdersListPage;
+

@@ -33,8 +33,10 @@ export const addToCart = createAsyncThunk<
         // Use an underscore here as well
         try {
             const cart = await addToCartApi(itemId, restaurantId);
+            console.log(cart, "inside addToCartThunk");
             hotToastMessage(cart.message, 'success');
-            return cart.data;
+            const cartItems = await getCartItemsApi(restaurantId);
+            return cartItems.data;
         } catch (error: unknown) {
             return rejectWithValue((error as Error).message);
         }

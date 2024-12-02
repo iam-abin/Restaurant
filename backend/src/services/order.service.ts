@@ -2,7 +2,7 @@ import { autoInjectable } from 'tsyringe';
 import mongoose from 'mongoose';
 import Stripe from 'stripe';
 
-import { IOrder } from '../types';
+import { IOrder, IRestaurantResponse } from '../types';
 import {
     OrderRepository,
     RestaurantRepository,
@@ -25,32 +25,31 @@ export class OrderService {
         private readonly addressRepository: AddressRepository,
     ) {}
 
-    public async createOrder(userId: string, orderData: IOrder): Promise<{ stripePaymentUrl: string }> {
+    public async createOrder(
+        userId: string,
+        orderData: Pick<IOrder, 'restaurantId'>,
+    ): Promise<{ stripePaymentUrl: string }> {
         const session = await mongoose.startSession();
         session.startTransaction();
         try {
-            // Fetch restaurant and cart items in parallel
+            const { restaurantId } = orderData;
+            const restaurant: IRestaurantResponse | null =
+                await this.restaurantRepository.findRestaurant(restaurantId);
+            if (!restaurant) throw new NotFoundError('Restaurant not found');
 
             const [cartItems, address] = await Promise.all([
-                this.cartRepository.getCartItemsByRestaurant(userId, orderData.restaurantId),
+                this.cartRepository.getCartItemsByRestaurant(userId, restaurantId),
                 this.addressRepository.findByUserId(userId),
             ]);
 
             if (cartItems.length === 0) throw new NotFoundError('Must contain cart items to place order');
-            const restaurantId = this.checkSameRestaurant(cartItems);
-            const restaurant = this.restaurantRepository.findRestaurant(restaurantId);
-            if (!restaurant) throw new NotFoundError('Restaurant not found');
+            // const restaurantId = this.checkSameRestaurant(cartItems);
+            // const restaurant = this.restaurantRepository.findRestaurant(restaurantId);
+            // if (!restaurant) throw new NotFoundError('Restaurant not found');
             const totalAmound = this.findTotalAmound(cartItems);
             if (!address) throw new NotFoundError('Address not found');
             if (address.userId.toString() !== userId)
                 throw new ForbiddenError('You cannot use others address');
-
-            //         userId: string;
-            // restaurantId: string;
-            // // cartId: string;
-            // addressId: string;
-            // totalAmound: number;
-            // status: 'pending' |
 
             // Create the order
             const order: IOrderDocument | null = await this.orderRepository.create(
@@ -90,11 +89,14 @@ export class OrderService {
 
             // Delete cart items in bulk
             await this.cartRepository.deleteAllItems(userId, session);
+            console.log(cartItems);
+
             const orderedItems = cartItems.map((item) => ({
-                menuItemId: item._id.toString(),
-                menuItemPrice: (item.itemId as IMenuDocument).price,
-                orderId: order.id,
                 userId,
+                orderId: order.id,
+                restaurantId,
+                menuItemId: (item.itemId as IMenuDocument)._id.toString(),
+                menuItemPrice: (item.itemId as IMenuDocument).price,
             }));
 
             // Adding ordered items to OrderedItems collection

@@ -14,6 +14,6 @@ export const getMenusApi = async (restaurantId: string): Promise<IResponse> => {
     return await makeApiCall('get', menuApiUrls.getMenusUrl(restaurantId));
 };
 
-export const editMenuApi = async (menuId: string, data: any): Promise<IResponse> => {
+export const editMenuApi = async (menuId: string, data: FormData): Promise<IResponse> => {
     return await makeApiCall('patch', menuApiUrls.editMenuUrl(menuId), data);
 };

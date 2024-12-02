@@ -19,9 +19,7 @@ function RestaurantsList() {
         let usersData: IResponse | [] = [];
         // if (!searchKey) {
         console.log('no search key');
-        usersData = await getRestaurantsApi();
-        // currentPage,
-        // USERS_PER_PAGE
+        usersData = await getRestaurantsApi(currentPage, USERS_PER_PAGE);
         setUsersData(usersData?.data as IUser[]);
     };
 

@@ -10,7 +10,6 @@ export interface IOrderDocument
     _id: Schema.Types.ObjectId;
     userId: Schema.Types.ObjectId | IUserDocument;
     restaurantId: Schema.Types.ObjectId | IRestaurantDocument;
-    // cartId: Schema.Types.ObjectId;
     addressId: Schema.Types.ObjectId;
 }
 

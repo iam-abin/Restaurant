@@ -8,7 +8,7 @@ import { Button } from '@mui/material';
 import LoaderCircle from '../Loader/LoaderCircle';
 import { useAppSelector } from '../../redux/hooks';
 import { checkoutOrderApi } from '../../api/apiMethods/order';
-import { IAddress, ICheckoutResponse } from '../../types';
+import { IAddress, ICart, ICheckoutResponse } from '../../types';
 
 const style = {
     position: 'absolute',
@@ -53,13 +53,19 @@ export default function CheckoutReviewModal({
     // })
 
     const paymentCheckoutHandler = async (e: FormEvent<HTMLFormElement>) => {
-        console.log(cartData);
-
         e.preventDefault();
+        console.log(cartData);
+        if(!cartData) return
+
+        const cartItem: ICart = cartData[0];
+
+        const restaurantId = cartItem.restaurantId;
+
+
         setIsLoading(true);
 
         try {
-            const response = await checkoutOrderApi();
+            const response = await checkoutOrderApi({restaurantId});
             window.location.href = (response.data as ICheckoutResponse).stripePaymentUrl;
         } finally {
             setIsLoading(false);

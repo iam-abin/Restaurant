@@ -101,7 +101,7 @@ const NavBar = ({ currentUser, handleLogout }: { currentUser: IUser; handleLogou
                         <>
                             <Link to={'/'}>Home</Link>
                             <Link to={'/profile'}>Profile</Link>
-                            <Link to={'/order/status'}>Order</Link>
+                            <Link to={'/orders'}>Orders</Link>
                         </>
                     )}
 
@@ -110,7 +110,7 @@ const NavBar = ({ currentUser, handleLogout }: { currentUser: IUser; handleLogou
                             <Link to={'/restaurant'}>Home</Link>
                             <Link to={'/restaurant/menu'}>Menu</Link>
                             <Link to={'/restaurant/details'}>Details</Link>
-                            <Link to={'/order/orders'}>Orders</Link>
+                            <Link to={'/restaurant/orders'}>Orders</Link>
                         </>
                     )}
 

@@ -21,6 +21,7 @@ import { useAppSelector } from './redux/hooks';
 import Dashboard from './pages/admin/Dashboard';
 import Users from './pages/admin/UsersList';
 import RestaurantsList from './pages/admin/RestaurantsList';
+import OrdersUser from './pages/user/OrdersUser';
 
 const AuthenticatedUser = ({ children }: { children: React.ReactNode }) => {
     const authData = useAppSelector((state) => state.authReducer.authData);
@@ -54,6 +55,7 @@ const appRouter = createBrowserRouter([
                 element: <RestaurantDetails />,
             },
             { path: '/cart', element: <Cart /> },
+            { path: '/orders', element: <OrdersUser /> },
             { path: '/order/status', element: <Success /> },
             { path: '*', element: <Error404 /> },
         ],

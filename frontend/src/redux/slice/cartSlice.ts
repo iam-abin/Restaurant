@@ -33,7 +33,8 @@ const cartSlice = createSlice({
         addAsyncThunkCases(builder, addToCart, (state, action) => {
             // Remove the item with the given ID from cartData
             state.status = 'succeeded';
-            state.cartData = [...state.cartData, action.payload];
+            // state.cartData = [...state.cartData, action.payload];
+            state.cartData = action.payload;
         });
 
         addAsyncThunkCases(builder, changeCartItemQuantity, (state, action) => {

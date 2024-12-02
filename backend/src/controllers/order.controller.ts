@@ -22,7 +22,10 @@ class OrderController {
     public async addOrder(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
         const checkoutSessionData = req.body;
-        const order = await orderService.createOrder(userId, checkoutSessionData as IOrder);
+        const order = await orderService.createOrder(
+            userId,
+            checkoutSessionData as Pick<IOrder, 'restaurantId'>,
+        );
         res.status(201).json(createSuccessResponse('Order created successfully', order));
     }
 

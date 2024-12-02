@@ -11,6 +11,7 @@ export interface IOrder {
 export interface IOrderedItem {
     userId: string;
     orderId: string;
+    restaurantId: string;
     menuItemId: string;
     menuItemPrice: number;
 }
