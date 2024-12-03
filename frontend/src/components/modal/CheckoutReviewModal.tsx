@@ -55,17 +55,16 @@ export default function CheckoutReviewModal({
     const paymentCheckoutHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log(cartData);
-        if(!cartData) return
+        if (!cartData) return;
 
         const cartItem: ICart = cartData[0];
 
         const restaurantId = cartItem.restaurantId;
 
-
         setIsLoading(true);
 
         try {
-            const response = await checkoutOrderApi({restaurantId});
+            const response = await checkoutOrderApi({ restaurantId });
             window.location.href = (response.data as ICheckoutResponse).stripePaymentUrl;
         } finally {
             setIsLoading(false);

@@ -2,7 +2,7 @@ import makeApiCall from '../apiCalls';
 import { IResponse } from '../../types/api';
 import orderApiUrls from '../urls/order';
 
-export const checkoutOrderApi = async (orderData: {restaurantId: string}): Promise<IResponse> => {
+export const checkoutOrderApi = async (orderData: { restaurantId: string }): Promise<IResponse> => {
     return await makeApiCall('post', orderApiUrls.checkoutOrderUrl, orderData);
 };
 

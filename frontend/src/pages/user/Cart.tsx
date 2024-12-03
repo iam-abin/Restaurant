@@ -1,6 +1,7 @@
 import { Button, Typography } from '@mui/material';
 import { useState } from 'react';
 import TableCart from '../../components/table/TableCart';
+import CartEmptyGif from '../../assets/cart-is-empty.jpeg';
 import CheckoutReviewModal from '../../components/modal/CheckoutReviewModal';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { changeCartItemQuantity, removeCartItem, removeCartItems } from '../../redux/thunk/cartThunk';
@@ -39,30 +40,38 @@ const Cart = () => {
     };
 
     return (
-        <div className="flex flex-col max-w-7xl mx-auto my-10">
-            <div className="flex justify-end">
-                <Button onClick={removeCartItemsHandler} variant="text">
-                    Clear all
-                </Button>
-            </div>
-            <TableCart
-                cartItems={cartData}
-                removeCartItemHandler={removeCartItemHandler}
-                changeQuantityHandler={changeQuantityHandler}
-            />
-            <div className="mt-3 flex flex-row justify-end">
-                <div className="mt-3 flex flex-col items-end gap-5">
-                    <div>
-                        <Typography className="font-extrabold text-xl">Total: </Typography>{' '}
-                        <Typography className="text-xl">₹{findTotalAmound(cartData)}</Typography>
+        <>
+            {cartData.length > 0 ? (
+                <div className="flex flex-col max-w-7xl mx-auto my-10 bg-yellow-300">
+                    <div className="flex justify-end">
+                        <Button onClick={removeCartItemsHandler} variant="text">
+                            Clear all
+                        </Button>
                     </div>
-                    <Button className="h-10" color="warning" variant="contained" onClick={handleOpen}>
-                        Proceed to checkout
-                    </Button>
+                    <TableCart
+                        cartItems={cartData}
+                        removeCartItemHandler={removeCartItemHandler}
+                        changeQuantityHandler={changeQuantityHandler}
+                    />
+                    <div className="mt-3 flex flex-row justify-end">
+                        <div className="mt-3 flex flex-col items-end gap-5">
+                            <div>
+                                <Typography className="font-extrabold text-xl">Total: </Typography>{' '}
+                                <Typography className="text-xl">₹{findTotalAmound(cartData)}</Typography>
+                            </div>
+                            <Button className="h-10" color="warning" variant="contained" onClick={handleOpen}>
+                                Proceed to checkout
+                            </Button>
+                        </div>
+                        {isOpen && <CheckoutReviewModal isOpen={isOpen} handleClose={handleClose} />}
+                    </div>
                 </div>
-                {isOpen && <CheckoutReviewModal isOpen={isOpen} handleClose={handleClose} />}
-            </div>
-        </div>
+            ) : (
+                <div className="empty-cart flex justify-center h-screen w-full items-center ">
+                    <img src={CartEmptyGif} alt="Empty Cart" className="empty-cart-gif w-3/4 md:w-1/4" />
+                </div>
+            )}
+        </>
     );
 };
 

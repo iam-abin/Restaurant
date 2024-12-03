@@ -33,7 +33,7 @@ export const addToCart = createAsyncThunk<
         // Use an underscore here as well
         try {
             const cart = await addToCartApi(itemId, restaurantId);
-            console.log(cart, "inside addToCartThunk");
+            console.log(cart, 'inside addToCartThunk');
             hotToastMessage(cart.message, 'success');
             const cartItems = await getCartItemsApi(restaurantId);
             return cartItems.data;

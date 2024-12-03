@@ -14,6 +14,23 @@ export interface IRestaurant {
     cuisines: ICuisine[];
 }
 
+export interface IRestaurantCard {
+    _id: string;
+    restaurantName: string;
+    imageUrl: string;
+    city: string;
+    country: string;
+    cuisines: string[];
+}
+
+// "https://res.cloudinary.com/dwpugg2gl/image/upload/v1731905882/restaurant_app_images/f0zqroxh9fgf5dq8iiw8.png"
+// restaurantName
+// :
+// "abinv273"
+// _id
+// :
+// "673aa6ff642fdce5257979c6"
+
 export interface IRestaurantResponse {
     _id: string;
     restaurant: IRestaurant;

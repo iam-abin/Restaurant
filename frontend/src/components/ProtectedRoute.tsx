@@ -14,6 +14,9 @@ export const RoleProtectedRoute: React.FC<RoleProtectedRouteProps> = ({ children
     console.log(1);
 
     if (!authData) {
+        console.log(location, ' location');
+        // console.log();
+
         return <Navigate to="/auth" />;
     }
 
@@ -21,7 +24,7 @@ export const RoleProtectedRoute: React.FC<RoleProtectedRouteProps> = ({ children
     console.log(authData);
     console.log(allowedRoles);
 
-    const CURRENT_USER_ROLE = authData.role;
+    const CURRENT_USER_ROLE = authData?.role;
     if (authData && allowedRoles?.length && !allowedRoles.includes(CURRENT_USER_ROLE)) {
         console.log('inside if authdata ', authData);
 

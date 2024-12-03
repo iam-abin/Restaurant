@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { signinApi, logoutApi } from '../../api/apiMethods/auth';
+import { signinApi } from '../../api/apiMethods/auth';
 import { ISignin, IUser } from '../../types';
 import { hotToastMessage } from '../../utils/hotToast';
 import { IResponse } from '../../types/api';

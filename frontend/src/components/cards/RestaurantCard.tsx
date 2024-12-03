@@ -8,8 +8,9 @@ import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import PublicIcon from '@mui/icons-material/Public';
 import { Chip } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { IRestaurantCard } from '../../types';
 
-const RestaurantCard = ({ restaurant }: { restaurant: any }) => {
+const RestaurantCard = ({ restaurant }: { restaurant: IRestaurantCard }) => {
     return (
         <Card sx={{ maxWidth: 345 }}>
             <div className="relative">

@@ -1,4 +1,4 @@
-import { Avatar, Box, Button } from '@mui/material';
+import { Avatar, Box, Button, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
@@ -65,7 +65,7 @@ const Profile = () => {
     };
 
     return (
-        <form onSubmit={updateProfileHandler} className=" max-w-7xl mx-auto my-5">
+        <form onSubmit={updateProfileHandler} className=" mx-auto my-5">
             <div className="flex items-center justify-between">
                 <div className="flex gap-2 items-center">
                     <div className="flex items-center gap-2 relative">
@@ -102,7 +102,7 @@ const Profile = () => {
                                 ref={imageRef}
                                 accept="image/*"
                                 onChange={fileChangeHandler}
-                                className="hidden"
+                                className="hidden bg-inherit"
                             />
                             <AddIcon
                                 className="hover:cursor-pointer text-white w-10 h-10"
@@ -121,6 +121,8 @@ const Profile = () => {
                 </div>
             </div>
             <div className="grid md:grid-cols-4 md:gap-2 gap-3 my-10">
+            <Tooltip title="Cannot modify email field">
+
                 <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
                     <EmailIcon className="text-gray-500" />
                     <div className="w-full">
@@ -130,23 +132,26 @@ const Profile = () => {
                         </span>
                     </div>
                 </div>
+                </Tooltip>
                 <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
                     <LocationOnIcon className="text-gray-500" />
                     <div className="w-full">
-                        <label>Address</label>
-                        <input
+                        <label>Address                        <input
                             name="address"
+                            id="address"
                             placeholder="update your address"
                             value={profileData.address}
                             onChange={changeHandler}
                             className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
                         />
+                        </label>
+
                     </div>
                 </div>
                 <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
                     <LocationSearchingIcon className="text-gray-500" />
                     <div className="w-full">
-                        <label>City</label>
+                        <label>City
                         <input
                             name="city"
                             placeholder="update your city"
@@ -154,12 +159,13 @@ const Profile = () => {
                             onChange={changeHandler}
                             className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
                         />
+                        </label>
                     </div>
                 </div>
                 <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
                     <FlagIcon className="text-gray-500" />
                     <div className="w-full">
-                        <label>Country</label>
+                        <label>Country
                         <input
                             name="country"
                             placeholder="update your country"
@@ -167,6 +173,7 @@ const Profile = () => {
                             onChange={changeHandler}
                             className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
                         />
+                        </label>
                     </div>
                 </div>
             </div>

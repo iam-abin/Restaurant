@@ -2,6 +2,7 @@ import { Button, Input, Typography } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import Divider from '@mui/material/Divider';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
@@ -112,7 +113,7 @@ const Auth = () => {
     };
 
     return (
-        <div className="bg-yellow-200 min-h-screen flex justify-center items-center">
+        <div className="bg-yellow-300 min-h-screen flex justify-center items-center">
             <form
                 onSubmit={handleSubmit}
                 className="bg-slate-200 items-center w-10/12  md:w-2/6 gap-5 p-8 border-black rounded-lg"
@@ -134,7 +135,7 @@ const Auth = () => {
                                 name="name"
                                 value={input.name}
                                 onChange={changeEventHandler}
-                                placeholder={`Enter your ${isRestaurantPage && 'restaurant'} name`}
+                                placeholder={`Enter your ${isRestaurantPage ? 'restaurant' : ''}name`}
                                 autoComplete="name"
                             />
                             {errors.name && (
@@ -159,7 +160,7 @@ const Auth = () => {
                     </div>
                     {!isLogin && (
                         <div className="items-center relative">
-                            <PersonIcon className="mr-2 absolute inset-y-2 pointer-events-none" />
+                            <LocalPhoneIcon className="mr-2 absolute inset-y-2 pointer-events-none" />
 
                             <Input
                                 className="w-full p-1 pl-8"

@@ -25,7 +25,7 @@ export class OrderRepository {
 
             // Unwind the restaurantDetails array
             { $unwind: '$restaurantDetails' },
-            
+
             {
                 $lookup: {
                     from: 'users',
@@ -34,7 +34,7 @@ export class OrderRepository {
                     as: 'restaurantDetails',
                 },
             },
-            
+
             { $unwind: '$restaurantDetails' },
 
             // Lookup for ordered items related to this order
@@ -61,7 +61,7 @@ export class OrderRepository {
             },
 
             // // Unwind the menuItemDetails array
-            { $unwind: '$menuItemDetails'},
+            { $unwind: '$menuItemDetails' },
 
             // // Group by Order ID to aggregate ordered items into arrays
             {

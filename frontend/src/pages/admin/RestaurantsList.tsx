@@ -27,11 +27,6 @@ function RestaurantsList() {
         fetchUsers(1); // Fetch initial data for the first page
     }, [searchKey, currentPage]);
 
-    // const viewProfileDetails = async (userId: string) => {
-    //         navigate(`/admin/recruiter/viewProfileDetails/${userId}`);
-
-    // };
-
     const handleBlockUnblock = async (userId: string) => {
         const updatedUser: IResponse | null = await blockUnblockUserApi(userId);
 

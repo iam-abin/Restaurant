@@ -19,7 +19,7 @@ export const signinUser = createAsyncThunk<IUser, ISignin, { rejectValue: string
 );
 
 // Async thunk for user logout
-export const logoutUser = createAsyncThunk<null, null, { rejectValue: string }>(
+export const logoutUser = createAsyncThunk<void, void, { rejectValue: string }>(
     'auth/userLogout',
     async (_, { rejectWithValue, dispatch }) => {
         try {
@@ -29,7 +29,8 @@ export const logoutUser = createAsyncThunk<null, null, { rejectValue: string }>(
             // Dispatch an action to reset the auth state
             dispatch({ type: 'auth/logout' });
 
-            return null;
+            // Return void instead of null
+            return;
         } catch (error: unknown) {
             return rejectWithValue((error as Error).message);
         }

@@ -4,7 +4,7 @@ import { signinUser, logoutUser } from '../thunk/authThunk';
 import { IUser } from '../../types';
 
 interface IAuthSlice {
-    authData: Omit<IUser, 'password'> | null;
+    authData: IUser | null;
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
 }

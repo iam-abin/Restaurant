@@ -106,7 +106,7 @@ const appRouter = createBrowserRouter([
         ),
     },
     {
-        path: 'admin/auth',
+        path: '/admin/auth',
         element: (
             <AuthenticatedUser>
                 {' '}

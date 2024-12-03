@@ -39,7 +39,6 @@ function UsersList() {
         setCurrentPage(1);
     }, [searchKey]);
 
-
     const handleBlockUnblock = async (userId: string) => {
         const updatedUser: IResponse | null = await blockUnblockUserApi(userId);
 
