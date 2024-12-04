@@ -42,7 +42,7 @@ const Cart = () => {
     return (
         <>
             {cartData.length > 0 ? (
-                <div className="flex flex-col max-w-7xl mx-auto my-10 bg-yellow-300">
+                <div className="flex flex-col max-w-7xl mx-auto my-10">
                     <div className="flex justify-end">
                         <Button onClick={removeCartItemsHandler} variant="text">
                             Clear all
@@ -56,8 +56,8 @@ const Cart = () => {
                     <div className="mt-3 flex flex-row justify-end">
                         <div className="mt-3 flex flex-col items-end gap-5">
                             <div>
-                                <Typography className="font-extrabold text-xl">Total: </Typography>{' '}
-                                <Typography className="text-xl">₹{findTotalAmound(cartData)}</Typography>
+                                <span className="font-extrabold text-xl">Total: </span>{' '}
+                                <span className="text-xl">₹{findTotalAmound(cartData)}</span>
                             </div>
                             <Button className="h-10" color="warning" variant="contained" onClick={handleOpen}>
                                 Proceed to checkout

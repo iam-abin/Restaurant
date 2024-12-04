@@ -29,7 +29,7 @@ router.get(
 );
 
 router.patch(
-    '/:cartItemId',
+    '/quantity/:cartItemId',
     mongoIdParamsValidator('cartItemId'),
     updateCartRequestBodyValidator,
     validateRequest,

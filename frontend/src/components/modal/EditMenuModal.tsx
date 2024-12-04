@@ -99,10 +99,22 @@ export default function EditMenuModal({
                 >
                     <CloseIcon />
                 </IconButton>
-                <Typography id="edit-menu-modal-title" variant="h5" component="h2" textAlign="center" fontWeight="bold">
+                <Typography
+                    id="edit-menu-modal-title"
+                    variant="h5"
+                    component="h2"
+                    textAlign="center"
+                    fontWeight="bold"
+                >
                     Edit Menu
                 </Typography>
-                <Typography id="edit-menu-modal-description" variant="body2" color="textSecondary" textAlign="center" mt={1}>
+                <Typography
+                    id="edit-menu-modal-description"
+                    variant="body2"
+                    color="textSecondary"
+                    textAlign="center"
+                    mt={1}
+                >
                     Update your menu details to reflect the latest changes.
                 </Typography>
                 <form onSubmit={submitHandler} className="flex flex-col gap-4 mt-4">
@@ -128,7 +140,9 @@ export default function EditMenuModal({
                             onChange={changeEventHandler}
                             placeholder="Enter menu description"
                         />
-                        {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+                        {errors.description && (
+                            <p className="text-sm text-red-500 mt-1">{errors.description}</p>
+                        )}
                     </div>
                     <div>
                         <label className="block text-sm font-medium mb-1">Price</label>

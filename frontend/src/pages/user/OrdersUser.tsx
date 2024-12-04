@@ -75,7 +75,7 @@ const Orders: React.FC = () => {
                                             )}
                                     </Typography>
                                     <Typography variant="body2" color="textSecondary">
-                                        price:{' '}
+                                        Total price:{' '}
                                         {order.items &&
                                             order.items.reduce((acc: number, curr: IMenu) => {
                                                 return (acc += curr.price);

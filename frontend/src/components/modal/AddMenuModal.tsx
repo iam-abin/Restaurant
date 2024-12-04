@@ -86,10 +86,7 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
     return (
         <Modal open={isOpen} onClose={handleClose}>
             <Box sx={style}>
-                <IconButton
-                    sx={{ position: 'absolute', top: 8, right: 8 }}
-                    onClick={handleClose}
-                >
+                <IconButton sx={{ position: 'absolute', top: 8, right: 8 }} onClick={handleClose}>
                     <CloseIcon />
                 </IconButton>
                 <Typography variant="h5" align="center" gutterBottom>
@@ -137,25 +134,21 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <Button
-                                variant="contained"
-                                component="label"
-                                fullWidth
-                            >
+                            <Button variant="contained" component="label" fullWidth>
                                 Upload Image
-                                <input
-                                    type="file"
-                                    hidden
-                                    accept="image/*"
-                                    onChange={handleImageChange}
-                                />
+                                <input type="file" hidden accept="image/*" onChange={handleImageChange} />
                             </Button>
                             {previewImage && (
                                 <Box mt={2} textAlign="center">
                                     <img
                                         src={previewImage}
                                         alt="Preview"
-                                        style={{ width: '100%', maxHeight: 200, objectFit: 'cover', borderRadius: 8 }}
+                                        style={{
+                                            width: '100%',
+                                            maxHeight: 200,
+                                            objectFit: 'cover',
+                                            borderRadius: 8,
+                                        }}
                                     />
                                 </Box>
                             )}

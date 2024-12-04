@@ -42,7 +42,7 @@ const Menu = () => {
             </div>
             {menus && menus.length > 0 ? (
                 <div className=" flex flex-col gap-2 items-center my-4">
-                {/* <div className="flex flex-wrap justify-center gap-5 mx-5 bg-green-300"> */}
+                    {/* <div className="flex flex-wrap justify-center gap-5 mx-5 bg-green-300"> */}
                     {menus.map((menu: IMenu) => (
                         <MenuCard key={menu._id} menu={menu} />
                     ))}
@@ -57,7 +57,7 @@ const Menu = () => {
                         </p>
                         <button
                             className="mt-6 px-6 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
-                            onClick={() => (navigate('/'))}
+                            onClick={() => navigate('/')}
                         >
                             Back to Home
                         </button>
