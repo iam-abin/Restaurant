@@ -88,7 +88,7 @@ const RestaurantDetails = () => {
                                 <MenuCardSkeleton />
                                 <MenuCardSkeleton />
                             </>
-                        ) : restaurant?.menus ? (
+                        ) : restaurant?.menus > 0 ? (
                             restaurant?.menus.map((menu: IMenu) => <MenuCard key={menu._id} menu={menu} />)
                         ) : (
                             'No menus available'

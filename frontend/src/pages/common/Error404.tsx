@@ -21,9 +21,7 @@ const Error404: React.FC = () => {
             textAlign="center"
             p={2}
         >
-             <h1 className="text-9xl font-extrabold text-gray-800 animate-bounce">
-          404
-        </h1>
+            <h1 className="text-9xl font-extrabold text-gray-800 animate-bounce">404</h1>
             <Typography variant="h5" gutterBottom>
                 Oops! The page you&apos;re looking for doesn&apos;t exist.
             </Typography>

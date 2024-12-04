@@ -121,58 +121,60 @@ const Profile = () => {
                 </div>
             </div>
             <div className="grid md:grid-cols-4 md:gap-2 gap-3 my-10">
-            <Tooltip title="Cannot modify email field">
-
-                <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
-                    <EmailIcon className="text-gray-500" />
-                    <div className="w-full">
-                        <label>Email</label>
-                        <span className="w-full block text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none">
-                            {authData && authData.email}
-                        </span>
+                <Tooltip title="Cannot modify email field">
+                    <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
+                        <EmailIcon className="text-gray-500" />
+                        <div className="w-full">
+                            <label>Email</label>
+                            <span className="w-full block text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none">
+                                {authData && authData.email}
+                            </span>
+                        </div>
                     </div>
-                </div>
                 </Tooltip>
                 <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
                     <LocationOnIcon className="text-gray-500" />
                     <div className="w-full">
-                        <label>Address                        <input
-                            name="address"
-                            id="address"
-                            placeholder="update your address"
-                            value={profileData.address}
-                            onChange={changeHandler}
-                            className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
-                        />
+                        <label>
+                            Address{' '}
+                            <input
+                                name="address"
+                                id="address"
+                                placeholder="update your address"
+                                value={profileData.address}
+                                onChange={changeHandler}
+                                className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
+                            />
                         </label>
-
                     </div>
                 </div>
                 <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
                     <LocationSearchingIcon className="text-gray-500" />
                     <div className="w-full">
-                        <label>City
-                        <input
-                            name="city"
-                            placeholder="update your city"
-                            value={profileData.city}
-                            onChange={changeHandler}
-                            className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
-                        />
+                        <label>
+                            City
+                            <input
+                                name="city"
+                                placeholder="update your city"
+                                value={profileData.city}
+                                onChange={changeHandler}
+                                className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
+                            />
                         </label>
                     </div>
                 </div>
                 <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
                     <FlagIcon className="text-gray-500" />
                     <div className="w-full">
-                        <label>Country
-                        <input
-                            name="country"
-                            placeholder="update your country"
-                            value={profileData.country}
-                            onChange={changeHandler}
-                            className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
-                        />
+                        <label>
+                            Country
+                            <input
+                                name="country"
+                                placeholder="update your country"
+                                value={profileData.country}
+                                onChange={changeHandler}
+                                className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
+                            />
                         </label>
                     </div>
                 </div>

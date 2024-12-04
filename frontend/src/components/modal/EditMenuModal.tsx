@@ -4,8 +4,7 @@ import Modal from '@mui/material/Modal';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
-import { Button } from '@mui/material';
-import LoaderCircle from '../Loader/LoaderCircle';
+import { Button, CircularProgress } from '@mui/material';
 import { MenuFormSchema, menuSchema } from '../../utils/schema/menuSchema';
 import { IMenu } from '../../types';
 import { IResponse } from '../../types/api';
@@ -19,10 +18,10 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '80%',
-    height: '80%',
+    width: '90%',
+    maxWidth: '600px',
     bgcolor: 'background.paper',
-    border: '2px solid #000',
+    borderRadius: '16px',
     boxShadow: 24,
     p: 4,
 };
@@ -49,19 +48,15 @@ export default function EditMenuModal({
     const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-        // Clear existing errors
         setErrors({});
         const inputData = {
             ...input,
             price: input.price ? Number(input.price) : undefined,
         };
 
-        const result = menuSchema.safeParse({ ...inputData });
-        console.log(input);
-
+        const result = menuSchema.safeParse(inputData);
         if (!result.success) {
-            const fieldErrors = result.error.formErrors.fieldErrors;
-            setErrors(fieldErrors as Partial<MenuFormSchema>);
+            setErrors(result.error.formErrors.fieldErrors as Partial<MenuFormSchema>);
             setIsLoading(false);
             return;
         }
@@ -69,132 +64,105 @@ export default function EditMenuModal({
             const formData = new FormData();
             formData.append('name', inputData.name);
             formData.append('description', inputData.description);
-            formData.append('price', inputData.price?.toString()!);
-            if (inputData.image) {
-                formData.append('image', inputData.image);
-            }
+            formData.append('price', inputData.price!.toString());
+            if (inputData.image) formData.append('image', inputData.image);
 
             const response: IResponse = await editMenuApi(menu._id.toString(), formData);
             hotToastMessage(response.message, 'success');
-            // Re-fetch menus
             dispatch(fetchMenus({ restaurantId: menu.restaurantId }));
             handleClose();
         } finally {
             setIsLoading(false);
         }
     };
+
     const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setInput({
-            ...input,
-            [name]: value,
-        });
+        setInput((prev) => ({ ...prev, [name]: value }));
     };
 
     return (
-        <div>
-            <Modal
-                keepMounted
-                open={isOpen}
-                onClose={handleClose}
-                aria-labelledby="keep-mounted-modal-title"
-                aria-describedby="keep-mounted-modal-description"
-            >
-                <Box sx={style}>
-                    {/* Close button at the top-right corner */}
-                    <IconButton
-                        sx={{
-                            position: 'absolute',
-                            top: 8,
-                            right: 8,
-                        }}
-                        onClick={handleClose}
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                    <div className="flex justify-center">
-                        <Typography id="keep-mounted-modal-title" variant="h6" component="h2">
-                            Edit Menu
-                        </Typography>
+        <Modal
+            open={isOpen}
+            onClose={handleClose}
+            aria-labelledby="edit-menu-modal-title"
+            aria-describedby="edit-menu-modal-description"
+        >
+            <Box sx={style}>
+                <IconButton
+                    sx={{
+                        position: 'absolute',
+                        top: 16,
+                        right: 16,
+                    }}
+                    onClick={handleClose}
+                >
+                    <CloseIcon />
+                </IconButton>
+                <Typography id="edit-menu-modal-title" variant="h5" component="h2" textAlign="center" fontWeight="bold">
+                    Edit Menu
+                </Typography>
+                <Typography id="edit-menu-modal-description" variant="body2" color="textSecondary" textAlign="center" mt={1}>
+                    Update your menu details to reflect the latest changes.
+                </Typography>
+                <form onSubmit={submitHandler} className="flex flex-col gap-4 mt-4">
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Menu Name</label>
+                        <input
+                            className="h-10 w-full bg-gray-100 border border-gray-300 rounded-lg px-3"
+                            type="text"
+                            name="name"
+                            value={input.name}
+                            onChange={changeEventHandler}
+                            placeholder="Enter menu name"
+                        />
+                        {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
                     </div>
-                    <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
-                        Create a menu that will make your restaurant stand out.
-                    </Typography>
-                    {/* Form */}
-                    <form onSubmit={submitHandler} className="mt-4 flex flex-col">
-                        <div>
-                            <label className="text-sm">Fullname</label>
-                            <input
-                                className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
-                                type="text"
-                                name="name"
-                                placeholder="Enter menu name"
-                                value={input.name}
-                                onChange={changeEventHandler}
-                            />
-                        </div>
-                        <div>
-                            <label className="text-sm">Contact</label>
-                            <input
-                                className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
-                                type="text"
-                                name="description"
-                                placeholder="Enter menu description"
-                                value={input.description}
-                                onChange={changeEventHandler}
-                            />
-                            {errors && (
-                                <Typography className="text-sm text-red-500">{errors.name!}</Typography>
-                            )}
-                        </div>
-                        <div>
-                            <label className="text-sm">Price in rupees</label>
-                            <input
-                                className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
-                                type="text"
-                                name="price"
-                                placeholder="Enter menu price"
-                                value={input.price}
-                                onChange={changeEventHandler}
-                            />
-                        </div>
-                        <div>
-                            <label>Upload Menu image</label>
-                            <input
-                                className="w-full h-10 boh-12der border-black rounded-lg p-1 pl-4"
-                                type="file"
-                                accept="image/*"
-                                name="image"
-                                onChange={(e) =>
-                                    setInput({
-                                        ...input,
-                                        image: e.target.files?.[0] || undefined,
-                                    })
-                                }
-                            />
-                            {errors.image && (
-                                <Typography className="text-red-500 text-sm">
-                                    {errors.image?.name || 'image file is required'}
-                                </Typography>
-                            )}
-                        </div>
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            className=" h-10 w-full col-Typography-2 pt-5"
-                        >
-                            {isLoading ? (
-                                <>
-                                    Please wait
-                                    <LoaderCircle />
-                                </>
-                            ) : (
-                                <>submit</>
-                            )}
-                        </Button>
-                    </form>
-                </Box>
-            </Modal>
-        </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Description</label>
+                        <input
+                            className="h-10 w-full bg-gray-100 border border-gray-300 rounded-lg px-3"
+                            type="text"
+                            name="description"
+                            value={input.description}
+                            onChange={changeEventHandler}
+                            placeholder="Enter menu description"
+                        />
+                        {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Price</label>
+                        <input
+                            className="h-10 w-full bg-gray-100 border border-gray-300 rounded-lg px-3"
+                            type="text"
+                            name="price"
+                            value={input.price}
+                            onChange={changeEventHandler}
+                            placeholder="Enter menu price"
+                        />
+                        {errors.price && <p className="text-sm text-red-500 mt-1">{errors.price}</p>}
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Upload Image</label>
+                        <input
+                            className="w-full h-10 border border-gray-300 rounded-lg p-2"
+                            type="file"
+                            accept="image/*"
+                            name="image"
+                            onChange={(e) =>
+                                setInput((prev) => ({
+                                    ...prev,
+                                    image: e.target.files?.[0],
+                                }))
+                            }
+                        />
+                        {errors.image && <p className="text-sm text-red-500 mt-1">{errors?.image}</p>}
+                    </div>
+                    <Button type="submit" variant="contained" color="primary" className="w-full h-12 mt-4">
+                        {isLoading ? <CircularProgress size={20} color="inherit" /> : 'Update Menu'}
+                    </Button>
+                </form>
+            </Box>
+        </Modal>
     );
 }

@@ -22,6 +22,7 @@ import Dashboard from './pages/admin/Dashboard';
 import Users from './pages/admin/UsersList';
 import RestaurantsList from './pages/admin/RestaurantsList';
 import OrdersUser from './pages/user/OrdersUser';
+import PieChartGraph from './components/charts/PieChartGraph';
 
 const AuthenticatedUser = ({ children }: { children: React.ReactNode }) => {
     const authData = useAppSelector((state) => state.authReducer.authData);
@@ -68,6 +69,7 @@ const appRouter = createBrowserRouter([
             </RoleProtectedRoute>
         ),
         children: [
+            { path: '', element: <PieChartGraph /> }, // Correct relative path
             { path: 'details', element: <Restaurant /> }, // Correct relative path
             { path: 'menu', element: <Menu /> },
             { path: 'orders', element: <Orders /> },

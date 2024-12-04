@@ -30,7 +30,9 @@ const MainLayout = () => {
             </header>
 
             {/* Main body content */}
-            <main className={`flex-grow ${currentUser?.role === ROLES_CONSTANTS.USER? 'bg-yellow-400': 'bg-white'}`}>
+            <main
+                className={`flex-grow ${currentUser?.role === ROLES_CONSTANTS.USER ? 'bg-yellow-400' : 'bg-white'}`}
+            >
                 <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <Outlet />
                 </div>
