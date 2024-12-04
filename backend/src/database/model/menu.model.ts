@@ -3,6 +3,7 @@ import { IMenu } from '../../types';
 import { omitDocFields } from '../../utils';
 
 export interface IMenuDocument extends Document, Omit<IMenu, 'restaurantId'> {
+    _id: Schema.Types.ObjectId;
     restaurantId: Schema.Types.ObjectId;
     isClosed: boolean;
 }

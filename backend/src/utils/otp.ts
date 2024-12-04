@@ -12,7 +12,7 @@ export const generateOtp = (): string => {
     return otp;
 };
 
-// Function to check weather the given time has passed before sending otp again if not expired
+// Function to check weather the given time has passed before sending otp again if otp is not expired.
 export const checkOtpIntervalCompleted = (
     createdTime: Date,
     otpResendThreshold: number = 60 * 1000, // default 1 minute threshold

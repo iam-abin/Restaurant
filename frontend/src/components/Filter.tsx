@@ -1,9 +1,9 @@
-import { Button, Checkbox } from '@mui/material'
+import { Button, Checkbox } from '@mui/material';
 
 export type FilterOptionsState = {
-    id: string
-    label: string
-}
+    id: string;
+    label: string;
+};
 
 const filterOptions: FilterOptionsState[] = [
     { id: 'burger', label: 'Burger' },
@@ -11,27 +11,27 @@ const filterOptions: FilterOptionsState[] = [
     { id: 'biryani', label: 'Biryani' },
     { id: 'momos', label: 'Momos' },
     { id: 'chinese', label: 'chinese' },
-    { id: 'african', label: 'african' }
-]
+    { id: 'african', label: 'african' },
+];
 
 const Filter = ({
     filterArray,
-    setSelectedFilters
+    setSelectedFilters,
 }: {
-    filterArray: string[]
-    setSelectedFilters: React.Dispatch<React.SetStateAction<string[]>>
+    filterArray: string[];
+    setSelectedFilters: React.Dispatch<React.SetStateAction<string[]>>;
 }) => {
     const applyFilterCheck = (item: string) => {
         setSelectedFilters((prevFilters) =>
             prevFilters.includes(item)
                 ? prevFilters.filter((filter) => filter !== item)
-                : [...prevFilters, item]
-        )
-    }
+                : [...prevFilters, item],
+        );
+    };
 
     const resetFilters = () => {
-        setSelectedFilters([])
-    }
+        setSelectedFilters([]);
+    };
 
     return (
         <div className="md:w-72">
@@ -46,16 +46,13 @@ const Filter = ({
                         checked={filterArray.includes(option.label)}
                         onChange={() => applyFilterCheck(option.label)}
                     />
-                    <label
-                        htmlFor={option.id}
-                        className="text-sm font-medium leading-none cursor-pointer"
-                    >
+                    <label htmlFor={option.id} className="text-sm font-medium leading-none cursor-pointer">
                         {option.label}
                     </label>
                 </div>
             ))}
         </div>
-    )
-}
+    );
+};
 
-export default Filter
+export default Filter;

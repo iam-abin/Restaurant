@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { CustomError } from '../errors';
-import { winstonLogError } from '../utils';
+import { CustomError, NotAuthorizedError } from '../errors';
+import { JWT_KEYS_CONSTANTS, winstonLogError } from '../utils';
 import { appConfig } from '../config/app.config';
 
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction): void => {
@@ -11,6 +11,12 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
 
     // Handle custom errors
     if (err instanceof CustomError) {
+        // Clear the JWT cookie if the error is NotAuthorizedError (e.g., due to token expiration or invalid token)
+        if (err instanceof NotAuthorizedError) {
+            res.clearCookie(JWT_KEYS_CONSTANTS.JWT_TOKEN);
+        }
+
+        // Send the serialized error response
         res.status(err.statusCode).send({ errors: err.serializeErrors() });
         return;
     }

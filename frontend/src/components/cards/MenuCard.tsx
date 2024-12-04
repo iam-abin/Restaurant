@@ -1,35 +1,44 @@
-import FriedChicken from '../../assets/fried-chicken-french-fries-black-cement-floor (1).jpg'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import CardMedia from '@mui/material/CardMedia'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import { Link } from 'react-router-dom'
-import { useState } from 'react'
-import EditMenuModal from '../modal/EditMenuModal'
-import { IMenu } from '../../types'
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import { useState } from 'react';
+import EditMenuModal from '../modal/EditMenuModal';
+import { IMenu } from '../../types';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { ROLES_CONSTANTS } from '../../utils/constants';
+import { addToCart } from '../../redux/thunk/cartThunk';
+import { useParams } from 'react-router-dom';
 
 const MenuCard = ({ menu }: { menu: IMenu }) => {
-    const isAdmin = true
-    const [isEditMenuOpen, setIsEditMenuOpen] = useState(false)
-    const handleEditMenuOpen = () => setIsEditMenuOpen(true)
-    const handleEditMenuClose = () => setIsEditMenuOpen(false)
+    const authData = useAppSelector((store) => store.authReducer.authData);
+    const isUser = authData?.role === ROLES_CONSTANTS.USER;
+    const isRestaurant = authData?.role === ROLES_CONSTANTS.RESTAURANT;
+
+    const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
+    const handleEditMenuOpen = () => setIsEditMenuOpen(true);
+    const handleEditMenuClose = () => setIsEditMenuOpen(false);
+    const dispatch = useAppDispatch();
+    const params = useParams();
+
+    const addItemToCartHandler = async (menuItemId: string) => {
+        dispatch(addToCart({ itemId: menuItemId, restaurantId: params.restaurantId! }));
+    };
+
     return (
-        <div className="flex justify-center bg-yellow-700">
-            <Card sx={{ width: 10 / 12 }}>
-                <div className="flex md:flex">
-                    {menu && (
-                        <EditMenuModal
-                            menu={menu}
-                            isOpen={isEditMenuOpen}
-                            handleClose={handleEditMenuClose}
-                        />
-                    )}
-                    <div className="relative">
+        // <div className="flex justify-center bg-yellow-700">
+        <Card sx={{ width: 11 / 12 }}>
+            {/* modal start */}
+            {menu && <EditMenuModal menu={menu} isOpen={isEditMenuOpen} handleClose={handleEditMenuClose} />}
+            {/* modal end */}
+            {/* <div className="flex justify-between bg-yellow-200"> */}
+                <div className="flex flex-col md:flex-row md:justify-between bg-yellow-300 w-full">
+                    <div className="w-full md:w-80">
                         <CardMedia
                             component="img"
                             alt="green iguana"
-                            className="w-40 h-40  object-cover"
+                            className="h-5/5 md:h-60 object-cover"
                             image={menu.imageUrl}
                         />
                     </div>
@@ -40,18 +49,21 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
 
                         <p>{menu.description}</p>
                         <h2 className="text-lg font-semibold mt-4">
-                            Price:{' '}
-                            <Typography className="text-yellow-600">₹{menu.price}</Typography>
+                            Price: <Typography className="text-yellow-600">₹{menu.price}</Typography>
                         </h2>
                     </CardContent>
+
                     <div className="flex items-center justify-center px-4 py-2">
-                        {!isAdmin ? (
-                            <Link to={`/restaurant/${menu.id}`} className="w-full">
-                                <Button className="w-full" variant="contained" size="small">
-                                    Add to cart
-                                </Button>
-                            </Link>
-                        ) : (
+                        {isUser ? (
+                            <Button
+                                onClick={() => addItemToCartHandler(menu._id)}
+                                className="w-full"
+                                variant="contained"
+                                size="small"
+                            >
+                                Add to cart
+                            </Button>
+                        ) : isRestaurant ? (
                             <Button
                                 onClick={handleEditMenuOpen}
                                 className="w-full"
@@ -60,12 +72,15 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
                             >
                                 Edit
                             </Button>
+                        ) : (
+                            <></>
                         )}
                     </div>
                 </div>
-            </Card>
-        </div>
-    )
-}
+            {/* </div> */}
+        </Card>
+        // </div>
+    );
+};
 
-export default MenuCard
+export default MenuCard;

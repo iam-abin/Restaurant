@@ -1,11 +1,10 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { generateHashedPassword, omitDocFields } from '../../utils';
-import { ISignup } from '../../types';
+import { ISignup, IUser } from '../../types';
 import { ROLES_CONSTANTS } from '../../utils';
 
-export interface IUserDocument extends Document, ISignup {
-    isVerified: boolean;
-    isBlocked: boolean;
+export interface IUserDocument extends Document, IUser {
+    _id: Schema.Types.ObjectId;
 }
 
 const userSchema = new Schema<IUserDocument>(
@@ -20,6 +19,11 @@ const userSchema = new Schema<IUserDocument>(
             required: true,
             unique: true,
             lowercase: true,
+            trim: true,
+        },
+        phone: {
+            type: Number,
+            required: true,
             trim: true,
         },
         password: {

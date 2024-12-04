@@ -1,21 +1,21 @@
-import { ChangeEvent, useState } from 'react'
-import SearchIcon from '@mui/icons-material/Search'
-import { Button } from '@mui/material'
-import PizzaImage from '../assets/hero_pizza.png'
-import { useNavigate } from 'react-router-dom'
+import { ChangeEvent, useState } from 'react';
+import SearchIcon from '@mui/icons-material/Search';
+import { Button } from '@mui/material';
+import PizzaImage from '../../assets/hero_pizza.png';
+import { useNavigate } from 'react-router-dom';
 
 const Landing = () => {
-    const [searchText, setSearchText] = useState<string>('')
-    const navigate = useNavigate()
+    const [searchText, setSearchText] = useState<string>('');
+    const navigate = useNavigate();
 
     const handleSearchClick = () => {
-        if (!searchText) return
-        console.log(searchText)
+        if (!searchText) return;
+        console.log(searchText);
 
-        navigate(`/search/${searchText}`)
-    }
+        navigate(`/search/${searchText}`);
+    };
     return (
-        <div className="flex flex-col md:flex-row max-w-7xl mx-auto md:p-10 rounded-lg items-center justify-center m-4 gap-20">
+        <div className="flex flex-col md:flex-row items-center justify-center  max-w-7xl mx-auto md:p-10 rounded-lg  m-4 gap-20">
             <div className="flex flex-col gap-10 md:w-[41%]">
                 <div className="flex flex-col gap-5 ">
                     <h1 className="font-bold md:font-extrabold text-4xl md:text-5xl">
@@ -32,17 +32,11 @@ const Landing = () => {
                             type="text"
                             value={searchText}
                             placeholder="Search restaurant by name, city & country"
-                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                                setSearchText(e.target.value)
-                            }
-                            className="border-2 pl-10 h-11 w-full  border-black shadow-lg rounded-lg"
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value)}
+                            className="border-2 pl-10 h-11 w-full text-sm border-black shadow-lg rounded-lg"
                         />
                     </div>
-                    <Button
-                        onClick={handleSearchClick}
-                        variant="contained"
-                        className="bg-orange-500 "
-                    >
+                    <Button onClick={handleSearchClick} variant="contained" className="bg-orange-500 ">
                         Search
                     </Button>
                 </div>
@@ -51,7 +45,7 @@ const Landing = () => {
                 <img src={PizzaImage} className="w-full max-h-[500px] max-w-90%" alt="LandingImg" />
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Landing
+export default Landing;

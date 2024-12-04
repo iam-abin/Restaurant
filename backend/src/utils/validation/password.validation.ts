@@ -1,10 +1,11 @@
 import { body } from 'express-validator';
+import { mongoIdBodyValidator } from './mongodb-id.validation';
 export const forgotPasswordRequestBodyValidator = [
     body('email').isEmail().withMessage('Email must be valid').toLowerCase().trim().escape(),
 ];
 
 export const resetPasswordRequestBodyValidator = [
-    body('userId').isMongoId().withMessage('Invalid ID format').trim().escape(),
+    ...mongoIdBodyValidator('userId'),
     body('password')
         .trim()
         .isLength({ min: 4, max: 20 })

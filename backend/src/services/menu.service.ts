@@ -1,5 +1,5 @@
 import { autoInjectable } from 'tsyringe';
-import { IMenu } from '../types';
+import { IMenu, IRestaurantResponse } from '../types';
 import { MenuRepository, RestaurantRepository } from '../database/repository';
 import { IMenuDocument, IRestaurantDocument } from '../database/model';
 import { uploadImageOnCloudinary } from '../utils';
@@ -53,12 +53,12 @@ export class MenuService {
     ): Promise<IMenuDocument | null> {
         const menu: IMenuDocument | null = await this.menuRepository.findMenu(menuId);
         if (!menu) throw new NotFoundError('Menu not found');
-        const restaurant: IRestaurantDocument | null = await this.restaurantRepository.findRestaurant(
+        const restaurant: IRestaurantResponse | null = await this.restaurantRepository.findRestaurant(
             menu.restaurantId.toString(),
         );
         if (!restaurant) throw new NotFoundError('Restaurant not found');
 
-        if ('id' in restaurant.ownerId && userId !== restaurant.ownerId.id.toString())
+        if ('id' in restaurant.owner! && userId !== restaurant.owner._id.toString())
             throw new ForbiddenError('You cannot modify others restaurant menu');
 
         let imageUrl: string | undefined;

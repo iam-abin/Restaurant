@@ -27,6 +27,14 @@ export const signupRequestBodyValidator = [
         )
         .trim()
         .escape(),
+    body('phone')
+        .notEmpty()
+        .withMessage('Phone number is required')
+        .isNumeric()
+        .withMessage('Phone number must be numeric')
+        .isLength({ min: 10, max: 10 })
+        .withMessage('Phone number must be exactly 10 digits')
+        .trim(),
     body('password')
         .trim()
         .isLength({ min: 4, max: 20 })

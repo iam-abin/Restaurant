@@ -1,14 +1,17 @@
 import { IUserRole } from './roles';
 
 export interface IUser {
+    name: string;
     email: string;
+    phone: number;
     password: string;
     role: Partial<IUserRole>;
-}
-
-export interface ISignup extends IUser {
-    name: string;
+    isBlocked: boolean;
+    isVerified: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ISignin extends IUser {}
+export interface ISignup extends Omit<IUser, 'isBlocked' | 'isVerified'> {}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface ISignin extends Pick<IUser, 'email' | 'password' | 'role'> {}

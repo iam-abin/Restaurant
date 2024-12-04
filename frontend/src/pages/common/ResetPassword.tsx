@@ -1,93 +1,91 @@
-import { Button, Input, Typography } from '@mui/material'
-import LockIcon from '@mui/icons-material/Lock'
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
-import { resetPasswordSchema } from '../utils/schema/userSchema'
-import LoaderCircle from '../components/Loader/LoaderCircle'
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import { resetPasswordApi, verifyOtpApi, verifyResetTokenApi } from '../api/apiMethods/auth'
-import { IResetPassword, IUser } from '../types'
-import { IResponse } from '../types/api'
-import { hotToastMessage } from '../utils/hotToast'
+import { Button, Input, Typography } from '@mui/material';
+import LockIcon from '@mui/icons-material/Lock';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { resetPasswordSchema } from '../../utils/schema/userSchema';
+import LoaderCircle from '../../components/Loader/LoaderCircle';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { resetPasswordApi, verifyResetTokenApi } from '../../api/apiMethods/auth';
+import { IResetPassword, IUser } from '../../types';
+import { IResponse } from '../../types/api';
+import { hotToastMessage } from '../../utils/hotToast';
 
 const ResetPassword = () => {
-    const navigate = useNavigate()
-    const { uniqueId } = useParams()
+    const navigate = useNavigate();
+    const { uniqueId } = useParams();
 
     const [password, setPassword] = useState<IResetPassword>({
         password: '',
-        confirmPassword: ''
-    })
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [user, setUser] = useState<IUser | null>(null)
-    const [errors, setErrors] = useState<Partial<IResetPassword>>({})
+        confirmPassword: '',
+    });
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [user, setUser] = useState<IUser | null>(null);
+    const [errors, setErrors] = useState<Partial<IResetPassword>>({});
 
     useEffect(() => {
-        ;(async () => {
+        (async () => {
             const response: IResponse = await verifyResetTokenApi({
-                resetToken: uniqueId!
-            })
-            console.log(response)
+                resetToken: uniqueId!,
+            });
+            console.log(response);
 
             if (response.data) {
-                setUser(response.data)
+                setUser(response.data as IUser);
             }
-        })()
-    }, [])
+        })();
+    }, []);
 
     // Handle input changes
     const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
+        const { name, value } = e.target;
 
         setPassword((prev) => ({
             ...prev,
-            [name]: value
-        }))
+            [name]: value,
+        }));
 
         // Validate after updating the value
         const validationResult = resetPasswordSchema.safeParse({
             ...password,
-            [name]: value
-        })
+            [name]: value,
+        });
 
         if (!validationResult.success) {
-            const fieldErrors = validationResult.error.formErrors.fieldErrors
-            setErrors(fieldErrors as Partial<IResetPassword>)
+            const fieldErrors = validationResult.error.formErrors.fieldErrors;
+            setErrors(fieldErrors as Partial<IResetPassword>);
         } else {
-            setErrors({})
+            setErrors({});
         }
-    }
+    };
 
     const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault()
+        e.preventDefault();
 
         if (!user) {
-            hotToastMessage('invalid token', 'error')
-            return
+            hotToastMessage('invalid token', 'error');
+            return;
         }
-        setIsLoading(true)
+        setIsLoading(true);
 
         try {
             const response: IResponse = await resetPasswordApi({
-                userId: user.id!,
-                password: password.password
-            }) // Pass the uniqueId if required by the API
-            hotToastMessage(response.message, 'success')
-            navigate('/auth')
+                userId: user._id,
+                password: password.password,
+            }); // Pass the uniqueId if required by the API
+            hotToastMessage(response.message, 'success');
+            navigate('/auth');
         } catch (error) {
-            console.error('Reset password error:', error)
+            console.error('Reset password error:', error);
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
 
     return (
         <div className="flex items-center justify-center min-h-screen w-full">
             <form onSubmit={handleSubmit} className="flex flex-col md:w-2/6">
                 <div className="text-center">
                     <h1 className="font-extrabold text-2xl mb-2">Reset Password</h1>
-                    <p className="text-sm text-gray-600">
-                        Enter your new password to reset the old one
-                    </p>
+                    <p className="text-sm text-gray-600">Enter your new password to reset the old one</p>
                 </div>
                 <div className="items-center relative">
                     <LockIcon className="ml-2 mr-2 absolute inset-y-7 pointer-events-none" />
@@ -116,9 +114,7 @@ const ResetPassword = () => {
                         autoComplete="new-password"
                     />
                     {errors.confirmPassword && (
-                        <Typography className="text-sm text-red-500">
-                            {errors.confirmPassword}
-                        </Typography>
+                        <Typography className="text-sm text-red-500">{errors.confirmPassword}</Typography>
                     )}
                 </div>
                 <Button
@@ -129,8 +125,8 @@ const ResetPassword = () => {
                         mt: 2,
                         backgroundColor: isLoading ? 'orange' : '#FF8C00',
                         '&:hover': {
-                            backgroundColor: isLoading ? 'orange' : '#FF8C00'
-                        }
+                            backgroundColor: isLoading ? 'orange' : '#FF8C00',
+                        },
                     }}
                     variant="contained"
                 >
@@ -150,7 +146,7 @@ const ResetPassword = () => {
                 </Typography>
             </form>
         </div>
-    )
-}
+    );
+};
 
-export default ResetPassword
+export default ResetPassword;

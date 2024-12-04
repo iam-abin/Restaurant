@@ -4,6 +4,7 @@ export * from './cuisine';
 export * from './menu';
 export * from './order';
 export * from './otp';
+export * from './password';
 export * from './profile';
 export * from './restaurant';
 export * from './roles';

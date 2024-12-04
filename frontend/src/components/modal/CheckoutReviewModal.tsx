@@ -1,11 +1,14 @@
-import { FormEvent, useState } from 'react'
-import Box from '@mui/material/Box'
-import Modal from '@mui/material/Modal'
-import IconButton from '@mui/material/IconButton'
-import CloseIcon from '@mui/icons-material/Close'
-import Typography from '@mui/material/Typography'
-import { Button } from '@mui/material'
-import LoaderCircle from '../Loader/LoaderCircle'
+import { FormEvent, useState } from 'react';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Typography from '@mui/material/Typography';
+import { Button } from '@mui/material';
+import LoaderCircle from '../Loader/LoaderCircle';
+import { useAppSelector } from '../../redux/hooks';
+import { checkoutOrderApi } from '../../api/apiMethods/order';
+import { IAddress, ICart, ICheckoutResponse } from '../../types';
 
 const style = {
     position: 'absolute',
@@ -16,23 +19,57 @@ const style = {
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
-    p: 4
-}
+    p: 4,
+};
 
 export default function CheckoutReviewModal({
     isOpen,
-    handleClose
+    handleClose,
 }: {
-    isOpen: boolean
-    handleClose: () => void
+    isOpen: boolean;
+    handleClose: () => void;
 }) {
-    const [isLoading, setIsLoading] = useState(false)
-    const checkoutHandler = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-    }
-    const changeEventHandler = (e: FormEvent<HTMLInputElement>) => {
-        // const {name, value} = e.target;
-    }
+    const [isLoading, setIsLoading] = useState(false);
+
+    const { authData } = useAppSelector((store) => store.authReducer);
+    const { myProfile } = useAppSelector((store) => store.profileReducer);
+    const { cartData } = useAppSelector((store) => store.cartReducer);
+
+    const [input, setInput] = useState({
+        name: authData?.name || '',
+        email: authData?.email || '',
+        phone: authData?.phone ? authData.phone.toString() : '',
+        address: (myProfile?.addressId as IAddress)?.address || '',
+        city: (myProfile?.addressId as IAddress)?.city || '',
+        country: (myProfile?.addressId as IAddress)?.country || '',
+    });
+
+    // useEffect(()=>{
+    //     (
+    //         async()=>{
+    //             const
+    //         }
+    //     )()
+    // })
+
+    const paymentCheckoutHandler = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log(cartData);
+        if (!cartData) return;
+
+        const cartItem: ICart = cartData[0];
+
+        const restaurantId = cartItem.restaurantId;
+
+        setIsLoading(true);
+
+        try {
+            const response = await checkoutOrderApi({ restaurantId });
+            window.location.href = (response.data as ICheckoutResponse).stripePaymentUrl;
+        } finally {
+            setIsLoading(false);
+        }
+    };
     return (
         <div>
             <Modal
@@ -48,7 +85,7 @@ export default function CheckoutReviewModal({
                         sx={{
                             position: 'absolute',
                             top: 8,
-                            right: 8
+                            right: 8,
                         }}
                         onClick={handleClose}
                     >
@@ -60,12 +97,12 @@ export default function CheckoutReviewModal({
                         </Typography>
                     </div>
                     <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
-                        Double-check your delivery details and ensure everything is in order. When
-                        you are ready, hit confirm button to finalize your order
+                        Double-check your delivery details and ensure everything is in order. When you are
+                        ready, hit confirm button to finalize your order
                     </Typography>
                     {/* Form */}
                     <form
-                        onSubmit={checkoutHandler}
+                        onSubmit={paymentCheckoutHandler}
                         className="mt-4 md:grid grid-cols-2 gap-2 space-y-1 md:space-y-0"
                     >
                         <div>
@@ -74,8 +111,8 @@ export default function CheckoutReviewModal({
                                 className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
                                 type="text"
                                 name="name"
-                                value={'abin'}
-                                onChange={changeEventHandler}
+                                value={input.name}
+                                // onChange={changeEventHandler}
                             />
                         </div>
                         <div>
@@ -85,8 +122,8 @@ export default function CheckoutReviewModal({
                                 disabled
                                 type="email"
                                 name="email"
-                                value={'abin@123'}
-                                onChange={changeEventHandler}
+                                value={authData?.email}
+                                // onChange={changeEventHandler}
                             />
                         </div>
                         <div>
@@ -96,7 +133,7 @@ export default function CheckoutReviewModal({
                                 type="text"
                                 name="contact"
                                 value={'73054654351'}
-                                onChange={changeEventHandler}
+                                // onChange={changeEventHandler}
                             />
                         </div>
                         <div>
@@ -105,8 +142,8 @@ export default function CheckoutReviewModal({
                                 className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
                                 type="text"
                                 name="address"
-                                value={'kochi'}
-                                onChange={changeEventHandler}
+                                value={input.address}
+                                // onChange={changeEventHandler}
                             />
                         </div>
                         <div>
@@ -115,8 +152,8 @@ export default function CheckoutReviewModal({
                                 className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
                                 type="text"
                                 name="city"
-                                value={'Kochi'}
-                                onChange={changeEventHandler}
+                                value={input.city}
+                                // onChange={changeEventHandler}
                             />
                         </div>
                         <div>
@@ -125,11 +162,11 @@ export default function CheckoutReviewModal({
                                 className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
                                 type="text"
                                 name="country"
-                                value={'india'}
-                                onChange={changeEventHandler}
+                                value={input.country}
+                                // onChange={changeEventHandler}
                             />
                         </div>
-                        <Button variant="contained" className=" h-10 col-Typography-2 pt-5">
+                        <Button type="submit" variant="contained" className=" h-10 col-Typography-2 pt-5">
                             {isLoading ? (
                                 <>
                                     Please wait
@@ -143,5 +180,5 @@ export default function CheckoutReviewModal({
                 </Box>
             </Modal>
         </div>
-    )
+    );
 }

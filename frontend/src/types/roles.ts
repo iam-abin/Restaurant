@@ -1,5 +1,5 @@
 export interface IUserRole {
-    ADMIN: string
-    RESTAURANT: string
-    USER: string
+    ADMIN: string;
+    RESTAURANT: string;
+    USER: string;
 }

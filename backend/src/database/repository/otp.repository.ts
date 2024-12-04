@@ -3,7 +3,7 @@ import { IOtpTokenDocument, OtpTokenModel } from '../model';
 import { IOtpToken } from '../../types';
 
 export class OtpTokenRepository {
-    async create(otpData: IOtpToken, session?: ClientSession): Promise<IOtpTokenDocument> {
+    async create(otpData: Partial<IOtpToken>, session?: ClientSession): Promise<IOtpTokenDocument> {
         // Here we are performing upsert
         return await OtpTokenModel.findOneAndUpdate(
             { userId: otpData.userId },

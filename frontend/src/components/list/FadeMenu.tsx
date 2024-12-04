@@ -1,27 +1,27 @@
-import * as React from 'react'
-import Button from '@mui/material/Button'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import Fade from '@mui/material/Fade'
-import { Link } from 'react-router-dom'
-import { IMenuItems } from '../navbar/NavBar'
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Fade from '@mui/material/Fade';
+import { Link } from 'react-router-dom';
+import { IMenuItems } from '../navbar/NavBar';
 
 const FadeMenu: React.FC<{ menuItems: (IMenuItems | boolean)[] }> = ({ menuItems }) => {
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-    const open = Boolean(anchorEl)
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget)
-    }
+        setAnchorEl(event.currentTarget);
+    };
     const handleClose = () => {
-        setAnchorEl(null)
-    }
+        setAnchorEl(null);
+    };
 
     // Type guard to filter valid IMenuItems
     const isValidMenuItem = (item: any): item is IMenuItems =>
-        item && typeof item === 'object' && 'to' in item && 'value' in item
+        item && typeof item === 'object' && 'to' in item && 'value' in item;
 
-    const validMenuItems = menuItems.filter(isValidMenuItem)
+    const validMenuItems = menuItems.filter(isValidMenuItem);
 
     return (
         <div>
@@ -37,7 +37,7 @@ const FadeMenu: React.FC<{ menuItems: (IMenuItems | boolean)[] }> = ({ menuItems
             <Menu
                 id="fade-menu"
                 MenuListProps={{
-                    'aria-labelledby': 'fade-button'
+                    'aria-labelledby': 'fade-button',
                 }}
                 anchorEl={anchorEl}
                 open={open}
@@ -51,7 +51,7 @@ const FadeMenu: React.FC<{ menuItems: (IMenuItems | boolean)[] }> = ({ menuItems
                 ))}
             </Menu>
         </div>
-    )
-}
+    );
+};
 
-export default FadeMenu
+export default FadeMenu;

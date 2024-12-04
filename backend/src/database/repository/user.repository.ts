@@ -1,6 +1,6 @@
 import { ClientSession } from 'mongoose';
 import { IUserDocument, UserModel } from '../model';
-import { ISignup } from '../../types';
+import { ISignup, IUser } from '../../types';
 
 export class UserRepository {
     async createUser(userData: ISignup, session?: ClientSession): Promise<IUserDocument> {
@@ -17,7 +17,7 @@ export class UserRepository {
     }
     async updateUser(
         userId: string,
-        updateData: Partial<ISignup>,
+        updateData: Partial<IUser>,
         session?: ClientSession,
     ): Promise<IUserDocument | null> {
         return await UserModel.findByIdAndUpdate(userId, updateData, { new: true, session });

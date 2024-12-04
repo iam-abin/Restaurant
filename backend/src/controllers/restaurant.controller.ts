@@ -3,7 +3,7 @@ import { createSuccessResponse } from '../utils';
 import { IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
 import { container } from 'tsyringe';
 import { RestaurantService } from '../services';
-import { IRestaurant } from '../types';
+import { IRestaurantResponse, IRestaurantUpdate, ISearchResult } from '../types';
 
 const restaurantService = container.resolve(RestaurantService);
 
@@ -18,7 +18,7 @@ class RestaurantController {
         const file: Express.Multer.File = req.file!;
         const restaurant: IRestaurantDocument | null = await restaurantService.updateRestaurant(
             userId,
-            req.body as Partial<Omit<IRestaurant, 'userId' | 'imageUrl'>>,
+            req.body as IRestaurantUpdate,
             file,
         );
         res.status(200).json(createSuccessResponse('Restaurant updated successfully', restaurant));
@@ -32,15 +32,20 @@ class RestaurantController {
 
     public async getARestaurant(req: Request, res: Response): Promise<void> {
         const { restaurantId } = req.params;
-        const restaurant: IRestaurantDocument | null = await restaurantService.getARestaurant(restaurantId);
+        const restaurant: IRestaurantResponse | null = await restaurantService.getARestaurant(restaurantId);
         res.status(200).json(createSuccessResponse('Restaurant fetched successfully', restaurant));
+    }
+
+    public async getRestaurants(req: Request, res: Response): Promise<void> {
+        const restaurants: IRestaurantDocument[] | null = await restaurantService.getRestaurants();
+        res.status(200).json(createSuccessResponse('Restaurant fetched successfully', restaurants));
     }
 
     public async searchRestaurant(req: Request, res: Response): Promise<void> {
         const searchText: string = req.params.searchText || ''; // From home page search bar
         const searchQuery: string = (req.query.searchQuery as string) || ''; // From search page search bar
         const selectedCuisines: string = (req.query.selectedCuisines as string) || ''; // From filter area
-        const restaurant: any[] = await restaurantService.searchRestaurant(
+        const restaurant: ISearchResult[] = await restaurantService.searchRestaurant(
             searchText,
             searchQuery,
             selectedCuisines,

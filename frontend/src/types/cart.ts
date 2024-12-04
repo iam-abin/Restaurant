@@ -1,5 +1,9 @@
+import { IMenu } from './menu';
+
 export interface ICart {
-    userId: string
-    menuItemId: string
-    count: number
+    _id: string;
+    userId: string;
+    restaurantId: string;
+    itemId: IMenu;
+    quantity: number;
 }

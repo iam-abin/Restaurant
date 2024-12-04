@@ -14,8 +14,8 @@ export const auth = (requiredRoles: string | string[]) => {
                 throw new ForbiddenError('You have no permission to access this route');
 
             next();
-        } catch (error) {
-            next(error);
+        } catch (error: unknown) {
+            next(error as Error);
         }
     };
 };

@@ -1,39 +1,43 @@
-import MainLayout from './layout/MainLayout'
-import Auth from './pages/Auth'
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
-import ForgotPasswordEmail from './pages/ForgotPasswordEmail'
-import ResetPassword from './pages/ResetPassword'
-import Otp from './pages/Otp'
-import Landing from './pages/Landing'
-import Profile from './pages/Profile'
-import SearchResult from './pages/SearchResult'
-import RestaurantDetails from './pages/RestaurantDetails'
-import Cart from './pages/Cart'
-import Restaurant from './pages/restaurant/Restaurant'
-import Menu from './pages/restaurant/Menu'
-import Orders from './pages/restaurant/Orders'
-import Success from './pages/Success'
-import { Toaster } from 'react-hot-toast'
-import Error404 from './pages/Error404'
-import { RoleProtectedRoute } from './components/ProtectedRoute'
-import { ROLES_CONSTANTS } from './utils/constants'
-import { useAppSelector } from './redux/hooks'
+import MainLayout from './layout/MainLayout';
+import Auth from './pages/common/Auth';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import ForgotPasswordEmail from './pages/common/ForgotPasswordEmail';
+import ResetPassword from './pages/common/ResetPassword';
+import Otp from './pages/common/Otp';
+import Landing from './pages/user/Landing';
+import Profile from './pages/user/Profile';
+import SearchResult from './pages/user/SearchResult';
+import RestaurantDetails from './pages/common/RestaurantDetails';
+import Cart from './pages/user/Cart';
+import Restaurant from './pages/restaurant/Restaurant';
+import Menu from './pages/restaurant/Menu';
+import Orders from './pages/restaurant/Orders';
+import Success from './pages/user/Success';
+import { Toaster } from 'react-hot-toast';
+import Error404 from './pages/common/Error404';
+import { RoleProtectedRoute } from './components/ProtectedRoute';
+import { ROLES_CONSTANTS } from './utils/constants';
+import { useAppSelector } from './redux/hooks';
+import Dashboard from './pages/admin/Dashboard';
+import Users from './pages/admin/UsersList';
+import RestaurantsList from './pages/admin/RestaurantsList';
+import OrdersUser from './pages/user/OrdersUser';
+import PieChartGraph from './components/charts/PieChartGraph';
 
 const AuthenticatedUser = ({ children }: { children: React.ReactNode }) => {
-    const authData = useAppSelector((state) => state.authReducer.authData)
-    const CURRENT_USER_ROLE = authData?.role
+    const authData = useAppSelector((state) => state.authReducer.authData);
+    const CURRENT_USER_ROLE = authData?.role;
     if (authData && authData.isVerified) {
         const redirectPath =
             CURRENT_USER_ROLE === ROLES_CONSTANTS.ADMIN
                 ? '/admin'
                 : CURRENT_USER_ROLE === ROLES_CONSTANTS.RESTAURANT
                   ? '/restaurant'
-                  : '/'
-        return <Navigate to={redirectPath} replace />
+                  : '/';
+        return <Navigate to={redirectPath} replace />;
     }
-    return children
-}
+    return children;
+};
 
 const appRouter = createBrowserRouter([
     {
@@ -49,12 +53,13 @@ const appRouter = createBrowserRouter([
             { path: '/search/:searchText', element: <SearchResult /> },
             {
                 path: '/user/restaurant/:restaurantId',
-                element: <RestaurantDetails />
+                element: <RestaurantDetails />,
             },
             { path: '/cart', element: <Cart /> },
-            { path: '/success', element: <Success /> },
-            { path: '*', element: <Error404 /> }
-        ]
+            { path: '/orders', element: <OrdersUser /> },
+            { path: '/order/status', element: <Success /> },
+            { path: '*', element: <Error404 /> },
+        ],
     },
     {
         path: '/restaurant',
@@ -64,10 +69,11 @@ const appRouter = createBrowserRouter([
             </RoleProtectedRoute>
         ),
         children: [
+            { path: '', element: <PieChartGraph /> }, // Correct relative path
             { path: 'details', element: <Restaurant /> }, // Correct relative path
             { path: 'menu', element: <Menu /> },
-            { path: 'orders', element: <Orders /> }
-        ]
+            { path: 'orders', element: <Orders /> },
+        ],
     },
     {
         path: '/admin',
@@ -77,10 +83,10 @@ const appRouter = createBrowserRouter([
             </RoleProtectedRoute>
         ),
         children: [
-            // { path: "/", element: <Dashboard /> },
-            // { path: "/users", element: <Users /> },
-            // { path: "/restaurants", element: <Restaurants /> },
-        ]
+            { path: '', element: <Dashboard /> },
+            { path: 'users', element: <Users /> },
+            { path: 'restaurants', element: <RestaurantsList /> },
+        ],
     },
 
     {
@@ -90,7 +96,7 @@ const appRouter = createBrowserRouter([
                 {' '}
                 <Auth />
             </AuthenticatedUser>
-        )
+        ),
     },
     {
         path: '/restaurant/auth',
@@ -99,16 +105,16 @@ const appRouter = createBrowserRouter([
                 {' '}
                 <Auth />
             </AuthenticatedUser>
-        )
+        ),
     },
     {
-        path: 'admin/auth',
+        path: '/admin/auth',
         element: (
             <AuthenticatedUser>
                 {' '}
                 <Auth />
             </AuthenticatedUser>
-        )
+        ),
     },
     {
         path: '/forgot-password/email',
@@ -117,21 +123,21 @@ const appRouter = createBrowserRouter([
                 {' '}
                 <ForgotPasswordEmail />
             </AuthenticatedUser>
-        )
+        ),
     },
     {
         path: '/reset-password/:uniqueId',
-        element: <ResetPassword />
+        element: <ResetPassword />,
     },
     {
         path: '/forgot-password/otp',
-        element: <Otp />
+        element: <Otp />,
     },
     {
         path: '/signup/otp',
-        element: <Otp />
-    }
-])
+        element: <Otp />,
+    },
+]);
 
 export default function App() {
     return (
@@ -140,10 +146,10 @@ export default function App() {
                 position="top-right"
                 toastOptions={{
                     duration: 6000,
-                    style: { marginTop: '80px' }
+                    style: { marginTop: '80px' },
                 }}
             />
             <RouterProvider router={appRouter} />
         </main>
-    )
+    );
 }

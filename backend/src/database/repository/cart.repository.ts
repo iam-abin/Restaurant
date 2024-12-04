@@ -3,20 +3,32 @@ import { ICartDocument, CartModel } from '../model';
 import { ICart } from '../../types';
 
 export class CartRepository {
-    async create(cartItemData: Pick<ICart, 'userId'>, session?: ClientSession): Promise<ICartDocument> {
-        const cartItem: ICartDocument[] = await CartModel.create([cartItemData], { session });
-        return cartItem[0];
+    async create(cartItemData: Omit<ICart, 'quantity'>): Promise<ICartDocument> {
+        const cartItem: ICartDocument = await CartModel.create(cartItemData);
+        return cartItem;
     }
 
-    async findAllByUserId(userId: string): Promise<ICartDocument[]> {
-        return await CartModel.find({ userId }).populate('userId').populate('menuItemId');
+    async find(userId: string, restaurantId: string, itemId: string): Promise<ICartDocument | null> {
+        return await CartModel.findOne({ userId, restaurantId, itemId });
     }
 
-    async deleteItems(userId: string, session?: ClientSession): Promise<DeleteResult> {
+    async findById(cartItemId: string): Promise<ICartDocument | null> {
+        return await CartModel.findById(cartItemId).populate('userId').populate('itemId');
+    }
+
+    async getCartItemsByRestaurant(userId: string, restaurantId: string): Promise<ICartDocument[]> {
+        return await CartModel.find({ userId, restaurantId }).populate('itemId');
+    }
+
+    async update(cartItemId: string, quantity: number): Promise<ICartDocument | null> {
+        return await CartModel.findByIdAndUpdate(cartItemId, { quantity }, { new: true });
+    }
+
+    async delete(cartItemId: string, session?: ClientSession): Promise<DeleteResult | null> {
+        return await CartModel.findByIdAndDelete(cartItemId, { new: true, session });
+    }
+
+    async deleteAllItems(userId: string, session?: ClientSession): Promise<DeleteResult> {
         return await CartModel.deleteMany({ userId }, { session });
-    }
-
-    async update(cartItemId: string, count: number): Promise<ICartDocument | null> {
-        return await CartModel.findByIdAndUpdate(cartItemId, { count }, { new: true });
     }
 }

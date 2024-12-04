@@ -25,8 +25,10 @@ const orderedItemSchema = new Schema<IOrderedItemDocument>(
             index: true,
         },
         menuItemId: {
-            type: String,
+            type: Schema.Types.ObjectId,
+            ref: 'Menu',
             required: true,
+            index: true,
         },
         menuItemPrice: {
             type: Number,

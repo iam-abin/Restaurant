@@ -1,41 +1,35 @@
-import { Button } from '@mui/material'
-import { RestaurantFormSchema, restaurantFromSchema } from '../../utils/schema/restaurantSchema'
-import { FormEvent, useEffect, useState } from 'react'
-import LoaderCircle from '../../components/Loader/LoaderCircle'
-import { getMyRestaurantApi, updateRestaurantApi } from '../../api/apiMethods/restaurant'
-import { hotToastMessage } from '../../utils/hotToast'
-import { IResponse } from '../../types/api'
-import { ICuisine, IRestaurant } from '../../types'
-import { useAppSelector } from '../../redux/hooks'
+import { Button } from '@mui/material';
+import { RestaurantFormSchema, restaurantFromSchema } from '../../utils/schema/restaurantSchema';
+import { FormEvent, useEffect, useState } from 'react';
+import LoaderCircle from '../../components/Loader/LoaderCircle';
+import { getMyRestaurantApi, updateRestaurantApi } from '../../api/apiMethods/restaurant';
+import { hotToastMessage } from '../../utils/hotToast';
+import { IResponse } from '../../types/api';
+import { ICuisine, ICuisineResponse, IRestaurant, IRestaurantResponse } from '../../types';
 
 const Restaurant = () => {
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [restaurant, setRestaurant] = useState<IRestaurant | null>(null)
-    const [cuisines, setCuisines] = useState<
-        { cuisineId: ICuisine; restaurantId: string; id: string }[]
-    >([])
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [restaurant, setRestaurant] = useState<IRestaurant | null>(null);
+    const [cuisines, setCuisines] = useState<ICuisineResponse[]>([]);
 
-    // const authData = useAppSelector(
-    //     (state) => state.authReducer.authData
-    // );
     const [input, setInput] = useState<RestaurantFormSchema>({
-        name: restaurant?.ownerId.name!,
+        name: restaurant?.ownerId.name ?? '',
         city: '',
         country: '',
         deliveryTime: 0,
         cuisines: [],
-        image: undefined
-    })
-    const [errors, setErrors] = useState<Partial<RestaurantFormSchema>>({})
+        image: undefined,
+    });
+    const [errors, setErrors] = useState<Partial<RestaurantFormSchema>>({});
 
     useEffect(() => {
-        ;(async () => {
-            const response: IResponse = await getMyRestaurantApi()
-            const { restaurant, cuisines } = response.data
-            setRestaurant(restaurant)
-            setCuisines(cuisines)
-        })()
-    }, [])
+        (async () => {
+            const response: IResponse = await getMyRestaurantApi();
+            const { restaurant, cuisines } = response.data as IRestaurantResponse;
+            setRestaurant(restaurant);
+            // setCuisines({cuisines})
+        })();
+    }, []);
 
     useEffect(() => {
         if (restaurant) {
@@ -45,57 +39,57 @@ const Restaurant = () => {
                 city: restaurant?.addressId?.city || '',
                 country: restaurant?.addressId?.country || '',
                 deliveryTime: restaurant?.deliveryTime || 0,
-                cuisines: cuisines.map((cuisine) => (cuisine.cuisineId as ICuisine).name) || []
-            }))
+                cuisines: cuisines.map((cuisine) => (cuisine.cuisineId as ICuisine).name) || [],
+            }));
         }
-    }, [restaurant])
+    }, [restaurant]);
 
     const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type } = e.target
+        const { name, value, type } = e.target;
         setInput({
             ...input,
-            [name]: type === 'number' ? Number(value) : value
-        })
-    }
+            [name]: type === 'number' ? Number(value) : value,
+        });
+    };
 
     const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        setIsLoading(true)
+        e.preventDefault();
+        setIsLoading(true);
 
-        console.log('input is ', input)
+        console.log('input is ', input);
 
         const result = restaurantFromSchema.safeParse({
             ...input,
-            cuisines: input.cuisines
-        })
+            cuisines: input.cuisines,
+        });
         if (!result.success) {
-            const fieldErrors = result.error.formErrors.fieldErrors
-            setErrors(fieldErrors as Partial<RestaurantFormSchema>)
-            setIsLoading(false)
-            return
+            const fieldErrors = result.error.formErrors.fieldErrors;
+            setErrors(fieldErrors as Partial<RestaurantFormSchema>);
+            setIsLoading(false);
+            return;
         }
 
         try {
-            const formData = new FormData()
-            formData.append('name', input.name)
-            formData.append('city', input.city)
-            formData.append('country', input.country)
-            formData.append('deliveryTime', input.deliveryTime.toString())
-            formData.append('cuisines', JSON.stringify(input.cuisines))
+            const formData = new FormData();
+            formData.append('name', input.name);
+            formData.append('city', input.city);
+            formData.append('country', input.country);
+            formData.append('deliveryTime', input.deliveryTime.toString());
+            formData.append('cuisines', JSON.stringify(input.cuisines));
 
             if (input.image) {
-                formData.append('image', input.image)
+                formData.append('image', input.image);
             }
 
             // Make your API call to update the restaurant here
             if (restaurant) {
-                const response: IResponse = await updateRestaurantApi(formData)
-                hotToastMessage(response.message, 'success')
+                const response: IResponse = await updateRestaurantApi(formData);
+                hotToastMessage(response.message, 'success');
             }
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
 
     return (
         <div className="max-w-6xl mx-auto my-10">
@@ -115,9 +109,7 @@ const Restaurant = () => {
                                 placeholder="Enter your restaurant name"
                                 autoComplete="restaurant-name"
                             />
-                            {errors.name && (
-                                <span className="text-red-500 text-sm">{errors.name}</span>
-                            )}
+                            {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
                         </div>
 
                         {/* City */}
@@ -132,9 +124,7 @@ const Restaurant = () => {
                                 placeholder="Enter your city"
                                 autoComplete="city"
                             />
-                            {errors.city && (
-                                <span className="text-red-500 text-sm">{errors.city}</span>
-                            )}
+                            {errors.city && <span className="text-red-500 text-sm">{errors.city}</span>}
                         </div>
 
                         {/* Country */}
@@ -149,9 +139,7 @@ const Restaurant = () => {
                                 placeholder="Enter your country"
                                 autoComplete="country"
                             />
-                            {errors.country && (
-                                <span className="text-red-500 text-sm">{errors.country}</span>
-                            )}
+                            {errors.country && <span className="text-red-500 text-sm">{errors.country}</span>}
                         </div>
 
                         {/* Delivery Time */}
@@ -182,7 +170,7 @@ const Restaurant = () => {
                                 onChange={(e) =>
                                     setInput({
                                         ...input,
-                                        cuisines: e.target.value.split(',').map((c) => c.trim()) // Split and trim for state
+                                        cuisines: e.target.value.split(',').map((c) => c.trim()), // Split and trim for state
                                     })
                                 }
                                 placeholder="Enter cuisines (e.g. Momos, Biryani)"
@@ -204,7 +192,7 @@ const Restaurant = () => {
                                 onChange={(e) =>
                                     setInput({
                                         ...input,
-                                        image: e.target.files?.[0] || undefined
+                                        image: e.target.files?.[0] || undefined,
                                     })
                                 }
                             />
@@ -235,7 +223,7 @@ const Restaurant = () => {
                 </form>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Restaurant
+export default Restaurant;

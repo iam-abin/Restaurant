@@ -1,5 +1,5 @@
 import { autoInjectable } from 'tsyringe';
-import { IRestaurant } from '../types';
+import { IRestaurantResponse, IRestaurantUpdate, ISearchResult } from '../types';
 import {
     AddressRepository,
     CuisineRepository,
@@ -28,8 +28,9 @@ export class RestaurantService {
         private readonly restaurantCuisineRepository: RestaurantCuisineRepository,
     ) {}
 
-    public async getARestaurant(restaurantId: string): Promise<IRestaurantDocument | null> {
-        const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
+    public async getARestaurant(restaurantId: string): Promise<IRestaurantResponse | null> {
+        const restaurant: IRestaurantResponse | null =
+            await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         return restaurant;
     }
@@ -44,9 +45,14 @@ export class RestaurantService {
         return { restaurant, cuisines };
     }
 
+    public async getRestaurants(): Promise<IRestaurantDocument[]> {
+        const profile: IRestaurantDocument[] = await this.restaurantRepository.findRestaurants();
+        return profile;
+    }
+
     public async updateRestaurant(
         ownerId: string,
-        restaurantData: Partial<Omit<IRestaurant, 'userId' | 'imageUrl'>>,
+        restaurantData: IRestaurantUpdate,
         file?: Express.Multer.File,
     ): Promise<IRestaurantDocument | null> {
         const { name, city, country, deliveryTime, cuisines } = restaurantData;
@@ -54,9 +60,6 @@ export class RestaurantService {
         const session = await mongoose.startSession();
         session.startTransaction();
         const parsedCuisines = JSON.parse(cuisines!);
-        console.log(restaurantData);
-        console.log(parsedCuisines);
-        console.log(parsedCuisines?.length);
 
         try {
             // user
@@ -139,19 +142,19 @@ export class RestaurantService {
         searchText: string,
         searchQuery: string,
         selectedCuisines: string,
-    ): Promise<any[]> {
+    ): Promise<ISearchResult[]> {
         // search is based on ( name, city, country, cuisines )
 
-        console.log('-------------------');
-        console.log(
-            'searchText==> ',
-            searchText,
-            'searchQuery==> ',
-            searchQuery,
-            'selectedCuisines==> ',
-            selectedCuisines,
-        );
-        console.log('-------------------');
+        // console.log('-------------------');
+        // console.log(
+        //     'searchText==> ',
+        //     searchText,
+        //     'searchQuery==> ',
+        //     searchQuery,
+        //     'selectedCuisines==> ',
+        //     selectedCuisines,
+        // );
+        // console.log('-------------------');
         let cuisinesArray: string[] = selectedCuisines.split(',');
         if (cuisinesArray.length) {
             cuisinesArray = cuisinesArray.filter((cuisine: string) => cuisine); // It avoid falsy values
@@ -161,7 +164,7 @@ export class RestaurantService {
 
         // const cuisinesArray: string[] = selectedCuisines.split(', ').filter((cuisine: string) => cuisine); // It avoid falsy values
 
-        const restaurant = await this.restaurantRepository.searchRestaurants(
+        const restaurant: ISearchResult[] = await this.restaurantRepository.searchRestaurants(
             searchText,
             searchQuery,
             cuisinesArray,

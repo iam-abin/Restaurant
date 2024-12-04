@@ -9,18 +9,22 @@ export class ProfileRepository {
     }
 
     async findByUserId(userId: string): Promise<IProfileDocument | null> {
-        return await ProfileModel.findOne({ userId }).populate('userId');
+        return await ProfileModel.findOne({ userId }).populate('userId').populate('addressId');
     }
 
     async findById(profileId: string): Promise<IProfileDocument | null> {
         return await ProfileModel.findById(profileId).populate('userId');
     }
 
+    async find(): Promise<IProfileDocument[]> {
+        return await ProfileModel.find().populate('userId');
+    }
+
     async update(
-        profileId: string,
+        userId: string,
         updateData: Partial<IProfile>,
         session?: ClientSession,
     ): Promise<IProfileDocument | null> {
-        return await ProfileModel.findByIdAndUpdate(profileId, updateData, { new: true, session });
+        return await ProfileModel.findOneAndUpdate({ userId }, updateData, { new: true, session });
     }
 }

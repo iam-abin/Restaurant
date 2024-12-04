@@ -1,114 +1,119 @@
-import { Button, Input, Typography } from '@mui/material'
-import EmailIcon from '@mui/icons-material/Email'
-import PersonIcon from '@mui/icons-material/Person'
-import LockIcon from '@mui/icons-material/Lock'
-import Divider from '@mui/material/Divider'
-import { ChangeEvent, FormEvent, useState } from 'react'
-import LoaderCircle from '../components/Loader/LoaderCircle'
-import { signInSchema, signUpSchema } from '../utils/schema/userSchema'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { ROLES_CONSTANTS } from '../utils/constants'
-import { useAppDispatch } from '../redux/hooks'
-import { signinUser } from '../redux/thunk/authThunk'
-import { hotToastMessage } from '../utils/hotToast'
-import { signupApi } from '../api/apiMethods/auth'
-import { ISignup } from '../types'
-import { fetchMyRestaurant } from '../redux/thunk/restaurantThunk'
+import { Button, Input, Typography } from '@mui/material';
+import EmailIcon from '@mui/icons-material/Email';
+import PersonIcon from '@mui/icons-material/Person';
+import LockIcon from '@mui/icons-material/Lock';
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
+import Divider from '@mui/material/Divider';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import LoaderCircle from '../../components/Loader/LoaderCircle';
+import { signInSchema, signUpSchema } from '../../utils/schema/userSchema';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ROLES_CONSTANTS } from '../../utils/constants';
+import { useAppDispatch } from '../../redux/hooks';
+import { signinUser } from '../../redux/thunk/authThunk';
+import { hotToastMessage } from '../../utils/hotToast';
+import { signupApi } from '../../api/apiMethods/auth';
+import { ISignup, IUser } from '../../types';
+import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
+import { fetchUserProfile } from '../../redux/thunk/profileThunk';
 
 const Auth = () => {
-    const [isLogin, setIsLogin] = useState<boolean>(true)
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const dispatch = useAppDispatch()
-    const naivgate = useNavigate()
-    const location = useLocation()
+    const [isLogin, setIsLogin] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const dispatch = useAppDispatch();
+    const naivgate = useNavigate();
+    const location = useLocation();
 
-    const isRestaurantPage = location.pathname.includes(ROLES_CONSTANTS.RESTAURANT)
-    const isAdminPage = location.pathname.includes(ROLES_CONSTANTS.ADMIN)
+    const isRestaurantPage = location.pathname.includes(ROLES_CONSTANTS.RESTAURANT);
+    const isAdminPage = location.pathname.includes(ROLES_CONSTANTS.ADMIN);
 
     const role: string = isRestaurantPage
         ? ROLES_CONSTANTS.RESTAURANT
         : isAdminPage
           ? ROLES_CONSTANTS.ADMIN
-          : ROLES_CONSTANTS.USER
+          : ROLES_CONSTANTS.USER;
 
     const [input, setInput] = useState<ISignup>({
         name: '',
         email: '',
         phone: '',
         password: '',
-        role
-    })
-    const [errors, setErrors] = useState<Partial<ISignup>>({})
+        role,
+    });
+    const [errors, setErrors] = useState<Partial<ISignup>>({});
 
     const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
-        setInput({ ...input, [name]: value })
-    }
+        const { name, value } = e.target;
+        setInput({ ...input, [name]: value });
+    };
 
     const handlePageSwitch = () => {
-        setIsLogin((state) => !state)
-    }
+        setIsLogin((state) => !state);
+    };
 
     const handleSubmit = async (e: FormEvent) => {
         try {
-            e.preventDefault()
+            e.preventDefault();
             // Clear existing errors
-            setErrors({})
-            setIsLoading(true)
+            setErrors({});
+            setIsLoading(true);
             // Convert phone to number for validation if necessary
 
-            const filteredData = Object.fromEntries(
-                Object.entries(input).filter(([_, value]) => value)
-            )
+            const filteredData = Object.fromEntries(Object.entries(input).filter(([, value]) => value));
             const inputData = {
                 ...input,
-                phone: input.phone ? Number(input.phone) : undefined
-            }
+                phone: input.phone ? Number(input.phone) : undefined,
+            };
 
             // Form validation
-            const result = isLogin
-                ? signInSchema.safeParse(filteredData)
-                : signUpSchema.safeParse(inputData)
+            const result = isLogin ? signInSchema.safeParse(filteredData) : signUpSchema.safeParse(inputData);
 
             if (!result.success) {
-                const fieldErrors = result.error.formErrors.fieldErrors
-                setErrors(fieldErrors as Partial<ISignup>)
-                return
+                const fieldErrors = result.error.formErrors.fieldErrors;
+                setErrors(fieldErrors as Partial<ISignup>);
+                return;
             }
             if (isLogin) {
                 const response = await dispatch(
                     signinUser({
                         email: input.email!,
                         password: input.password!,
-                        role: role!
-                    })
-                )
+                        role: role!,
+                    }),
+                );
 
-                await dispatch(fetchMyRestaurant())
+                if (role === ROLES_CONSTANTS.RESTAURANT) {
+                    await dispatch(fetchMyRestaurant());
+                }
+
+                if (role === ROLES_CONSTANTS.USER) {
+                    await dispatch(fetchUserProfile());
+                }
 
                 // Check if the action was rejected
                 if (response.meta.requestStatus !== 'rejected') {
-                    naivgate('/')
+                    naivgate('/');
                 }
             } else {
-                const response = await signupApi(input)
+                const response = await signupApi(input);
+                const data = response.data as IUser;
                 if (response.data) {
-                    hotToastMessage(response.message, 'success')
+                    hotToastMessage(response.message, 'success');
                     naivgate('/signup/otp', {
                         state: {
-                            userId: response.data.id,
-                            role: response.data.role
-                        }
-                    })
+                            userId: data._id,
+                            role: data.role,
+                        },
+                    });
                 }
             }
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
 
     return (
-        <div className="bg-yellow-200 min-h-screen flex justify-center items-center">
+        <div className="bg-yellow-300 min-h-screen flex justify-center items-center">
             <form
                 onSubmit={handleSubmit}
                 className="bg-slate-200 items-center w-10/12  md:w-2/6 gap-5 p-8 border-black rounded-lg"
@@ -130,13 +135,11 @@ const Auth = () => {
                                 name="name"
                                 value={input.name}
                                 onChange={changeEventHandler}
-                                placeholder={`Enter your ${isRestaurantPage && 'restaurant'} name`}
+                                placeholder={`Enter your ${isRestaurantPage ? 'restaurant' : ''}name`}
                                 autoComplete="name"
                             />
                             {errors.name && (
-                                <Typography className="text-sm text-red-500">
-                                    {errors.name}
-                                </Typography>
+                                <Typography className="text-sm text-red-500">{errors.name}</Typography>
                             )}
                         </div>
                     )}
@@ -157,7 +160,7 @@ const Auth = () => {
                     </div>
                     {!isLogin && (
                         <div className="items-center relative">
-                            <PersonIcon className="mr-2 absolute inset-y-2 pointer-events-none" />
+                            <LocalPhoneIcon className="mr-2 absolute inset-y-2 pointer-events-none" />
 
                             <Input
                                 className="w-full p-1 pl-8"
@@ -169,9 +172,7 @@ const Auth = () => {
                                 autoComplete="phone"
                             />
                             {errors.phone && (
-                                <Typography className="text-sm text-red-500">
-                                    {errors.phone}
-                                </Typography>
+                                <Typography className="text-sm text-red-500">{errors.phone}</Typography>
                             )}
                         </div>
                     )}
@@ -188,9 +189,7 @@ const Auth = () => {
                             autoComplete="password"
                         />
                         {errors.password && (
-                            <Typography className="text-sm text-red-500">
-                                {errors.password}
-                            </Typography>
+                            <Typography className="text-sm text-red-500">{errors.password}</Typography>
                         )}
                     </div>
                 </div>
@@ -248,7 +247,7 @@ const Auth = () => {
                 )}
             </form>
         </div>
-    )
-}
+    );
+};
 
-export default Auth
+export default Auth;

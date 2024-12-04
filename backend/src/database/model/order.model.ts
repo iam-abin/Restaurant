@@ -7,9 +7,9 @@ import { IRestaurantDocument } from './restaurant.model';
 export interface IOrderDocument
     extends Document,
         Omit<IOrder, 'userId' | 'restaurantId' | 'cartId' | 'addressId'> {
+    _id: Schema.Types.ObjectId;
     userId: Schema.Types.ObjectId | IUserDocument;
     restaurantId: Schema.Types.ObjectId | IRestaurantDocument;
-    // cartId: Schema.Types.ObjectId;
     addressId: Schema.Types.ObjectId;
 }
 
