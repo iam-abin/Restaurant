@@ -1,24 +1,10 @@
-import * as React from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { mobileAndDesktopOS, valueFormatter } from './pie-data';
+import { IOrderStatusWithCounts } from '../../types';
 
-export default function PieChartGraph() {
-    const [radius, setRadius] = React.useState(50);
-    const [itemNb, setItemNb] = React.useState(5);
-    const [skipAnimation, setSkipAnimation] = React.useState(false);
-
-    const handleItemNbChange = (event: Event, newValue: number | number[]) => {
-        if (typeof newValue !== 'number') {
-            return;
-        }
-        setItemNb(newValue);
-    };
-    const handleRadius = (event: Event, newValue: number | number[]) => {
-        if (typeof newValue !== 'number') {
-            return;
-        }
-        setRadius(newValue);
-    };
+export default function PieChartGraph({ statusCounts }: { statusCounts: IOrderStatusWithCounts[] }) {
+    const radius = 50
+    const itemNb = 5
 
     return (
         <div className="flex items-center h-screen">
@@ -33,7 +19,6 @@ export default function PieChartGraph() {
                         valueFormatter,
                     },
                 ]}
-                skipAnimation={skipAnimation}
             />
         </div>
     );

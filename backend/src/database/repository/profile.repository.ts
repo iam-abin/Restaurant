@@ -27,4 +27,8 @@ export class ProfileRepository {
     ): Promise<IProfileDocument | null> {
         return await ProfileModel.findOneAndUpdate({ userId }, updateData, { new: true, session });
     }
+
+    async countUsers(): Promise<number> {
+        return await ProfileModel.countDocuments();
+    }
 }

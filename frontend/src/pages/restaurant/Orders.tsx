@@ -49,8 +49,10 @@ const OrdersListPage: React.FC = () => {
     const restaurant = useAppSelector((store) => store.restaurantReducer.restaurantData?.restaurant);
 
     useEffect(() => {
-        getRestaurantOrdersApi(restaurant?._id!);
-    }, []);
+        if (restaurant?._id) {
+            getRestaurantOrdersApi(restaurant._id);
+        }
+    }, [restaurant]);
 
     const handleStatusChange = (id: number, newStatus: string) => {
         setOrders((prevOrders) =>
@@ -93,6 +95,7 @@ const OrdersListPage: React.FC = () => {
                                         value={order.status}
                                         onChange={(e) => handleStatusChange(order.id, e.target.value)}
                                     >
+                                        {/* ['pending', 'confirmed', 'preparing', 'outfordelivery', 'delivered'], */}
                                         <MenuItem value="Pending">Pending</MenuItem>
                                         <MenuItem value="Preparing">Preparing</MenuItem>
                                         <MenuItem value="Delivered">Delivered</MenuItem>

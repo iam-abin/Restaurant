@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchMenus } from '../../redux/thunk/menusThunk';
 
 const style = {
-    position: 'absolute' as 'absolute',
+    position: 'absolute' as const,
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
@@ -69,12 +69,19 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
             const formData = new FormData();
             formData.append('name', inputData.name);
             formData.append('description', inputData.description);
-            formData.append('price', inputData.price?.toString()!);
+            formData.append('price', inputData.price?.toString() ?? '0');
             if (inputData.image) formData.append('image', inputData.image);
+
+            const restaurantId = restaurantData?._id;
+            if (!restaurantId) {
+                hotToastMessage('Restaurant ID is missing', 'error');
+                setIsLoading(false);
+                return;
+            }
 
             const response: IResponse = await addMenuApi(formData);
             hotToastMessage(response.message, 'success');
-            dispatch(fetchMenus({ restaurantId: restaurantData?._id! }));
+            dispatch(fetchMenus({ restaurantId }));
             setInput({ name: '', description: '', price: 0, image: undefined });
             setPreviewImage(null);
             handleClose();

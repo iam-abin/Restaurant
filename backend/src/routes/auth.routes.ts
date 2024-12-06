@@ -7,11 +7,10 @@ import {
     verifyOtpRequestBodyValidator,
     forgotPasswordRequestBodyValidator,
     resetPasswordRequestBodyValidator,
-    ROLES_CONSTANTS,
     verifyTokenRequestBodyValidator,
     mongoIdParamsValidator,
 } from '../utils';
-import { checkCurrentUser, auth, validateRequest } from '../middlewares';
+import { validateRequest } from '../middlewares';
 
 const router: Router = express.Router();
 
@@ -51,11 +50,6 @@ router.patch(
     authController.blockUnblockUser,
 );
 
-router.post(
-    '/logout',
-    checkCurrentUser,
-    auth([ROLES_CONSTANTS.USER, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.ADMIN]),
-    authController.logout,
-);
+router.post('/logout', authController.logout);
 
 export { router as authRoutes };

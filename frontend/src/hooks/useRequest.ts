@@ -22,9 +22,7 @@ function useApiRequest<T>(apiFunction: (...args: any[]) => Promise<IResponse<T>>
             const response = await apiFunction(...args);
             setData(response.data || null); // Explicitly handle undefined data
             setMessage(response.message || 'Request successful');
-        } catch (error: any) {
-            setMessage(error.response?.data?.message || 'An error occurred');
-        } finally {
+        }finally {
             setLoading(false);
         }
     };

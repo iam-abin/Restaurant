@@ -46,7 +46,7 @@ export class OrderService {
             // const restaurantId = this.checkSameRestaurant(cartItems);
             // const restaurant = this.restaurantRepository.findRestaurant(restaurantId);
             // if (!restaurant) throw new NotFoundError('Restaurant not found');
-            const totalAmound = this.findTotalAmound(cartItems);
+            const totalAmound: number = this.findTotalAmound(cartItems);
             if (!address) throw new NotFoundError('Address not found');
             if (address.userId.toString() !== userId)
                 throw new ForbiddenError('You cannot use others address');

@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 import { IOrder } from '../../types';
 import { omitDocFields } from '../../utils';
 import { IUserDocument } from './user.model';
@@ -7,10 +7,10 @@ import { IRestaurantDocument } from './restaurant.model';
 export interface IOrderDocument
     extends Document,
         Omit<IOrder, 'userId' | 'restaurantId' | 'cartId' | 'addressId'> {
-    _id: Schema.Types.ObjectId;
-    userId: Schema.Types.ObjectId | IUserDocument;
-    restaurantId: Schema.Types.ObjectId | IRestaurantDocument;
-    addressId: Schema.Types.ObjectId;
+    _id: Types.ObjectId;
+    userId: Types.ObjectId | IUserDocument;
+    restaurantId: Types.ObjectId | IRestaurantDocument;
+    addressId: Types.ObjectId;
 }
 
 const orderSchema = new Schema<IOrderDocument>(
@@ -30,6 +30,10 @@ const orderSchema = new Schema<IOrderDocument>(
         addressId: {
             type: Schema.Types.ObjectId,
             ref: 'Address',
+            required: true,
+        },
+        totalAmound: {
+            type: Number,
             required: true,
         },
         status: {

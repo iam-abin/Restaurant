@@ -97,8 +97,6 @@ export class RestaurantRepository {
     }
 
     async findMyRestaurant(ownerId: string): Promise<IRestaurantDocument | null> {
-        console.log('owner id ', ownerId);
-
         return await RestaurantModel.findOne({ ownerId }).populate(['ownerId', 'addressId']);
     }
 
@@ -225,5 +223,9 @@ export class RestaurantRepository {
 
         const restaurants = await RestaurantModel.aggregate(pipeline);
         return restaurants;
+    }
+
+    async countRestaurants(): Promise<number> {
+        return RestaurantModel.countDocuments();
     }
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IRestaurant, IUser } from '../../types';
+import { IUser } from '../../types';
 import { IResponse } from '../../types/api';
 import SearchBar from '../../components/search/SearchBar';
 import Table from '../../components/table/Table';

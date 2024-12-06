@@ -1,6 +1,7 @@
 export * from './address';
 export * from './cart';
 export * from './cuisine';
+export * from './dashboard';
 export * from './menu';
 export * from './order';
 export * from './otp';

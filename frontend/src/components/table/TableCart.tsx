@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -33,18 +32,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-function createData(name: string, calories: number, fat: number, carbs: number, protein: number) {
-    return { name, calories, fat, carbs, protein, quantity: 1 };
-}
-
-const initialRows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
 export default function TableCart({
     cartItems,
     removeCartItemHandler,
@@ -54,8 +41,6 @@ export default function TableCart({
     removeCartItemHandler: (cartItemId: string) => void;
     changeQuantityHandler: (cartItemId: string, quantity: number) => void;
 }) {
-    const [rows, setRows] = React.useState(initialRows);
-
     const handleQuantityChange = (cartItem: any, quantityChange: number) => {
         const newQuantity = cartItem.quantity + quantityChange;
         if (newQuantity < 1) return; // Ensure quantity doesn't go below 1

@@ -22,7 +22,7 @@ export const updateUserProfile = createAsyncThunk<
     IProfile, // Return type
     Partial<IProfile>, // Input type
     { rejectValue: string | null } // ThunkAPI type
->('profile/updateUserProfile', async (updateData: any, { rejectWithValue }) => {
+>('profile/updateUserProfile', async (updateData: Partial<IProfile>, { rejectWithValue }) => {
     try {
         const updatedData = await updateProfileApi(updateData);
         hotToastMessage(updatedData.message, 'success');

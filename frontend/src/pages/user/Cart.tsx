@@ -1,4 +1,4 @@
-import { Button, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import { useState } from 'react';
 import TableCart from '../../components/table/TableCart';
 import CartEmptyGif from '../../assets/cart-is-empty.jpeg';

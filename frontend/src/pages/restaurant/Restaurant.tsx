@@ -25,9 +25,9 @@ const Restaurant = () => {
     useEffect(() => {
         (async () => {
             const response: IResponse = await getMyRestaurantApi();
-            const { restaurant, cuisines } = response.data as IRestaurantResponse;
+            const { restaurant } = response.data as IRestaurantResponse;
             setRestaurant(restaurant);
-            // setCuisines({cuisines})
+            setCuisines(cuisines)
         })();
     }, []);
 

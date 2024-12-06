@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IOrder } from '../../types';
+import { IOrder, IOrderStatusWithCounts } from '../../types';
 import { IOrderDocument, OrderModel } from '../model';
 
 export class OrderRepository {
@@ -135,5 +135,66 @@ export class OrderRepository {
             },
         );
         return order;
+    }
+
+    async countStatuses(restaurantId?: string): Promise<IOrderStatusWithCounts[]> {
+        const statsCounts: IOrderStatusWithCounts[] = await OrderModel.aggregate([
+            // It will perform $match only if the restaurantId is present
+            ...(restaurantId
+                ? [
+                      {
+                          $match: { restaurantId: new mongoose.Types.ObjectId(restaurantId) },
+                      },
+                  ]
+                : []),
+            {
+                $group: {
+                    _id: '$status',
+                    count: { $sum: 1 },
+                },
+            },
+            {
+                $project: {
+                    status: '$_id',
+                    _id: 0,
+                    count: 1,
+                },
+            },
+        ]);
+        return statsCounts;
+    }
+
+    // menuItemPrice
+
+    async totalOrderedPrice(): Promise<number> {
+        const total = await OrderModel.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalSellPrice: {
+                        $sum: '$totalAmound',
+                    },
+                },
+            },
+        ]);
+        return total.length ? total[0].totalSellPrice : 0;
+    }
+
+    async percentageCommitionAmound(percentageDecimal: number): Promise<number> {
+        const result = await OrderModel.aggregate([
+            {
+                $project: {
+                    // Multiply totalAmount by the percentage
+                    percentageAmount: { $multiply: ['$totalAmound', percentageDecimal] },
+                },
+            },
+            {
+                $group: {
+                    _id: null, // No grouping (we want to sum everything)
+                    totalPercentageSum: { $sum: '$percentageAmount' }, // Sum the calculated percentage amounts
+                },
+            },
+        ]);
+        return result[0]?.totalPercentageSum || 0;
     }
 }

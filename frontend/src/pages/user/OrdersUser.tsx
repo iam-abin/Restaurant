@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardMedia, Typography, Select, MenuItem, Box, Button, Grid } from '@mui/material';
+import { Card, CardContent, CardMedia, Typography, Box, Button, Grid } from '@mui/material';
 import { getMyOrdersApi } from '../../api/apiMethods/order';
-import { IMenu, IOrder } from '../../types';
+import { IMenu } from '../../types';
 
 // interface
 // Dummy Data
@@ -42,11 +42,11 @@ const Orders: React.FC = () => {
         })();
     }, []);
 
-    const handleStatusChange = (id: number, newStatus: string) => {
-        setOrders((prevOrders) =>
-            prevOrders.map((order) => (order.id === id ? { ...order, status: newStatus } : order)),
-        );
-    };
+    // const handleStatusChange = (id: number, newStatus: string) => {
+    //     setOrders((prevOrders) =>
+    //         prevOrders.map((order) => (order.id === id ? { ...order, status: newStatus } : order)),
+    //     );
+    // };
 
     return (
         <Box sx={{ padding: 4 }}>
