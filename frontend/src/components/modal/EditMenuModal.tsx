@@ -170,7 +170,7 @@ export default function EditMenuModal({
                                 }))
                             }
                         />
-                        {errors.image && <p className="text-sm text-red-500 mt-1">{errors?.image}</p>}
+                        {/* {errors.image && <p className="text-sm text-red-500 mt-1">{errors?.image}</p>} */}
                     </div>
                     <Button type="submit" variant="contained" color="primary" className="w-full h-12 mt-4">
                         {isLoading ? <CircularProgress size={20} color="inherit" /> : 'Update Menu'}

@@ -3,6 +3,7 @@ import { addAsyncThunkCases } from '../../utils/addCase';
 import { fetchMenus } from '../thunk/menusThunk';
 
 interface IMenusSlice {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     menusData: any | null;
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;

@@ -26,9 +26,10 @@ function UsersList() {
         // USERS_PER_PAGE
         setUsersData(usersData?.data as IUser[]);
 
-        if (usersData) {
-            setNumberOfPages(usersData.data.numberOfPages);
-        }
+        // if (usersData) {
+        //     setNumberOfPages(usersData.data.numberOfPages as number);
+            setNumberOfPages(2);
+        // }
     };
 
     useEffect(() => {

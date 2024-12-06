@@ -3,14 +3,19 @@ import { getAdminDashboardApi } from '../../api/apiMethods/dashboard';
 import { IAdminDashboard } from '../../types';
 
 const Dashboard = () => {
-    const [statusCounts, setStatusCounts] = useState<IAdminDashboard | null>(null);
+    const [dashboardData, setDashboardData] = useState<IAdminDashboard | null>(null);
     useEffect(() => {
         (async () => {
             const result = await getAdminDashboardApi();
-            setStatusCounts(result.data as IAdminDashboard);
+            setDashboardData(result.data as IAdminDashboard);
         })();
     }, []);
-    return <div className="w-full h-screen bg-red-100">Dashboard</div>;
+    return (
+        <div className="w-full h-screen bg-red-100">
+            Dashboard
+            {dashboardData?.totalTurnover}
+        </div>
+    );
 };
 
 export default Dashboard;

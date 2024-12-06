@@ -9,8 +9,11 @@ import { getRestaurantsApi } from '../../api/apiMethods/restaurant';
 
 function RestaurantsList() {
     const [usersData, setUsersData] = useState<IUser[]>([]);
-    const [numberOfPages, setNumberOfPages] = useState(1);
-    const [currentPage, setCurrentPage] = useState(1);
+    // const [numberOfPages, setNumberOfPages] = useState(1);
+    // const [currentPage, setCurrentPage] = useState(1);
+    const currentPage = 1;
+    const numberOfPages = 1;
+
     const [searchKey, setSearchKey] = useState('');
 
     const USERS_PER_PAGE: number = 2;

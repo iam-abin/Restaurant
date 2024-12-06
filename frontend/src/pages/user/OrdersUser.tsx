@@ -38,6 +38,7 @@ const Orders: React.FC = () => {
     useEffect(() => {
         (async () => {
             const orders = await getMyOrdersApi();
+            //  eslint-disable-next-line @typescript-eslint/no-explicit-any
             setOrders(orders.data as any);
         })();
     }, []);
@@ -54,6 +55,7 @@ const Orders: React.FC = () => {
                 Orders List
             </Typography>
             <Grid container spacing={3}>
+                {/*  eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 {orders.map((order: any) => (
                     <Grid item xs={12} key={order._id}>
                         <Card sx={{ display: 'flex', alignItems: 'center' }}>

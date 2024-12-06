@@ -1,10 +1,9 @@
-
 export interface IOrderStatusWithCounts {
     status: string;
     count: number;
 }
 
-export interface IAdminDashboard{
+export interface IAdminDashboard {
     restaurantsCount: number;
     usersCount: number;
     orderStatuses: IOrderStatusWithCounts[];

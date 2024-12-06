@@ -27,7 +27,7 @@ const Restaurant = () => {
             const response: IResponse = await getMyRestaurantApi();
             const { restaurant } = response.data as IRestaurantResponse;
             setRestaurant(restaurant);
-            setCuisines(cuisines)
+            setCuisines(cuisines);
         })();
     }, []);
 

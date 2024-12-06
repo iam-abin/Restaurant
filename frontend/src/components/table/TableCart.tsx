@@ -11,7 +11,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Typography } from '@mui/material';
-import { ICart } from '../../types';
+import { ICart, ICartResponse } from '../../types';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -41,7 +41,7 @@ export default function TableCart({
     removeCartItemHandler: (cartItemId: string) => void;
     changeQuantityHandler: (cartItemId: string, quantity: number) => void;
 }) {
-    const handleQuantityChange = (cartItem: any, quantityChange: number) => {
+    const handleQuantityChange = (cartItem: ICartResponse, quantityChange: number) => {
         const newQuantity = cartItem.quantity + quantityChange;
         if (newQuantity < 1) return; // Ensure quantity doesn't go below 1
         changeQuantityHandler(cartItem._id, newQuantity); // Call the handler with the new quantity

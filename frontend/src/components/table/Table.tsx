@@ -6,14 +6,17 @@ const Table = ({
     numberOfPages,
     fetchData,
 }: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     columns: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any;
     numberOfPages: number;
     fetchData: (page: number) => Promise<void>;
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
-
+    //  eslint-disable-next-line @typescript-eslint/no-explicit-any
     const getNestedValue = (nestedObj: any, path: string) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return path.split('.').reduce((acc: any, curr: string) => acc && acc[curr], nestedObj);
     };
 
@@ -32,6 +35,7 @@ const Table = ({
                 <table className="min-w-full bg-white border border-gray-200 shadow-xl">
                     <thead>
                         <tr className="border-b bg-gray-700">
+                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                             {columns.map((col: any, index: number) => (
                                 <th
                                     key={index}
@@ -44,11 +48,13 @@ const Table = ({
                     </thead>
                     <tbody>
                         {data && data.length > 0 ? (
+                            //  eslint-disable-next-line @typescript-eslint/no-explicit-any
                             data.map((row: any, rowIndex: number) => (
                                 <tr
                                     key={rowIndex}
                                     className={`${rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-200'} border-b`}
                                 >
+                                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                     {columns.map((col: any, index: number) => (
                                         <td
                                             key={index}

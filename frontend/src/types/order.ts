@@ -1,3 +1,6 @@
+import { IRestaurantResponse } from './restaurant';
+import { IUser } from './user';
+
 export interface IOrder {
     userId: string;
     restaurantId: string;
@@ -16,4 +19,11 @@ export interface IOrderedItem {
 
 export interface ICheckoutResponse {
     stripePaymentUrl: string;
+}
+
+export interface IOrdersResponse extends Omit<IOrder, 'userId' | 'restaurantId' | 'cartId' | 'addressId'> {
+    _id: string;
+    userId: string | IUser;
+    restaurantId: string | IRestaurantResponse;
+    addressId: string;
 }

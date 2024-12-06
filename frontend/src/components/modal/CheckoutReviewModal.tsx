@@ -35,15 +35,6 @@ export default function CheckoutReviewModal({
     const { myProfile } = useAppSelector((store) => store.profileReducer);
     const { cartData } = useAppSelector((store) => store.cartReducer);
 
-    const [input, setInput] = useState({
-        name: authData?.name || '',
-        email: authData?.email || '',
-        phone: authData?.phone ? authData.phone.toString() : '',
-        address: (myProfile?.addressId as IAddress)?.address || '',
-        city: (myProfile?.addressId as IAddress)?.city || '',
-        country: (myProfile?.addressId as IAddress)?.country || '',
-    });
-
     // useEffect(()=>{
     //     (
     //         async()=>{
@@ -111,7 +102,7 @@ export default function CheckoutReviewModal({
                                 className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
                                 type="text"
                                 name="name"
-                                value={input.name}
+                                value={authData?.name || ''}
                                 // onChange={changeEventHandler}
                             />
                         </div>
@@ -122,7 +113,7 @@ export default function CheckoutReviewModal({
                                 disabled
                                 type="email"
                                 name="email"
-                                value={authData?.email}
+                                value={authData?.email || ''}
                                 // onChange={changeEventHandler}
                             />
                         </div>
@@ -132,7 +123,7 @@ export default function CheckoutReviewModal({
                                 className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
                                 type="text"
                                 name="contact"
-                                value={'73054654351'}
+                                value={authData?.phone ? authData.phone.toString() : '73054654351'}
                                 // onChange={changeEventHandler}
                             />
                         </div>
@@ -142,7 +133,7 @@ export default function CheckoutReviewModal({
                                 className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
                                 type="text"
                                 name="address"
-                                value={input.address}
+                                value={(myProfile?.addressId as IAddress)?.address || ''}
                                 // onChange={changeEventHandler}
                             />
                         </div>
@@ -152,7 +143,7 @@ export default function CheckoutReviewModal({
                                 className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
                                 type="text"
                                 name="city"
-                                value={input.city}
+                                value={(myProfile?.addressId as IAddress)?.city || ''}
                                 // onChange={changeEventHandler}
                             />
                         </div>
@@ -162,7 +153,7 @@ export default function CheckoutReviewModal({
                                 className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
                                 type="text"
                                 name="country"
-                                value={input.country}
+                                value={(myProfile?.addressId as IAddress)?.country || ''}
                                 // onChange={changeEventHandler}
                             />
                         </div>

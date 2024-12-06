@@ -7,16 +7,16 @@ import {
     updateQuantityApi,
 } from '../../api/apiMethods/cart';
 import { hotToastMessage } from '../../utils/hotToast';
-import { ICartQuantityUpdate, ICartResponse } from '../../types';
+import { ICart, ICartQuantityUpdate } from '../../types';
 
 // Async thunk for fetching user cart
-export const fetchCartItems = createAsyncThunk<ICartResponse[], string, { rejectValue: string }>(
+export const fetchCartItems = createAsyncThunk<ICart[], string, { rejectValue: string }>(
     'cart/fetchCartItems',
     async (restaurantId: string, { rejectWithValue }) => {
         // Use an underscore here as well
         try {
             const cart = await getCartItemsApi(restaurantId);
-            return cart.data as ICartResponse[];
+            return cart.data as ICart[];
         } catch (error: unknown) {
             return rejectWithValue((error as Error).message);
         }
@@ -24,7 +24,7 @@ export const fetchCartItems = createAsyncThunk<ICartResponse[], string, { reject
 );
 
 export const addToCart = createAsyncThunk<
-    ICartResponse[], // The type of the resolved value (e.g., cart data)
+    ICart[], // The type of the resolved value (e.g., cart data)
     { itemId: string; restaurantId: string }, // The argument type
     { rejectValue: string } // The thunk API config
 >(
@@ -36,7 +36,7 @@ export const addToCart = createAsyncThunk<
             console.log(cart, 'inside addToCartThunk');
             hotToastMessage(cart.message, 'success');
             const cartItems = await getCartItemsApi(restaurantId);
-            return cartItems.data as ICartResponse[];
+            return cartItems.data as ICart[];
         } catch (error: unknown) {
             return rejectWithValue((error as Error).message);
         }

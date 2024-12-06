@@ -18,8 +18,8 @@ const FadeMenu: React.FC<{ menuItems: (IMenuItems | boolean)[] }> = ({ menuItems
     };
 
     // Type guard to filter valid IMenuItems
-    const isValidMenuItem = (item: any): item is IMenuItems =>
-        item && typeof item === 'object' && 'to' in item && 'value' in item;
+    const isValidMenuItem = (item: IMenuItems | boolean): item is IMenuItems =>
+        typeof item === 'object' && item !== null && 'to' in item && 'value' in item;
 
     const validMenuItems = menuItems.filter(isValidMenuItem);
 
