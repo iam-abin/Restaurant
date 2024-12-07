@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getAdminDashboardApi } from '../../api/apiMethods/dashboard';
 import { IAdminDashboard } from '../../types';
+import LineGraph from '../../components/charts/LineGraph';
 
 const Dashboard = () => {
     const [dashboardData, setDashboardData] = useState<IAdminDashboard | null>(null);
@@ -14,6 +15,7 @@ const Dashboard = () => {
         <div className="w-full h-screen bg-red-100">
             Dashboard
             {dashboardData?.totalTurnover}
+            <LineGraph />
         </div>
     );
 };
