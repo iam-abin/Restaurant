@@ -28,7 +28,7 @@ function UsersList() {
 
         // if (usersData) {
         //     setNumberOfPages(usersData.data.numberOfPages as number);
-            setNumberOfPages(2);
+        setNumberOfPages(2);
         // }
     };
 

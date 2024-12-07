@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(helmet());
 app.use(
     cors({
-        origin: 'http://localhost:5173',
+        origin: appConfig.FRONTEND_URL,
         credentials: true,
     }),
 );
