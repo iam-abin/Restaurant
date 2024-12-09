@@ -1,3 +1,4 @@
+import { IAddress } from './address';
 import { IRestaurantResponse } from './restaurant';
 import { IUser } from './user';
 
@@ -26,4 +27,22 @@ export interface IOrdersResponse extends Omit<IOrder, 'userId' | 'restaurantId' 
     userId: string | IUser;
     restaurantId: string | IRestaurantResponse;
     addressId: string;
+}
+
+// ==========================
+interface OrderItem {
+    item: string;
+    price: number;
+    quantity: number;
+    imageUrl: string;
+}
+
+export interface IRestaurantOrder {
+    _id: string;
+    userDetails: Pick<IUser, 'name' | 'email'>;
+    address: IAddress;
+    status: string;
+    createdAt: string;
+    orderedItems: OrderItem[];
+    totalAmound: number;
 }

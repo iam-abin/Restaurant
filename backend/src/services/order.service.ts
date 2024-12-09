@@ -93,8 +93,9 @@ export class OrderService {
 
             const orderedItems = cartItems.map((item) => ({
                 userId,
-                orderId: order.id,
+                orderId: order._id.toString(),
                 restaurantId,
+                quantity: item.quantity,
                 menuItemId: (item.itemId as IMenuDocument)._id.toString(),
                 menuItemPrice: (item.itemId as IMenuDocument).price,
             }));
@@ -136,7 +137,7 @@ export class OrderService {
 
         // Check if all items in the cart have the same restaurantId
         const totalAmound = cartItems.reduce((acc: number, currItem: ICartDocument) => {
-            acc = acc + (currItem.itemId as IMenuDocument).price;
+            acc = acc + ((currItem.itemId as IMenuDocument).price * currItem.quantity);
             return acc;
         }, 0);
 

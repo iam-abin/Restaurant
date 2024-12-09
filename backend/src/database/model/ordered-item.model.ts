@@ -35,6 +35,11 @@ const orderedItemSchema = new Schema<IOrderedItemDocument>(
             required: true,
             default: 0,
         },
+        quantity: {
+            type: Number,
+            required: true,
+            default: 0,
+        },
     },
     {
         timestamps: true,

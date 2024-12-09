@@ -94,7 +94,7 @@ export class OrderRepository {
         const restaurantOrders = await OrderModel.aggregate([
             // Match orders by restaurantId
             { $match: { restaurantId: new mongoose.Types.ObjectId(restaurantId) } },
-
+            
             // Lookup to populate user details
             {
                 $lookup: {
@@ -106,7 +106,7 @@ export class OrderRepository {
             },
             // Unwind userDetails array
             { $unwind: '$userDetails' },
-
+            
             // Lookup to populate ordered items
             {
                 $lookup: {
@@ -118,16 +118,65 @@ export class OrderRepository {
             },
             // Unwind orderedItems array to process each menuItemId
             { $unwind: { path: '$orderedItems', preserveNullAndEmptyArrays: true } },
-
-            //  // Lookup to populate item
-            //  {
-            //     $lookup: {
-            //         from: 'menus',
-            //         localField: 'orderedItems.menuItemId',
-            //         foreignField: '_id',
-            //         as: 'orderedItems',
-            //     },
-            // },
+            
+            // Lookup to populate menu items in orderedItems
+            {
+                $lookup: {
+                    from: 'menus',
+                    localField: 'orderedItems.menuItemId',
+                    foreignField: '_id',
+                    as: 'menuItemDetails',
+                },
+            },
+            // Unwind menuItemDetails if needed
+            { $unwind: { path: '$menuItemDetails', preserveNullAndEmptyArrays: true } },
+             // Lookup to join with the Address collection
+             {
+                $lookup: {
+                    from: 'addresses', // Address collection
+                    localField: 'addressId',
+                    foreignField: '_id',
+                    as: 'address',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$address',
+                    preserveNullAndEmptyArrays: true, // Optional, if some restaurants may not have an address
+                },
+            },
+            // Group ordered items by orderId
+            {
+                $group: {
+                    _id: '$_id', // Group by order ID
+                    userDetails: { $first: '$userDetails' }, // Preserve user details
+                    status: { $first: '$status' }, // Preserve status
+                    createdAt: { $first: '$createdAt' }, // Preserve creation date
+                    totalAmound: { $first: '$totalAmound' }, // Preserve totalAmound
+                    address: { $first: '$address' }, // Preserve address
+                    orderedItems: {
+                        $push: {
+                            item: '$menuItemDetails.name',
+                            imageUrl: '$menuItemDetails.imageUrl',
+                            quantity: '$orderedItems.quantity', // Example: Include additional fields
+                            price: '$orderedItems.menuItemPrice',
+                        },
+                    },
+                },
+            },
+            
+            // Optionally project the final structure
+            {
+                $project: {
+                    _id: 1, // Include Order ID
+                    userDetails: { name: '$userDetails.name' , email: '$userDetails.email' }, // Include only the email field
+                    status: 1,
+                    totalAmound: 1,
+                    address: 1,
+                    createdAt: 1,
+                    orderedItems: 1, // Array of grouped ordered items
+                },
+            },
         ]);
         return restaurantOrders;
     }

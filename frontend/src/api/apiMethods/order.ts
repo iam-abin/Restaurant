@@ -15,7 +15,7 @@ export const getRestaurantOrdersApi = async (restaurantId: string): Promise<IRes
 };
 
 export const updateOrderStatusApi = async (orderId: string, status: string): Promise<IResponse> => {
-    return await makeApiCall('post', orderApiUrls.updateOrderStatusUrl(orderId), {
+    return await makeApiCall('patch', orderApiUrls.updateOrderStatusUrl(orderId), {
         status,
     });
 };
