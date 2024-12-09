@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ForbiddenError, NotAuthorizedError, NotFoundError } from '../errors';
-import { IJwtPayload, verifyJwtToken } from '../utils';
+import { IJwtPayload, verifyJwtAccessToken } from '../utils';
 import { UserRepository } from '../database/repository';
 
 // Extend Express's Request interface globally
@@ -20,7 +20,7 @@ export const checkCurrentUser = async (req: Request, res: Response, next: NextFu
         const accessToken = req.cookies?.jwtToken;
         if (!accessToken) return next();
 
-        const payload = verifyJwtToken(accessToken);
+        const payload = verifyJwtAccessToken(accessToken);
         const user = await userRepository.findUserById(payload.userId);
         if (!user) throw new NotFoundError('User Not found');
         if (!user.isVerified) throw new ForbiddenError('Your are not verified');

@@ -11,6 +11,7 @@ const Restaurant = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [restaurant, setRestaurant] = useState<IRestaurant | null>(null);
     const [cuisines, setCuisines] = useState<ICuisineResponse[]>([]);
+    const [selectedImage, setSelectedImage] = useState<File | string | null>(null);
 
     const [input, setInput] = useState<RestaurantFormSchema>({
         name: restaurant?.ownerId.name ?? '',
@@ -25,9 +26,10 @@ const Restaurant = () => {
     useEffect(() => {
         (async () => {
             const response: IResponse = await getMyRestaurantApi();
-            const { restaurant } = response.data as IRestaurantResponse;
+            const { restaurant, cuisines } = response.data as IRestaurantResponse;
             setRestaurant(restaurant);
             setCuisines(cuisines);
+            setSelectedImage(restaurant.imageUrl);
         })();
     }, []);
 
@@ -51,6 +53,44 @@ const Restaurant = () => {
             [name]: type === 'number' ? Number(value) : value,
         });
     };
+
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const files = event.target.files;
+        if (files?.length) {
+            const file = files[0];
+            setInput(prevInput => ({
+                ...prevInput,
+                image: file,
+            }));
+            setSelectedImage(file);
+        }
+    };
+
+    const getImagePreviewUrl = (): string | undefined => {
+        if (!selectedImage && !restaurant?.imageUrl) return undefined;
+    
+        // Return the selected image's preview URL if it is a File
+        if (selectedImage instanceof File) {
+            return URL.createObjectURL(selectedImage);
+        }
+    
+        // Otherwise, return the existing image URL from the restaurant
+        return restaurant?.imageUrl;
+    };
+
+    useEffect(() => {
+        if (!selectedImage || input.image === undefined) {
+            setSelectedImage(null);
+        }
+    }, [input.image]);
+
+    useEffect(() => {
+        return () => {
+            if (selectedImage) {
+                URL.revokeObjectURL(getImagePreviewUrl()!);
+            }
+        };
+    }, [selectedImage]);
 
     const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -93,9 +133,11 @@ const Restaurant = () => {
 
     return (
         <div className="max-w-6xl mx-auto my-10">
-            <div>
-                <h1 className="font-extrabold text-2xl mb-5">Update Restaurant</h1>
-                <form onSubmit={submitHandler}>
+        <div>
+            <h1 className="font-extrabold text-2xl mb-5">Update Restaurant</h1>
+            <form onSubmit={submitHandler} className="md:grid md:grid-cols-3 md:gap-6">
+                {/* Left Side Form Inputs */}
+                <div className="md:col-span-2 space-y-4">
                     <div className="md:grid grid-cols-2 gap-6 space-y-2 md:space-y-0">
                         {/* Restaurant Name */}
                         <div className="relative">
@@ -144,7 +186,7 @@ const Restaurant = () => {
 
                         {/* Delivery Time */}
                         <div className="relative">
-                            <label>deliveryTime( In minutes )</label>
+                            <label>deliveryTime (In minutes)</label>
                             <input
                                 className="w-full h-12 border border-black rounded-lg p-1 pl-4"
                                 type="number"
@@ -185,16 +227,11 @@ const Restaurant = () => {
                         <div className="relative">
                             <label>Upload Restaurant Banner</label>
                             <input
-                                className="w-full h-10 boh-12der border-black rounded-lg p-1 pl-4"
+                                className="w-full h-10 border-black rounded-lg p-1 pl-4"
                                 type="file"
                                 accept="image/*"
                                 name="image"
-                                onChange={(e) =>
-                                    setInput({
-                                        ...input,
-                                        image: e.target.files?.[0] || undefined,
-                                    })
-                                }
+                                onChange={handleImageChange}
                             />
                             {errors.image && (
                                 <span className="text-red-500 text-sm">
@@ -220,9 +257,23 @@ const Restaurant = () => {
                             )}
                         </Button>
                     </div>
-                </form>
-            </div>
+                </div>
+
+                {/* Right Side Image Preview */}
+                <div className="md:col-span-1">
+                    {selectedImage && (
+                        <div className="flex justify-center items-center md:justify-end">
+                            <img
+                                src={getImagePreviewUrl()}
+                                alt="Selected image preview"
+                                className="max-w-full h-auto max-h-96 object-contain border border-gray-300 rounded-lg"
+                            />
+                        </div>
+                    )}
+                </div>
+            </form>
         </div>
+    </div>
     );
 };
 

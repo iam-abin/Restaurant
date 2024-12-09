@@ -49,9 +49,16 @@ const OrdersListPage: React.FC = () => {
     const restaurant = useAppSelector((store) => store.restaurantReducer.restaurantData?.restaurant);
 
     useEffect(() => {
-        if (restaurant?._id) {
-            getRestaurantOrdersApi(restaurant._id);
-        }
+        (
+            async ()=>{
+                console.log("restaurant---->", restaurant);
+                
+                if (restaurant?._id) {
+                    const orders = await getRestaurantOrdersApi(restaurant._id);
+                    setOrders(orders.data)
+                 }   
+            }
+        )()
     }, [restaurant]);
 
     const handleStatusChange = (id: number, newStatus: string) => {
@@ -72,7 +79,7 @@ const OrdersListPage: React.FC = () => {
                             <TableCell>Image</TableCell>
                             <TableCell>Item Name</TableCell>
                             <TableCell>Customer</TableCell>
-                            <TableCell>Quantity</TableCell>
+                            <TableCell>Total</TableCell>
                             <TableCell>Status</TableCell>
                             <TableCell>Actions</TableCell>
                         </TableRow>
@@ -87,9 +94,9 @@ const OrdersListPage: React.FC = () => {
                                         style={{ width: '50px', borderRadius: '5px' }}
                                     />
                                 </TableCell>
-                                <TableCell>{order.name}</TableCell>
-                                <TableCell>{order.customer}</TableCell>
-                                <TableCell>{order.quantity}</TableCell>
+                                <TableCell>{order._id}</TableCell>
+                                {/* <TableCell>{order.userDetails.name}</TableCell> */}
+                                <TableCell>{order.totalAmound}</TableCell>
                                 <TableCell>
                                     <Select
                                         value={order.status}

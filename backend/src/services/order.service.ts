@@ -113,23 +113,23 @@ export class OrderService {
         }
     }
 
-    private checkSameRestaurant(cartItems: ICartDocument[]) {
-        if (cartItems.length === 0) throw new Error('Cart is empty');
+    // private checkSameRestaurant(cartItems: ICartDocument[]) {
+    //     if (cartItems.length === 0) throw new Error('Cart is empty');
 
-        // Extract the restaurantId of the first cart item
-        const firstRestaurantId = (cartItems[0].itemId as IMenuDocument).restaurantId.toString();
+    //     // Extract the restaurantId of the first cart item
+    //     const firstRestaurantId = (cartItems[0].itemId as IMenuDocument).restaurantId.toString();
 
-        // Check if all items in the cart have the same restaurantId
-        for (const item of cartItems) {
-            const currentRestaurantId = (item.itemId as IMenuDocument).restaurantId.toString();
-            if (currentRestaurantId !== firstRestaurantId) {
-                throw new Error('All items in the cart must be from the same restaurant');
-            }
-        }
+    //     // Check if all items in the cart have the same restaurantId
+    //     for (const item of cartItems) {
+    //         const currentRestaurantId = (item.itemId as IMenuDocument).restaurantId.toString();
+    //         if (currentRestaurantId !== firstRestaurantId) {
+    //             throw new Error('All items in the cart must be from the same restaurant');
+    //         }
+    //     }
 
-        // Return the restaurantId if all are the same
-        return firstRestaurantId;
-    }
+    //     // Return the restaurantId if all are the same
+    //     return firstRestaurantId;
+    // }
 
     private findTotalAmound(cartItems: ICartDocument[]) {
         if (cartItems.length === 0) throw new Error('Cart is empty');
@@ -165,7 +165,7 @@ export class OrderService {
         return lineItems;
     }
 
-    public async getOrders(restaurantId: string, ownerId: string): Promise<IOrderDocument[]> {
+    public async getRestaurantOrders(restaurantId: string, ownerId: string): Promise<IOrderDocument[]> {
         const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         if ('_id' in restaurant.owner! && restaurant.owner._id.toString() !== ownerId)

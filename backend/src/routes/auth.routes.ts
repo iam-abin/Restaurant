@@ -16,6 +16,8 @@ const router: Router = express.Router();
 
 router.post('/signin', signinRequestBodyValidator, validateRequest, authController.signin);
 
+router.post('/refresh', authController.signin);         
+
 router.post('/signup', signupRequestBodyValidator, validateRequest, authController.signup);
 
 router.post('/verify/otp', verifyOtpRequestBodyValidator, validateRequest, authController.verifyOtp);

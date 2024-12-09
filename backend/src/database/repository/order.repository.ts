@@ -118,6 +118,16 @@ export class OrderRepository {
             },
             // Unwind orderedItems array to process each menuItemId
             { $unwind: { path: '$orderedItems', preserveNullAndEmptyArrays: true } },
+
+            //  // Lookup to populate item
+            //  {
+            //     $lookup: {
+            //         from: 'menus',
+            //         localField: 'orderedItems.menuItemId',
+            //         foreignField: '_id',
+            //         as: 'orderedItems',
+            //     },
+            // },
         ]);
         return restaurantOrders;
     }

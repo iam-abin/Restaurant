@@ -9,6 +9,8 @@ import {
     IJwtPayload,
     sendEmail,
     ROLES_CONSTANTS,
+    verifyJwtRefreshToken,
+    createJwtRefreshToken,
 } from '../utils';
 import { OtpTokenRepository, UserRepository } from '../database/repository';
 import mongoose from 'mongoose';
@@ -85,7 +87,7 @@ export class UserService {
         }
     }
 
-    public async signIn(userSignInDto: ISignin): Promise<{ user: IUserDocument; accessToken: string }> {
+    public async signIn(userSignInDto: ISignin): Promise<{ user: IUserDocument; accessToken: string, refreshToken: string }> {
         const { email, password, role } = userSignInDto;
 
         // Check if the user exists
@@ -114,13 +116,29 @@ export class UserService {
 
         // Generate JWT
         const userPayload: IJwtPayload = {
-            userId: existingUser.id,
+            userId: existingUser._id.toString(),
             email: existingUser.email,
             role: existingUser.role,
         };
-        const jwt: string = createJwtAccessToken(userPayload);
+        const jwtAccessToken: string = createJwtAccessToken(userPayload);
+        const jwtRefreshToken: string = createJwtRefreshToken(userPayload);
 
-        return { user: existingUser, accessToken: jwt };
+        return { user: existingUser, accessToken: jwtAccessToken, refreshToken: jwtRefreshToken };
+    }
+
+    public async jwtRefresh(refreshToken: string): Promise<{accessToken:string}>{
+        const {userId}: IJwtPayload = verifyJwtRefreshToken(refreshToken);
+        const user = await this.userRepository.findUserById(userId);
+        if (!user) throw new NotFoundError('This user does not exist');
+        // Generate JWT
+        const userPayload: IJwtPayload = {
+            userId: user._id.toString(),
+            email: user.email,
+            role: user.role,
+        };
+        const jwtAccessToken: string = createJwtAccessToken(userPayload);
+
+        return { accessToken: jwtAccessToken};
     }
 
     public async blockUnblockUser(userId: string): Promise<IUserDocument | null> {
