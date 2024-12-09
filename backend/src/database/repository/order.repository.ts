@@ -63,29 +63,55 @@ export class OrderRepository {
             // // Unwind the menuItemDetails array
             { $unwind: '$menuItemDetails' },
 
+            // Lookup to join with the Address collection
+            {
+                $lookup: {
+                    from: 'addresses', // Address collection
+                    localField: 'addressId',
+                    foreignField: '_id',
+                    as: 'address',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$address',
+                    preserveNullAndEmptyArrays: true, // Optional, if some restaurants may not have an address
+                },
+            },
+
             // // Group by Order ID to aggregate ordered items into arrays
             {
                 $group: {
                     _id: '$_id', // Group by order ID
-                    items: { $push: '$menuItemDetails' }, // Array of item names
-                    restaurantDetails: { $first: '$restaurantDetails.name' },
-                    imageUrl: { $first: '$menuItemDetails.imageUrl' }, // Representative image
+                    restaurantDetails: { $first: '$restaurantDetails' },
                     status: { $first: '$status' }, // Delivery status
+                    totalAmound: { $first: '$totalAmound' }, // Preserve totalAmound
+                    // imageUrl: { $first: '$menuItemDetails.imageUrl' }, // Representative image
+                    address: { $first: '$address' }, // Preserve address
+                    orderedItems:  {
+                        $push: {
+                            name: '$menuItemDetails.name',
+                            imageUrl: '$menuItemDetails.imageUrl',
+                            quantity: '$orderedItems.quantity', // Example: Include additional fields
+                            price: '$orderedItems.menuItemPrice',
+                        },
+                    }, // Array of item names
                     createdAt: { $first: '$createdAt' }, // Order date and time
                 },
             },
 
-            // // Project the final structure
-            // {
-            //     $project: {
-            //         _id: 1, // Include Order ID
-            //         items: 1, // Ordered item names
-            //         imageUrl: 1, // Image URL for reference
-            //         restaurantName: 1, // Restaurant name
-            //         status: 1, // Delivery status
-            //         createdAt: 1, // Ordered date and time
-            //     },
-            // },
+             // Optionally project the final structure
+             {
+                $project: {
+                    _id: 1, // Include Order ID
+                    restaurantDetails: { name: '$restaurantDetails.name' , email: '$restaurantDetails.email' }, // Include only the email field
+                    status: 1,
+                    totalAmound: 1,
+                    address: 1,
+                    orderedItems: 1, // Array of grouped ordered items
+                    createdAt: 1,
+                },
+            },
         ]);
         return userOrders;
     }
@@ -151,17 +177,17 @@ export class OrderRepository {
                     _id: '$_id', // Group by order ID
                     userDetails: { $first: '$userDetails' }, // Preserve user details
                     status: { $first: '$status' }, // Preserve status
-                    createdAt: { $first: '$createdAt' }, // Preserve creation date
                     totalAmound: { $first: '$totalAmound' }, // Preserve totalAmound
                     address: { $first: '$address' }, // Preserve address
                     orderedItems: {
                         $push: {
-                            item: '$menuItemDetails.name',
+                            name: '$menuItemDetails.name',
                             imageUrl: '$menuItemDetails.imageUrl',
                             quantity: '$orderedItems.quantity', // Example: Include additional fields
                             price: '$orderedItems.menuItemPrice',
                         },
                     },
+                    createdAt: { $first: '$createdAt' }, // Preserve creation date
                 },
             },
             
@@ -173,8 +199,8 @@ export class OrderRepository {
                     status: 1,
                     totalAmound: 1,
                     address: 1,
-                    createdAt: 1,
                     orderedItems: 1, // Array of grouped ordered items
+                    createdAt: 1,
                 },
             },
         ]);

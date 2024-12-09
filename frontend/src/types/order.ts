@@ -31,7 +31,7 @@ export interface IOrdersResponse extends Omit<IOrder, 'userId' | 'restaurantId' 
 
 // ==========================
 interface OrderItem {
-    item: string;
+    name: string;
     price: number;
     quantity: number;
     imageUrl: string;
@@ -40,6 +40,7 @@ interface OrderItem {
 export interface IRestaurantOrder {
     _id: string;
     userDetails: Pick<IUser, 'name' | 'email'>;
+    restaurantDetails: Pick<IUser, 'name' | 'email'>;
     address: IAddress;
     status: string;
     createdAt: string;

@@ -1,53 +1,45 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardMedia, Typography, Box, Button, Grid } from '@mui/material';
+import {
+    Card,
+    CardContent,
+    CardMedia,
+    Typography,
+    Box,
+    Button,
+    Grid,
+    Modal,
+} from '@mui/material';
 import { getMyOrdersApi } from '../../api/apiMethods/order';
-import { IMenu } from '../../types';
-
-// interface
-// Dummy Data
-const dummyOrders = [
-    {
-        id: 1,
-        image: 'https://via.placeholder.com/100',
-        name: 'Margherita Pizza',
-        customer: 'John Doe',
-        quantity: 2,
-        status: 'Pending',
-    },
-    {
-        id: 2,
-        image: 'https://via.placeholder.com/100',
-        name: 'Chicken Burger',
-        customer: 'Jane Smith',
-        quantity: 1,
-        status: 'Preparing',
-    },
-    {
-        id: 3,
-        image: 'https://via.placeholder.com/100',
-        name: 'Caesar Salad',
-        customer: 'Alice Johnson',
-        quantity: 3,
-        status: 'Delivered',
-    },
-];
+import { IMenu, IRestaurantOrder } from '../../types';
+import OrderDetailsModal from '../../components/modal/OrderDetailsModal';
 
 const Orders: React.FC = () => {
-    const [orders, setOrders] = useState(dummyOrders);
+    const [orders, setOrders] = useState<IRestaurantOrder[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedOrder, setSelectedOrder] = useState<IRestaurantOrder| null>(null);
+    const [modalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
         (async () => {
-            const orders = await getMyOrdersApi();
-            //  eslint-disable-next-line @typescript-eslint/no-explicit-any
-            setOrders(orders.data as any);
+            try {
+                setLoading(true);
+                const orders = await getMyOrdersApi();
+                setOrders(orders.data as IRestaurantOrder[]);
+            } finally {
+                setLoading(false);
+            }
         })();
     }, []);
 
-    // const handleStatusChange = (id: number, newStatus: string) => {
-    //     setOrders((prevOrders) =>
-    //         prevOrders.map((order) => (order.id === id ? { ...order, status: newStatus } : order)),
-    //     );
-    // };
+    const handleOpen = (order: any) => {
+        setSelectedOrder(order);
+        setModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        setSelectedOrder(null);
+    };
 
     return (
         <Box sx={{ padding: 4 }}>
@@ -55,42 +47,43 @@ const Orders: React.FC = () => {
                 Orders List
             </Typography>
             <Grid container spacing={3}>
-                {/*  eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 {orders.map((order: any) => (
                     <Grid item xs={12} key={order._id}>
                         <Card sx={{ display: 'flex', alignItems: 'center' }}>
                             <CardMedia
                                 component="img"
                                 sx={{ width: 120, height: 120, borderRadius: 2, margin: 2 }}
-                                image={order.imageUrl}
-                                alt={order.name}
+                                image={order?.orderedItems[0]?.imageUrl}
+                                alt={'image not available'}
                             />
                             <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                                 <CardContent>
-                                    <Typography variant="h6">{order.restaurantDetails}</Typography>
+                                    <Typography variant="h6">{order.restaurantDetails.name}</Typography>
                                     <Typography variant="body2" color="textSecondary">
                                         items:{' '}
-                                        {order.items &&
-                                            order.items.map(
+                                        {order.orderedItems &&
+                                            order.orderedItems.map(
                                                 (item: IMenu, index: number) =>
-                                                    `${item.name}${index == order.items.length - 1 ? '' : ', '}`,
+                                                    `${item.name}${index === order.orderedItems.length - 1 ? '' : ', '}`,
                                             )}
                                     </Typography>
                                     <Typography variant="body2" color="textSecondary">
                                         Total price:{' '}
-                                        {order.items &&
-                                            order.items.reduce((acc: number, curr: IMenu) => {
-                                                return (acc += curr.price);
-                                            }, 0)}
+                                        {order.orderedItems &&
+                                            order.totalAmound}
                                     </Typography>
                                     <Typography variant="body2" sx={{ marginTop: 1 }}>
-                                        Status:
-                                        {order.status}
+                                        Status: {order.status}
                                     </Typography>
                                 </CardContent>
                             </Box>
                             <Box sx={{ padding: 2 }}>
-                                <Button variant="contained" color="primary" size="small">
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    onClick={() => handleOpen(order)}
+                                >
                                     View Details
                                 </Button>
                             </Box>
@@ -98,6 +91,9 @@ const Orders: React.FC = () => {
                     </Grid>
                 ))}
             </Grid>
+
+           {/* Order Details Modal using Modal component */}
+           {selectedOrder && <OrderDetailsModal modalOpen={modalOpen} handleCloseModal={handleCloseModal} selectedOrder={selectedOrder} />}
         </Box>
     );
 };
