@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { IProfile } from '../../types';
 
 const Table = ({
     columns,
@@ -9,7 +10,7 @@ const Table = ({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     columns: any;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any;
+    data: any[];
     numberOfPages: number;
     fetchData: (page: number) => Promise<void>;
 }) => {
@@ -49,7 +50,7 @@ const Table = ({
                     <tbody>
                         {data && data.length > 0 ? (
                             //  eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            data.map((row: any, rowIndex: number) => (
+                            data.map((row: IProfile, rowIndex: number) => (
                                 <tr
                                     key={rowIndex}
                                     className={`${rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-200'} border-b`}

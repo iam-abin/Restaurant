@@ -13,7 +13,7 @@ const router: Router = express.Router();
 router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.RESTAURANT), restaurantController.getMyRestaurant);
 
 router.get(
-    '/restaurants',
+    '/restaurants/:page/:limit',
     checkCurrentUser,
     auth(ROLES_CONSTANTS.ADMIN),
     restaurantController.getRestaurants,

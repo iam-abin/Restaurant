@@ -3,7 +3,7 @@ import { createSuccessResponse } from '../utils';
 import { IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
 import { container } from 'tsyringe';
 import { RestaurantService } from '../services';
-import { IRestaurantResponse, IRestaurantUpdate, ISearchResult } from '../types';
+import { IRestaurantResponse, IRestaurantsData, IRestaurantUpdate, ISearchResult } from '../types';
 
 const restaurantService = container.resolve(RestaurantService);
 
@@ -42,8 +42,10 @@ class RestaurantController {
     }
 
     public async getRestaurants(req: Request, res: Response): Promise<void> {
-        const restaurants: IRestaurantDocument[] | null = await restaurantService.getRestaurants();
-        res.status(200).json(createSuccessResponse('Restaurant fetched successfully', restaurants));
+        const { page, limit } = req.params;
+        const restaurantsData: IRestaurantsData =
+            await restaurantService.getRestaurants(Number(page), Number(limit));
+        res.status(200).json(createSuccessResponse('Restaurants fetched successfully', restaurantsData));
     }
 
     public async searchRestaurant(req: Request, res: Response): Promise<void> {

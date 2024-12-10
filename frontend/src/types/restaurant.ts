@@ -23,13 +23,10 @@ export interface IRestaurantCard {
     cuisines: string[];
 }
 
-// "https://res.cloudinary.com/dwpugg2gl/image/upload/v1731905882/restaurant_app_images/f0zqroxh9fgf5dq8iiw8.png"
-// restaurantName
-// :
-// "abinv273"
-// _id
-// :
-// "673aa6ff642fdce5257979c6"
+export interface IRestaurantsResponse {
+    restaurants: IRestaurant[] | null;
+    numberOfPages: number;
+}
 
 export interface IRestaurantResponse {
     _id: string;

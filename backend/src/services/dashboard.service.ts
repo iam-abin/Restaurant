@@ -34,7 +34,7 @@ export class DashboardService {
         const [restaurantsCount, usersCount, orderStatusesWithCounts, totalOrderedPrice, totalCommission] =
             await Promise.all([
                 this.restaurantRepository.countRestaurants(),
-                this.profileRepository.countUsers(),
+                this.profileRepository.countProfiles(),
                 this.orderRepository.countStatuses(),
                 this.orderRepository.totalOrderedPrice(),
                 this.orderRepository.percentageCommitionAmound(percentageDecimal),

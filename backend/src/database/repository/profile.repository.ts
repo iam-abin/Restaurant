@@ -19,8 +19,8 @@ export class ProfileRepository {
         return await ProfileModel.findById(profileId).populate('userId');
     }
 
-    async find(): Promise<IProfileDocument[]> {
-        return await ProfileModel.find().populate('userId');
+    async find(skip: number, limit: number): Promise<IProfileDocument[]> {
+        return await ProfileModel.find().skip(skip).limit(limit).populate('userId');
     }
 
     async update(
@@ -31,7 +31,7 @@ export class ProfileRepository {
         return await ProfileModel.findOneAndUpdate({ userId }, updateData, { new: true, session });
     }
 
-    async countUsers(): Promise<number> {
+    async countProfiles(): Promise<number> {
         return await ProfileModel.countDocuments();
     }
 }

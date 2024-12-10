@@ -4,7 +4,7 @@ import { IProfileDocument } from '../database/model';
 
 import { createSuccessResponse } from '../utils';
 import { ProfileService } from '../services';
-import { ProfileUpdate } from '../types';
+import { IProfilesData, ProfileUpdate } from '../types';
 const profileService = container.resolve(ProfileService);
 
 class ProfileController {
@@ -16,8 +16,9 @@ class ProfileController {
     }
 
     public async getProfiles(req: Request, res: Response): Promise<void> {
-        const user: IProfileDocument[] = await profileService.getUserProfiles();
-        res.status(200).json(createSuccessResponse('User Profiles fetched successfully', user));
+        const { page, limit } = req.params;
+        const profilesData: IProfilesData = await profileService.getUserProfiles(Number(page), Number(limit));
+        res.status(200).json(createSuccessResponse('User Profiles fetched successfully', profilesData));
     }
 
     public async editProfile(req: Request, res: Response): Promise<void> {

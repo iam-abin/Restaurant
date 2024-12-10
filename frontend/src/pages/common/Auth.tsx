@@ -254,10 +254,12 @@ const Auth = () => {
                             </Link>
                         </div>
                     )}
-                    <div>
-                        <Divider className="mt-5 mb-5" />
-                        <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
-                    </div>
+                    {!isAdminPage && (
+                        <div className="flex justify-center items-center p-3">
+                            <Divider className="mt-5 mb-5 bg-red-500" />
+                            <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
+                        </div>
+                    )}
 
                     {!isAdminPage && (
                         <div className="mt-5">

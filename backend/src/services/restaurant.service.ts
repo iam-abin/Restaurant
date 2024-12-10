@@ -1,5 +1,5 @@
 import { autoInjectable } from 'tsyringe';
-import { IRestaurantResponse, IRestaurantUpdate, ISearchResult } from '../types';
+import { IRestaurantResponse, IRestaurantsData, IRestaurantUpdate, ISearchResult } from '../types';
 import {
     AddressRepository,
     CuisineRepository,
@@ -45,9 +45,15 @@ export class RestaurantService {
         return { restaurant, cuisines };
     }
 
-    public async getRestaurants(): Promise<IRestaurantDocument[]> {
-        const profile: IRestaurantDocument[] = await this.restaurantRepository.findRestaurants();
-        return profile;
+    public async getRestaurants(page: number, limit: number): Promise<IRestaurantsData> {
+        const skip: number = (page - 1) * limit;
+        const restaurants: IRestaurantDocument[] = await this.restaurantRepository.findRestaurants(
+            skip,
+            limit,
+        );
+        const restaurantsCount: number = await this.restaurantRepository.countRestaurants();
+        const numberOfPages: number = Math.ceil(restaurantsCount / limit);
+        return { restaurants, numberOfPages };
     }
 
     public async updateRestaurant(

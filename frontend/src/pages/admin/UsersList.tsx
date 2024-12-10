@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 // import { useLocation, useNavigate } from 'react-router-dom';
 // import { ROLES_CONSTANTS } from '../../utils/constants';
-import { IUser } from '../../types';
+import { IProfile, IProfilesResponse, IUser } from '../../types';
 import { IResponse } from '../../types/api';
 import SearchBar from '../../components/search/SearchBar';
 import Table from '../../components/table/Table';
@@ -10,7 +10,7 @@ import { getProfilesApi } from '../../api/apiMethods/profile';
 import { blockUnblockUserApi } from '../../api/apiMethods/auth';
 
 function UsersList() {
-    const [usersData, setUsersData] = useState<IUser[]>([]);
+    const [profilesData, setProfilesData] = useState<IProfile[]>([]);
     const [numberOfPages, setNumberOfPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchKey, setSearchKey] = useState('');
@@ -18,17 +18,18 @@ function UsersList() {
     const USERS_PER_PAGE: number = 2;
 
     const fetchUsers = async (currentPage: number) => {
-        let usersData: IResponse | [] = [];
+        let profilesData: IResponse | [] = [];
         // if (!searchKey) {
         console.log('no search key');
-        usersData = await getProfilesApi(currentPage, USERS_PER_PAGE);
+        profilesData = await getProfilesApi(currentPage, USERS_PER_PAGE);
+        const data = profilesData?.data as IProfilesResponse
         // currentPage,
         // USERS_PER_PAGE
-        setUsersData(usersData?.data as IUser[]);
+        setProfilesData(data.profiles as IProfile[]);
 
-        // if (usersData) {
-        //     setNumberOfPages(usersData.data.numberOfPages as number);
-        setNumberOfPages(2);
+        // if (profilesData) {
+        //     setNumberOfPages(profilesData.data.numberOfPages as number);
+        setNumberOfPages(data.numberOfPages);
         // }
     };
 
@@ -46,22 +47,23 @@ function UsersList() {
         if (updatedUser) {
             hotToastMessage(updatedUser.message, 'success');
 
-            // const users = usersData.map((user) => {
-            //     if (user.id === userId) {
-            //         return {
-            //             ...user,
-            //             isBlocked: updatedUser?.data.isBlocked,
-            //         };
-            //     }
+            const profiles: IProfile[] = profilesData.map((user: IProfile) => {
+                if ((user.userId as IUser)._id === userId) {
+                    return {
+                        ...user,
+                       userId: {
+                        ...(user.userId as IUser),
+                        isBlocked: (updatedUser?.data as IUser).isBlocked,
+                       }
+                    };
+                }
 
-            //     return user;
-            // });
+                return user;
+            });
 
-            // setUsersData(users);
+            setProfilesData(profiles);
         }
     };
-
-    console.log(usersData);
 
     const columns = [
         { Header: 'Name', accessor: 'userId.name' },
@@ -83,24 +85,24 @@ function UsersList() {
                             : 'badge badge-error gap-2 w-20'
                     } `}
                 >
-                    {row?.userId?.isBlocked ? 'active' : 'inActive'}
+                    {row?.userId?.isBlocked ? 'inActive' : 'active'}
                 </div>
             ),
         },
         {
             Header: 'Action',
-            button: (row: { id: string; isBlocked: boolean }) => (
+            button: (row: { userId: { _id: string; isBlocked: boolean } }) => (
                 <button
                     onClick={() => {
-                        handleBlockUnblock(row.id);
+                        handleBlockUnblock(row.userId._id);
                     }}
                     className={`btn ${
-                        row.isBlocked
-                            ? 'btn-success btn-sm w-24 bg-green-600'
-                            : 'btn btn-error btn-sm w-24 bg-red-600'
+                        row.userId.isBlocked
+                            ? 'btn btn-error btn-sm w-24 bg-red-600'
+                            : 'btn-success btn-sm w-24 bg-green-600'
                     } `}
                 >
-                    {row.isBlocked ? 'Block' : 'Unblock'}
+                    {row.userId.isBlocked ? 'Unblock' : 'Block'}
                 </button>
             ),
         },
@@ -112,7 +114,7 @@ function UsersList() {
             <div className="flex flex-row justify-end my-2">
                 <SearchBar placeholder={'search with name'} onSearch={setSearchKey} />
             </div>
-            <Table columns={columns} data={usersData} numberOfPages={numberOfPages} fetchData={fetchUsers} />
+            <Table columns={columns} data={profilesData} numberOfPages={numberOfPages} fetchData={fetchUsers} />
             {/* <ConfirmationDialogue
                     open={open}
                     setOpen={setOpen}
