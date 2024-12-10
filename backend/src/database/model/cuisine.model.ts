@@ -1,9 +1,10 @@
 import mongoose, { Schema } from 'mongoose';
 import { ICuisine } from '../../types';
 import { omitDocFields } from '../../utils';
+import { Types } from 'mongoose';
 
 export interface ICuisineDocument extends Document, ICuisine {
-    _id: Schema.Types.ObjectId;
+    _id: Types.ObjectId;
 }
 
 const cuisineSchema = new Schema<ICuisineDocument>(

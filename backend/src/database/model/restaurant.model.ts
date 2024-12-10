@@ -1,13 +1,13 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 import { IRestaurant } from '../../types';
 import { omitDocFields } from '../../utils';
 import { IUserDocument } from './user.model';
 import { IAddressDocument } from './address.model';
 
 export interface IRestaurantDocument extends Document, Omit<IRestaurant, 'ownerId' | 'addressId'> {
-    _id: Schema.Types.ObjectId;
-    ownerId: Schema.Types.ObjectId | IUserDocument;
-    addressId: Schema.Types.ObjectId | IAddressDocument;
+    _id: Types.ObjectId;
+    ownerId: Types.ObjectId | IUserDocument;
+    addressId: Types.ObjectId | IAddressDocument;
     isBlocked: boolean;
 }
 

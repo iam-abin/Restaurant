@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 import { ICart } from '../../types';
 import { omitDocFields } from '../../utils';
 import { IMenuDocument } from './menu.model';
@@ -6,10 +6,10 @@ import { IUserDocument } from './user.model';
 import { IRestaurantDocument } from './restaurant.model';
 
 export interface ICartDocument extends Document, Omit<ICart, 'userId' | 'itemId' | 'restaurantId'> {
-    _id: Schema.Types.ObjectId;
-    userId: Schema.Types.ObjectId | IUserDocument;
-    itemId: Schema.Types.ObjectId | IMenuDocument;
-    restaurantId: Schema.Types.ObjectId | IRestaurantDocument;
+    _id: Types.ObjectId;
+    userId: Types.ObjectId | IUserDocument;
+    itemId: Types.ObjectId | IMenuDocument;
+    restaurantId: Types.ObjectId | IRestaurantDocument;
 }
 
 const cartSchema = new Schema<ICartDocument>(

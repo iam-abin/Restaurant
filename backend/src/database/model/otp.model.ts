@@ -1,10 +1,10 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 import { IOtpToken } from '../../types';
 import { omitDocFields } from '../../utils';
 
 // Use Omit to exclude 'string type' userId from IOtpToken and redefine it in IOtpTokenDocument
 export interface IOtpTokenDocument extends Document, Omit<IOtpToken, 'userId'> {
-    userId: Schema.Types.ObjectId;
+    userId: Types.ObjectId;
     createdAt: Date;
 }
 

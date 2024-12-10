@@ -1,13 +1,13 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 import { IOrderedItem } from '../../types';
 import { omitDocFields } from '../../utils';
 
 export interface IOrderedItemDocument
     extends Document,
         Omit<IOrderedItem, 'userId' | 'orderId' | 'menuItemId'> {
-    userId: Schema.Types.ObjectId;
-    orderId: Schema.Types.ObjectId;
-    menuItemId: Schema.Types.ObjectId;
+    userId: Types.ObjectId;
+    orderId: Types.ObjectId;
+    menuItemId: Types.ObjectId;
 }
 
 const orderedItemSchema = new Schema<IOrderedItemDocument>(

@@ -1,12 +1,12 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 import { IRestaurant } from '../../types';
 import { omitDocFields } from '../../utils';
 import { ICuisineDocument } from './cuisine.model';
 
 export interface IRestaurantCuisineDocument extends Document {
-    _id: Schema.Types.ObjectId;
-    cuisineId: Schema.Types.ObjectId | ICuisineDocument;
-    restaurantId: Schema.Types.ObjectId | IRestaurant;
+    _id: Types.ObjectId;
+    cuisineId: Types.ObjectId | ICuisineDocument;
+    restaurantId: Types.ObjectId | IRestaurant;
 }
 
 const restaurantCuisineSchema = new Schema<IRestaurantCuisineDocument>(

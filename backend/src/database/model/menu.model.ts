@@ -1,10 +1,10 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 import { IMenu } from '../../types';
 import { omitDocFields } from '../../utils';
 
 export interface IMenuDocument extends Document, Omit<IMenu, 'restaurantId'> {
-    _id: Schema.Types.ObjectId;
-    restaurantId: Schema.Types.ObjectId;
+    _id: Types.ObjectId;
+    restaurantId: Types.ObjectId;
     isClosed: boolean;
 }
 
