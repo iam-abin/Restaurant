@@ -23,12 +23,13 @@ const userSchema = new Schema<IUserDocument>(
         },
         phone: {
             type: Number,
-            required: true,
             trim: true,
         },
         password: {
             type: String,
-            required: true,
+        },
+        googleId: {
+            type: String,
         },
         role: {
             type: String,
@@ -58,7 +59,8 @@ const userSchema = new Schema<IUserDocument>(
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
     try {
-        const hashedPassword: string = await generateHashedPassword(this.password);
+        if (!this.password) next(); // google auth has no password
+        const hashedPassword: string = await generateHashedPassword(this.password!);
         this.password = hashedPassword;
         next();
     } catch (error: unknown) {

@@ -4,7 +4,7 @@ import { IUserDocument } from '../database/model';
 
 import { createSuccessResponse, JWT_KEYS_CONSTANTS } from '../utils';
 import { OtpService, UserService } from '../services';
-import { IOtpToken, IPassword, ISignin, ISignup, IUser } from '../types';
+import { IGoogleAuth, IOtpToken, IPassword, ISignin, ISignup, IUser } from '../types';
 
 const userService = container.resolve(UserService);
 const otpService = container.resolve(OtpService);
@@ -23,9 +23,15 @@ class AuthController {
         res.status(200).json(createSuccessResponse('Login success', user));
     }
 
+    public async googleAuth(req: Request, res: Response): Promise<void> {
+        const { user, accessToken, refreshToken } = await userService.googleAuth(req.body as IGoogleAuth);
+        res.cookie(JWT_KEYS_CONSTANTS.JWT_TOKEN, accessToken);
+        res.status(200).json(createSuccessResponse('Login success', user));
+    }
+
     public async refresh(req: Request, res: Response): Promise<void> {
-        const { refreshToken } = req.body
-        const {accessToken}: {accessToken:string} = await userService.jwtRefresh(refreshToken);
+        const { refreshToken } = req.body;
+        const { accessToken }: { accessToken: string } = await userService.jwtRefresh(refreshToken);
         res.cookie(JWT_KEYS_CONSTANTS.JWT_TOKEN, accessToken);
         res.status(200).json(createSuccessResponse('Token refreshed successfully'));
     }

@@ -11,6 +11,7 @@ import { Provider } from 'react-redux';
 import { persistor, store } from './redux/store.ts';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Suspense } from 'react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 createRoot(document.getElementById('root')!).render(
     // <StrictMode>
@@ -19,7 +20,9 @@ createRoot(document.getElementById('root')!).render(
             <Suspense
                 fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}
             >
-                <App />
+                <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID}>
+                    <App />
+                </GoogleOAuthProvider>
             </Suspense>
         </PersistGate>
     </Provider>,

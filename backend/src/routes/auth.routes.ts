@@ -9,6 +9,7 @@ import {
     resetPasswordRequestBodyValidator,
     verifyTokenRequestBodyValidator,
     mongoIdParamsValidator,
+    googleAuthRequestBodyValidator,
 } from '../utils';
 import { validateRequest } from '../middlewares';
 
@@ -16,9 +17,11 @@ const router: Router = express.Router();
 
 router.post('/signin', signinRequestBodyValidator, validateRequest, authController.signin);
 
-router.post('/refresh', authController.signin);         
+router.post('/refresh', authController.signin);
 
 router.post('/signup', signupRequestBodyValidator, validateRequest, authController.signup);
+
+router.post('/google', googleAuthRequestBodyValidator, validateRequest, authController.googleAuth);
 
 router.post('/verify/otp', verifyOtpRequestBodyValidator, validateRequest, authController.verifyOtp);
 

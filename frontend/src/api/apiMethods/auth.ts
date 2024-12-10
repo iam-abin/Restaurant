@@ -1,7 +1,7 @@
 import makeApiCall from '../apiCalls';
 import authApiUrls from '../urls/auth';
 import { IResponse } from '../../types/api';
-import { IOtp, IResetPasswordRequest, ISignin, ISignup } from '../../types';
+import { IGoogleAuth, IOtp, IResetPasswordRequest, ISignin, ISignup } from '../../types';
 import { IForgotPasswordEmail } from '../../pages/common/ForgotPasswordEmail';
 
 export const signinApi = async (data: ISignin): Promise<IResponse> => {
@@ -10,6 +10,10 @@ export const signinApi = async (data: ISignin): Promise<IResponse> => {
 
 export const signupApi = async (data: ISignup): Promise<IResponse> => {
     return await makeApiCall('post', authApiUrls.signupUrl, data);
+};
+
+export const googleAuthApi = async (data: Omit<IGoogleAuth, 'picture'>): Promise<IResponse> => {
+    return await makeApiCall('post', authApiUrls.googleAuthUrl, data);
 };
 
 export const verifyOtpApi = async (data: IOtp): Promise<IResponse> => {

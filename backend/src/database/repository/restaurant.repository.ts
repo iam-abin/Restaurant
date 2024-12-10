@@ -3,9 +3,12 @@ import { IRestaurant, IRestaurantResponse, ISearchResult } from '../../types';
 import { IRestaurantDocument, RestaurantModel } from '../model';
 
 export class RestaurantRepository {
-    async create(restaurantData: Pick<IRestaurant, 'ownerId'>): Promise<IRestaurantDocument> {
-        const restaurant: IRestaurantDocument = await RestaurantModel.create(restaurantData);
-        return restaurant;
+    async create(
+        restaurantData: Pick<IRestaurant, 'ownerId' | 'imageUrl'>,
+        session?: ClientSession,
+    ): Promise<IRestaurantDocument> {
+        const restaurant: IRestaurantDocument[] = await RestaurantModel.create([restaurantData], { session });
+        return restaurant[0];
     }
 
     async findRestaurants(): Promise<IRestaurantDocument[]> {

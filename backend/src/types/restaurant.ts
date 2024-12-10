@@ -7,7 +7,7 @@ export interface IRestaurant {
     city: string;
     country: string;
     deliveryTime: number;
-    imageUrl: string;
+    imageUrl?: string;
     cuisines: string;
 }
 

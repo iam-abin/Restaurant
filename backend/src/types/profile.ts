@@ -5,7 +5,7 @@ export interface IProfile {
     userId: string;
     addressId: string;
     image: string;
-    imageUrl: string;
+    imageUrl?: string;
 }
 
 export type ProfileUpdate = Partial<Pick<IProfile, 'image'> & Pick<IUser, 'name'> & Omit<IAddress, 'userId'>>;

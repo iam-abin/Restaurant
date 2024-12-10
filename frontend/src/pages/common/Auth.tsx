@@ -10,15 +10,17 @@ import { signInSchema, signUpSchema } from '../../utils/schema/userSchema';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ROLES_CONSTANTS } from '../../utils/constants';
 import { useAppDispatch } from '../../redux/hooks';
-import { signinUser } from '../../redux/thunk/authThunk';
+import { googleAuthThunk, signinUser } from '../../redux/thunk/authThunk';
 import { hotToastMessage } from '../../utils/hotToast';
 import { signupApi } from '../../api/apiMethods/auth';
-import { ISignup, IUser } from '../../types';
+import { DecodedGoogleToken, IGoogleAuth, ISignup, IUser } from '../../types';
 import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
 import { fetchUserProfile } from '../../redux/thunk/profileThunk';
 import AuthRestaurantImage from '../../assets/auth-restaurant.png';
 import AuthUserImage from '../../assets/auth-user.png';
 import AuthAdminImage from '../../assets/auth-admin.png';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -113,6 +115,38 @@ const Auth = () => {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    // google login
+    const handleSuccess = async (googleResponse: CredentialResponse) => {
+        const decoded = jwtDecode(googleResponse.credential!) as Omit<
+            DecodedGoogleToken,
+            'role' | 'imageUrl'
+        >;
+        const { name, email, picture } = decoded;
+        console.log('User Info:', decoded);
+
+        const userData: Omit<IGoogleAuth, 'picture'> = {
+            name,
+            email,
+            imageUrl: picture,
+            role,
+            googleId: decoded.sub,
+        };
+
+        try {
+            const response = await dispatch(googleAuthThunk(userData));
+
+            // Check if the action was rejected
+            if (response.meta.requestStatus !== 'rejected') {
+                naivgate('/');
+            }
+        } finally {
+        }
+    };
+
+    const handleError = () => {
+        hotToastMessage('Login failed', 'error');
     };
 
     return (
@@ -220,6 +254,10 @@ const Auth = () => {
                             </Link>
                         </div>
                     )}
+                    <div>
+                        <Divider className="mt-5 mb-5" />
+                        <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
+                    </div>
 
                     {!isAdminPage && (
                         <div className="mt-5">

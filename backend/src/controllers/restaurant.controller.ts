@@ -16,11 +16,11 @@ class RestaurantController {
     public async editRestaurant(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
         const file: Express.Multer.File = req.file!;
-        console.log("req.body");
+        console.log('req.body');
         console.log(req.body);
-        console.log("req.body");
+        console.log('req.body');
         console.log(typeof req.body.name);
-        
+
         const restaurant: IRestaurantDocument | null = await restaurantService.updateRestaurant(
             userId,
             req.body as IRestaurantUpdate,

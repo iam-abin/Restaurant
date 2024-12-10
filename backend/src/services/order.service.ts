@@ -137,7 +137,7 @@ export class OrderService {
 
         // Check if all items in the cart have the same restaurantId
         const totalAmound = cartItems.reduce((acc: number, currItem: ICartDocument) => {
-            acc = acc + ((currItem.itemId as IMenuDocument).price * currItem.quantity);
+            acc = acc + (currItem.itemId as IMenuDocument).price * currItem.quantity;
             return acc;
         }, 0);
 

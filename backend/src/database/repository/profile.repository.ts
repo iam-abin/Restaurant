@@ -3,7 +3,10 @@ import { IProfileDocument, ProfileModel } from '../model';
 import { IProfile } from '../../types';
 
 export class ProfileRepository {
-    async create(profileData: Pick<IProfile, 'userId'>, session?: ClientSession): Promise<IProfileDocument> {
+    async create(
+        profileData: Pick<IProfile, 'userId' | 'imageUrl'>,
+        session?: ClientSession,
+    ): Promise<IProfileDocument> {
         const user: IProfileDocument[] = await ProfileModel.create([profileData], { session });
         return user[0];
     }

@@ -88,7 +88,7 @@ export class OrderRepository {
                     totalAmound: { $first: '$totalAmound' }, // Preserve totalAmound
                     // imageUrl: { $first: '$menuItemDetails.imageUrl' }, // Representative image
                     address: { $first: '$address' }, // Preserve address
-                    orderedItems:  {
+                    orderedItems: {
                         $push: {
                             name: '$menuItemDetails.name',
                             imageUrl: '$menuItemDetails.imageUrl',
@@ -100,11 +100,11 @@ export class OrderRepository {
                 },
             },
 
-             // Optionally project the final structure
-             {
+            // Optionally project the final structure
+            {
                 $project: {
                     _id: 1, // Include Order ID
-                    restaurantDetails: { name: '$restaurantDetails.name' , email: '$restaurantDetails.email' }, // Include only the email field
+                    restaurantDetails: { name: '$restaurantDetails.name', email: '$restaurantDetails.email' }, // Include only the email field
                     status: 1,
                     totalAmound: 1,
                     address: 1,
@@ -120,7 +120,7 @@ export class OrderRepository {
         const restaurantOrders = await OrderModel.aggregate([
             // Match orders by restaurantId
             { $match: { restaurantId: new mongoose.Types.ObjectId(restaurantId) } },
-            
+
             // Lookup to populate user details
             {
                 $lookup: {
@@ -132,7 +132,7 @@ export class OrderRepository {
             },
             // Unwind userDetails array
             { $unwind: '$userDetails' },
-            
+
             // Lookup to populate ordered items
             {
                 $lookup: {
@@ -144,7 +144,7 @@ export class OrderRepository {
             },
             // Unwind orderedItems array to process each menuItemId
             { $unwind: { path: '$orderedItems', preserveNullAndEmptyArrays: true } },
-            
+
             // Lookup to populate menu items in orderedItems
             {
                 $lookup: {
@@ -156,8 +156,8 @@ export class OrderRepository {
             },
             // Unwind menuItemDetails if needed
             { $unwind: { path: '$menuItemDetails', preserveNullAndEmptyArrays: true } },
-             // Lookup to join with the Address collection
-             {
+            // Lookup to join with the Address collection
+            {
                 $lookup: {
                     from: 'addresses', // Address collection
                     localField: 'addressId',
@@ -190,12 +190,12 @@ export class OrderRepository {
                     createdAt: { $first: '$createdAt' }, // Preserve creation date
                 },
             },
-            
+
             // Optionally project the final structure
             {
                 $project: {
                     _id: 1, // Include Order ID
-                    userDetails: { name: '$userDetails.name' , email: '$userDetails.email' }, // Include only the email field
+                    userDetails: { name: '$userDetails.name', email: '$userDetails.email' }, // Include only the email field
                     status: 1,
                     totalAmound: 1,
                     address: 1,
