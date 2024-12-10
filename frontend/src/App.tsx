@@ -43,118 +43,120 @@ const AuthenticatedUser = ({ children }: { children: React.ReactNode }) => {
     return children;
 };
 
-const appRouter = createBrowserRouter([
-    {
-        path: '/',
-        element: (
-            <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.USER]}>
-                <MainLayout />
-            </RoleProtectedRoute>
-        ),
-        children: [
-            { path: '/', element: <Landing /> },
-            { path: '/profile', element: <Profile /> },
-            { path: '/search/:searchText', element: <SearchResult /> },
-            {
-                path: '/user/restaurant/:restaurantId',
-                element: <RestaurantDetails />,
-            },
-            { path: '/cart', element: <Cart /> },
-            { path: '/orders', element: <OrdersUser /> },
-            { path: '/order/status', element: <Success /> },
-            { path: '*', element: <Error404 /> },
-        ],
-    },
-    {
-        path: '/restaurant',
-        element: (
-            <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.RESTAURANT]}>
-                <MainLayout />
-            </RoleProtectedRoute>
-        ),
-        children: [
-            { path: '', element: <DashBoard /> }, // Correct relative path
-            { path: 'details', element: <Restaurant /> }, // Correct relative path
-            { path: 'menu', element: <Menu /> },
-            { path: 'orders', element: <Orders /> },
-        ],
-    },
-    {
-        path: '/admin',
-        element: (
-            <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.ADMIN]}>
-                <MainLayout />
-            </RoleProtectedRoute>
-        ),
-        children: [
-            { path: '', element: <Dashboard /> },
-            { path: 'users', element: <Users /> },
-            { path: 'restaurants', element: <RestaurantsList /> },
-        ],
-    },
+const appRouter = createBrowserRouter(
+    [
+        {
+            path: '/',
+            element: (
+                <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.USER]}>
+                    <MainLayout />
+                </RoleProtectedRoute>
+            ),
+            children: [
+                { path: '/', element: <Landing /> },
+                { path: '/profile', element: <Profile /> },
+                { path: '/search/:searchText', element: <SearchResult /> },
+                {
+                    path: '/user/restaurant/:restaurantId',
+                    element: <RestaurantDetails />,
+                },
+                { path: '/cart', element: <Cart /> },
+                { path: '/orders', element: <OrdersUser /> },
+                { path: '/order/status', element: <Success /> },
+                { path: '*', element: <Error404 /> },
+            ],
+        },
+        {
+            path: '/restaurant',
+            element: (
+                <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.RESTAURANT]}>
+                    <MainLayout />
+                </RoleProtectedRoute>
+            ),
+            children: [
+                { path: '', element: <DashBoard /> }, // Correct relative path
+                { path: 'details', element: <Restaurant /> }, // Correct relative path
+                { path: 'menu', element: <Menu /> },
+                { path: 'orders', element: <Orders /> },
+            ],
+        },
+        {
+            path: '/admin',
+            element: (
+                <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.ADMIN]}>
+                    <MainLayout />
+                </RoleProtectedRoute>
+            ),
+            children: [
+                { path: '', element: <Dashboard /> },
+                { path: 'users', element: <Users /> },
+                { path: 'restaurants', element: <RestaurantsList /> },
+            ],
+        },
 
+        {
+            path: '/auth',
+            element: (
+                <AuthenticatedUser>
+                    {' '}
+                    <Auth />
+                </AuthenticatedUser>
+            ),
+        },
+        {
+            path: '/restaurant/auth',
+            element: (
+                <AuthenticatedUser>
+                    {' '}
+                    <Auth />
+                </AuthenticatedUser>
+            ),
+        },
+        {
+            path: '/admin/auth',
+            element: (
+                <AuthenticatedUser>
+                    {' '}
+                    <Auth />
+                </AuthenticatedUser>
+            ),
+        },
+        {
+            path: '/forgot-password/email',
+            element: (
+                <AuthenticatedUser>
+                    {' '}
+                    <ForgotPasswordEmail />
+                </AuthenticatedUser>
+            ),
+        },
+        {
+            path: '/reset-password/:uniqueId',
+            element: <ResetPassword />,
+        },
+        {
+            path: '/forgot-password/otp',
+            element: <Otp />,
+        },
+        {
+            path: '/signup/otp',
+            element: <Otp />,
+        },
+    ],
     {
-        path: '/auth',
-        element: (
-            <AuthenticatedUser>
-                {' '}
-                <Auth />
-            </AuthenticatedUser>
-        ),
+        future: {
+            v7_partialHydration: true,
+            v7_fetcherPersist: true,
+            v7_normalizeFormMethod: true,
+            v7_relativeSplatPath: true,
+            v7_skipActionErrorRevalidation: true,
+        },
     },
-    {
-        path: '/restaurant/auth',
-        element: (
-            <AuthenticatedUser>
-                {' '}
-                <Auth />
-            </AuthenticatedUser>
-        ),
-    },
-    {
-        path: '/admin/auth',
-        element: (
-            <AuthenticatedUser>
-                {' '}
-                <Auth />
-            </AuthenticatedUser>
-        ),
-    },
-    {
-        path: '/forgot-password/email',
-        element: (
-            <AuthenticatedUser>
-                {' '}
-                <ForgotPasswordEmail />
-            </AuthenticatedUser>
-        ),
-    },
-    {
-        path: '/reset-password/:uniqueId',
-        element: <ResetPassword />,
-    },
-    {
-        path: '/forgot-password/otp',
-        element: <Otp />,
-    },
-    {
-        path: '/signup/otp',
-        element: <Otp />,
-    },
-],
-{
-    future: {
-        v7_partialHydration: true,
-        v7_fetcherPersist: true,
-        v7_normalizeFormMethod: true,
-        v7_relativeSplatPath: true,
-        v7_skipActionErrorRevalidation: true,
-    },
-});
+);
 
 export default function App() {
     console.log(DEVELOPMENT_BACKEND_ORIGIN);
-    
+
     return (
         <main>
             <Toaster

@@ -17,14 +17,13 @@ const OrderDetailsModal = ({
     handleCloseModal: () => void;
     selectedOrder: IRestaurantOrder;
 }) => {
-    const locationUrl = useLocation()
-    const user = useAppSelector((store)=> store.authReducer.authData)
-    const isRestaurant = user?.role === ROLES_CONSTANTS.RESTAURANT
+    const locationUrl = useLocation();
+    const user = useAppSelector((store) => store.authReducer.authData);
+    const isRestaurant = user?.role === ROLES_CONSTANTS.RESTAURANT;
     console.log(isRestaurant);
-    
 
-    console.log("selectedOrder ===", selectedOrder);
-    
+    console.log('selectedOrder ===', selectedOrder);
+
     return (
         <Modal
             open={modalOpen}
@@ -101,7 +100,7 @@ const OrderDetailsModal = ({
                                                 <Typography variant="body2" color="textSecondary">
                                                     <span className="flex items-center ">
                                                         <CurrencyRupeeIcon style={{ fontSize: '0.85rem' }} />
-                                                        {item.price}
+                                                        {item.price} x {item.quantity}
                                                     </span>
                                                 </Typography>
                                             </Box>

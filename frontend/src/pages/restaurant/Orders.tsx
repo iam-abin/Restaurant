@@ -11,7 +11,7 @@ import {
     MenuItem,
     Typography,
     Box,
-    Button
+    Button,
 } from '@mui/material';
 import { getRestaurantOrdersApi, updateOrderStatusApi } from '../../api/apiMethods/order';
 import { useAppSelector } from '../../redux/hooks';
@@ -47,8 +47,8 @@ const OrdersListPage: React.FC = () => {
             prevOrders.map((order) => (order._id === id ? { ...order, status: newStatus } : order)),
         );
         const response = await updateOrderStatusApi(id, newStatus);
-        
-        hotToastMessage(response.message, 'success')
+
+        hotToastMessage(response.message, 'success');
     };
 
     const handleViewDetails = (order: IRestaurantOrder) => {
@@ -138,7 +138,13 @@ const OrdersListPage: React.FC = () => {
             )}
 
             {/* Order Details Modal using Modal component */}
-            {selectedOrder && <OrderDetailsModal modalOpen={modalOpen} handleCloseModal={handleCloseModal} selectedOrder={selectedOrder} />}
+            {selectedOrder && (
+                <OrderDetailsModal
+                    modalOpen={modalOpen}
+                    handleCloseModal={handleCloseModal}
+                    selectedOrder={selectedOrder}
+                />
+            )}
         </Box>
     );
 };

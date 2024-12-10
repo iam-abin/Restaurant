@@ -58,7 +58,7 @@ const Restaurant = () => {
         const files = event.target.files;
         if (files?.length) {
             const file = files[0];
-            setInput(prevInput => ({
+            setInput((prevInput) => ({
                 ...prevInput,
                 image: file,
             }));
@@ -68,12 +68,12 @@ const Restaurant = () => {
 
     const getImagePreviewUrl = (): string | undefined => {
         if (!selectedImage && !restaurant?.imageUrl) return undefined;
-    
+
         // Return the selected image's preview URL if it is a File
         if (selectedImage instanceof File) {
             return URL.createObjectURL(selectedImage);
         }
-    
+
         // Otherwise, return the existing image URL from the restaurant
         return restaurant?.imageUrl;
     };
@@ -133,147 +133,149 @@ const Restaurant = () => {
 
     return (
         <div className="max-w-6xl mx-auto my-10">
-        <div>
-            <h1 className="font-extrabold text-2xl mb-5">Update Restaurant</h1>
-            <form onSubmit={submitHandler} className="md:grid md:grid-cols-3 md:gap-6">
-                {/* Left Side Form Inputs */}
-                <div className="md:col-span-2 space-y-4">
-                    <div className="md:grid grid-cols-2 gap-6 space-y-2 md:space-y-0">
-                        {/* Restaurant Name */}
-                        <div className="relative">
-                            <label>restaurantName</label>
-                            <input
-                                className="w-full h-12 border border-black rounded-lg p-1 pl-4"
-                                type="text"
-                                name="name"
-                                value={input.name}
-                                onChange={changeEventHandler}
-                                placeholder="Enter your restaurant name"
-                                autoComplete="restaurant-name"
-                            />
-                            {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
+            <div>
+                <h1 className="font-extrabold text-2xl mb-5">Update Restaurant</h1>
+                <form onSubmit={submitHandler} className="md:grid md:grid-cols-3 md:gap-6">
+                    {/* Left Side Form Inputs */}
+                    <div className="md:col-span-2 space-y-4">
+                        <div className="md:grid grid-cols-2 gap-6 space-y-2 md:space-y-0">
+                            {/* Restaurant Name */}
+                            <div className="relative">
+                                <label>restaurantName</label>
+                                <input
+                                    className="w-full h-12 border border-black rounded-lg p-1 pl-4"
+                                    type="text"
+                                    name="name"
+                                    value={input.name}
+                                    onChange={changeEventHandler}
+                                    placeholder="Enter your restaurant name"
+                                    autoComplete="restaurant-name"
+                                />
+                                {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
+                            </div>
+
+                            {/* City */}
+                            <div className="relative">
+                                <label>city</label>
+                                <input
+                                    className="w-full h-12 border border-black rounded-lg p-1 pl-4"
+                                    type="text"
+                                    name="city"
+                                    value={input.city}
+                                    onChange={changeEventHandler}
+                                    placeholder="Enter your city"
+                                    autoComplete="city"
+                                />
+                                {errors.city && <span className="text-red-500 text-sm">{errors.city}</span>}
+                            </div>
+
+                            {/* Country */}
+                            <div className="relative">
+                                <label>country</label>
+                                <input
+                                    className="w-full h-12 border border-black rounded-lg p-1 pl-4"
+                                    type="text"
+                                    name="country"
+                                    value={input.country}
+                                    onChange={changeEventHandler}
+                                    placeholder="Enter your country"
+                                    autoComplete="country"
+                                />
+                                {errors.country && (
+                                    <span className="text-red-500 text-sm">{errors.country}</span>
+                                )}
+                            </div>
+
+                            {/* Delivery Time */}
+                            <div className="relative">
+                                <label>deliveryTime (In minutes)</label>
+                                <input
+                                    className="w-full h-12 border border-black rounded-lg p-1 pl-4"
+                                    type="number"
+                                    name="deliveryTime"
+                                    value={input.deliveryTime}
+                                    onChange={changeEventHandler}
+                                    placeholder="Enter delivery time"
+                                    autoComplete="delivery-time"
+                                />
+                                {errors.deliveryTime && (
+                                    <span className="text-red-500 text-sm">{errors.deliveryTime}</span>
+                                )}
+                            </div>
+
+                            {/* Cuisines */}
+                            <div className="relative">
+                                <label>cuisines</label>
+                                <input
+                                    className="w-full h-12 border border-black rounded-lg p-1 pl-4"
+                                    type="text"
+                                    name="cuisines"
+                                    value={input.cuisines}
+                                    onChange={(e) =>
+                                        setInput({
+                                            ...input,
+                                            cuisines: e.target.value.split(',').map((c) => c.trim()), // Split and trim for state
+                                        })
+                                    }
+                                    placeholder="Enter cuisines (e.g. Momos, Biryani)"
+                                    autoComplete="cuisines"
+                                />
+                                {errors.cuisines && (
+                                    <span className="text-red-500 text-sm">{errors.cuisines}</span>
+                                )}
+                            </div>
+
+                            {/* Upload Restaurant Banner */}
+                            <div className="relative">
+                                <label>Upload Restaurant Banner</label>
+                                <input
+                                    className="w-full h-10 border-black rounded-lg p-1 pl-4"
+                                    type="file"
+                                    accept="image/*"
+                                    name="image"
+                                    onChange={handleImageChange}
+                                />
+                                {errors.image && (
+                                    <span className="text-red-500 text-sm">
+                                        {errors.image?.name || 'image file is required'}
+                                    </span>
+                                )}
+                            </div>
                         </div>
 
-                        {/* City */}
-                        <div className="relative">
-                            <label>city</label>
-                            <input
-                                className="w-full h-12 border border-black rounded-lg p-1 pl-4"
-                                type="text"
-                                name="city"
-                                value={input.city}
-                                onChange={changeEventHandler}
-                                placeholder="Enter your city"
-                                autoComplete="city"
-                            />
-                            {errors.city && <span className="text-red-500 text-sm">{errors.city}</span>}
-                        </div>
-
-                        {/* Country */}
-                        <div className="relative">
-                            <label>country</label>
-                            <input
-                                className="w-full h-12 border border-black rounded-lg p-1 pl-4"
-                                type="text"
-                                name="country"
-                                value={input.country}
-                                onChange={changeEventHandler}
-                                placeholder="Enter your country"
-                                autoComplete="country"
-                            />
-                            {errors.country && <span className="text-red-500 text-sm">{errors.country}</span>}
-                        </div>
-
-                        {/* Delivery Time */}
-                        <div className="relative">
-                            <label>deliveryTime (In minutes)</label>
-                            <input
-                                className="w-full h-12 border border-black rounded-lg p-1 pl-4"
-                                type="number"
-                                name="deliveryTime"
-                                value={input.deliveryTime}
-                                onChange={changeEventHandler}
-                                placeholder="Enter delivery time"
-                                autoComplete="delivery-time"
-                            />
-                            {errors.deliveryTime && (
-                                <span className="text-red-500 text-sm">{errors.deliveryTime}</span>
-                            )}
-                        </div>
-
-                        {/* Cuisines */}
-                        <div className="relative">
-                            <label>cuisines</label>
-                            <input
-                                className="w-full h-12 border border-black rounded-lg p-1 pl-4"
-                                type="text"
-                                name="cuisines"
-                                value={input.cuisines}
-                                onChange={(e) =>
-                                    setInput({
-                                        ...input,
-                                        cuisines: e.target.value.split(',').map((c) => c.trim()), // Split and trim for state
-                                    })
-                                }
-                                placeholder="Enter cuisines (e.g. Momos, Biryani)"
-                                autoComplete="cuisines"
-                            />
-                            {errors.cuisines && (
-                                <span className="text-red-500 text-sm">{errors.cuisines}</span>
-                            )}
-                        </div>
-
-                        {/* Upload Restaurant Banner */}
-                        <div className="relative">
-                            <label>Upload Restaurant Banner</label>
-                            <input
-                                className="w-full h-10 border-black rounded-lg p-1 pl-4"
-                                type="file"
-                                accept="image/*"
-                                name="image"
-                                onChange={handleImageChange}
-                            />
-                            {errors.image && (
-                                <span className="text-red-500 text-sm">
-                                    {errors.image?.name || 'image file is required'}
-                                </span>
-                            )}
+                        <div className="my-5 w-fit">
+                            <Button
+                                type="submit"
+                                disabled={isLoading}
+                                className="w-full mb-5 bg-orange-300"
+                                variant="contained"
+                            >
+                                {isLoading ? (
+                                    <label className="flex items-center gap-4">
+                                        Please wait <LoaderCircle />
+                                    </label>
+                                ) : (
+                                    'Update Restaurant'
+                                )}
+                            </Button>
                         </div>
                     </div>
 
-                    <div className="my-5 w-fit">
-                        <Button
-                            type="submit"
-                            disabled={isLoading}
-                            className="w-full mb-5 bg-orange-300"
-                            variant="contained"
-                        >
-                            {isLoading ? (
-                                <label className="flex items-center gap-4">
-                                    Please wait <LoaderCircle />
-                                </label>
-                            ) : (
-                                'Update Restaurant'
-                            )}
-                        </Button>
+                    {/* Right Side Image Preview */}
+                    <div className="md:col-span-1">
+                        {selectedImage && (
+                            <div className="flex justify-center items-center md:justify-end">
+                                <img
+                                    src={getImagePreviewUrl()}
+                                    alt="Selected image preview"
+                                    className="max-w-full h-auto max-h-96 object-contain border border-gray-300 rounded-lg"
+                                />
+                            </div>
+                        )}
                     </div>
-                </div>
-
-                {/* Right Side Image Preview */}
-                <div className="md:col-span-1">
-                    {selectedImage && (
-                        <div className="flex justify-center items-center md:justify-end">
-                            <img
-                                src={getImagePreviewUrl()}
-                                alt="Selected image preview"
-                                className="max-w-full h-auto max-h-96 object-contain border border-gray-300 rounded-lg"
-                            />
-                        </div>
-                    )}
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
     );
 };
 

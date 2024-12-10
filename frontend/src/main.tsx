@@ -16,8 +16,10 @@ createRoot(document.getElementById('root')!).render(
     // <StrictMode>
     <Provider store={store}>
         <PersistGate persistor={persistor}>
-            <Suspense fallback={<div className='w-full h-screen flex items-center justify-center'>Loading...</div>}>
-            <App />
+            <Suspense
+                fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}
+            >
+                <App />
             </Suspense>
         </PersistGate>
     </Provider>,

@@ -1,22 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import {
-    Card,
-    CardContent,
-    CardMedia,
-    Typography,
-    Box,
-    Button,
-    Grid,
-    Modal,
-} from '@mui/material';
+import { Card, CardContent, CardMedia, Typography, Box, Button, Grid } from '@mui/material';
 import { getMyOrdersApi } from '../../api/apiMethods/order';
 import { IMenu, IRestaurantOrder } from '../../types';
 import OrderDetailsModal from '../../components/modal/OrderDetailsModal';
+import OrderCardSkelton from '../../components/shimmer/OrderCardSkelton';
 
 const Orders: React.FC = () => {
     const [orders, setOrders] = useState<IRestaurantOrder[]>([]);
     const [loading, setLoading] = useState(true);
-    const [selectedOrder, setSelectedOrder] = useState<IRestaurantOrder| null>(null);
+    const [selectedOrder, setSelectedOrder] = useState<IRestaurantOrder | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
@@ -47,53 +39,67 @@ const Orders: React.FC = () => {
                 Orders List
             </Typography>
             <Grid container spacing={3}>
-                {orders.map((order: any) => (
-                    <Grid item xs={12} key={order._id}>
-                        <Card sx={{ display: 'flex', alignItems: 'center' }}>
-                            <CardMedia
-                                component="img"
-                                sx={{ width: 120, height: 120, borderRadius: 2, margin: 2 }}
-                                image={order?.orderedItems[0]?.imageUrl}
-                                alt={'image not available'}
-                            />
-                            <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                                <CardContent>
-                                    <Typography variant="h6">{order.restaurantDetails.name}</Typography>
-                                    <Typography variant="body2" color="textSecondary">
-                                        items:{' '}
-                                        {order.orderedItems &&
-                                            order.orderedItems.map(
-                                                (item: IMenu, index: number) =>
-                                                    `${item.name}${index === order.orderedItems.length - 1 ? '' : ', '}`,
-                                            )}
-                                    </Typography>
-                                    <Typography variant="body2" color="textSecondary">
-                                        Total price:{' '}
-                                        {order.orderedItems &&
-                                            order.totalAmound}
-                                    </Typography>
-                                    <Typography variant="body2" sx={{ marginTop: 1 }}>
-                                        Status: {order.status}
-                                    </Typography>
-                                </CardContent>
-                            </Box>
-                            <Box sx={{ padding: 2 }}>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    size="small"
-                                    onClick={() => handleOpen(order)}
-                                >
-                                    View Details
-                                </Button>
-                            </Box>
-                        </Card>
-                    </Grid>
-                ))}
+                {loading
+                    ? Array.from(new Array(3)).map((_, index: number) => <OrderCardSkelton key={index} />)
+                    : orders.map((order: any) => (
+                          <Grid item xs={12} key={order._id}>
+                              <Card sx={{ display: 'flex', alignItems: 'center' }}>
+                                  <CardMedia
+                                      component="img"
+                                      sx={{
+                                          width: 120,
+                                          height: 120,
+                                          borderRadius: 2,
+                                          margin: 2,
+                                      }}
+                                      image={order?.orderedItems[0]?.imageUrl}
+                                      alt={'image not available'}
+                                  />
+                                  <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                                      <CardContent>
+                                          <Typography variant="h6">{order.restaurantDetails.name}</Typography>
+                                          <Typography variant="body2" color="textSecondary">
+                                              items:{' '}
+                                              {order.orderedItems &&
+                                                  order.orderedItems.map(
+                                                      (item: IMenu, index: number) =>
+                                                          `${item.name}${
+                                                              index === order.orderedItems.length - 1
+                                                                  ? ''
+                                                                  : ', '
+                                                          }`,
+                                                  )}
+                                          </Typography>
+                                          <Typography variant="body2" color="textSecondary">
+                                              Total price: {order.orderedItems && order.totalAmound}
+                                          </Typography>
+                                          <Typography variant="body2" sx={{ marginTop: 1 }}>
+                                              Status: {order.status}
+                                          </Typography>
+                                      </CardContent>
+                                  </Box>
+                                  <Box sx={{ padding: 2 }}>
+                                      <Button
+                                          variant="contained"
+                                          color="primary"
+                                          size="small"
+                                          onClick={() => handleOpen(order)}
+                                      >
+                                          View Details
+                                      </Button>
+                                  </Box>
+                              </Card>
+                          </Grid>
+                      ))}
             </Grid>
 
-           {/* Order Details Modal using Modal component */}
-           {selectedOrder && <OrderDetailsModal modalOpen={modalOpen} handleCloseModal={handleCloseModal} selectedOrder={selectedOrder} />}
+            {selectedOrder && (
+                <OrderDetailsModal
+                    modalOpen={modalOpen}
+                    handleCloseModal={handleCloseModal}
+                    selectedOrder={selectedOrder}
+                />
+            )}
         </Box>
     );
 };
