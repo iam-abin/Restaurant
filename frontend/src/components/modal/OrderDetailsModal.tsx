@@ -17,7 +17,6 @@ const OrderDetailsModal = ({
     handleCloseModal: () => void;
     selectedOrder: IRestaurantOrder;
 }) => {
-    const locationUrl = useLocation();
     const user = useAppSelector((store) => store.authReducer.authData);
     const isRestaurant = user?.role === ROLES_CONSTANTS.RESTAURANT;
     console.log(isRestaurant);
@@ -63,15 +62,15 @@ const OrderDetailsModal = ({
                                     Customer Information
                                 </Typography>
                                 <Typography variant="body1">
-                                    Name: {selectedOrder.restaurantDetails.name}
+                                    Name: {selectedOrder?.userDetails?.name}
                                 </Typography>
                                 <Typography variant="body1">
-                                    Email: {selectedOrder.restaurantDetails.email}
+                                    Email: {selectedOrder?.userDetails?.email}
                                 </Typography>
                                 <Typography variant="body1">
-                                    Address: {selectedOrder.address.address}
-                                    City: {selectedOrder.address.city}
-                                    Country: {selectedOrder.address.country}
+                                    Address: {selectedOrder?.address?.address}
+                                    City: {selectedOrder?.address?.city}
+                                    Country: {selectedOrder?.address?.country}
                                 </Typography>
                             </Grid>
 
@@ -81,7 +80,7 @@ const OrderDetailsModal = ({
                                     Ordered Items
                                 </Typography>
                                 <Box sx={{ maxHeight: 300, overflowY: 'auto' }}>
-                                    {selectedOrder.orderedItems.map((item, index) => (
+                                    {selectedOrder?.orderedItems?.map((item, index) => (
                                         <Box
                                             key={index}
                                             sx={{ display: 'flex', alignItems: 'center', mb: 2 }}
@@ -114,11 +113,11 @@ const OrderDetailsModal = ({
                                 <Divider sx={{ margin: '16px 0' }} />
                                 <Typography variant="h6" className="flex items-center">
                                     Total Amount: <CurrencyRupeeIcon style={{ fontSize: '1.15rem' }} />
-                                    {selectedOrder.totalAmound}
+                                    {selectedOrder?.totalAmound}
                                 </Typography>
-                                <Typography variant="body1">Order Status: {selectedOrder.status}</Typography>
+                                <Typography variant="body1">Order Status: {selectedOrder?.status}</Typography>
                                 <Typography variant="body1">
-                                    Order Date: {formatDateWithTime(selectedOrder.createdAt)}
+                                    Order Date: {formatDateWithTime(selectedOrder?.createdAt)}
                                 </Typography>
                             </Grid>
                         </Grid>

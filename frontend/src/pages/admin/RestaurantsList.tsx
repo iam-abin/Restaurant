@@ -69,7 +69,7 @@ function RestaurantsList() {
         },
         {
             Header: 'Status',
-            button: (row: { ownerId?: { isBlocked: string } }) => (
+            button: (row: { ownerId?: { isBlocked: boolean } }) => (
                 <div
                     className={`badge ${
                         row?.ownerId?.isBlocked
@@ -77,7 +77,7 @@ function RestaurantsList() {
                             : 'badge badge-error gap-2 w-20'
                     } `}
                 >
-                    {row?.ownerId?.isBlocked ? 'active' : 'inActive'}
+                    {row?.ownerId?.isBlocked ? 'inActive' : 'active'}
                 </div>
             ),
         },
@@ -94,7 +94,7 @@ function RestaurantsList() {
                             : 'btn btn-error btn-sm w-24 bg-red-600'
                     } `}
                 >
-                    {row.ownerId.isBlocked ? 'Block' : 'Unblock'}
+                    {row.ownerId.isBlocked ? 'Unblock' : 'Block'}
                 </button>
             ),
         },
