@@ -1,16 +1,25 @@
-import { body, param } from 'express-validator';
+import { body, param, ValidationChain } from 'express-validator';
 
-export const mongoIdParamsValidator = (mongoIds: string | string[]) => {
-    const ids: string[] = Array.isArray(mongoIds) ? mongoIds : [mongoIds];
-    return ids.map((id: string) =>
-        param(id)
-            .isMongoId()
-            .withMessage(`Invalid ID format for '${id}'`)
+const mongoIdValidator = (
+    validatorType: 'param' | 'body',
+    mongoIdField: string | string[],
+): ValidationChain[] => {
+    const validator = validatorType === 'param' ? param : body;
+    const idFields: string[] = Array.isArray(mongoIdField) ? mongoIdField : [mongoIdField];
+    return idFields.map((idField: string) =>
+        validator(idField)
             .notEmpty()
-            .withMessage(`'${id}' is required`),
+            .withMessage(`'${idField}' is required`)
+            .isString()
+            .withMessage(`'${idField}' must be a string`)
+            .trim()
+            .isMongoId()
+            .withMessage(`Invalid ID format for '${idField}'`),
     );
 };
 
-export const mongoIdBodyValidator = (mongoId: string) => [
-    body(mongoId).isMongoId().withMessage('Invalid ID format').notEmpty().withMessage('Item ID is required'),
-];
+// Specialized validators using the generic function
+export const mongoIdParamsValidator = (mongoIdField: string | string[]) =>
+    mongoIdValidator('param', mongoIdField);
+export const mongoIdBodyValidator = (mongoIdField: string | string[]) =>
+    mongoIdValidator('body', mongoIdField);
