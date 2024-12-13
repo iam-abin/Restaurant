@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react';
-// import { useLocation, useNavigate } from 'react-router-dom';
-// import { ROLES_CONSTANTS } from '../../utils/constants';
-import { IProfile, IProfilesResponse, IUser } from '../../types';
-import { IResponse } from '../../types/api';
+
+import { IResponse, IProfile, IProfilesResponse, IUser } from '../../types';
+import { hotToastMessage } from '../../utils/hotToast';
+import { getProfilesApi, blockUnblockUserApi } from '../../api/apiMethods';
 import SearchBar from '../../components/search/SearchBar';
 import Table from '../../components/table/Table';
-import { hotToastMessage } from '../../utils/hotToast';
-import { getProfilesApi } from '../../api/apiMethods/profile';
-import { blockUnblockUserApi } from '../../api/apiMethods/auth';
 
 function UsersList() {
     const [profilesData, setProfilesData] = useState<IProfile[]>([]);

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import PieChartGraph from '../../components/charts/PieChartGraph';
+
 import { IOrderStatusWithCounts } from '../../types';
-import { getRestaurantDashboardApi } from '../../api/apiMethods/dashboard';
+import { getRestaurantDashboardApi } from '../../api/apiMethods';
+import PieChartGraph from '../../components/charts/PieChartGraph';
 
 const DashBoard = () => {
     const [statusCounts, setStatusCounts] = useState<IOrderStatusWithCounts[]>([]);

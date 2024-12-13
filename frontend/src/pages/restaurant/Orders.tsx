@@ -13,7 +13,8 @@ import {
     Box,
     Button,
 } from '@mui/material';
-import { getRestaurantOrdersApi, updateOrderStatusApi } from '../../api/apiMethods/order';
+
+import { getRestaurantOrdersApi, updateOrderStatusApi } from '../../api/apiMethods';
 import { useAppSelector } from '../../redux/hooks';
 import OrdersTableRestaurantSkelton from '../../components/shimmer/OrdersTableRestaurantSkelton';
 import { IRestaurantOrder } from '../../types';

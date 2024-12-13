@@ -15,6 +15,7 @@ export const signinUser = createAsyncThunk<
         hotToastMessage(result.message, 'success');
         return result.data as IUser;
     } catch (error: unknown) {
+        hotToastMessage((error as Error).message, 'error');
         return rejectWithValue((error as Error).message);
     }
 });

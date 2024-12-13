@@ -1,14 +1,15 @@
-import { useParams } from 'react-router-dom';
-import Filter from '../../components/Filter';
 import { ChangeEvent, useEffect, useState } from 'react';
-import SearchIcon from '@mui/icons-material/Search';
+import { useParams } from 'react-router-dom';
 import { Button, Chip } from '@mui/material';
+import { Search } from '@mui/icons-material';
+
+import { searchRestaurantApi } from '../../api/apiMethods';
+import { ISearchResult } from '../../types';
+import { NoResultFound } from '../../components/NoResultFound';
+import LoaderCircle from '../../components/Loader/LoaderCircle';
 import RestaurantCard from '../../components/cards/RestaurantCard';
 import RestaurantCardSkeleton from '../../components/shimmer/RestaurantCardSkeleton';
-import { NoResultFound } from '../../components/NoResultFound';
-import { searchRestaurantApi } from '../../api/apiMethods/restaurant';
-import LoaderCircle from '../../components/Loader/LoaderCircle';
-import { ISearchResult } from '../../types';
+import Filter from '../../components/Filter';
 
 const SearchResult = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -62,7 +63,7 @@ const SearchResult = () => {
                 <div className="flex-1">
                     <div className="relative flex items-center gap-1">
                         <div className="w-full">
-                            <SearchIcon className="absolute text-gray-500 inset-y-3 left-2" />
+                            <Search className="absolute text-gray-500 inset-y-3 left-2" />
                             <input
                                 type="text"
                                 value={searchQuery}

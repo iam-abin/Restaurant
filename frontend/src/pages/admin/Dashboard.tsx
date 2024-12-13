@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getAdminDashboardApi } from '../../api/apiMethods/dashboard';
+
+import { getAdminDashboardApi } from '../../api/apiMethods';
 import { IAdminDashboard } from '../../types';
 import LineGraph from '../../components/charts/LineGraph';
 

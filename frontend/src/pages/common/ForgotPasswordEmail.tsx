@@ -4,7 +4,7 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import { emailSchema } from '../../utils/schema/userSchema';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import { Link, useNavigate } from 'react-router-dom';
-import { ForgotPasswordEmailApi } from '../../api/apiMethods/auth';
+import { ForgotPasswordEmailApi } from '../../api/apiMethods';
 import { IResponse } from '../../types/api';
 import { hotToastMessage } from '../../utils/hotToast';
 

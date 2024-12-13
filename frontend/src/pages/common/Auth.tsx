@@ -1,24 +1,25 @@
-import { Button, Input, Typography } from '@mui/material';
-import EmailIcon from '@mui/icons-material/Email';
-import PersonIcon from '@mui/icons-material/Person';
-import LockIcon from '@mui/icons-material/Lock';
-import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
-import Divider from '@mui/material/Divider';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import LoaderCircle from '../../components/Loader/LoaderCircle';
-import { signInSchema, signUpSchema } from '../../utils/schema/userSchema';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Button, Input, Typography, Divider } from '@mui/material';
+import { Email, Person, Lock, LocalPhone } from '@mui/icons-material';
+
+import { signInSchema, signUpSchema } from '../../utils/schema/userSchema';
 import { ROLES_CONSTANTS } from '../../utils/constants';
+import { hotToastMessage } from '../../utils/hotToast';
 import { useAppDispatch } from '../../redux/hooks';
 import { googleAuthThunk, signinUser } from '../../redux/thunk/authThunk';
-import { hotToastMessage } from '../../utils/hotToast';
-import { signupApi } from '../../api/apiMethods/auth';
+import { signupApi } from '../../api/apiMethods';
+import LoaderCircle from '../../components/Loader/LoaderCircle';
+
 import { DecodedGoogleToken, IGoogleAuth, ISignup, IUser } from '../../types';
+
 import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
 import { fetchUserProfile } from '../../redux/thunk/profileThunk';
+
 import AuthRestaurantImage from '../../assets/auth-restaurant.png';
 import AuthUserImage from '../../assets/auth-user.png';
 import AuthAdminImage from '../../assets/auth-admin.png';
+
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 
@@ -86,6 +87,9 @@ const Auth = () => {
                         role: role!,
                     }),
                 );
+                if (response.meta.requestStatus === 'rejected') {
+                    return;
+                }
 
                 if (role === ROLES_CONSTANTS.RESTAURANT) {
                     await dispatch(fetchMyRestaurant());
@@ -95,10 +99,7 @@ const Auth = () => {
                     await dispatch(fetchUserProfile());
                 }
 
-                // Check if the action was rejected
-                if (response.meta.requestStatus !== 'rejected') {
-                    naivgate('/');
-                }
+                naivgate('/');
             } else {
                 const response = await signupApi(input);
                 const data = response.data as IUser;
@@ -112,6 +113,8 @@ const Auth = () => {
                     });
                 }
             }
+        } catch (error: unknown) {
+            hotToastMessage((error as Error).message, 'error');
         } finally {
             setIsLoading(false);
         }
@@ -141,7 +144,8 @@ const Auth = () => {
             if (response.meta.requestStatus !== 'rejected') {
                 naivgate('/');
             }
-        } finally {
+        } catch (error: unknown) {
+            console.error(error);
         }
     };
 
@@ -165,7 +169,7 @@ const Auth = () => {
                         </div>
                         {!isLogin && (
                             <div className="items-center relative">
-                                <PersonIcon className="mr-2 absolute inset-y-2 pointer-events-none" />
+                                <Person className="mr-2 absolute inset-y-2 pointer-events-none" />
 
                                 <Input
                                     className="w-full p-1 pl-8"
@@ -182,7 +186,7 @@ const Auth = () => {
                             </div>
                         )}
                         <div className="items-center relative">
-                            <EmailIcon className="mr-2 absolute inset-y-2 pointer-events-none" />
+                            <Email className="mr-2 absolute inset-y-2 pointer-events-none" />
                             <Input
                                 className="w-full p-1 pl-8"
                                 type="text"
@@ -198,7 +202,7 @@ const Auth = () => {
                         </div>
                         {!isLogin && (
                             <div className="items-center relative">
-                                <LocalPhoneIcon className="mr-2 absolute inset-y-2 pointer-events-none" />
+                                <LocalPhone className="mr-2 absolute inset-y-2 pointer-events-none" />
 
                                 <Input
                                     className="w-full p-1 pl-8"
@@ -215,7 +219,7 @@ const Auth = () => {
                             </div>
                         )}
                         <div className=" items-center relative">
-                            <LockIcon className="mr-2 absolute inset-y-2 pointer-events-none" />
+                            <Lock className="mr-2 absolute inset-y-2 pointer-events-none" />
 
                             <Input
                                 className="p-1 pl-8 bg-none w-full"

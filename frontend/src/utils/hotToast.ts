@@ -1,6 +1,7 @@
 import toast from 'react-hot-toast';
 
 type HotToast = 'success' | 'warn' | 'error';
+
 export const hotToastMessage = (msg: string, type: HotToast): void => {
     switch (type) {
         case 'success':

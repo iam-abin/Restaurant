@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardMedia, Typography, Box, Button, Grid } from '@mui/material';
-import { getMyOrdersApi } from '../../api/apiMethods/order';
+
+import { getMyOrdersApi } from '../../api/apiMethods';
 import { IMenu, IRestaurantOrder } from '../../types';
 import OrderDetailsModal from '../../components/modal/OrderDetailsModal';
 import OrderCardSkelton from '../../components/shimmer/OrderCardSkelton';

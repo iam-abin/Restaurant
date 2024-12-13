@@ -9,7 +9,7 @@ import { hotToastMessage } from '../../utils/hotToast';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchMenus } from '../../redux/thunk/menusThunk';
 import { searchCuisineApi } from '../../api/apiMethods/cuisine';
-import { ICuisineResponse, ICuisineResponse1 } from '../../types';
+import { ICuisineResponse1 } from '../../types';
 import AsyncCreatableSelect from 'react-select/async-creatable';
 
 const style = {
