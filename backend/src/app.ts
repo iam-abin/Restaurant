@@ -9,15 +9,17 @@ import compression from 'compression';
 
 import { NotFoundError } from './errors';
 import { errorHandler, rateLimiter } from './middlewares';
-import { authRoutes } from './routes/auth.routes';
-import { cartRoutes } from './routes/cart.routes';
-import { dashboardRoutes } from './routes/dashboard.routes';
-import { menuRoutes } from './routes/menu.routes';
-import { orderRoutes } from './routes/order.routes';
-import { profileRoutes } from './routes/profile.routes';
-import { restaurantRoutes } from './routes/restaurant.routes';
+import {
+    authRoutes,
+    cartRoutes,
+    cuisineRoutes,
+    dashboardRoutes,
+    menuRoutes,
+    orderRoutes,
+    profileRoutes,
+    restaurantRoutes,
+} from './routes';
 import { appConfig } from './config/app.config';
-import { cuisineRoutes } from './routes/cuisine.routes';
 
 const app: Application = express();
 
@@ -26,9 +28,9 @@ const isProductionENV: boolean = appConfig.NODE_ENVIRONMENT === 'production';
 // // Set trust proxy
 // app.set('trust proxy', true); // Trust all proxies
 
-// // Middlewares
-// app.use(express.json({ limit: '10mb' }));
-// app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+// Middlewares
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(helmet());
 app.use(
     cors({

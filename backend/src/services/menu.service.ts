@@ -6,12 +6,7 @@ import {
     RestaurantCuisineRepository,
     RestaurantRepository,
 } from '../database/repository';
-import {
-    ICuisineDocument,
-    IMenuDocument,
-    IRestaurantCuisineDocument,
-    IRestaurantDocument,
-} from '../database/model';
+import { ICuisineDocument, IMenuDocument, IRestaurantDocument } from '../database/model';
 import { uploadImageOnCloudinary } from '../utils';
 import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
 import mongoose from 'mongoose';

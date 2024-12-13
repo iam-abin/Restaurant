@@ -4,12 +4,10 @@ import { ICuisineDocument } from '../database/model';
 
 @autoInjectable()
 export class CuisineService {
-    constructor(
-        private readonly cuisineRepository: CuisineRepository,
-    ) {}
-    
+    constructor(private readonly cuisineRepository: CuisineRepository) {}
+
     public async searchCuisines(searchText: string): Promise<ICuisineDocument[]> {
-        if(!searchText){
+        if (!searchText) {
             // console.log("searchText 2", searchText);
             return await this.cuisineRepository.findCuisines();
         }

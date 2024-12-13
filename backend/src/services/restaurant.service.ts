@@ -2,7 +2,6 @@ import { autoInjectable } from 'tsyringe';
 import { IRestaurantResponse, IRestaurantsData, IRestaurantUpdate, ISearchResult } from '../types';
 import {
     AddressRepository,
-    CuisineRepository,
     RestaurantCuisineRepository,
     RestaurantRepository,
     UserRepository,

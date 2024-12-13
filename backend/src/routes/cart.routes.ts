@@ -6,35 +6,35 @@ import {
     mongoIdParamsValidator,
     updateCartRequestBodyValidator,
 } from '../utils';
-import { cartController } from '../controllers/cart.controller';
+import { cartController } from '../controllers';
 
 const router: Router = express.Router();
 
 router.post(
     '/',
-    addToCartRequestBodyValidator,
-    validateRequest,
     checkCurrentUser,
     auth(ROLES_CONSTANTS.USER),
+    addToCartRequestBodyValidator,
+    validateRequest,
     cartController.addToCart,
 );
 
 router.get(
     '/:restaurantId',
-    mongoIdParamsValidator('restaurantId'),
-    validateRequest,
     checkCurrentUser,
     auth(ROLES_CONSTANTS.USER),
+    mongoIdParamsValidator('restaurantId'),
+    validateRequest,
     cartController.getCartItems,
 );
 
 router.patch(
     '/quantity/:cartItemId',
+    checkCurrentUser,
+    auth(ROLES_CONSTANTS.USER),
     mongoIdParamsValidator('cartItemId'),
     updateCartRequestBodyValidator,
     validateRequest,
-    checkCurrentUser,
-    auth(ROLES_CONSTANTS.USER),
     cartController.updateQuantity,
 );
 
@@ -42,10 +42,10 @@ router.delete('/', checkCurrentUser, auth(ROLES_CONSTANTS.USER), cartController.
 
 router.delete(
     '/:cartItemId',
-    mongoIdParamsValidator('cartItemId'),
-    validateRequest,
     checkCurrentUser,
     auth(ROLES_CONSTANTS.USER),
+    mongoIdParamsValidator('cartItemId'),
+    validateRequest,
     cartController.removeCartItem,
 );
 

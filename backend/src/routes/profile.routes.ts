@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import { profileController } from '../controllers/profile.controller';
+import { profileController } from '../controllers';
 import { ROLES_CONSTANTS, updateProfileRequestBodyValidator } from '../utils';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
 
@@ -17,9 +17,9 @@ router.get(
 router.patch(
     '/',
     checkCurrentUser,
+    auth(ROLES_CONSTANTS.USER),
     updateProfileRequestBodyValidator,
     validateRequest,
-    auth(ROLES_CONSTANTS.USER),
     profileController.editProfile,
 );
 

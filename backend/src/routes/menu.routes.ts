@@ -6,7 +6,7 @@ import {
     updateMenuRequestBodyValidator,
     mongoIdParamsValidator,
 } from '../utils';
-import { menuController } from '../controllers/menu.controller';
+import { menuController } from '../controllers';
 
 const router: Router = express.Router();
 
@@ -22,28 +22,28 @@ router.post(
 
 router.get(
     '/:menuId',
+    checkCurrentUser,
     mongoIdParamsValidator('menuId'),
     validateRequest,
-    checkCurrentUser,
     menuController.getMenu,
 );
 
 router.get(
     '/restaurant/:restaurantId',
+    checkCurrentUser,
     mongoIdParamsValidator('restaurantId'),
     validateRequest,
-    checkCurrentUser,
     menuController.getMenus,
 );
 
 router.patch(
     '/:menuId',
-    mongoIdParamsValidator('menuId'),
-    updateMenuRequestBodyValidator,
-    validateRequest,
     checkCurrentUser,
     auth(ROLES_CONSTANTS.RESTAURANT),
     multerUpload.single('image'),
+    mongoIdParamsValidator('menuId'),
+    updateMenuRequestBodyValidator,
+    validateRequest,
     menuController.editMenu,
 );
 

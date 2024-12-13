@@ -22,7 +22,7 @@ function UsersList() {
         // if (!searchKey) {
         console.log('no search key');
         profilesData = await getProfilesApi(currentPage, USERS_PER_PAGE);
-        const data = profilesData?.data as IProfilesResponse
+        const data = profilesData?.data as IProfilesResponse;
         // currentPage,
         // USERS_PER_PAGE
         setProfilesData(data.profiles as IProfile[]);
@@ -51,10 +51,10 @@ function UsersList() {
                 if ((user.userId as IUser)._id === userId) {
                     return {
                         ...user,
-                       userId: {
-                        ...(user.userId as IUser),
-                        isBlocked: (updatedUser?.data as IUser).isBlocked,
-                       }
+                        userId: {
+                            ...(user.userId as IUser),
+                            isBlocked: (updatedUser?.data as IUser).isBlocked,
+                        },
                     };
                 }
 
@@ -114,7 +114,12 @@ function UsersList() {
             <div className="flex flex-row justify-end my-2">
                 <SearchBar placeholder={'search with name'} onSearch={setSearchKey} />
             </div>
-            <Table columns={columns} data={profilesData} numberOfPages={numberOfPages} fetchData={fetchUsers} />
+            <Table
+                columns={columns}
+                data={profilesData}
+                numberOfPages={numberOfPages}
+                fetchData={fetchUsers}
+            />
             {/* <ConfirmationDialogue
                     open={open}
                     setOpen={setOpen}

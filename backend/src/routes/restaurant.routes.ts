@@ -6,7 +6,7 @@ import {
     ROLES_CONSTANTS,
     searchRestaurantValidator,
 } from '../utils';
-import { restaurantController } from '../controllers/restaurant.controller';
+import { restaurantController } from '../controllers';
 
 const router: Router = express.Router();
 
@@ -21,19 +21,19 @@ router.get(
 
 router.get(
     '/:restaurantId',
+    checkCurrentUser,
     mongoIdParamsValidator('restaurantId'),
     validateRequest,
-    checkCurrentUser,
     restaurantController.getARestaurant,
 );
 
 router.patch(
     '/',
-    restaurantUpdateValidator,
-    validateRequest,
     checkCurrentUser,
     auth(ROLES_CONSTANTS.RESTAURANT),
     multerUpload.single('image'),
+    restaurantUpdateValidator,
+    validateRequest,
     restaurantController.editRestaurant,
 );
 

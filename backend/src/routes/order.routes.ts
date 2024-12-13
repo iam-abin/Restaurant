@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
 import { mongoIdParamsValidator, updateOrderStatusRequestBodyValidator, ROLES_CONSTANTS } from '../utils';
-import { orderController } from '../controllers/order.controller';
+import { orderController } from '../controllers';
 
 const router: Router = express.Router();
 
@@ -13,27 +13,21 @@ router.post('/webhook', express.raw({ type: 'application/json' }), orderControll
 
 router.get(
     '/restaurant/:restaurantId',
-    mongoIdParamsValidator('restaurantId'),
-    validateRequest,
     checkCurrentUser,
     auth(ROLES_CONSTANTS.RESTAURANT),
+    mongoIdParamsValidator('restaurantId'),
+    validateRequest,
     orderController.getRestaurantOrders,
 );
 
 router.patch(
     '/restaurant/status/:orderId',
+    checkCurrentUser,
+    auth(ROLES_CONSTANTS.RESTAURANT),
     mongoIdParamsValidator('orderId'),
     updateOrderStatusRequestBodyValidator,
     validateRequest,
-    checkCurrentUser,
-    auth(ROLES_CONSTANTS.RESTAURANT),
     orderController.updateOrderStatus,
 );
-
-// router.get(
-//     '/:orderId',
-//     checkCurrentUser,
-//     orderController.getOrder,
-// );
 
 export { router as orderRoutes };

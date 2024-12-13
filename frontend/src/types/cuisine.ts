@@ -4,7 +4,7 @@ export interface ICuisine {
 }
 
 export interface ICuisineResponse1 {
-    _id: string
+    _id: string;
     name: string;
 }
 

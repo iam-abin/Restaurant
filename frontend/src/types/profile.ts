@@ -15,4 +15,3 @@ export interface IProfilesResponse {
     profiles: IProfile[] | null;
     numberOfPages: number;
 }
-

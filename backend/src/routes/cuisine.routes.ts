@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
 import { ROLES_CONSTANTS, searchCuisineValidator } from '../utils';
-import { cuisineController } from '../controllers/cuisine.controller';
+import { cuisineController } from '../controllers';
 
 const router: Router = express.Router();
 

@@ -2,7 +2,7 @@ import express, { Router } from 'express';
 
 import { checkCurrentUser, auth } from '../middlewares';
 import { ROLES_CONSTANTS } from '../utils';
-import { dashboardController } from '../controllers/dashboard.controller';
+import { dashboardController } from '../controllers';
 
 const router: Router = express.Router();
 

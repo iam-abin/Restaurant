@@ -125,7 +125,7 @@ const OrdersListPage: React.FC = () => {
             ) : (
                 <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
                     <h1 className="mt-4 text-2xl font-semibold text-gray-800">No Orders Yet!</h1>
-                    <p className="mt-2 text-gray-600">It looks like you haven't received any orders.</p>
+                    <p className="mt-2 text-gray-600">It looks like you haven&apos;t received any orders.</p>
                     <Button
                         variant="contained"
                         color="primary"

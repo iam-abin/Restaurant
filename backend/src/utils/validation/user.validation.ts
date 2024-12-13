@@ -1,6 +1,8 @@
 import { body } from 'express-validator';
 import { ROLES_CONSTANTS } from '../constants';
 
+const ROLES: string[] = [ROLES_CONSTANTS.ADMIN, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.USER];
+
 export const signinRequestBodyValidator = [
     body('email')
         .notEmpty()
@@ -14,10 +16,8 @@ export const signinRequestBodyValidator = [
     body('role')
         .notEmpty()
         .withMessage('Role is required')
-        .isIn([ROLES_CONSTANTS.ADMIN, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.USER])
-        .withMessage(
-            `Role must be one of ${ROLES_CONSTANTS.ADMIN}, ${ROLES_CONSTANTS.RESTAURANT}, or ${ROLES_CONSTANTS.USER}`,
-        )
+        .isIn(ROLES)
+        .withMessage(`Role must be one of ${ROLES.join(', ')}`)
         .trim()
         .escape(),
 ];
@@ -41,10 +41,8 @@ export const signupRequestBodyValidator = [
     body('role')
         .notEmpty()
         .withMessage('Role is required')
-        .isIn([ROLES_CONSTANTS.ADMIN, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.USER])
-        .withMessage(
-            `Role must be one of ${ROLES_CONSTANTS.ADMIN}, ${ROLES_CONSTANTS.RESTAURANT}, or ${ROLES_CONSTANTS.USER}`,
-        )
+        .isIn(ROLES)
+        .withMessage(`Role must be one of ${ROLES.join(', ')}`)
         .trim()
         .escape(),
     body('phone')
@@ -83,10 +81,8 @@ export const googleAuthRequestBodyValidator = [
     body('role')
         .notEmpty()
         .withMessage('Role is required')
-        .isIn([ROLES_CONSTANTS.ADMIN, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.USER])
-        .withMessage(
-            `Role must be one of ${ROLES_CONSTANTS.ADMIN}, ${ROLES_CONSTANTS.RESTAURANT}, or ${ROLES_CONSTANTS.USER}`,
-        )
+        .isIn(ROLES)
+        .withMessage(`Role must be one of ${ROLES.join(', ')}`)
         .trim()
         .escape(),
     body('imageUrl')
