@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IOrder } from '../../types';
+import { IOrder, IOrderStatusWithCounts } from '../../types';
 import { IOrderDocument, OrderModel } from '../model';
 
 export class OrderRepository {
@@ -63,29 +63,55 @@ export class OrderRepository {
             // // Unwind the menuItemDetails array
             { $unwind: '$menuItemDetails' },
 
+            // Lookup to join with the Address collection
+            {
+                $lookup: {
+                    from: 'addresses', // Address collection
+                    localField: 'addressId',
+                    foreignField: '_id',
+                    as: 'address',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$address',
+                    preserveNullAndEmptyArrays: true, // Optional, if some restaurants may not have an address
+                },
+            },
+
             // // Group by Order ID to aggregate ordered items into arrays
             {
                 $group: {
                     _id: '$_id', // Group by order ID
-                    items: { $push: '$menuItemDetails' }, // Array of item names
-                    restaurantDetails: { $first: '$restaurantDetails.name' },
-                    imageUrl: { $first: '$menuItemDetails.imageUrl' }, // Representative image
+                    restaurantDetails: { $first: '$restaurantDetails' },
                     status: { $first: '$status' }, // Delivery status
+                    totalAmound: { $first: '$totalAmound' }, // Preserve totalAmound
+                    // imageUrl: { $first: '$menuItemDetails.imageUrl' }, // Representative image
+                    address: { $first: '$address' }, // Preserve address
+                    orderedItems: {
+                        $push: {
+                            name: '$menuItemDetails.name',
+                            imageUrl: '$menuItemDetails.imageUrl',
+                            quantity: '$orderedItems.quantity', // Example: Include additional fields
+                            price: '$orderedItems.menuItemPrice',
+                        },
+                    }, // Array of item names
                     createdAt: { $first: '$createdAt' }, // Order date and time
                 },
             },
 
-            // // Project the final structure
-            // {
-            //     $project: {
-            //         _id: 1, // Include Order ID
-            //         items: 1, // Ordered item names
-            //         imageUrl: 1, // Image URL for reference
-            //         restaurantName: 1, // Restaurant name
-            //         status: 1, // Delivery status
-            //         createdAt: 1, // Ordered date and time
-            //     },
-            // },
+            // Optionally project the final structure
+            {
+                $project: {
+                    _id: 1, // Include Order ID
+                    restaurantDetails: { name: '$restaurantDetails.name', email: '$restaurantDetails.email' }, // Include only the email field
+                    status: 1,
+                    totalAmound: 1,
+                    address: 1,
+                    orderedItems: 1, // Array of grouped ordered items
+                    createdAt: 1,
+                },
+            },
         ]);
         return userOrders;
     }
@@ -118,6 +144,65 @@ export class OrderRepository {
             },
             // Unwind orderedItems array to process each menuItemId
             { $unwind: { path: '$orderedItems', preserveNullAndEmptyArrays: true } },
+
+            // Lookup to populate menu items in orderedItems
+            {
+                $lookup: {
+                    from: 'menus',
+                    localField: 'orderedItems.menuItemId',
+                    foreignField: '_id',
+                    as: 'menuItemDetails',
+                },
+            },
+            // Unwind menuItemDetails if needed
+            { $unwind: { path: '$menuItemDetails', preserveNullAndEmptyArrays: true } },
+            // Lookup to join with the Address collection
+            {
+                $lookup: {
+                    from: 'addresses', // Address collection
+                    localField: 'addressId',
+                    foreignField: '_id',
+                    as: 'address',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$address',
+                    preserveNullAndEmptyArrays: true, // Optional, if some restaurants may not have an address
+                },
+            },
+            // Group ordered items by orderId
+            {
+                $group: {
+                    _id: '$_id', // Group by order ID
+                    userDetails: { $first: '$userDetails' }, // Preserve user details
+                    status: { $first: '$status' }, // Preserve status
+                    totalAmound: { $first: '$totalAmound' }, // Preserve totalAmound
+                    address: { $first: '$address' }, // Preserve address
+                    orderedItems: {
+                        $push: {
+                            name: '$menuItemDetails.name',
+                            imageUrl: '$menuItemDetails.imageUrl',
+                            quantity: '$orderedItems.quantity', // Example: Include additional fields
+                            price: '$orderedItems.menuItemPrice',
+                        },
+                    },
+                    createdAt: { $first: '$createdAt' }, // Preserve creation date
+                },
+            },
+
+            // Optionally project the final structure
+            {
+                $project: {
+                    _id: 1, // Include Order ID
+                    userDetails: { name: '$userDetails.name', email: '$userDetails.email' }, // Include only the email field
+                    status: 1,
+                    totalAmound: 1,
+                    address: 1,
+                    orderedItems: 1, // Array of grouped ordered items
+                    createdAt: 1,
+                },
+            },
         ]);
         return restaurantOrders;
     }
@@ -135,5 +220,66 @@ export class OrderRepository {
             },
         );
         return order;
+    }
+
+    async countStatuses(restaurantId?: string): Promise<IOrderStatusWithCounts[]> {
+        const statsCounts: IOrderStatusWithCounts[] = await OrderModel.aggregate([
+            // It will perform $match only if the restaurantId is present
+            ...(restaurantId
+                ? [
+                      {
+                          $match: { restaurantId: new mongoose.Types.ObjectId(restaurantId) },
+                      },
+                  ]
+                : []),
+            {
+                $group: {
+                    _id: '$status',
+                    count: { $sum: 1 },
+                },
+            },
+            {
+                $project: {
+                    status: '$_id',
+                    _id: 0,
+                    count: 1,
+                },
+            },
+        ]);
+        return statsCounts;
+    }
+
+    // menuItemPrice
+
+    async totalOrderedPrice(): Promise<number> {
+        const total = await OrderModel.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalSellPrice: {
+                        $sum: '$totalAmound',
+                    },
+                },
+            },
+        ]);
+        return total.length ? total[0].totalSellPrice : 0;
+    }
+
+    async percentageCommitionAmound(percentageDecimal: number): Promise<number> {
+        const result = await OrderModel.aggregate([
+            {
+                $project: {
+                    // Multiply totalAmount by the percentage
+                    percentageAmount: { $multiply: ['$totalAmound', percentageDecimal] },
+                },
+            },
+            {
+                $group: {
+                    _id: null, // No grouping (we want to sum everything)
+                    totalPercentageSum: { $sum: '$percentageAmount' }, // Sum the calculated percentage amounts
+                },
+            },
+        ]);
+        return result[0]?.totalPercentageSum || 0;
     }
 }

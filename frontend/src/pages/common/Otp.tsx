@@ -7,7 +7,7 @@ import { hotToastMessage } from '../../utils/hotToast';
 import { ROLES_CONSTANTS } from '../../utils/constants';
 
 const Otp = () => {
-    const inputRef = useRef<any>([]);
+    const inputRef = useRef<(HTMLInputElement | null)[]>([]);
     const navigate = useNavigate();
     const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -30,14 +30,14 @@ const Otp = () => {
         }
         // Move to the next input field
         if (value !== '' && index < 5) {
-            inputRef.current[index + 1].focus();
+            inputRef.current[index + 1]?.focus();
         }
     };
 
     // to handle backSpace
     const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Backspace' && !otp[index] && index > 0) {
-            inputRef.current[index - 1].focus();
+            inputRef.current[index - 1]?.focus();
         }
     };
 
@@ -79,8 +79,8 @@ const Otp = () => {
         <div className="flex items-center justify-center w-full h-screen">
             <div className="flex flex-col gap-10 p-8 rounded-md border border-gray-300 mx-2">
                 <div className="text-center">
-                    <h1 className="font-extrabold text-2xl">verify email</h1>
-                    <p className="text-sm text-gray-600">Enter the 6 digit code sent to your email address</p>
+                    <h1 className="font-extrabold text-2xl">Verify Email</h1>
+                    <p className="text-sm text-gray-600">Enter the 6-digit code sent to your email address</p>
                 </div>
                 <form onSubmit={handleSubmit}>
                     <div className="flex gap-2 justify-center">
@@ -93,21 +93,20 @@ const Otp = () => {
                                         (inputRef.current[index] = element)
                                     }
                                     maxLength={1}
-                                    value={letter[index]}
+                                    value={letter}
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                         handleChange(index, e.target.value)
                                     }
                                     onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
                                         handleKeyDown(index, e)
                                     }
-                                    className="border border-black w-10 h-10 md:h-12 md:w-12 text-center text-sm md:text-2xl md: font-bold rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="border border-black w-10 h-10 md:h-12 md:w-12 text-center text-sm md:text-2xl font-bold rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 />
                             ))}
                     </div>
                     <Button
                         type="submit"
                         disabled={isLoading}
-                        // className="w-full mb-5"
                         sx={{
                             width: '100%',
                             mt: 2,

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -12,7 +11,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Typography } from '@mui/material';
-import { ICart } from '../../types';
+import { ICart, ICartResponse } from '../../types';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -33,18 +32,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-function createData(name: string, calories: number, fat: number, carbs: number, protein: number) {
-    return { name, calories, fat, carbs, protein, quantity: 1 };
-}
-
-const initialRows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
 export default function TableCart({
     cartItems,
     removeCartItemHandler,
@@ -54,12 +41,10 @@ export default function TableCart({
     removeCartItemHandler: (cartItemId: string) => void;
     changeQuantityHandler: (cartItemId: string, quantity: number) => void;
 }) {
-    const [rows, setRows] = React.useState(initialRows);
-
-    const handleQuantityChange = (item: any, quantityChange: number) => {
-        const newQuantity = item.quantity + quantityChange;
+    const handleQuantityChange = (cartItem: ICartResponse, quantityChange: number) => {
+        const newQuantity = cartItem.quantity + quantityChange;
         if (newQuantity < 1) return; // Ensure quantity doesn't go below 1
-        changeQuantityHandler(item.id, newQuantity); // Call the handler with the new quantity
+        changeQuantityHandler(cartItem._id, newQuantity); // Call the handler with the new quantity
     };
 
     const handleRemoveItem = (cartItemId: string) => {
@@ -79,28 +64,28 @@ export default function TableCart({
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {cartItems.map((item: ICart) => (
-                        <StyledTableRow key={item._id}>
-                            <StyledTableCell component="th" scope="item">
-                                {item.itemId.name}
+                    {cartItems.map((cartItem: ICart) => (
+                        <StyledTableRow key={cartItem._id}>
+                            <StyledTableCell component="th" scope="cartItem">
+                                {cartItem.itemId.name}
                             </StyledTableCell>
-                            <StyledTableCell align="center">{item.itemId.price}</StyledTableCell>
+                            <StyledTableCell align="center">{cartItem.itemId.price}</StyledTableCell>
                             <StyledTableCell align="center">
                                 <div className="flex items-center justify-center">
-                                    <IconButton onClick={() => handleQuantityChange(item, -1)}>
+                                    <IconButton onClick={() => handleQuantityChange(cartItem, -1)}>
                                         <RemoveIcon />
                                     </IconButton>
-                                    <Typography>{item.quantity}</Typography>
-                                    <IconButton onClick={() => handleQuantityChange(item, 1)}>
+                                    <Typography>{cartItem.quantity}</Typography>
+                                    <IconButton onClick={() => handleQuantityChange(cartItem, 1)}>
                                         <AddIcon />
                                     </IconButton>
                                 </div>
                             </StyledTableCell>
                             <StyledTableCell align="center">
-                                {item.itemId.price * item.quantity}
+                                {cartItem.itemId.price * cartItem.quantity}
                             </StyledTableCell>
                             <StyledTableCell align="center">
-                                <IconButton onClick={() => handleRemoveItem(item._id)}>
+                                <IconButton onClick={() => handleRemoveItem(cartItem._id)}>
                                     <DeleteIcon />
                                 </IconButton>
                             </StyledTableCell>

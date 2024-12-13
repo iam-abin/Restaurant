@@ -13,49 +13,55 @@ import {
     Box,
     Button,
 } from '@mui/material';
-import { getRestaurantOrdersApi } from '../../api/apiMethods/order';
+import { getRestaurantOrdersApi, updateOrderStatusApi } from '../../api/apiMethods/order';
 import { useAppSelector } from '../../redux/hooks';
-
-// Dummy Data
-const dummyOrders = [
-    {
-        id: 1,
-        image: 'https://via.placeholder.com/100',
-        name: 'Margherita Pizza',
-        customer: 'John Doe',
-        quantity: 2,
-        status: 'Pending',
-    },
-    {
-        id: 2,
-        image: 'https://via.placeholder.com/100',
-        name: 'Chicken Burger',
-        customer: 'Jane Smith',
-        quantity: 1,
-        status: 'Preparing',
-    },
-    {
-        id: 3,
-        image: 'https://via.placeholder.com/100',
-        name: 'Caesar Salad',
-        customer: 'Alice Johnson',
-        quantity: 3,
-        status: 'Delivered',
-    },
-];
+import OrdersTableRestaurantSkelton from '../../components/shimmer/OrdersTableRestaurantSkelton';
+import { IRestaurantOrder } from '../../types';
+import { hotToastMessage } from '../../utils/hotToast';
+import OrderDetailsModal from '../../components/modal/OrderDetailsModal';
 
 const OrdersListPage: React.FC = () => {
-    const [orders, setOrders] = useState(dummyOrders);
+    const [orders, setOrders] = useState<IRestaurantOrder[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedOrder, setSelectedOrder] = useState<IRestaurantOrder | null>(null);
+    const [modalOpen, setModalOpen] = useState(false);
+
     const restaurant = useAppSelector((store) => store.restaurantReducer.restaurantData?.restaurant);
 
     useEffect(() => {
-        getRestaurantOrdersApi(restaurant?._id!);
-    }, []);
+        (async () => {
+            if (restaurant?._id) {
+                setLoading(true);
+                try {
+                    const orders = await getRestaurantOrdersApi(restaurant._id);
+                    setOrders(orders.data as IRestaurantOrder[]);
+                } finally {
+                    setLoading(false);
+                }
+            }
+        })();
+    }, [restaurant]);
 
-    const handleStatusChange = (id: number, newStatus: string) => {
+    const handleStatusChange = async (id: string, newStatus: string) => {
         setOrders((prevOrders) =>
-            prevOrders.map((order) => (order.id === id ? { ...order, status: newStatus } : order)),
+            prevOrders.map((order) => (order._id === id ? { ...order, status: newStatus } : order)),
         );
+        const response = await updateOrderStatusApi(id, newStatus);
+
+        hotToastMessage(response.message, 'success');
+    };
+
+    const handleViewDetails = (order: IRestaurantOrder) => {
+        setSelectedOrder(order);
+        setModalOpen(true);
+    };
+
+    const statuses = ['preparing', 'outfordelivery', 'delivered'];
+    const tableColumns = ['Image', 'OrderId', 'Customer', 'Total', 'Status', 'Actions'];
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        setSelectedOrder(null);
     };
 
     return (
@@ -63,51 +69,82 @@ const OrdersListPage: React.FC = () => {
             <Typography variant="h4" gutterBottom>
                 Orders List
             </Typography>
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Image</TableCell>
-                            <TableCell>Item Name</TableCell>
-                            <TableCell>Customer</TableCell>
-                            <TableCell>Quantity</TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell>Actions</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {orders.map((order) => (
-                            <TableRow key={order.id}>
-                                <TableCell>
-                                    <img
-                                        src={order.image}
-                                        alt={order.name}
-                                        style={{ width: '50px', borderRadius: '5px' }}
-                                    />
-                                </TableCell>
-                                <TableCell>{order.name}</TableCell>
-                                <TableCell>{order.customer}</TableCell>
-                                <TableCell>{order.quantity}</TableCell>
-                                <TableCell>
-                                    <Select
-                                        value={order.status}
-                                        onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                                    >
-                                        <MenuItem value="Pending">Pending</MenuItem>
-                                        <MenuItem value="Preparing">Preparing</MenuItem>
-                                        <MenuItem value="Delivered">Delivered</MenuItem>
-                                    </Select>
-                                </TableCell>
-                                <TableCell>
-                                    <Button variant="contained" color="primary" size="small">
-                                        View Details
-                                    </Button>
-                                </TableCell>
+            {loading ? (
+                <OrdersTableRestaurantSkelton />
+            ) : orders.length ? (
+                <TableContainer component={Paper}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                {tableColumns.map((column: string) => (
+                                    <TableCell key={column}>{column}</TableCell>
+                                ))}
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {orders.map((order) => (
+                                <TableRow key={order._id}>
+                                    <TableCell>
+                                        <img
+                                            src={order.orderedItems[0].imageUrl}
+                                            alt="img not available"
+                                            style={{ width: '50px', borderRadius: '5px' }}
+                                        />
+                                    </TableCell>
+                                    <TableCell>{order._id}</TableCell>
+                                    <TableCell>{order.userDetails.email}</TableCell>
+                                    <TableCell>{order.totalAmound}</TableCell>
+                                    <TableCell>
+                                        <Select
+                                            value={order.status}
+                                            onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                                        >
+                                            <MenuItem value={order.status}>{order.status}</MenuItem>
+                                            {statuses.map((item: string) => (
+                                                <MenuItem key={item} value={item}>
+                                                    {item}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            size="small"
+                                            onClick={() => handleViewDetails(order)}
+                                        >
+                                            View Details
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            ) : (
+                <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+                    <h1 className="mt-4 text-2xl font-semibold text-gray-800">No Orders Yet!</h1>
+                    <p className="mt-2 text-gray-600">It looks like you haven't received any orders.</p>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        className="mt-6"
+                        onClick={() => alert('Redirecting to menu...')}
+                    >
+                        Browse Menu
+                    </Button>
+                </div>
+            )}
+
+            {/* Order Details Modal using Modal component */}
+            {selectedOrder && (
+                <OrderDetailsModal
+                    modalOpen={modalOpen}
+                    handleCloseModal={handleCloseModal}
+                    selectedOrder={selectedOrder}
+                />
+            )}
         </Box>
     );
 };

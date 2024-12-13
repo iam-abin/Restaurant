@@ -14,4 +14,5 @@ export interface IOrderedItem {
     restaurantId: string;
     menuItemId: string;
     menuItemPrice: number;
+    quantity: number;
 }

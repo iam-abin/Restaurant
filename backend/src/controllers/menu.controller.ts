@@ -13,7 +13,7 @@ class MenuController {
         const file: Express.Multer.File = req.file!;
         const menu: IMenuDocument = await menuService.createMenu(
             userId,
-            req.body as Omit<IMenu, 'imageUrl' | 'restaurantId'>,
+            req.body as Omit<IMenu, 'imageUrl' | 'restaurantId' | 'cuisineId'>,
             file,
         );
         res.status(201).json(createSuccessResponse('Menu created successfully', menu));

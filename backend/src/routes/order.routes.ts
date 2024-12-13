@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
-import { mongoIdParamsValidator, ROLES_CONSTANTS } from '../utils';
+import { mongoIdParamsValidator, updateOrderStatusRequestBodyValidator, ROLES_CONSTANTS } from '../utils';
 import { orderController } from '../controllers/order.controller';
 
 const router: Router = express.Router();
@@ -21,8 +21,9 @@ router.get(
 );
 
 router.patch(
-    '/restaurant/:orderId',
+    '/restaurant/status/:orderId',
     mongoIdParamsValidator('orderId'),
+    updateOrderStatusRequestBodyValidator,
     validateRequest,
     checkCurrentUser,
     auth(ROLES_CONSTANTS.RESTAURANT),

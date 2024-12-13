@@ -15,7 +15,19 @@ export const createJwtAccessToken = (payload: IJwtPayload): string => {
     return accessToken;
 };
 
-export const verifyJwtToken = (token: string): IJwtPayload => {
+export const createJwtRefreshToken = (payload: IJwtPayload): string => {
+    const refreshToken: string = jwt.sign(payload, appConfig.JWT_REFRESH_SECRET as string, {
+        expiresIn: appConfig.JWT_REFRESH_EXPIRY_TIME,
+    });
+    return refreshToken;
+};
+
+export const verifyJwtAccessToken = (token: string): IJwtPayload => {
     const decodedData = jwt.verify(token, appConfig.JWT_SECRET!) as IJwtPayload;
+    return decodedData;
+};
+
+export const verifyJwtRefreshToken = (token: string): IJwtPayload => {
+    const decodedData = jwt.verify(token, appConfig.JWT_REFRESH_SECRET!) as IJwtPayload;
     return decodedData;
 };

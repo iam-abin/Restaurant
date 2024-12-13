@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { IRestaurantDocument } from '../database/model';
 
 export interface IRestaurant {
     ownerId: string;
@@ -7,12 +8,17 @@ export interface IRestaurant {
     city: string;
     country: string;
     deliveryTime: number;
-    imageUrl: string;
+    imageUrl?: string;
     cuisines: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface IRestaurantUpdate extends Omit<IRestaurant, 'ownerId' | 'addressId' | 'imageUrl'> {}
+
+export interface IRestaurantsData {
+    restaurants: IRestaurantDocument[] | null;
+    numberOfPages: number;
+}
 
 export interface ISearchResult {
     imageUrl: string;

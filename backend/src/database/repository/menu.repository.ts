@@ -1,10 +1,11 @@
+import mongoose from 'mongoose';
 import { IMenu } from '../../types';
 import { IMenuDocument, MenuModel } from '../model';
 
 export class MenuRepository {
-    async create(menuData: IMenu): Promise<IMenuDocument> {
-        const menu: IMenuDocument = await MenuModel.create(menuData);
-        return menu;
+    async create(menuData: IMenu, session?: mongoose.ClientSession): Promise<IMenuDocument> {
+        const menu: IMenuDocument[] = await MenuModel.create([menuData], { session });
+        return menu[0];
     }
 
     async findMenu(menuId: string): Promise<IMenuDocument | null> {

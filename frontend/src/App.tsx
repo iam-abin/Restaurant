@@ -1,28 +1,32 @@
-import MainLayout from './layout/MainLayout';
-import Auth from './pages/common/Auth';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
-import ForgotPasswordEmail from './pages/common/ForgotPasswordEmail';
-import ResetPassword from './pages/common/ResetPassword';
-import Otp from './pages/common/Otp';
-import Landing from './pages/user/Landing';
-import Profile from './pages/user/Profile';
-import SearchResult from './pages/user/SearchResult';
-import RestaurantDetails from './pages/common/RestaurantDetails';
-import Cart from './pages/user/Cart';
-import Restaurant from './pages/restaurant/Restaurant';
-import Menu from './pages/restaurant/Menu';
-import Orders from './pages/restaurant/Orders';
-import Success from './pages/user/Success';
 import { Toaster } from 'react-hot-toast';
-import Error404 from './pages/common/Error404';
-import { RoleProtectedRoute } from './components/ProtectedRoute';
-import { ROLES_CONSTANTS } from './utils/constants';
+import { lazy } from 'react';
+
+import { DEVELOPMENT_BACKEND_ORIGIN, ROLES_CONSTANTS } from './utils/constants';
 import { useAppSelector } from './redux/hooks';
-import Dashboard from './pages/admin/Dashboard';
-import Users from './pages/admin/UsersList';
-import RestaurantsList from './pages/admin/RestaurantsList';
-import OrdersUser from './pages/user/OrdersUser';
-import PieChartGraph from './components/charts/PieChartGraph';
+
+import { RoleProtectedRoute } from './components/ProtectedRoute';
+
+import MainLayout from './layout/MainLayout';
+const Auth = lazy(() => import('./pages/common/Auth'));
+const ForgotPasswordEmail = lazy(() => import('./pages/common/ForgotPasswordEmail'));
+const ResetPassword = lazy(() => import('./pages/common/ResetPassword'));
+const Otp = lazy(() => import('./pages/common/Otp'));
+const Landing = lazy(() => import('./pages/user/Landing'));
+const Profile = lazy(() => import('./pages/user/Profile'));
+const SearchResult = lazy(() => import('./pages/user/SearchResult'));
+const RestaurantDetails = lazy(() => import('./pages/common/RestaurantDetails'));
+const Cart = lazy(() => import('./pages/user/Cart'));
+const Restaurant = lazy(() => import('./pages/restaurant/Restaurant'));
+const Menu = lazy(() => import('./pages/restaurant/Menu'));
+const Orders = lazy(() => import('./pages/restaurant/Orders'));
+const Success = lazy(() => import('./pages/user/Success'));
+const Error404 = lazy(() => import('./pages/common/Error404'));
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+const Users = lazy(() => import('./pages/admin/UsersList'));
+const RestaurantsList = lazy(() => import('./pages/admin/RestaurantsList'));
+const OrdersUser = lazy(() => import('./pages/user/OrdersUser'));
+const DashBoard = lazy(() => import('./pages/restaurant/DashBoard'));
 
 const AuthenticatedUser = ({ children }: { children: React.ReactNode }) => {
     const authData = useAppSelector((state) => state.authReducer.authData);
@@ -39,107 +43,120 @@ const AuthenticatedUser = ({ children }: { children: React.ReactNode }) => {
     return children;
 };
 
-const appRouter = createBrowserRouter([
-    {
-        path: '/',
-        element: (
-            <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.USER]}>
-                <MainLayout />
-            </RoleProtectedRoute>
-        ),
-        children: [
-            { path: '/', element: <Landing /> },
-            { path: '/profile', element: <Profile /> },
-            { path: '/search/:searchText', element: <SearchResult /> },
-            {
-                path: '/user/restaurant/:restaurantId',
-                element: <RestaurantDetails />,
-            },
-            { path: '/cart', element: <Cart /> },
-            { path: '/orders', element: <OrdersUser /> },
-            { path: '/order/status', element: <Success /> },
-            { path: '*', element: <Error404 /> },
-        ],
-    },
-    {
-        path: '/restaurant',
-        element: (
-            <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.RESTAURANT]}>
-                <MainLayout />
-            </RoleProtectedRoute>
-        ),
-        children: [
-            { path: '', element: <PieChartGraph /> }, // Correct relative path
-            { path: 'details', element: <Restaurant /> }, // Correct relative path
-            { path: 'menu', element: <Menu /> },
-            { path: 'orders', element: <Orders /> },
-        ],
-    },
-    {
-        path: '/admin',
-        element: (
-            <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.ADMIN]}>
-                <MainLayout />
-            </RoleProtectedRoute>
-        ),
-        children: [
-            { path: '', element: <Dashboard /> },
-            { path: 'users', element: <Users /> },
-            { path: 'restaurants', element: <RestaurantsList /> },
-        ],
-    },
+const appRouter = createBrowserRouter(
+    [
+        {
+            path: '/',
+            element: (
+                <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.USER]}>
+                    <MainLayout />
+                </RoleProtectedRoute>
+            ),
+            children: [
+                { path: '/', element: <Landing /> },
+                { path: '/profile', element: <Profile /> },
+                { path: '/search/:searchText', element: <SearchResult /> },
+                {
+                    path: '/user/restaurant/:restaurantId',
+                    element: <RestaurantDetails />,
+                },
+                { path: '/cart', element: <Cart /> },
+                { path: '/orders', element: <OrdersUser /> },
+                { path: '/order/status', element: <Success /> },
+                { path: '*', element: <Error404 /> },
+            ],
+        },
+        {
+            path: '/restaurant',
+            element: (
+                <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.RESTAURANT]}>
+                    <MainLayout />
+                </RoleProtectedRoute>
+            ),
+            children: [
+                { path: '', element: <DashBoard /> }, // Correct relative path
+                { path: 'details', element: <Restaurant /> }, // Correct relative path
+                { path: 'menu', element: <Menu /> },
+                { path: 'orders', element: <Orders /> },
+            ],
+        },
+        {
+            path: '/admin',
+            element: (
+                <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.ADMIN]}>
+                    <MainLayout />
+                </RoleProtectedRoute>
+            ),
+            children: [
+                { path: '', element: <Dashboard /> },
+                { path: 'users', element: <Users /> },
+                { path: 'restaurants', element: <RestaurantsList /> },
+            ],
+        },
 
+        {
+            path: '/auth',
+            element: (
+                <AuthenticatedUser>
+                    {' '}
+                    <Auth />
+                </AuthenticatedUser>
+            ),
+        },
+        {
+            path: '/restaurant/auth',
+            element: (
+                <AuthenticatedUser>
+                    {' '}
+                    <Auth />
+                </AuthenticatedUser>
+            ),
+        },
+        {
+            path: '/admin/auth',
+            element: (
+                <AuthenticatedUser>
+                    {' '}
+                    <Auth />
+                </AuthenticatedUser>
+            ),
+        },
+        {
+            path: '/forgot-password/email',
+            element: (
+                <AuthenticatedUser>
+                    {' '}
+                    <ForgotPasswordEmail />
+                </AuthenticatedUser>
+            ),
+        },
+        {
+            path: '/reset-password/:uniqueId',
+            element: <ResetPassword />,
+        },
+        {
+            path: '/forgot-password/otp',
+            element: <Otp />,
+        },
+        {
+            path: '/signup/otp',
+            element: <Otp />,
+        },
+    ],
     {
-        path: '/auth',
-        element: (
-            <AuthenticatedUser>
-                {' '}
-                <Auth />
-            </AuthenticatedUser>
-        ),
+        future: {
+            v7_partialHydration: true,
+            v7_fetcherPersist: true,
+            v7_normalizeFormMethod: true,
+            v7_relativeSplatPath: true,
+            v7_skipActionErrorRevalidation: true,
+        },
     },
-    {
-        path: '/restaurant/auth',
-        element: (
-            <AuthenticatedUser>
-                {' '}
-                <Auth />
-            </AuthenticatedUser>
-        ),
-    },
-    {
-        path: '/admin/auth',
-        element: (
-            <AuthenticatedUser>
-                {' '}
-                <Auth />
-            </AuthenticatedUser>
-        ),
-    },
-    {
-        path: '/forgot-password/email',
-        element: (
-            <AuthenticatedUser>
-                {' '}
-                <ForgotPasswordEmail />
-            </AuthenticatedUser>
-        ),
-    },
-    {
-        path: '/reset-password/:uniqueId',
-        element: <ResetPassword />,
-    },
-    {
-        path: '/forgot-password/otp',
-        element: <Otp />,
-    },
-    {
-        path: '/signup/otp',
-        element: <Otp />,
-    },
-]);
+);
 
 export default function App() {
+    console.log(DEVELOPMENT_BACKEND_ORIGIN);
+
     return (
         <main>
             <Toaster

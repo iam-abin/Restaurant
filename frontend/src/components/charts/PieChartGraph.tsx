@@ -1,24 +1,16 @@
-import * as React from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
-import { mobileAndDesktopOS, valueFormatter } from './pie-data';
+import { IOrderStatusWithCounts } from '../../types';
 
-export default function PieChartGraph() {
-    const [radius, setRadius] = React.useState(50);
-    const [itemNb, setItemNb] = React.useState(5);
-    const [skipAnimation, setSkipAnimation] = React.useState(false);
+export default function PieChartGraph({ statusCounts }: { statusCounts: IOrderStatusWithCounts[] }) {
+    const radius = 50;
+    const itemNb = 5;
 
-    const handleItemNbChange = (event: Event, newValue: number | number[]) => {
-        if (typeof newValue !== 'number') {
-            return;
-        }
-        setItemNb(newValue);
-    };
-    const handleRadius = (event: Event, newValue: number | number[]) => {
-        if (typeof newValue !== 'number') {
-            return;
-        }
-        setRadius(newValue);
-    };
+    const orderStatuses = statusCounts.map((value: IOrderStatusWithCounts) => ({
+        label: value.status,
+        value: value.count,
+    }));
+
+    const valueFormatter = (item: { value: number }) => `${item.value}%`;
 
     return (
         <div className="flex items-center h-screen">
@@ -26,14 +18,13 @@ export default function PieChartGraph() {
                 height={450}
                 series={[
                     {
-                        data: mobileAndDesktopOS.slice(0, itemNb),
+                        data: orderStatuses.slice(0, itemNb),
                         innerRadius: radius,
                         arcLabel: (params) => params.label ?? '',
                         arcLabelMinAngle: 20,
                         valueFormatter,
                     },
                 ]}
-                skipAnimation={skipAnimation}
             />
         </div>
     );

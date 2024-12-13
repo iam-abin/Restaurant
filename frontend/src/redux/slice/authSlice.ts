@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { addAsyncThunkCases } from '../../utils/addCase';
-import { signinUser, logoutUser } from '../thunk/authThunk';
+import { signinUser, logoutUser, googleAuthThunk } from '../thunk/authThunk';
 import { IUser } from '../../types';
 
 interface IAuthSlice {
@@ -22,6 +22,10 @@ const authSlice = createSlice({
     extraReducers: (builder) => {
         // Signin logic
         addAsyncThunkCases(builder, signinUser, (state, action) => {
+            state.authData = action.payload;
+        });
+
+        addAsyncThunkCases(builder, googleAuthThunk, (state, action) => {
             state.authData = action.payload;
         });
 

@@ -46,7 +46,7 @@ export class OrderService {
             // const restaurantId = this.checkSameRestaurant(cartItems);
             // const restaurant = this.restaurantRepository.findRestaurant(restaurantId);
             // if (!restaurant) throw new NotFoundError('Restaurant not found');
-            const totalAmound = this.findTotalAmound(cartItems);
+            const totalAmound: number = this.findTotalAmound(cartItems);
             if (!address) throw new NotFoundError('Address not found');
             if (address.userId.toString() !== userId)
                 throw new ForbiddenError('You cannot use others address');
@@ -93,8 +93,9 @@ export class OrderService {
 
             const orderedItems = cartItems.map((item) => ({
                 userId,
-                orderId: order.id,
+                orderId: order._id.toString(),
                 restaurantId,
+                quantity: item.quantity,
                 menuItemId: (item.itemId as IMenuDocument)._id.toString(),
                 menuItemPrice: (item.itemId as IMenuDocument).price,
             }));
@@ -113,30 +114,30 @@ export class OrderService {
         }
     }
 
-    private checkSameRestaurant(cartItems: ICartDocument[]) {
-        if (cartItems.length === 0) throw new Error('Cart is empty');
+    // private checkSameRestaurant(cartItems: ICartDocument[]) {
+    //     if (cartItems.length === 0) throw new Error('Cart is empty');
 
-        // Extract the restaurantId of the first cart item
-        const firstRestaurantId = (cartItems[0].itemId as IMenuDocument).restaurantId.toString();
+    //     // Extract the restaurantId of the first cart item
+    //     const firstRestaurantId = (cartItems[0].itemId as IMenuDocument).restaurantId.toString();
 
-        // Check if all items in the cart have the same restaurantId
-        for (const item of cartItems) {
-            const currentRestaurantId = (item.itemId as IMenuDocument).restaurantId.toString();
-            if (currentRestaurantId !== firstRestaurantId) {
-                throw new Error('All items in the cart must be from the same restaurant');
-            }
-        }
+    //     // Check if all items in the cart have the same restaurantId
+    //     for (const item of cartItems) {
+    //         const currentRestaurantId = (item.itemId as IMenuDocument).restaurantId.toString();
+    //         if (currentRestaurantId !== firstRestaurantId) {
+    //             throw new Error('All items in the cart must be from the same restaurant');
+    //         }
+    //     }
 
-        // Return the restaurantId if all are the same
-        return firstRestaurantId;
-    }
+    //     // Return the restaurantId if all are the same
+    //     return firstRestaurantId;
+    // }
 
     private findTotalAmound(cartItems: ICartDocument[]) {
         if (cartItems.length === 0) throw new Error('Cart is empty');
 
         // Check if all items in the cart have the same restaurantId
         const totalAmound = cartItems.reduce((acc: number, currItem: ICartDocument) => {
-            acc = acc + (currItem.itemId as IMenuDocument).price;
+            acc = acc + (currItem.itemId as IMenuDocument).price * currItem.quantity;
             return acc;
         }, 0);
 
@@ -165,7 +166,7 @@ export class OrderService {
         return lineItems;
     }
 
-    public async getOrders(restaurantId: string, ownerId: string): Promise<IOrderDocument[]> {
+    public async getRestaurantOrders(restaurantId: string, ownerId: string): Promise<IOrderDocument[]> {
         const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         if ('_id' in restaurant.owner! && restaurant.owner._id.toString() !== ownerId)

@@ -7,17 +7,21 @@ import {
     verifyOtpRequestBodyValidator,
     forgotPasswordRequestBodyValidator,
     resetPasswordRequestBodyValidator,
-    ROLES_CONSTANTS,
     verifyTokenRequestBodyValidator,
     mongoIdParamsValidator,
+    googleAuthRequestBodyValidator,
 } from '../utils';
-import { checkCurrentUser, auth, validateRequest } from '../middlewares';
+import { validateRequest } from '../middlewares';
 
 const router: Router = express.Router();
 
 router.post('/signin', signinRequestBodyValidator, validateRequest, authController.signin);
 
+router.post('/refresh', authController.signin);
+
 router.post('/signup', signupRequestBodyValidator, validateRequest, authController.signup);
+
+router.post('/google', googleAuthRequestBodyValidator, validateRequest, authController.googleAuth);
 
 router.post('/verify/otp', verifyOtpRequestBodyValidator, validateRequest, authController.verifyOtp);
 
@@ -51,11 +55,6 @@ router.patch(
     authController.blockUnblockUser,
 );
 
-router.post(
-    '/logout',
-    checkCurrentUser,
-    auth([ROLES_CONSTANTS.USER, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.ADMIN]),
-    authController.logout,
-);
+router.post('/logout', authController.logout);
 
 export { router as authRoutes };

@@ -7,6 +7,8 @@ export const forgotPasswordRequestBodyValidator = [
 export const resetPasswordRequestBodyValidator = [
     ...mongoIdBodyValidator('userId'),
     body('password')
+        .notEmpty()
+        .withMessage('Password is required')
         .trim()
         .isLength({ min: 4, max: 20 })
         .withMessage('Password must be between 4 and 20 characters')

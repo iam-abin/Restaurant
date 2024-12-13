@@ -1,10 +1,10 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 import { generateHashedPassword, omitDocFields } from '../../utils';
 import { ISignup, IUser } from '../../types';
 import { ROLES_CONSTANTS } from '../../utils';
 
 export interface IUserDocument extends Document, IUser {
-    _id: Schema.Types.ObjectId;
+    _id: Types.ObjectId;
 }
 
 const userSchema = new Schema<IUserDocument>(
@@ -23,12 +23,13 @@ const userSchema = new Schema<IUserDocument>(
         },
         phone: {
             type: Number,
-            required: true,
             trim: true,
         },
         password: {
             type: String,
-            required: true,
+        },
+        googleId: {
+            type: String,
         },
         role: {
             type: String,
@@ -58,7 +59,8 @@ const userSchema = new Schema<IUserDocument>(
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
     try {
-        const hashedPassword: string = await generateHashedPassword(this.password);
+        if (!this.password) next(); // google auth has no password
+        const hashedPassword: string = await generateHashedPassword(this.password!);
         this.password = hashedPassword;
         next();
     } catch (error: unknown) {

@@ -6,7 +6,7 @@ export function addAsyncThunkCases<
     RejectedPayload extends string | null = string,
 >(
     builder: ActionReducerMapBuilder<StateType>,
-    asyncThunk: AsyncThunk<FulfilledPayload, any, { rejectValue: RejectedPayload }>,
+    asyncThunk: AsyncThunk<FulfilledPayload, any, { rejectValue: RejectedPayload }>, // eslint-disable-line @typescript-eslint/no-explicit-any
     onSuccess?: (state: Draft<StateType>, action: PayloadAction<FulfilledPayload>) => void,
 ) {
     builder

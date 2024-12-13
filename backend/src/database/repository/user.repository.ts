@@ -3,7 +3,7 @@ import { IUserDocument, UserModel } from '../model';
 import { ISignup, IUser } from '../../types';
 
 export class UserRepository {
-    async createUser(userData: ISignup, session?: ClientSession): Promise<IUserDocument> {
+    async createUser(userData: Partial<IUser>, session?: ClientSession): Promise<IUserDocument> {
         const user: IUserDocument[] = await UserModel.create([userData], { session });
         return user[0];
     }

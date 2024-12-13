@@ -3,7 +3,10 @@ import { IProfileDocument, ProfileModel } from '../model';
 import { IProfile } from '../../types';
 
 export class ProfileRepository {
-    async create(profileData: Pick<IProfile, 'userId'>, session?: ClientSession): Promise<IProfileDocument> {
+    async create(
+        profileData: Pick<IProfile, 'userId' | 'imageUrl'>,
+        session?: ClientSession,
+    ): Promise<IProfileDocument> {
         const user: IProfileDocument[] = await ProfileModel.create([profileData], { session });
         return user[0];
     }
@@ -16,8 +19,8 @@ export class ProfileRepository {
         return await ProfileModel.findById(profileId).populate('userId');
     }
 
-    async find(): Promise<IProfileDocument[]> {
-        return await ProfileModel.find().populate('userId');
+    async find(skip: number, limit: number): Promise<IProfileDocument[]> {
+        return await ProfileModel.find().skip(skip).limit(limit).populate('userId');
     }
 
     async update(
@@ -26,5 +29,9 @@ export class ProfileRepository {
         session?: ClientSession,
     ): Promise<IProfileDocument | null> {
         return await ProfileModel.findOneAndUpdate({ userId }, updateData, { new: true, session });
+    }
+
+    async countProfiles(): Promise<number> {
+        return await ProfileModel.countDocuments();
     }
 }

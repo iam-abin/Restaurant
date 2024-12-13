@@ -5,7 +5,9 @@ export interface IAppConfig {
     NODE_ENVIRONMENT: string;
     API_PREFIX: string;
     JWT_SECRET: string;
+    JWT_REFRESH_SECRET: string;
     JWT_EXPIRY_TIME: string;
+    JWT_REFRESH_EXPIRY_TIME: string;
 
     FRONTEND_URL: string;
 
@@ -31,7 +33,9 @@ const appConfig: Readonly<IAppConfig> = Object.freeze({
     NODE_ENVIRONMENT: process.env.NODE_ENV!,
     API_PREFIX: '/api/v1',
     JWT_SECRET: process.env.JWT_SECRET!,
+    JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET!,
     JWT_EXPIRY_TIME: '3h',
+    JWT_REFRESH_EXPIRY_TIME: '7d',
 
     FRONTEND_URL: process.env.FRONTEND_URL!,
 

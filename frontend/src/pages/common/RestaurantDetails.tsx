@@ -4,7 +4,7 @@ import MenuCardSkeleton from '../../components/shimmer/MenuCardSkeleton';
 import { useEffect, useState } from 'react';
 import { getARestaurantApi } from '../../api/apiMethods/restaurant';
 import { Link, useParams } from 'react-router-dom';
-import { ICuisine, IMenu } from '../../types';
+import { ICuisine, IMenu, IRestaurantResponse2 } from '../../types';
 import MenuCard from '../../components/cards/MenuCard';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -13,7 +13,7 @@ import { ROLES_CONSTANTS } from '../../utils/constants';
 
 const RestaurantDetails = () => {
     const params = useParams();
-    const [restaurant, setRestaurant] = useState<any | null>(null);
+    const [restaurant, setRestaurant] = useState<IRestaurantResponse2 | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const dispatch = useAppDispatch();
     const cartData = useAppSelector((state) => state.cartReducer.cartData);
@@ -23,7 +23,7 @@ const RestaurantDetails = () => {
         (async () => {
             setIsLoading(true);
             const response = await getARestaurantApi(restaurantId!);
-            setRestaurant(response.data);
+            setRestaurant(response.data as IRestaurantResponse2);
             setIsLoading(false);
         })();
     }, []);
@@ -44,25 +44,23 @@ const RestaurantDetails = () => {
                     />
                 </div>
                 <div className="flex flex-col md:flex-row justify-between">
-                    <div className="my-5">
-                        <div className="font-medium text-xl">{restaurant?.restaurant?.name}</div>
-                        <div className="flex gap-2 my-2 items-center justify-between bg-green-200">
-                            <div>
+                    <div className="my-5 w-full">
+                        <span className="font-extrabold text-2xl">{restaurant?.owner?.name}</span>
+                        <div className="flex my-2 items-center justify-between">
+                            <div className="flex flex-row gap-1 max-w-full">
                                 {restaurant?.cuisines?.map((cusine: ICuisine, index: number) => (
-                                    <div key={index} className="relative inline-flex items-center max-w-full">
-                                        <Chip label={cusine.name} variant="outlined" />
+                                    <div key={index}>
+                                        <Chip label={cusine.name} variant="filled" />
                                     </div>
                                 ))}
                             </div>
-                            <div>
-                                <IconButton aria-label="cart">
-                                    <Badge badgeContent={cartData.length} color="primary">
-                                        <Link to={'/cart'}>
-                                            <ShoppingCartIcon />
-                                        </Link>
-                                    </Badge>
-                                </IconButton>
-                            </div>
+                            <IconButton aria-label="cart  ">
+                                <Badge badgeContent={cartData.length} color="primary">
+                                    <Link to={'/cart'}>
+                                        <ShoppingCartIcon />
+                                    </Link>
+                                </Badge>
+                            </IconButton>
                         </div>
 
                         <div className="flex md:flex-row flex-col gap-2 my-5">
@@ -80,16 +78,24 @@ const RestaurantDetails = () => {
                 </div>
                 <div className="md:p-4">
                     <h1 className="text-xl md:text-2xl font-extrabold mb-6">Available Menus</h1>
-                    <div className="flex flex-wrap">
+                    <div className="flex flex-col gap-2 items-center my-4">
                         {isLoading ? (
                             <>
-                                {' '}
                                 <MenuCardSkeleton />
                                 <MenuCardSkeleton />
                                 <MenuCardSkeleton />
                             </>
-                        ) : restaurant?.menus > 0 ? (
-                            restaurant?.menus.map((menu: IMenu) => <MenuCard key={menu._id} menu={menu} />)
+                        ) : restaurant?.menus && restaurant?.menus.length > 0 ? (
+                            restaurant.menus
+                                .filter(
+                                    (menu): menu is IMenu =>
+                                        menu &&
+                                        '_id' in menu &&
+                                        'name' in menu &&
+                                        'price' in menu &&
+                                        'description' in menu,
+                                )
+                                .map((menu) => <MenuCard key={menu._id} menu={menu} />)
                         ) : (
                             'No menus available'
                         )}

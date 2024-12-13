@@ -4,7 +4,7 @@ import { NotFoundError } from '../errors';
 
 import { AddressRepository, ProfileRepository } from '../database/repository';
 import { IAddressDocument, IProfileDocument } from '../database/model';
-import { IAddress, IProfile, IUser } from '../types';
+import { IAddress, IProfile, IProfilesData, IUser } from '../types';
 import { uploadImageOnCloudinary } from '../utils';
 import mongoose from 'mongoose';
 
@@ -21,9 +21,12 @@ export class ProfileService {
         return profile;
     }
 
-    public async getUserProfiles(): Promise<IProfileDocument[]> {
-        const profile: IProfileDocument[] = await this.profileRepository.find();
-        return profile;
+    public async getUserProfiles(page: number, limit: number): Promise<IProfilesData> {
+        const skip: number = (page - 1) * limit;
+        const profiles: IProfileDocument[] = await this.profileRepository.find(skip, limit);
+        const profilesCount: number = await this.profileRepository.countProfiles();
+        const numberOfPages: number = Math.ceil(profilesCount / limit);
+        return { profiles, numberOfPages };
     }
 
     public async updateProfile(

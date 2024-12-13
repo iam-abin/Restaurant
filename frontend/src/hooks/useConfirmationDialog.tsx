@@ -1,6 +1,6 @@
-import { useState, useCallback } from 'react';
+// import { useState, useCallback } from 'react';
 
-interface UseConfirmationDialogProps {
-    onAgree: () => void;
-    onDisagree?: () => void;
-}
+// interface UseConfirmationDialogProps {
+//     onAgree: () => void;
+//     onDisagree?: () => void;
+// }

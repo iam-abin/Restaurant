@@ -1,22 +1,38 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { signinApi, logoutApi } from '../../api/apiMethods/auth';
-import { ISignin, IUser } from '../../types';
+import { signinApi, logoutApi, googleAuthApi } from '../../api/apiMethods/auth';
+import { IGoogleAuth, ISignin, IUser } from '../../types';
 import { hotToastMessage } from '../../utils/hotToast';
 import { IResponse } from '../../types/api';
 
 // Async thunk for user sign-in
-export const signinUser = createAsyncThunk<IUser, ISignin, { rejectValue: string }>(
-    'auth/userSignin',
-    async (data: ISignin, { rejectWithValue }) => {
-        try {
-            const result: IResponse = await signinApi(data);
-            hotToastMessage(result.message, 'success');
-            return result.data as IUser;
-        } catch (error: unknown) {
-            return rejectWithValue((error as Error).message);
-        }
-    },
-);
+export const signinUser = createAsyncThunk<
+    IUser, // Return type of the resolved value
+    ISignin, // Argument type
+    { rejectValue: string } // Thunk API config with rejectValue
+>('auth/userSignin', async (data: ISignin, { rejectWithValue }) => {
+    try {
+        const result: IResponse = await signinApi(data);
+        hotToastMessage(result.message, 'success');
+        return result.data as IUser;
+    } catch (error: unknown) {
+        return rejectWithValue((error as Error).message);
+    }
+});
+
+// Async thunk for user sign-in
+export const googleAuthThunk = createAsyncThunk<
+    IUser, // Return type of the resolved value
+    Omit<IGoogleAuth, 'picture'>, // Argument type
+    { rejectValue: string } // Thunk API config with rejectValue
+>('auth/googleAuthLogin', async (data: Omit<IGoogleAuth, 'picture'>, { rejectWithValue }) => {
+    try {
+        const result: IResponse = await googleAuthApi(data);
+        hotToastMessage(result.message, 'success');
+        return result.data as IUser;
+    } catch (error: unknown) {
+        return rejectWithValue((error as Error).message);
+    }
+});
 
 // Async thunk for user logout
 export const logoutUser = createAsyncThunk<void, void, { rejectValue: string }>(

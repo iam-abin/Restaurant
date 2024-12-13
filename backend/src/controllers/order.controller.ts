@@ -47,7 +47,7 @@ class OrderController {
         const { userId } = req.currentUser!;
         const { restaurantId } = req.params;
 
-        const orders: IOrderDocument[] = await orderService.getOrders(restaurantId, userId);
+        const orders: IOrderDocument[] = await orderService.getRestaurantOrders(restaurantId, userId);
         res.status(200).json(createSuccessResponse('Restaurant orders fetched successfully', orders));
     }
 

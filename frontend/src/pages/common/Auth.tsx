@@ -10,12 +10,17 @@ import { signInSchema, signUpSchema } from '../../utils/schema/userSchema';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ROLES_CONSTANTS } from '../../utils/constants';
 import { useAppDispatch } from '../../redux/hooks';
-import { signinUser } from '../../redux/thunk/authThunk';
+import { googleAuthThunk, signinUser } from '../../redux/thunk/authThunk';
 import { hotToastMessage } from '../../utils/hotToast';
 import { signupApi } from '../../api/apiMethods/auth';
-import { ISignup, IUser } from '../../types';
+import { DecodedGoogleToken, IGoogleAuth, ISignup, IUser } from '../../types';
 import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
 import { fetchUserProfile } from '../../redux/thunk/profileThunk';
+import AuthRestaurantImage from '../../assets/auth-restaurant.png';
+import AuthUserImage from '../../assets/auth-user.png';
+import AuthAdminImage from '../../assets/auth-admin.png';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -112,140 +117,187 @@ const Auth = () => {
         }
     };
 
+    // google login
+    const handleSuccess = async (googleResponse: CredentialResponse) => {
+        const decoded = jwtDecode(googleResponse.credential!) as Omit<
+            DecodedGoogleToken,
+            'role' | 'imageUrl'
+        >;
+        const { name, email, picture } = decoded;
+        console.log('User Info:', decoded);
+
+        const userData: Omit<IGoogleAuth, 'picture'> = {
+            name,
+            email,
+            imageUrl: picture,
+            role,
+            googleId: decoded.sub,
+        };
+
+        try {
+            const response = await dispatch(googleAuthThunk(userData));
+
+            // Check if the action was rejected
+            if (response.meta.requestStatus !== 'rejected') {
+                naivgate('/');
+            }
+        } finally {
+        }
+    };
+
+    const handleError = () => {
+        hotToastMessage('Login failed', 'error');
+    };
+
     return (
-        <div className="bg-yellow-300 min-h-screen flex justify-center items-center">
-            <form
-                onSubmit={handleSubmit}
-                className="bg-slate-200 items-center w-10/12  md:w-2/6 gap-5 p-8 border-black rounded-lg"
-            >
-                <div className="w-full flex flex-col gap-4 mb-10">
-                    <div className="mb-4 flex justify-center ">
-                        {' '}
-                        <h1 className="font8-bold text-2xl">
-                            {role} {isLogin ? 'Login' : 'Signup'}
-                        </h1>
-                    </div>
-                    {!isLogin && (
-                        <div className="items-center relative">
-                            <PersonIcon className="mr-2 absolute inset-y-2 pointer-events-none" />
-
-                            <Input
-                                className="w-full p-1 pl-8"
-                                type="text"
-                                name="name"
-                                value={input.name}
-                                onChange={changeEventHandler}
-                                placeholder={`Enter your ${isRestaurantPage ? 'restaurant' : ''}name`}
-                                autoComplete="name"
-                            />
-                            {errors.name && (
-                                <Typography className="text-sm text-red-500">{errors.name}</Typography>
-                            )}
-                        </div>
-                    )}
-                    <div className="items-center relative">
-                        <EmailIcon className="mr-2 absolute inset-y-2 pointer-events-none" />
-                        <Input
-                            className="w-full p-1 pl-8"
-                            type="text"
-                            name="email"
-                            value={input.email}
-                            onChange={changeEventHandler}
-                            placeholder="Enter your email"
-                            autoComplete="email"
-                        />
-                        {errors.email && (
-                            <Typography className="text-sm text-red-500">{errors.email}</Typography>
-                        )}
-                    </div>
-                    {!isLogin && (
-                        <div className="items-center relative">
-                            <LocalPhoneIcon className="mr-2 absolute inset-y-2 pointer-events-none" />
-
-                            <Input
-                                className="w-full p-1 pl-8"
-                                type="text"
-                                name="phone"
-                                value={input.phone}
-                                onChange={changeEventHandler}
-                                placeholder="Enter your phone"
-                                autoComplete="phone"
-                            />
-                            {errors.phone && (
-                                <Typography className="text-sm text-red-500">{errors.phone}</Typography>
-                            )}
-                        </div>
-                    )}
-                    <div className=" items-center relative">
-                        <LockIcon className="mr-2 absolute inset-y-2 pointer-events-none" />
-
-                        <Input
-                            className="p-1 pl-8 bg-none w-full"
-                            type="password"
-                            name="password"
-                            value={input.password}
-                            onChange={changeEventHandler}
-                            placeholder="Enter your password"
-                            autoComplete="password"
-                        />
-                        {errors.password && (
-                            <Typography className="text-sm text-red-500">{errors.password}</Typography>
-                        )}
-                    </div>
-                </div>
-                <Button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full mb-5 bg-orange-300"
-                    variant="contained"
+        <div className="bg-gray-300 min-h-screen flex justify-center items-center">
+            <div className="md:w-1/2 flex h-screen justify-center items-center">
+                <form
+                    onSubmit={handleSubmit}
+                    className="bg-slate-200 items-center justify-center max-h-5/6 w-11/12 md:w-8/12 gap-5 p-8 border-black rounded-lg"
                 >
-                    {isLoading ? (
-                        <label className="flex items-center gap-4">
-                            Please wait <LoaderCircle />
-                        </label>
-                    ) : isLogin ? (
-                        'Login'
-                    ) : (
-                        'Signup'
-                    )}
-                </Button>
-                {!isAdminPage && (
-                    <div className="flex justify-end mt-2">
-                        <Link className="text-sm hover:text-blue-700" to="/forgot-password/email">
-                            Forgot Password
-                        </Link>
-                    </div>
-                )}
+                    <div className="w-full flex flex-col gap-4 mb-10">
+                        <div className="mb-4 flex justify-center ">
+                            {' '}
+                            <h1 className="font8-bold text-2xl">
+                                {role} {isLogin ? 'Login' : 'Signup'}
+                            </h1>
+                        </div>
+                        {!isLogin && (
+                            <div className="items-center relative">
+                                <PersonIcon className="mr-2 absolute inset-y-2 pointer-events-none" />
 
-                {!isAdminPage && (
-                    <div className="mt-5">
-                        <Divider className="mt-5" />
-                        <Typography className="text-sm flex mt-3">
-                            {isLogin ? (
-                                <>
-                                    Dont have an account?{' '}
-                                    <p
-                                        onClick={handlePageSwitch}
-                                        className="ml-1 text-blue-700 hover:text-blue-500 cursor-pointer"
-                                    >
-                                        signup
-                                    </p>
-                                </>
-                            ) : (
-                                <>
-                                    Already have an account?{' '}
-                                    <p
-                                        onClick={handlePageSwitch}
-                                        className="ml-1 text-blue-700 hover:text-blue-500 cursor-pointer"
-                                    >
-                                        signin
-                                    </p>
-                                </>
+                                <Input
+                                    className="w-full p-1 pl-8"
+                                    type="text"
+                                    name="name"
+                                    value={input.name}
+                                    onChange={changeEventHandler}
+                                    placeholder={`Enter your ${isRestaurantPage ? 'restaurant' : ''}name`}
+                                    autoComplete="name"
+                                />
+                                {errors.name && (
+                                    <Typography className="text-sm text-red-500">{errors.name}</Typography>
+                                )}
+                            </div>
+                        )}
+                        <div className="items-center relative">
+                            <EmailIcon className="mr-2 absolute inset-y-2 pointer-events-none" />
+                            <Input
+                                className="w-full p-1 pl-8"
+                                type="text"
+                                name="email"
+                                value={input.email}
+                                onChange={changeEventHandler}
+                                placeholder="Enter your email"
+                                autoComplete="email"
+                            />
+                            {errors.email && (
+                                <Typography className="text-sm text-red-500">{errors.email}</Typography>
                             )}
-                        </Typography>
+                        </div>
+                        {!isLogin && (
+                            <div className="items-center relative">
+                                <LocalPhoneIcon className="mr-2 absolute inset-y-2 pointer-events-none" />
+
+                                <Input
+                                    className="w-full p-1 pl-8"
+                                    type="text"
+                                    name="phone"
+                                    value={input.phone}
+                                    onChange={changeEventHandler}
+                                    placeholder="Enter your phone"
+                                    autoComplete="phone"
+                                />
+                                {errors.phone && (
+                                    <Typography className="text-sm text-red-500">{errors.phone}</Typography>
+                                )}
+                            </div>
+                        )}
+                        <div className=" items-center relative">
+                            <LockIcon className="mr-2 absolute inset-y-2 pointer-events-none" />
+
+                            <Input
+                                className="p-1 pl-8 bg-none w-full"
+                                type="password"
+                                name="password"
+                                value={input.password}
+                                onChange={changeEventHandler}
+                                placeholder="Enter your password"
+                                autoComplete="password"
+                            />
+                            {errors.password && (
+                                <Typography className="text-sm text-red-500">{errors.password}</Typography>
+                            )}
+                        </div>
                     </div>
-                )}
-            </form>
+                    <Button
+                        type="submit"
+                        disabled={isLoading}
+                        className="w-full mb-5 bg-orange-300"
+                        variant="contained"
+                    >
+                        {isLoading ? (
+                            <label className="flex items-center gap-4">
+                                Please wait <LoaderCircle />
+                            </label>
+                        ) : isLogin ? (
+                            'Login'
+                        ) : (
+                            'Signup'
+                        )}
+                    </Button>
+                    {!isAdminPage && (
+                        <div className="flex justify-end mt-2">
+                            <Link className="text-sm hover:text-blue-700" to="/forgot-password/email">
+                                Forgot Password
+                            </Link>
+                        </div>
+                    )}
+                    {!isAdminPage && (
+                        <div className="flex justify-center items-center p-3">
+                            <Divider className="mt-5 mb-5 bg-red-500" />
+                            <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
+                        </div>
+                    )}
+
+                    {!isAdminPage && (
+                        <div className="mt-5">
+                            <Divider className="mt-5" />
+                            <Typography className="text-sm flex mt-3">
+                                {isLogin ? (
+                                    <>
+                                        Dont have an account?{' '}
+                                        <p
+                                            onClick={handlePageSwitch}
+                                            className="ml-1 text-blue-700 hover:text-blue-500 cursor-pointer"
+                                        >
+                                            signup
+                                        </p>
+                                    </>
+                                ) : (
+                                    <>
+                                        Already have an account?{' '}
+                                        <p
+                                            onClick={handlePageSwitch}
+                                            className="ml-1 text-blue-700 hover:text-blue-500 cursor-pointer"
+                                        >
+                                            signin
+                                        </p>
+                                    </>
+                                )}
+                            </Typography>
+                        </div>
+                    )}
+                </form>
+            </div>
+            <div className="md:w-1/2 hidden md:block">
+                <img
+                    src={
+                        isRestaurantPage ? AuthRestaurantImage : isAdminPage ? AuthAdminImage : AuthUserImage
+                    }
+                />
+            </div>
         </div>
     );
 };

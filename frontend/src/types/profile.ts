@@ -10,3 +10,9 @@ export interface IProfile {
 }
 
 export type ProfileUpdate = Partial<Pick<IProfile, 'image'> & Pick<IUser, 'name'> & Omit<IAddress, 'userId'>>;
+
+export interface IProfilesResponse {
+    profiles: IProfile[] | null;
+    numberOfPages: number;
+}
+

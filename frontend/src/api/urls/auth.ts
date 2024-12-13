@@ -3,6 +3,7 @@ const AUTH_URL = `/auth`;
 const authApiUrls = {
     signinUrl: `${AUTH_URL}/signin`,
     signupUrl: `${AUTH_URL}/signup`,
+    googleAuthUrl: `${AUTH_URL}/google`,
     verifyOtpUrl: `${AUTH_URL}/verify/otp`,
     resendOtpUrl: `${AUTH_URL}/resend-otp`,
     resetPasswordUrl: `${AUTH_URL}/password/reset`,

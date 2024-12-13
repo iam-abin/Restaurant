@@ -1,10 +1,10 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 import { IAddress } from '../../types';
 import { omitDocFields } from '../../utils';
 
 export interface IAddressDocument extends Document, Omit<IAddress, 'userId'> {
-    _id: Schema.Types.ObjectId;
-    userId: Schema.Types.ObjectId;
+    _id: Types.ObjectId;
+    userId: Types.ObjectId;
 }
 
 const addressSchema = new Schema<IAddressDocument>(

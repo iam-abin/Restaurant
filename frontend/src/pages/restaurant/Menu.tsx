@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import AddMenuModal from '../../components/modal/AddMenuModal';
-import { Button, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import MenuCard from '../../components/cards/MenuCard';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchMenus } from '../../redux/thunk/menusThunk';
@@ -42,7 +42,7 @@ const Menu = () => {
             </div>
             {menus && menus.length > 0 ? (
                 <div className=" flex flex-col gap-2 items-center my-4">
-                {/* <div className="flex flex-wrap justify-center gap-5 mx-5 bg-green-300"> */}
+                    {/* <div className="flex flex-wrap justify-center gap-5 mx-5 bg-green-300"> */}
                     {menus.map((menu: IMenu) => (
                         <MenuCard key={menu._id} menu={menu} />
                     ))}
@@ -53,11 +53,11 @@ const Menu = () => {
                         <RestaurantMenu className="text-red-500" style={{ fontSize: 80 }} />
                         <h1 className="mt-4 text-2xl font-semibold text-gray-800">Menu Not Available</h1>
                         <p className="mt-2 text-gray-600">
-                            Sorry, the menu you're looking for is currently unavailable.
+                            Sorry, the menu you&apos;re looking for is currently unavailable.
                         </p>
                         <button
                             className="mt-6 px-6 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
-                            onClick={() => (navigate('/'))}
+                            onClick={() => navigate('/')}
                         >
                             Back to Home
                         </button>

@@ -1,17 +1,33 @@
 import { body } from 'express-validator';
 
 export const updateProfileRequestBodyValidator = [
-    body('image').optional().isString().withMessage('Image must be a string'),
-    body('name').isString().withMessage('Name must be a string').notEmpty().withMessage('Name is required'),
+    body('image').optional().isString().withMessage('Image must be a string').trim(),
+    body('name')
+        .notEmpty()
+        .withMessage('Name is required')
+        .isString()
+        .withMessage('Name must be a string')
+        .trim()
+        .escape(),
     body('address')
+        .notEmpty()
+        .withMessage('Address is required')
         .isString()
         .withMessage('Address must be a string')
+        .trim()
+        .escape(),
+    body('city')
         .notEmpty()
-        .withMessage('Address is required'),
-    body('city').isString().withMessage('City must be a string').notEmpty().withMessage('City is required'),
+        .withMessage('City is required')
+        .isString()
+        .withMessage('City must be a string')
+        .trim()
+        .escape(),
     body('country')
+        .notEmpty()
+        .withMessage('Country is required')
         .isString()
         .withMessage('Country must be a string')
-        .notEmpty()
-        .withMessage('Country is required'),
+        .trim()
+        .escape(),
 ];
