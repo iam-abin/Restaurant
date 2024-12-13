@@ -1,8 +1,7 @@
 import express, { Router } from 'express';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
-import { mongoIdParamsValidator, ROLES_CONSTANTS } from '../utils';
+import { mongoIdParamsValidator, updateOrderStatusRequestBodyValidator, ROLES_CONSTANTS } from '../utils';
 import { orderController } from '../controllers/order.controller';
-import { updateOrderStatusRequestBodyValidator } from '../utils/validation/order.validation';
 
 const router: Router = express.Router();
 

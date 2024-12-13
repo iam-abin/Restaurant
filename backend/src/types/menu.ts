@@ -3,5 +3,7 @@ export interface IMenu {
     description: string;
     price: number;
     imageUrl: string;
+    cuisine: string;
+    cuisineId?: string;
     restaurantId: string;
 }

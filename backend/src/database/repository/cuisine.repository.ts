@@ -2,14 +2,21 @@ import { ClientSession } from 'mongoose';
 import { ICuisineDocument, CuisineModel } from '../model';
 
 export class CuisineRepository {
-    async insertCuisines(cuisines: { name: string }[], session?: ClientSession): Promise<ICuisineDocument[]> {
-        return await CuisineModel.insertMany(cuisines, {
-            ordered: true,
-            session,
-        });
+    async createCuisine(cuisineData: { name: string }, session?: ClientSession): Promise<ICuisineDocument> {
+        const cuisine: ICuisineDocument[] = await CuisineModel.create([cuisineData], { session });
+        return cuisine[0];
     }
 
-    async findArrayItems(cuisines: string[]): Promise<ICuisineDocument[]> {
-        return await CuisineModel.find({ name: { $in: cuisines } });
+    async findCuisine(cuisine: string): Promise<ICuisineDocument | null> {
+        return await CuisineModel.findOne({ name: cuisine });
+    }
+
+    async findCuisines(): Promise<ICuisineDocument[]> {
+        return await CuisineModel.find().limit(2);
+    }
+
+    async searchCuisines(searchText: string): Promise<ICuisineDocument[]> {
+        const regex: RegExp = new RegExp(searchText, 'i');
+        return await CuisineModel.find({ name: { $regex: regex } }).limit(5);
     }
 }

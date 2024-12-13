@@ -16,17 +16,12 @@ class RestaurantController {
     public async editRestaurant(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
         const file: Express.Multer.File = req.file!;
-        console.log('req.body');
-        console.log(req.body);
-        console.log('req.body');
-        console.log(typeof req.body.name);
-
-        const restaurant: IRestaurantDocument | null = await restaurantService.updateRestaurant(
+        const restaurants: IRestaurantDocument | null = await restaurantService.updateRestaurant(
             userId,
             req.body as IRestaurantUpdate,
             file,
         );
-        res.status(200).json(createSuccessResponse('Restaurant updated successfully', restaurant));
+        res.status(200).json(createSuccessResponse('Restaurant updated successfully', restaurants));
     }
 
     public async getMyRestaurant(req: Request, res: Response): Promise<void> {
@@ -43,8 +38,10 @@ class RestaurantController {
 
     public async getRestaurants(req: Request, res: Response): Promise<void> {
         const { page, limit } = req.params;
-        const restaurantsData: IRestaurantsData =
-            await restaurantService.getRestaurants(Number(page), Number(limit));
+        const restaurantsData: IRestaurantsData = await restaurantService.getRestaurants(
+            Number(page),
+            Number(limit),
+        );
         res.status(200).json(createSuccessResponse('Restaurants fetched successfully', restaurantsData));
     }
 
@@ -57,7 +54,7 @@ class RestaurantController {
             searchQuery,
             selectedCuisines,
         );
-        res.status(200).json(createSuccessResponse('Restaurant fetched successfully', restaurant));
+        res.status(200).json(createSuccessResponse('Searched restaurants fetched successfully', restaurant));
     }
 }
 

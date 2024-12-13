@@ -1,18 +1,20 @@
 import { ClientSession } from 'mongoose';
 import { IRestaurantCuisineDocument, RestaurantCuisineModel } from '../model';
 
+interface IRestaurantCuisine {
+    cuisineId: string;
+    restaurantId: string;
+}
 export class RestaurantCuisineRepository {
-    async insertRestaurantCuisines(
-        restaurantCousines: {
-            cuisineId: string;
-            restaurantId: string | undefined;
-        }[],
+    async create(
+        restaurantCuisineData: IRestaurantCuisine,
         session?: ClientSession,
-    ): Promise<IRestaurantCuisineDocument[]> {
-        return await RestaurantCuisineModel.insertMany(restaurantCousines, {
-            ordered: true,
-            session,
-        });
+    ): Promise<IRestaurantCuisineDocument> {
+        const restaurantCuisine: IRestaurantCuisineDocument[] = await RestaurantCuisineModel.create(
+            [restaurantCuisineData],
+            { session },
+        );
+        return restaurantCuisine[0];
     }
 
     async find(restaurantId: string): Promise<IRestaurantCuisineDocument[]> {

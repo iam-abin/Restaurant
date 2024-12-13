@@ -28,7 +28,6 @@ export const addMenuRequestBodyValidator = [
         .trim()
         .isString()
         .withMessage('Cuisine must be a string'),
-    ...mongoIdBodyValidator('restaurantId'),
 ];
 
 export const updateMenuRequestBodyValidator = [

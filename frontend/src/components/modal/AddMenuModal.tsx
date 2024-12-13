@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Box, Modal, IconButton, Typography, TextField, Button, Grid } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import LoaderCircle from '../Loader/LoaderCircle';
@@ -8,6 +8,9 @@ import { addMenuApi } from '../../api/apiMethods/menu';
 import { hotToastMessage } from '../../utils/hotToast';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchMenus } from '../../redux/thunk/menusThunk';
+import { searchCuisineApi } from '../../api/apiMethods/cuisine';
+import { ICuisineResponse, ICuisineResponse1 } from '../../types';
+import AsyncCreatableSelect from 'react-select/async-creatable';
 
 const style = {
     position: 'absolute' as const,
@@ -21,17 +24,33 @@ const style = {
     boxShadow: 24,
     p: 4,
 };
+export interface OptionType {
+    value: string;
+    label: string;
+}
+
+export type SearchableSelectProps = {
+    options: OptionType[];
+    onSelect: (value: string) => void;
+    onAdd: (newValue: string) => void;
+    fetchOptions: (
+        inputValue: string,
+        callback: (options: OptionType[]) => void,
+    ) => void | Promise<OptionType[]>;
+};
 
 export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean; handleClose: () => void }) {
     const [isLoading, setIsLoading] = useState(false);
     const [input, setInput] = useState<MenuFormSchema>({
         name: '',
         description: '',
+        cuisine: '',
         price: 0,
         image: undefined,
     });
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [errors, setErrors] = useState<Partial<MenuFormSchema>>({});
+
     const restaurantData = useAppSelector((state) => state.restaurantReducer.restaurantData);
     const dispatch = useAppDispatch();
 
@@ -67,12 +86,21 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
 
         try {
             const formData = new FormData();
+            console.log("inputData");
+            console.log(inputData);
+            console.log("inputData");
+            
             formData.append('name', inputData.name);
             formData.append('description', inputData.description);
+            formData.append('cuisine', inputData.cuisine);
             formData.append('price', inputData.price?.toString() ?? '0');
             if (inputData.image) formData.append('image', inputData.image);
 
-            const restaurantId = restaurantData?._id;
+            const restaurantId = restaurantData?.restaurant._id;
+            console.log("formData");
+            console.log([...formData.entries()]);
+            console.log("formData");
+            
             if (!restaurantId) {
                 hotToastMessage('Restaurant ID is missing', 'error');
                 setIsLoading(false);
@@ -82,7 +110,7 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
             const response: IResponse = await addMenuApi(formData);
             hotToastMessage(response.message, 'success');
             dispatch(fetchMenus({ restaurantId }));
-            setInput({ name: '', description: '', price: 0, image: undefined });
+            setInput({ name: '', description: '', cuisine: '', price: 0, image: undefined });
             setPreviewImage(null);
             handleClose();
         } finally {
@@ -90,6 +118,56 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
         }
     };
 
+
+    // ==========================================================
+    const colorStyles = {
+        control: (styles: any)=> ({...styles, backgroundColor: "white"})
+    }
+
+    // const [cuisineOptions, setCuisineOptions] = useState<ICuisineResponse1[]>([
+    //     { value: 'opt1', label: 'Option 1' },
+    //     { value: 'opt2', label: 'Option 2' },
+    //     { value: 'opt3', label: 'Option 3' },
+    // ]);
+
+    const [cuisineOptions, setCuisineOptions] = useState<OptionType[]>([]);
+
+    useEffect(()=>{
+        (
+            async()=>{
+                await fetchSearchResult()
+            }
+        )()
+    },[])
+
+    const fetchSearchResult = async(searchtext?: string)=>{
+        const result: IResponse = await searchCuisineApi(searchtext);
+        const mappedCuisineOptions = mapCusineOptions(result.data as ICuisineResponse1[])
+        setCuisineOptions(mappedCuisineOptions)
+    }
+        
+
+    const mapCusineOptions = (cuisines: ICuisineResponse1[]): OptionType[]=>{
+        return cuisines.map((cuisine: ICuisineResponse1)=> ({ value: cuisine.name, label: cuisine.name }))
+    }
+
+    const handleSelectInputChange = (newValue: OptionType | null) => {
+        setInput((prev) => ({ ...prev, cuisine: newValue?newValue.value:'' }))
+        console.log('Selected or Created Value:', input);
+        // Do something with the selected/created value
+    };
+
+    const promiseOptions = (inputValue: string) =>
+        new Promise<OptionType[]>((resolve) => {
+            fetchSearchResult(inputValue).then(()=>{
+
+                //   setTimeout(() => {
+                    resolve(cuisineOptions);
+                //   }, 1000);
+            })
+        });
+
+   
     return (
         <Modal open={isOpen} onClose={handleClose}>
             <Box sx={style}>
@@ -101,6 +179,22 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
                 </Typography>
                 <form onSubmit={submitHandler}>
                     <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                    <AsyncCreatableSelect
+                        cacheOptions
+                        options={cuisineOptions}
+                        defaultOptions={cuisineOptions}
+                        loadOptions={promiseOptions}
+                        onChange={handleSelectInputChange}
+                    />
+                            {/* <AsyncCreatableSelect
+                                options={cuisineOptions}
+                                // cacheOptions
+                                onInputChange={fetchOptions}
+                                // onChange={handleSelected}
+                                // styles={colorStyles}
+                            /> */}
+                        </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
@@ -127,6 +221,7 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
                                 rows={3}
                             />
                         </Grid>
+                      {/* select options add here */}
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth

@@ -3,6 +3,11 @@ export interface ICuisine {
     // description: string
 }
 
+export interface ICuisineResponse1 {
+    _id: string
+    name: string;
+}
+
 export interface ICuisineResponse {
     cuisineId: ICuisine;
 }

@@ -12,11 +12,11 @@ const router: Router = express.Router();
 
 router.post(
     '/',
-    addMenuRequestBodyValidator,
     checkCurrentUser,
-    validateRequest,
     auth(ROLES_CONSTANTS.RESTAURANT),
     multerUpload.single('image'),
+    addMenuRequestBodyValidator,
+    validateRequest,
     menuController.addMenu,
 );
 

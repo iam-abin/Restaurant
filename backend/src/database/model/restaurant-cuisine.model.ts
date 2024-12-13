@@ -11,14 +11,14 @@ export interface IRestaurantCuisineDocument extends Document {
 
 const restaurantCuisineSchema = new Schema<IRestaurantCuisineDocument>(
     {
-        cuisineId: {
-            type: Schema.Types.ObjectId,
-            ref: 'Cuisine',
-            required: true,
-        },
         restaurantId: {
             type: Schema.Types.ObjectId,
             ref: 'Restaurant',
+            required: true,
+        },
+        cuisineId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Cuisine',
             required: true,
         },
     },

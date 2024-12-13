@@ -21,10 +21,7 @@ export class ProfileService {
         return profile;
     }
 
-    public async getUserProfiles(
-        page: number,
-        limit: number,
-    ): Promise<IProfilesData> {
+    public async getUserProfiles(page: number, limit: number): Promise<IProfilesData> {
         const skip: number = (page - 1) * limit;
         const profiles: IProfileDocument[] = await this.profileRepository.find(skip, limit);
         const profilesCount: number = await this.profileRepository.countProfiles();

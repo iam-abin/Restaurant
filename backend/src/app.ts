@@ -17,6 +17,7 @@ import { orderRoutes } from './routes/order.routes';
 import { profileRoutes } from './routes/profile.routes';
 import { restaurantRoutes } from './routes/restaurant.routes';
 import { appConfig } from './config/app.config';
+import { cuisineRoutes } from './routes/cuisine.routes';
 
 const app: Application = express();
 
@@ -25,9 +26,9 @@ const isProductionENV: boolean = appConfig.NODE_ENVIRONMENT === 'production';
 // // Set trust proxy
 // app.set('trust proxy', true); // Trust all proxies
 
-// Middlewares
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+// // Middlewares
+// app.use(express.json({ limit: '10mb' }));
+// app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(helmet());
 app.use(
     cors({
@@ -43,6 +44,7 @@ if (!isProductionENV) app.use(morgan('dev'));
 // Routes
 app.use(`${appConfig.API_PREFIX}/auth`, authRoutes);
 app.use(`${appConfig.API_PREFIX}/cart`, cartRoutes);
+app.use(`${appConfig.API_PREFIX}/cuisine`, cuisineRoutes);
 app.use(`${appConfig.API_PREFIX}/dashboard`, dashboardRoutes);
 app.use(`${appConfig.API_PREFIX}/menu`, menuRoutes);
 app.use(`${appConfig.API_PREFIX}/order`, orderRoutes);

@@ -7,12 +7,7 @@ import {
     RestaurantRepository,
     UserRepository,
 } from '../database/repository';
-import {
-    IAddressDocument,
-    ICuisineDocument,
-    IRestaurantCuisineDocument,
-    IRestaurantDocument,
-} from '../database/model';
+import { IAddressDocument, IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
 import { uploadImageOnCloudinary } from '../utils';
 import { NotFoundError } from '../errors';
 import mongoose from 'mongoose';
@@ -24,7 +19,6 @@ export class RestaurantService {
         private readonly userRepository: UserRepository,
         private readonly addressRepository: AddressRepository,
         private readonly restaurantRepository: RestaurantRepository,
-        private readonly cuisineRepository: CuisineRepository,
         private readonly restaurantCuisineRepository: RestaurantCuisineRepository,
     ) {}
 
@@ -61,11 +55,10 @@ export class RestaurantService {
         restaurantData: IRestaurantUpdate,
         file?: Express.Multer.File,
     ): Promise<IRestaurantDocument | null> {
-        const { name, city, country, deliveryTime, cuisines } = restaurantData;
+        const { name, city, country, deliveryTime } = restaurantData;
 
         const session = await mongoose.startSession();
         session.startTransaction();
-        const parsedCuisines = JSON.parse(cuisines!);
 
         try {
             // user
@@ -88,36 +81,6 @@ export class RestaurantService {
                 { addressId: addressData?._id.toString(), deliveryTime, imageUrl },
                 session,
             );
-            // cusine
-            if (parsedCuisines) {
-                const existingCuisines: ICuisineDocument[] =
-                    await this.cuisineRepository.findArrayItems(parsedCuisines);
-
-                // Filter out cuisines that already exist
-                const filteredCuisines: string[] = this.filterOutExistingCuisines(
-                    parsedCuisines,
-                    existingCuisines,
-                );
-                const cuisinesToInsert: {
-                    name: string;
-                }[] = filteredCuisines.map((name: string) => ({ name }));
-                if (cuisinesToInsert.length) {
-                    const insertedCuisines = await this.cuisineRepository.insertCuisines(
-                        cuisinesToInsert,
-                        session,
-                    );
-                    console.log(insertedCuisines, ' insertedCuisines');
-                    const restaurantCuisinesToInsert = insertedCuisines.map((cuisine: ICuisineDocument) => ({
-                        cuisineId: cuisine._id.toString(),
-                        restaurantId: restaurant?._id.toString(),
-                    }));
-
-                    await this.restaurantCuisineRepository.insertRestaurantCuisines(
-                        restaurantCuisinesToInsert,
-                        session,
-                    );
-                }
-            }
 
             // Commit the transaction
             await session.commitTransaction();
@@ -129,19 +92,6 @@ export class RestaurantService {
         } finally {
             session.endSession();
         }
-    }
-
-    private filterOutExistingCuisines(
-        newCuisineNames: string[],
-        existingCuisineDocuments: ICuisineDocument[],
-    ): string[] {
-        const existingNames: string[] = existingCuisineDocuments.map(
-            (cuisine: ICuisineDocument) => cuisine.name,
-        );
-        const filteredCuisines: string[] = newCuisineNames.filter(
-            (cuisine: string) => !existingNames.includes(cuisine),
-        );
-        return filteredCuisines;
     }
 
     public async searchRestaurant(
