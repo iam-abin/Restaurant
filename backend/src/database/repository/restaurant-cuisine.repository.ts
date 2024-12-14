@@ -21,4 +21,8 @@ export class RestaurantCuisineRepository {
         const cuisines = await RestaurantCuisineModel.find({ restaurantId }).populate('cuisineId');
         return cuisines;
     }
+
+    async countRestaurantCuisines(restaurantId: string): Promise<number> {
+        return await RestaurantCuisineModel.countDocuments({ restaurantId });
+    }
 }

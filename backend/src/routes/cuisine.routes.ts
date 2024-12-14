@@ -4,6 +4,7 @@ import { ROLES_CONSTANTS, searchCuisineValidator } from '../utils';
 import { cuisineController } from '../controllers';
 
 const router: Router = express.Router();
+router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.USER), cuisineController.getCuisines);
 
 router.get(
     '/search',

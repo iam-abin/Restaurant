@@ -7,6 +7,11 @@ import { ICuisineDocument } from '../database/model';
 const cuisineService = container.resolve(CuisineService);
 
 class CuisineController {
+    public async getCuisines(req: Request, res: Response): Promise<void> {
+        const cuisines: ICuisineDocument[] = await cuisineService.getCuisines();
+        res.status(200).json(createSuccessResponse('Cuisines fetched successfully', cuisines));
+    }
+
     public async searchCuisine(req: Request, res: Response): Promise<void> {
         const searchText: string = (req.query.searchText as string) || '';
 

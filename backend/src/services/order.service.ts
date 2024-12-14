@@ -43,10 +43,8 @@ export class OrderService {
             ]);
 
             if (cartItems.length === 0) throw new NotFoundError('Must contain cart items to place order');
-            // const restaurantId = this.checkSameRestaurant(cartItems);
-            // const restaurant = this.restaurantRepository.findRestaurant(restaurantId);
-            // if (!restaurant) throw new NotFoundError('Restaurant not found');
-            const totalAmound: number = this.findTotalAmound(cartItems);
+
+            const totalAmount: number = this.findtotalAmount(cartItems);
             if (!address) throw new NotFoundError('Address not found');
             if (address.userId.toString() !== userId)
                 throw new ForbiddenError('You cannot use others address');
@@ -57,7 +55,7 @@ export class OrderService {
                     userId,
                     restaurantId,
                     addressId: address._id.toString(),
-                    totalAmound,
+                    totalAmount,
                     status: 'pending',
                 },
                 session,
@@ -114,35 +112,17 @@ export class OrderService {
         }
     }
 
-    // private checkSameRestaurant(cartItems: ICartDocument[]) {
-    //     if (cartItems.length === 0) throw new Error('Cart is empty');
-
-    //     // Extract the restaurantId of the first cart item
-    //     const firstRestaurantId = (cartItems[0].itemId as IMenuDocument).restaurantId.toString();
-
-    //     // Check if all items in the cart have the same restaurantId
-    //     for (const item of cartItems) {
-    //         const currentRestaurantId = (item.itemId as IMenuDocument).restaurantId.toString();
-    //         if (currentRestaurantId !== firstRestaurantId) {
-    //             throw new Error('All items in the cart must be from the same restaurant');
-    //         }
-    //     }
-
-    //     // Return the restaurantId if all are the same
-    //     return firstRestaurantId;
-    // }
-
-    private findTotalAmound(cartItems: ICartDocument[]) {
+    private findtotalAmount(cartItems: ICartDocument[]) {
         if (cartItems.length === 0) throw new Error('Cart is empty');
 
         // Check if all items in the cart have the same restaurantId
-        const totalAmound = cartItems.reduce((acc: number, currItem: ICartDocument) => {
+        const totalAmount = cartItems.reduce((acc: number, currItem: ICartDocument) => {
             acc = acc + (currItem.itemId as IMenuDocument).price * currItem.quantity;
             return acc;
         }, 0);
 
         // Return the restaurantId if all are the same
-        return totalAmound;
+        return totalAmount;
     }
 
     private createLineItems(cartItems: ICartDocument[]) {

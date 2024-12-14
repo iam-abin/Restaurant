@@ -8,19 +8,18 @@ import { IAddress } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 
 const Profile = () => {
-    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [selectedProfilePicture, setSelectedProfilePicture] = useState<string>('');
     const dispatch = useAppDispatch();
 
     const { authData } = useAppSelector((state) => state.authReducer);
-    const { myProfile } = useAppSelector((state) => state.profileReducer);
+    const { myProfile, status } = useAppSelector((state) => state.profileReducer);
     console.log('authData ', authData);
     console.log('myProfile ', myProfile);
 
     useEffect(() => {
         dispatch(fetchUserProfile());
     }, []);
-
+const isLoading: boolean = status === 'loading'
     const imageRef = useRef<HTMLInputElement | null>(null);
     const [profileData, setProfileData] = useState({
         name: authData?.name || '',
@@ -54,10 +53,8 @@ const Profile = () => {
 
     const updateProfileHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setIsLoading(true);
         console.log({ ...profileData, image: selectedProfilePicture });
         dispatch(updateUserProfile({ ...profileData, image: selectedProfilePicture }));
-        setIsLoading(false);
         setSelectedProfilePicture('');
     };
 

@@ -32,7 +32,7 @@ const orderSchema = new Schema<IOrderDocument>(
             ref: 'Address',
             required: true,
         },
-        totalAmound: {
+        totalAmount: {
             type: Number,
             required: true,
         },

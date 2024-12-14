@@ -26,4 +26,8 @@ export class MenuRepository {
         });
         return menu;
     }
+
+    async countRestaurantMenus(restaurantId: string): Promise<number> {
+        return MenuModel.countDocuments({ restaurantId });
+    }
 }
