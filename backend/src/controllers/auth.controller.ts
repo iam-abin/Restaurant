@@ -5,6 +5,9 @@ import { IUserDocument } from '../database/model';
 import { createSuccessResponse, JWT_KEYS_CONSTANTS } from '../utils';
 import { OtpService, UserService } from '../services';
 import { IGoogleAuth, IOtpToken, IPassword, ISignin, ISignup, IUser } from '../types';
+import { isProduction } from '../utils';
+import { CustomCookieOptions } from '../types/application';
+import { appConfig } from '../config/app.config';
 
 const userService = container.resolve(UserService);
 const otpService = container.resolve(OtpService);
@@ -17,23 +20,36 @@ class AuthController {
         );
     }
 
-    public async signin(req: Request, res: Response): Promise<void> {
+    public signin = async (req: Request, res: Response): Promise<void> => {
         const { user, accessToken, refreshToken } = await userService.signIn(req.body as ISignin);
-        res.cookie(JWT_KEYS_CONSTANTS.JWT_TOKEN, accessToken);
-        res.status(200).json(createSuccessResponse('Login success', user));
-    }
+        res.cookie(JWT_KEYS_CONSTANTS.JWT_TOKEN, accessToken, this.getCookieOptions(appConfig.COOKIE_JWT_ACCESS_EXPIRY_TIME));
+        res.cookie(JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN, refreshToken, this.getCookieOptions(appConfig.COOKIE_JWT_REFRESH_EXPIRY_TIME));
 
-    public async googleAuth(req: Request, res: Response): Promise<void> {
+        res.status(200).json(createSuccessResponse('Login success', user));
+    };
+
+    public googleAuth = async (req: Request, res: Response): Promise<void> => {
         const { user, accessToken, refreshToken } = await userService.googleAuth(req.body as IGoogleAuth);
-        res.cookie(JWT_KEYS_CONSTANTS.JWT_TOKEN, accessToken);
-        res.status(200).json(createSuccessResponse('Login success', user));
-    }
+        res.cookie(JWT_KEYS_CONSTANTS.JWT_TOKEN, accessToken, this.getCookieOptions(appConfig.COOKIE_JWT_ACCESS_EXPIRY_TIME));
+        res.cookie(JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN, refreshToken, this.getCookieOptions(appConfig.COOKIE_JWT_REFRESH_EXPIRY_TIME));
 
-    public async refresh(req: Request, res: Response): Promise<void> {
+        res.status(200).json(createSuccessResponse('Login success', user));
+    };
+
+    public refresh = async (req: Request, res: Response): Promise<void> => {
         const { refreshToken } = req.body;
         const { accessToken }: { accessToken: string } = await userService.jwtRefresh(refreshToken);
-        res.cookie(JWT_KEYS_CONSTANTS.JWT_TOKEN, accessToken);
+        res.cookie(JWT_KEYS_CONSTANTS.JWT_TOKEN, accessToken, this.getCookieOptions(appConfig.COOKIE_JWT_ACCESS_EXPIRY_TIME));
         res.status(200).json(createSuccessResponse('Token refreshed successfully'));
+    };
+
+    private getCookieOptions(maxAge: number = 30 * 60 * 1000): CustomCookieOptions { // Default maxAge 30 min
+        return {
+            httpOnly: true,
+            secure: isProduction(),
+            sameSite: 'strict',
+            maxAge
+        };
     }
 
     public async verifyOtp(req: Request, res: Response): Promise<void> {
@@ -85,6 +101,7 @@ class AuthController {
 
     public async logout(req: Request, res: Response): Promise<void> {
         res.clearCookie(JWT_KEYS_CONSTANTS.JWT_TOKEN);
+        res.clearCookie(JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN);
         res.status(200).json(createSuccessResponse('Successfully logged out'));
     }
 }

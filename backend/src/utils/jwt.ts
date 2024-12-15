@@ -9,8 +9,8 @@ export interface IJwtPayload {
 }
 
 export const createJwtAccessToken = (payload: IJwtPayload): string => {
-    const accessToken: string = jwt.sign(payload, appConfig.JWT_SECRET as string, {
-        expiresIn: appConfig.JWT_EXPIRY_TIME,
+    const accessToken: string = jwt.sign(payload, appConfig.JWT_ACCESS_SECRET as string, {
+        expiresIn: appConfig.JWT_ACCESS_EXPIRY_TIME,
     });
     return accessToken;
 };
@@ -23,7 +23,7 @@ export const createJwtRefreshToken = (payload: IJwtPayload): string => {
 };
 
 export const verifyJwtAccessToken = (token: string): IJwtPayload => {
-    const decodedData = jwt.verify(token, appConfig.JWT_SECRET!) as IJwtPayload;
+    const decodedData = jwt.verify(token, appConfig.JWT_ACCESS_SECRET!) as IJwtPayload;
     return decodedData;
 };
 
