@@ -2,7 +2,13 @@ import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 import { Tooltip } from '@mui/material';
 
-const DashboardCard: React.FC<{ title: string; number: number; icon: any;  description?: string ; }> = ({ title, number, icon, description }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const DashboardCard: React.FC<{ title: string; number: number; icon: any; description?: string }> = ({
+    title,
+    number,
+    icon,
+    description,
+}) => {
     return (
         <div className="bg-white shadow-lg rounded-lg  flex w-64 items-center">
             <div className="p-6 w-11/12 flex ">
@@ -16,9 +22,11 @@ const DashboardCard: React.FC<{ title: string; number: number; icon: any;  descr
                 </div>
             </div>
             <div className=" h-full ">
-                {description && <Tooltip title={description} arrow>
-                    <InfoIcon style={{ width: 15 }} />
-                </Tooltip>}
+                {description && (
+                    <Tooltip title={description} arrow>
+                        <InfoIcon style={{ width: 15 }} />
+                    </Tooltip>
+                )}
             </div>
         </div>
     );

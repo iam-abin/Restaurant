@@ -6,23 +6,14 @@ export type FilterOptionsState = {
     label: string;
 };
 
-const filterOptions: FilterOptionsState[] = [
-    { id: 'burger', label: 'Burger' },
-    { id: 'indian', label: 'indian' },
-    { id: 'biryani', label: 'Biryani' },
-    { id: 'momos', label: 'Momos' },
-    { id: 'chinese', label: 'chinese' },
-    { id: 'african', label: 'african' },
-];
-
 const Filter = ({
     filterArray,
     setSelectedFilters,
-    filtersList
+    filtersList,
 }: {
     filterArray: string[];
     setSelectedFilters: React.Dispatch<React.SetStateAction<string[]>>;
-    filtersList: ICuisineResponse1[]
+    filtersList: ICuisineResponse1[];
 }) => {
     const applyFilterCheck = (item: string) => {
         setSelectedFilters((prevFilters) =>

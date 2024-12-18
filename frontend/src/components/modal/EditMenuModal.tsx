@@ -41,6 +41,7 @@ export default function EditMenuModal({
     const [input, setInput] = useState<MenuFormSchema>({
         name: menu.name,
         description: menu.description,
+        // cuisine: menu.cuisine,
         price: menu.price,
         image: undefined,
     });

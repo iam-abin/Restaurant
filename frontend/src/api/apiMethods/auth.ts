@@ -1,4 +1,4 @@
-import makeApiCall from '../apiCalls';
+import makeApiCall from '../apiCall';
 import authApiUrls from '../urls/auth';
 import { IResponse } from '../../types/api';
 import { IGoogleAuth, IOtp, IResetPasswordRequest, ISignin, ISignup } from '../../types';

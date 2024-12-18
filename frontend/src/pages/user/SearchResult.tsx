@@ -38,10 +38,10 @@ const SearchResult = () => {
         }
     };
 
-    const fetchFilters = async()=>{
+    const fetchFilters = async () => {
         const filtersLis: IResponse = await getCuisinesApi();
-        setFiltersList(filtersLis.data as ICuisineResponse1[]) 
-    }
+        setFiltersList(filtersLis.data as ICuisineResponse1[]);
+    };
 
     useEffect(() => {
         fetchRestaurants();
@@ -69,7 +69,11 @@ const SearchResult = () => {
     return (
         <div className="flex flex-col  md:flex-row justify-between gap-1  bg-violet-300 my-5">
             <div className="bg-red-100  p-3 rounded-lg">
-                <Filter filterArray={selectedFilters} setSelectedFilters={setSelectedFilters} filtersList={filtersList} />
+                <Filter
+                    filterArray={selectedFilters}
+                    setSelectedFilters={setSelectedFilters}
+                    filtersList={filtersList}
+                />
             </div>
             <div className="flex-1 bg-green-100 py-3 rounded-lg">
                 <div className="relative flex items-center gap-1">

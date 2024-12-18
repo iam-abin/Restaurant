@@ -37,7 +37,7 @@ const DashBoard = () => {
     );
 
     return (
-        <div className='w-full py-10'>
+        <div className="w-full py-10">
             <div className=" flex flex-wrap justify-center gap-2">
                 <DashboardCard
                     title="Total Revenue"

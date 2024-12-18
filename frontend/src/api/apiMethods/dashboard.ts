@@ -1,4 +1,4 @@
-import makeApiCall from '../apiCalls';
+import makeApiCall from '../apiCall';
 import { IResponse } from '../../types/api';
 import dashboardApiUrls from '../urls/dashboard';
 

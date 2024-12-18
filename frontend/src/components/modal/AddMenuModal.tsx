@@ -92,7 +92,7 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
 
             formData.append('name', inputData.name);
             formData.append('description', inputData.description);
-            formData.append('cuisine', inputData.cuisine);
+            formData.append('cuisine', inputData.cuisine!);
             formData.append('price', inputData.price?.toString() ?? '0');
             if (inputData.image) formData.append('image', inputData.image);
 
@@ -119,9 +119,9 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
     };
 
     // ==========================================================
-    const colorStyles = {
-        control: (styles: any) => ({ ...styles, backgroundColor: 'white' }),
-    };
+    // const colorStyles = {
+    //     control: (styles: any) => ({ ...styles, backgroundColor: 'white' }),
+    // };
 
     // const [cuisineOptions, setCuisineOptions] = useState<ICuisineResponse1[]>([
     //     { value: 'opt1', label: 'Option 1' },

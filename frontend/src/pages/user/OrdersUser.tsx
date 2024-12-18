@@ -24,6 +24,7 @@ const Orders: React.FC = () => {
         })();
     }, []);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleOpen = (order: any) => {
         setSelectedOrder(order);
         setModalOpen(true);
@@ -42,7 +43,8 @@ const Orders: React.FC = () => {
             <Grid container spacing={3}>
                 {loading
                     ? Array.from(new Array(3)).map((_, index: number) => <OrderCardSkelton key={index} />)
-                    : orders.map((order: any) => (
+                    : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      orders.map((order: any) => (
                           <Grid item xs={12} key={order._id}>
                               <Card sx={{ display: 'flex', alignItems: 'center' }}>
                                   <CardMedia

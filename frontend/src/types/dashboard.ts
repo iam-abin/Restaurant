@@ -29,4 +29,3 @@ export type CountByDay = {
     date: string;
     count: number;
 };
-

@@ -10,7 +10,8 @@ import { getRestaurantsApi } from '../../api/apiMethods/restaurant';
 function RestaurantsList() {
     const [restaurantsData, setRestaurantsData] = useState<IRestaurant[]>([]);
     const [numberOfPages, setNumberOfPages] = useState(1);
-    const [currentPage, setCurrentPage] = useState(1);
+    // const [currentPage, setCurrentPage] = useState(1);
+    const currentPage = 1;
 
     const [searchKey, setSearchKey] = useState('');
 

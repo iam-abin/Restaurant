@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const menuSchema = z.object({
     name: z.string().min(1, { message: 'name is required' }),
     description: z.string().min(1, { message: 'description is required' }),
-    cuisine: z.string().min(1, { message: 'cuisine is required' }),
+    cuisine: z.string().min(1, { message: 'cuisine is required' }).optional(),
     price: z.number().min(0, { message: 'price can not be negative' }),
     image: z
         .instanceof(File)

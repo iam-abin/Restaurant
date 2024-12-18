@@ -1,4 +1,4 @@
-import makeApiCall from '../apiCalls';
+import makeApiCall from '../apiCall';
 import restaurantApiUrls from '../urls/restaurant';
 import { IResponse } from '../../types/api';
 

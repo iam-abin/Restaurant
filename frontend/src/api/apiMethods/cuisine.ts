@@ -1,5 +1,5 @@
 import { IResponse } from '../../types/api';
-import makeApiCall from '../apiCalls';
+import makeApiCall from '../apiCall';
 import cuisineApiUrls from '../urls/cuisine';
 
 export const getCuisinesApi = async (): Promise<IResponse> => {

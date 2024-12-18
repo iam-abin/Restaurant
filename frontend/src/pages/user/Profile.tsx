@@ -19,7 +19,7 @@ const Profile = () => {
     useEffect(() => {
         dispatch(fetchUserProfile());
     }, []);
-const isLoading: boolean = status === 'loading'
+    const isLoading: boolean = status === 'loading';
     const imageRef = useRef<HTMLInputElement | null>(null);
     const [profileData, setProfileData] = useState({
         name: authData?.name || '',
