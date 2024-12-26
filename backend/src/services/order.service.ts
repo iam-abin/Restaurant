@@ -1,7 +1,6 @@
 import { autoInjectable } from 'tsyringe';
 import mongoose from 'mongoose';
 import Stripe from 'stripe';
-
 import { IOrder, IRestaurantResponse } from '../types';
 import {
     OrderRepository,
@@ -74,12 +73,10 @@ export class OrderService {
                 success_url: appConfig.PAYMENT_SUCCESS_URL,
                 cancel_url: appConfig.PAYMENT_CANCEL_URL,
                 metadata: {
-                    orderId: order.id.toString(),
+                    orderId: order._id.toString(),
                     images: JSON.stringify(cartItems.map((item) => (item.itemId as IMenuDocument).imageUrl)),
                 },
             });
-
-            console.log('checkoutSession is ', checkoutSession);
 
             if (!checkoutSession.url) {
                 throw new Error('Error while creating checkout session');
@@ -87,7 +84,6 @@ export class OrderService {
 
             // Delete cart items in bulk
             await this.cartRepository.deleteAllItems(userId, session);
-            console.log(cartItems);
 
             const orderedItems = cartItems.map((item) => ({
                 userId,
@@ -166,14 +162,12 @@ export class OrderService {
         signature: string | Buffer | Array<string>,
     ): Promise<IOrderDocument | null> {
         const webhookEndPointSecret: string = appConfig.STRIPE_WEBHOOK_ENDPOINT_SECRET;
-        console.log('webhookEndPointSecret', webhookEndPointSecret);
 
         const event: Stripe.Event = stripeInstance.webhooks.constructEvent(
             JSON.stringify(requestBody),
             signature,
             webhookEndPointSecret,
         );
-        console.log('event', event);
         // Handle the checkout session completed event
         if (event.type !== 'checkout.session.completed') {
             throw new Error('Payment confirmation failed');

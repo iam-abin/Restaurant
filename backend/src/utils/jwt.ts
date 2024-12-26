@@ -1,12 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { appConfig } from '../config/app.config';
-import { IUserRole } from '../types/roles';
-
-export interface IJwtPayload {
-    userId: string;
-    email: string;
-    role: Partial<IUserRole>;
-}
+import { IJwtPayload } from '../types';
 
 export const createJwtAccessToken = (payload: IJwtPayload): string => {
     const accessToken: string = jwt.sign(payload, appConfig.JWT_ACCESS_SECRET as string, {

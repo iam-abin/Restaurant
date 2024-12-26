@@ -63,19 +63,11 @@ export const signupRequestBodyValidator = [
 ];
 
 export const googleAuthRequestBodyValidator = [
-    body('name')
+    body('credential')
         .notEmpty()
-        .withMessage('Name is required')
+        .withMessage('credential is required')
         .isString()
-        .withMessage('Name must be a string')
-        .trim()
-        .escape(),
-    body('email')
-        .notEmpty()
-        .withMessage('Email is required')
-        .isEmail()
-        .withMessage('Email must be valid')
-        .toLowerCase()
+        .withMessage('credential must be a string')
         .trim()
         .escape(),
     body('role')
@@ -83,20 +75,6 @@ export const googleAuthRequestBodyValidator = [
         .withMessage('Role is required')
         .isIn(ROLES)
         .withMessage(`Role must be one of ${ROLES.join(', ')}`)
-        .trim()
-        .escape(),
-    body('imageUrl')
-        .notEmpty()
-        .withMessage('ImageUrl is required')
-        .isURL()
-        .withMessage('ImageUrl is invalid')
-        .trim()
-        .escape(),
-    body('googleId')
-        .notEmpty()
-        .withMessage('googleId is required')
-        .isString()
-        .withMessage('googleId must be a string')
         .trim()
         .escape(),
 ];

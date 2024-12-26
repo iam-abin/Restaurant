@@ -12,8 +12,10 @@ const connectDb = async () => {
             // connectTimeoutMS: 30000, // Increase connection timeout to 30 seconds
             // socketTimeoutMS: 45000, // Increase socket timeout to 45 seconds
         });
+        // eslint-disable-next-line no-console
         console.log('🛢 Successfully connected to MongoDB...');
     } catch (error: unknown) {
+        // eslint-disable-next-line no-console
         console.error(error);
         throw new DatabaseConnectionError();
     }

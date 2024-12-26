@@ -25,7 +25,6 @@ export const uploadImageOnCloudinary = async (file: Express.Multer.File | string
                 options,
                 (error: UploadApiErrorResponse | undefined, result: CloudinaryUploadResult | undefined) => {
                     if (error) {
-                        console.error('Cloudinary upload error:', error);
                         reject(error);
                     } else if (result) {
                         resolve(result);

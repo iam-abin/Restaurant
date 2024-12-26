@@ -113,8 +113,6 @@ export class RestaurantService {
         let cuisinesArray: string[] = selectedCuisines.split(',');
         if (cuisinesArray.length) {
             cuisinesArray = cuisinesArray.filter((cuisine: string) => cuisine); // It avoid falsy values
-            console.log(cuisinesArray, ' cuisinesArray');
-            console.log(cuisinesArray.length, ' cuisinesArray');
         }
 
         // const cuisinesArray: string[] = selectedCuisines.split(', ').filter((cuisine: string) => cuisine); // It avoid falsy values

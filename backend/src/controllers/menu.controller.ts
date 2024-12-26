@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
+import { container } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
 import { IMenuDocument } from '../database/model';
-import { container } from 'tsyringe';
 import { MenuService } from '../services';
 import { IMenu } from '../types';
 

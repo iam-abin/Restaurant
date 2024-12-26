@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { createSuccessResponse } from '../utils';
 import { container } from 'tsyringe';
+import { createSuccessResponse } from '../utils';
 import { DashboardService } from '../services';
 import { IAdminDashboard, IRestaurantDashboard } from '../types';
 

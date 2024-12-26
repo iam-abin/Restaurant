@@ -9,12 +9,14 @@ export default [
         rules: {
             'no-unused-vars': 'off',
             'prefer-const': 'error',
+            'no-console': 'error',
             '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_|req|res|next' }],
             '@typescript-eslint/no-explicit-any': 'warn',
             '@typescript-eslint/no-namespace': [
                 'error',
                 { allowDeclarations: true }, // Allow namespaces in declaration contexts
             ],
+            
         },
     },
     { files: ['**/*.js'], languageOptions: { sourceType: 'script' } },

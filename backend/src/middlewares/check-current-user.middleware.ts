@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { ForbiddenError, NotAuthorizedError, NotFoundError } from '../errors';
-import { IJwtPayload, verifyJwtAccessToken } from '../utils';
+import { verifyJwtAccessToken } from '../utils';
 import { UserRepository } from '../database/repository';
+import { IJwtPayload } from '../types';
 
 // Extend Express's Request interface globally
 declare global {

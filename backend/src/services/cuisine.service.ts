@@ -11,7 +11,6 @@ export class CuisineService {
         if (!searchText) {
             return await this.cuisineRepository.findCuisines(limit);
         }
-        // console.log("searchText 3", searchText);
         return await this.cuisineRepository.searchCuisines(searchText, limit);
     }
 

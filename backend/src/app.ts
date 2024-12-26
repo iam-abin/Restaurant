@@ -32,6 +32,7 @@ const isProductionENV: boolean = appConfig.NODE_ENVIRONMENT === 'production';
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(helmet());
+app.disable('x-powered-by');
 app.use(
     cors({
         origin: appConfig.FRONTEND_URL,

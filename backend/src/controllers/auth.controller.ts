@@ -1,12 +1,18 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 import { IUserDocument } from '../database/model';
-
-import { createSuccessResponse, JWT_KEYS_CONSTANTS } from '../utils';
+import { isProduction, createSuccessResponse, JWT_KEYS_CONSTANTS } from '../utils';
 import { OtpService, UserService } from '../services';
-import { IGoogleAuth, IOtpToken, IPassword, ISignin, ISignup, IUser } from '../types';
-import { isProduction } from '../utils';
-import { CustomCookieOptions } from '../types/application';
+import {
+    IGoogleAuth,
+    IOtpToken,
+    IPassword,
+    ISignin,
+    ISignup,
+    IUser,
+    CustomCookieOptions,
+    IGoogleAuthCredential,
+} from '../types';
 import { appConfig } from '../config/app.config';
 
 const userService = container.resolve(UserService);
@@ -37,19 +43,19 @@ class AuthController {
     };
 
     public googleAuth = async (req: Request, res: Response): Promise<void> => {
-        const { user, accessToken, refreshToken } = await userService.googleAuth(req.body as IGoogleAuth);
-        res.cookie(
-            JWT_KEYS_CONSTANTS.JWT_TOKEN,
-            accessToken,
-            this.getCookieOptions(appConfig.COOKIE_JWT_ACCESS_EXPIRY_TIME),
-        );
-        res.cookie(
-            JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN,
-            refreshToken,
-            this.getCookieOptions(appConfig.COOKIE_JWT_REFRESH_EXPIRY_TIME),
-        );
+        await userService.googleAuth(req.body as IGoogleAuthCredential);
+        // res.cookie(
+        //     JWT_KEYS_CONSTANTS.JWT_TOKEN,
+        //     accessToken,
+        //     this.getCookieOptions(appConfig.COOKIE_JWT_ACCESS_EXPIRY_TIME),
+        // );
+        // res.cookie(
+        //     JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN,
+        //     refreshToken,
+        //     this.getCookieOptions(appConfig.COOKIE_JWT_REFRESH_EXPIRY_TIME),
+        // );
 
-        res.status(200).json(createSuccessResponse('Login success', user));
+        // res.status(200).json(createSuccessResponse('Login success', user));
     };
 
     public refresh = async (req: Request, res: Response): Promise<void> => {
@@ -111,7 +117,7 @@ class AuthController {
 
     public async blockUnblockUser(req: Request, res: Response): Promise<void> {
         const { userId } = req.params;
-        const user: IUserDocument | null = await userService.blockUnblockUser(userId);
+        const user: IUserDocument | null = await userService.updateBlockStatus(userId);
         res.status(200).json(
             createSuccessResponse(
                 `candidate ${user?.isBlocked ? 'blocked' : 'unBlocked'}  successfully`,

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
+import { container } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
 import { ICartDocument } from '../database/model';
-import { container } from 'tsyringe';
 import { CartService } from '../services';
 import { ICart } from '../types';
 

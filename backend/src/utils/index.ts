@@ -2,6 +2,7 @@ export * from './constants';
 export * from './crypto';
 export * from './email';
 export * from './environment-check';
+export * from './google-token';
 export * from './jwt';
 export * from './mongo-doc';
 export * from './otp';

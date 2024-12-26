@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
+import { container } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
 import { IOrderDocument } from '../database/model';
-import { container } from 'tsyringe';
 import { OrderService } from '../services';
 import { IOrder } from '../types';
 
@@ -31,9 +31,6 @@ class OrderController {
 
     public async confirmOrderStripeWebhook(req: Request, res: Response): Promise<void> {
         const signature = req.headers['stripe-signature'] as string | Buffer | Array<string>;
-        console.log('req.body ===>', req.body);
-        console.log('sig ===>', signature);
-
         const order = await orderService.confirmOrder(
             'confirmed',
             req.body,

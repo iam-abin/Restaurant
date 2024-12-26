@@ -6,6 +6,7 @@ export interface IAppConfig {
     MONGO_URI: string;
     NODE_ENVIRONMENT: Environment;
     API_PREFIX: string;
+    LOG_FILE_PATH: string;
     JWT_ACCESS_SECRET: string;
     JWT_REFRESH_SECRET: string;
     JWT_ACCESS_EXPIRY_TIME: string;
@@ -37,6 +38,7 @@ const appConfig: Readonly<IAppConfig> = Object.freeze({
     MONGO_URI: process.env.MONGODB_CONNECTION_STRING!,
     NODE_ENVIRONMENT: process.env.NODE_ENV as Environment,
     API_PREFIX: '/api/v1',
+    LOG_FILE_PATH: 'error.log',
     JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET!,
     JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET!,
     JWT_ACCESS_EXPIRY_TIME: '3h',

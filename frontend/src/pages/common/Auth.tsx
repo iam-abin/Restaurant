@@ -11,7 +11,7 @@ import { googleAuthThunk, signinUser } from '../../redux/thunk/authThunk';
 import { signupApi } from '../../api/apiMethods';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 
-import { DecodedGoogleToken, IGoogleAuth, ISignup, IUser } from '../../types';
+import { ISignup, IUser } from '../../types';
 
 import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
 import { fetchUserProfile } from '../../redux/thunk/profileThunk';
@@ -21,7 +21,6 @@ import AuthUserImage from '../../assets/auth-user.png';
 import AuthAdminImage from '../../assets/auth-admin.png';
 
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -122,23 +121,10 @@ const Auth = () => {
 
     // google login
     const handleSuccess = async (googleResponse: CredentialResponse) => {
-        const decoded = jwtDecode(googleResponse.credential!) as Omit<
-            DecodedGoogleToken,
-            'role' | 'imageUrl'
-        >;
-        const { name, email, picture } = decoded;
-        console.log('User Info:', decoded);
-
-        const userData: Omit<IGoogleAuth, 'picture'> = {
-            name,
-            email,
-            imageUrl: picture,
-            role,
-            googleId: decoded.sub,
-        };
-
+        
+        const { credential } = googleResponse;
         try {
-            const response = await dispatch(googleAuthThunk(userData));
+            const response = await dispatch(googleAuthThunk({ credential: credential!, role }));
 
             // Check if the action was rejected
             if (response.meta.requestStatus !== 'rejected') {

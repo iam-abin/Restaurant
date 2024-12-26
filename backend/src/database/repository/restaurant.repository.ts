@@ -12,8 +12,7 @@ export class RestaurantRepository {
     }
 
     async findRestaurants(skip: number, limit: number): Promise<IRestaurantDocument[]> {
-        const restaurants = await RestaurantModel.find().skip(skip).limit(limit).populate('ownerId');
-        return restaurants;
+        return await RestaurantModel.find().skip(skip).limit(limit).populate('ownerId');
     }
 
     async findRestaurant(restaurantId: string): Promise<IRestaurantResponse | null> {
