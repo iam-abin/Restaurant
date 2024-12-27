@@ -19,7 +19,6 @@ const profileSchema = new Schema<IProfileDocument>(
         addressId: {
             type: Schema.Types.ObjectId,
             ref: 'Address',
-            unique: true,
         },
         imageUrl: String,
     },

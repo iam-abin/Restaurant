@@ -1,9 +1,9 @@
-import { IUserRole } from './roles';
+import { UserRole } from './roles';
 
 export interface IJwtPayload {
     userId: string;
     email: string;
-    role: Partial<IUserRole>;
+    role: UserRole;
 }
 
 export type Tokens = {

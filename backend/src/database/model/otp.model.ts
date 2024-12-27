@@ -9,7 +9,7 @@ export interface IOtpTokenDocument extends Document, Omit<IOtpToken, 'userId'> {
     createdAt: Date;
 }
 
-// Here can also store token
+// Here we store otp as well as token
 const otpTokenSchema = new Schema<IOtpTokenDocument>(
     {
         userId: {

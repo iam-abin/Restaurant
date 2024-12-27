@@ -1,4 +1,4 @@
-import { IUserRole } from './roles';
+import { UserRole } from './roles';
 
 export interface IUser {
     name: string;
@@ -6,7 +6,7 @@ export interface IUser {
     phone?: number;
     password?: string;
     googleId?: string;
-    role: Partial<IUserRole>;
+    role: UserRole;
     isBlocked: boolean;
     isVerified: boolean;
 }

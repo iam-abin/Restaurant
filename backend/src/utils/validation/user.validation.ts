@@ -1,7 +1,7 @@
 import { body } from 'express-validator';
-import { ROLES_CONSTANTS } from '../constants';
+import { UserRole } from '../../types';
 
-const ROLES: string[] = [ROLES_CONSTANTS.ADMIN, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.USER];
+const ROLES: string[] = [UserRole.ADMIN, UserRole.RESTAURANT, UserRole.USER];
 
 export const signinRequestBodyValidator = [
     body('email')

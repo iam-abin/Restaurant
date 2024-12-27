@@ -1,15 +1,16 @@
 import mongoose from 'mongoose';
 import { autoInjectable } from 'tsyringe';
-import { IMenu, IRestaurantResponse } from '../types';
+import { IMenu } from '../types';
 import {
+    AddressRepository,
     CuisineRepository,
     MenuRepository,
     RestaurantCuisineRepository,
     RestaurantRepository,
 } from '../database/repository';
-import { ICuisineDocument, IMenuDocument, IRestaurantDocument } from '../database/model';
+import { IAddressDocument, ICuisineDocument, IMenuDocument, IRestaurantDocument } from '../database/model';
 import { uploadImageOnCloudinary } from '../utils';
-import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
+import { BadRequestError, NotFoundError } from '../errors';
 
 @autoInjectable()
 export class MenuService {
@@ -18,6 +19,7 @@ export class MenuService {
         private readonly restaurantRepository: RestaurantRepository,
         private readonly cuisineRepository: CuisineRepository,
         private readonly restaurantCuisineRepository: RestaurantCuisineRepository,
+        private readonly addressRepository: AddressRepository,
     ) {}
 
     public async createMenu(
@@ -28,18 +30,28 @@ export class MenuService {
         const session = await mongoose.startSession();
         session.startTransaction();
         try {
-            
             const restaurant: IRestaurantDocument = await this.validateRestaurantOwnership(userId);
             const { cuisine } = menuData;
+
+            const addressData: IAddressDocument | null = await this.addressRepository.findByUserId(userId);
+            if (!addressData) throw new BadRequestError('Must have address to create menu');
+            if (!addressData.city && !addressData.country)
+                throw new BadRequestError('Must have city and country to create menu');
 
             let cuisineData: ICuisineDocument | null = await this.cuisineRepository.findCuisine(cuisine);
             if (!cuisineData) {
                 cuisineData = await this.cuisineRepository.createCuisine({ name: cuisine }, session);
             }
-            await this.restaurantCuisineRepository.create(
-                { cuisineId: cuisineData._id.toString(), restaurantId: restaurant._id.toString() },
-                session,
+            const restaurantCuisine = await this.restaurantCuisineRepository.findRestaurantCuisine(
+                restaurant._id.toString(),
+                cuisineData._id.toString(),
             );
+            if (!restaurantCuisine) {
+                await this.restaurantCuisineRepository.create(
+                    { cuisineId: cuisineData._id.toString(), restaurantId: restaurant._id.toString() },
+                    session,
+                );
+            }
 
             const imageUrl: string = await uploadImageOnCloudinary(file);
             const menu: IMenuDocument | null = await this.menuRepository.create(
@@ -76,7 +88,6 @@ export class MenuService {
         return menu;
     }
 
-    
     public async updateMenu(
         userId: string,
         menuId: string,
@@ -87,7 +98,7 @@ export class MenuService {
 
         const menu: IMenuDocument | null = await this.menuRepository.findMenu(menuId);
         if (!menu) throw new NotFoundError('Menu not found');
-         
+
         let imageUrl: string | undefined;
         if (file) {
             imageUrl = await uploadImageOnCloudinary(file);
@@ -100,11 +111,10 @@ export class MenuService {
         return updatedMenu;
     }
 
-    private async validateRestaurantOwnership( userId: string ): Promise<IRestaurantDocument> {
+    private async validateRestaurantOwnership(userId: string): Promise<IRestaurantDocument> {
         const restaurant: IRestaurantDocument | null =
-                await this.restaurantRepository.findMyRestaurant(userId);
+            await this.restaurantRepository.findMyRestaurant(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         return restaurant;
     }
-
 }

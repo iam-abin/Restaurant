@@ -4,7 +4,6 @@ import { IUserDocument } from '../database/model';
 import { isProduction, createSuccessResponse, JWT_KEYS_CONSTANTS } from '../utils';
 import { OtpService, UserService } from '../services';
 import {
-    IGoogleAuth,
     IOtpToken,
     IPassword,
     ISignin,
@@ -28,6 +27,7 @@ class AuthController {
 
     public signin = async (req: Request, res: Response): Promise<void> => {
         const { user, accessToken, refreshToken } = await userService.signIn(req.body as ISignin);
+
         res.cookie(
             JWT_KEYS_CONSTANTS.JWT_TOKEN,
             accessToken,
@@ -112,7 +112,7 @@ class AuthController {
     public async resetPassword(req: Request, res: Response): Promise<void> {
         const { userId, password } = req.body as IPassword;
         const user: IUserDocument | null = await otpService.resetPassword(userId, password);
-        res.status(200).json(createSuccessResponse(`Password reseted successfully`, user));
+        res.status(200).json(createSuccessResponse('Password reseted successfully', user));
     }
 
     public async blockUnblockUser(req: Request, res: Response): Promise<void> {

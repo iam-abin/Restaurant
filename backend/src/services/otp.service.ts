@@ -2,13 +2,7 @@ import mongoose from 'mongoose';
 import { autoInjectable } from 'tsyringe';
 
 import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
-import {
-    generateOtp,
-    checkOtpIntervalCompleted,
-    sendEmail,
-    ROLES_CONSTANTS,
-    RESET_PASSWORD_URL,
-} from '../utils';
+import { generateOtp, checkOtpIntervalCompleted, sendEmail, RESET_PASSWORD_URL, createToken } from '../utils';
 import {
     OtpTokenRepository,
     UserRepository,
@@ -16,8 +10,7 @@ import {
     RestaurantRepository,
 } from '../database/repository';
 import { IOtpTokenDocument, IUserDocument } from '../database/model';
-import { createToken } from '../utils';
-import { IEmailTemplate } from '../types';
+import { IEmailTemplate, UserRole } from '../types';
 import { getEmailVerificationTemplate } from '../templates/signupVerificationEmail';
 import { getForgotPasswordEmailTemplate } from '../templates/forgotPasswordEmail';
 
@@ -34,7 +27,7 @@ export class OtpService {
         const session = await mongoose.startSession();
         session.startTransaction();
         try {
-            const user: IUserDocument | null = await this.validateUserExistence(userId);
+            const user: IUserDocument = await this.validateUserExistence(userId);
 
             // Check if the user is already verified
             if (user.isVerified) throw new BadRequestError('You are already verified. Please signin');
@@ -50,13 +43,15 @@ export class OtpService {
                 { isVerified: true },
                 session,
             );
-            if (user.role === ROLES_CONSTANTS.USER) {
+            if (user.role === UserRole.USER) {
                 await this.profileRepository.create({ userId }, session);
-            } else if (user.role === ROLES_CONSTANTS.RESTAURANT) {
+            } else if (user.role === UserRole.RESTAURANT) {
                 await this.restaurantRepository.create({ ownerId: userId }, session);
             }
 
             await this.otpTokenRepository.delete(otpData._id.toString(), session);
+            // Commit the transaction
+            await session.commitTransaction();
             return updatedUser;
         } catch (error) {
             // Rollback the transaction if something goes wrong
@@ -68,7 +63,7 @@ export class OtpService {
     }
 
     public async resendOtp(userId: string): Promise<IUserDocument> {
-        const user: IUserDocument | null = await this.validateUserExistence(userId);
+        const user: IUserDocument = await this.validateUserExistence(userId);
 
         if (user.isVerified) throw new BadRequestError('You are already verified. Please signin');
 
@@ -85,7 +80,7 @@ export class OtpService {
         const otp: string = generateOtp();
         await this.otpTokenRepository.create({ userId, otp });
 
-        const emailTemplate: IEmailTemplate = getEmailVerificationTemplate(otp);
+        const emailTemplate: IEmailTemplate = getEmailVerificationTemplate(user.name, otp);
         await sendEmail(user.email, emailTemplate);
         return user;
     }
@@ -101,10 +96,10 @@ export class OtpService {
             user._id.toString(),
         );
         if (existToken) {
-            const isResendTimeLimitCompleted = checkOtpIntervalCompleted(existToken.createdAt);
+            const isResendTimeLimitCompleted: boolean = checkOtpIntervalCompleted(existToken.createdAt);
             if (!isResendTimeLimitCompleted) {
                 throw new BadRequestError(
-                    'TOKEN has been recently sent. Please wait a minute before requesting again.',
+                    'Token has been recently sent. Please wait a minute before requesting again.',
                 );
             }
         }
@@ -115,7 +110,7 @@ export class OtpService {
         // Here we are storing token in otp collection.
         await this.otpTokenRepository.create({ userId: user._id.toString(), resetToken: token });
 
-        const resetURL = `${RESET_PASSWORD_URL}/${token}`;
+        const resetURL: string = `${RESET_PASSWORD_URL}/${token}`;
         const emailTemplate: IEmailTemplate = getForgotPasswordEmailTemplate(resetURL);
         await sendEmail(email, emailTemplate);
         return user;
@@ -125,16 +120,16 @@ export class OtpService {
         const resetTokenData: IOtpTokenDocument | null =
             await this.otpTokenRepository.findByResetToken(resetToken);
         if (!resetTokenData) throw new NotFoundError('Reset token has expired');
-        if (resetToken != resetTokenData.resetToken) throw new BadRequestError('Invalid reset Token');
+        if (resetToken !== resetTokenData.resetToken) throw new BadRequestError('Invalid reset Token');
 
-        const user: IUserDocument | null = await this.validateUserExistence(resetTokenData.userId.toString());
+        const user: IUserDocument = await this.validateUserExistence(resetTokenData.userId.toString());
         await this.otpTokenRepository.delete(resetTokenData._id.toString());
 
         return user;
     }
 
     public async resetPassword(userId: string, password: string): Promise<IUserDocument | null> {
-        const user: IUserDocument | null = await this.validateUserExistence(userId);
+        const user: IUserDocument = await this.validateUserExistence(userId);
 
         // Update the user's verification status
         const updatedUser: IUserDocument | null = await this.userRepository.updateUser(user._id.toString(), {
@@ -144,7 +139,7 @@ export class OtpService {
     }
 
     private async validateUserExistence(userId: string): Promise<IUserDocument> {
-        const user = await this.userRepository.findUserById(userId);
+        const user: IUserDocument | null = await this.userRepository.findUserById(userId);
         if (!user) throw new NotFoundError('This user does not exist.');
         return user;
     }

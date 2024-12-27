@@ -1,19 +1,19 @@
 import express, { Router } from 'express';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
 import {
-    ROLES_CONSTANTS,
     addToCartRequestBodyValidator,
     mongoIdParamsValidator,
     updateCartRequestBodyValidator,
 } from '../utils';
 import { cartController } from '../controllers';
+import { UserRole } from '../types';
 
 const router: Router = express.Router();
 
 router.post(
     '/',
     checkCurrentUser,
-    auth(ROLES_CONSTANTS.USER),
+    auth(UserRole.USER),
     addToCartRequestBodyValidator,
     validateRequest,
     cartController.addToCart,
@@ -22,7 +22,7 @@ router.post(
 router.get(
     '/:restaurantId',
     checkCurrentUser,
-    auth(ROLES_CONSTANTS.USER),
+    auth(UserRole.USER),
     mongoIdParamsValidator('restaurantId'),
     validateRequest,
     cartController.getCartItems,
@@ -31,19 +31,19 @@ router.get(
 router.patch(
     '/quantity/:cartItemId',
     checkCurrentUser,
-    auth(ROLES_CONSTANTS.USER),
+    auth(UserRole.USER),
     mongoIdParamsValidator('cartItemId'),
     updateCartRequestBodyValidator,
     validateRequest,
     cartController.updateQuantity,
 );
 
-router.delete('/', checkCurrentUser, auth(ROLES_CONSTANTS.USER), cartController.removeCartItems);
+router.delete('/', checkCurrentUser, auth(UserRole.USER), cartController.removeCartItems);
 
 router.delete(
     '/:cartItemId',
     checkCurrentUser,
-    auth(ROLES_CONSTANTS.USER),
+    auth(UserRole.USER),
     mongoIdParamsValidator('cartItemId'),
     validateRequest,
     cartController.removeCartItem,

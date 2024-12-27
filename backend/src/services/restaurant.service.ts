@@ -32,9 +32,8 @@ export class RestaurantService {
         const restaurant: IRestaurantDocument | null =
             await this.restaurantRepository.findMyRestaurant(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
-        const cuisines: IRestaurantCuisineDocument[] = await this.restaurantCuisineRepository.find(
-            restaurant?._id.toString(),
-        );
+        const cuisines: IRestaurantCuisineDocument[] =
+            await this.restaurantCuisineRepository.findRestaurantCuisines(restaurant?._id.toString());
         return { restaurant, cuisines };
     }
 

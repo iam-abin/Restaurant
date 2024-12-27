@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { DecodedGoogleToken } from '../types';
 import { GOOGLE_TOKEN_INFO_URL } from './constants';
 import makeApiCall from './apiCall';

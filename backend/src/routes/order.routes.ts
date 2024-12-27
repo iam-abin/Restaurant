@@ -1,20 +1,21 @@
 import express, { Router } from 'express';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
-import { mongoIdParamsValidator, updateOrderStatusRequestBodyValidator, ROLES_CONSTANTS } from '../utils';
+import { mongoIdParamsValidator, updateOrderStatusRequestBodyValidator } from '../utils';
 import { orderController } from '../controllers';
+import { UserRole } from '../types';
 
 const router: Router = express.Router();
 
-router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.USER), orderController.getMyOrders);
+router.get('/', checkCurrentUser, auth(UserRole.USER), orderController.getMyOrders);
 
-router.post('/payment/checkout', checkCurrentUser, auth(ROLES_CONSTANTS.USER), orderController.addOrder);
+router.post('/payment/checkout', checkCurrentUser, auth(UserRole.USER), orderController.addOrder);
 
 router.post('/webhook', express.raw({ type: 'application/json' }), orderController.confirmOrderStripeWebhook);
 
 router.get(
     '/restaurant/:restaurantId',
     checkCurrentUser,
-    auth(ROLES_CONSTANTS.RESTAURANT),
+    auth(UserRole.RESTAURANT),
     mongoIdParamsValidator('restaurantId'),
     validateRequest,
     orderController.getRestaurantOrders,
@@ -23,7 +24,7 @@ router.get(
 router.patch(
     '/restaurant/status/:orderId',
     checkCurrentUser,
-    auth(ROLES_CONSTANTS.RESTAURANT),
+    auth(UserRole.RESTAURANT),
     mongoIdParamsValidator('orderId'),
     updateOrderStatusRequestBodyValidator,
     validateRequest,

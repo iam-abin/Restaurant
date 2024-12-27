@@ -8,7 +8,7 @@ import cookieParser from 'cookie-parser';
 import compression from 'compression';
 
 import { NotFoundError } from './errors';
-import { errorHandler, rateLimiter } from './middlewares';
+import { errorHandler } from './middlewares';
 import {
     authRoutes,
     cartRoutes,

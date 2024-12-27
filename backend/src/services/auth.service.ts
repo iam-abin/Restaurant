@@ -8,7 +8,6 @@ import {
     comparePassword,
     createJwtAccessToken,
     sendEmail,
-    ROLES_CONSTANTS,
     verifyJwtRefreshToken,
     createJwtRefreshToken,
     verifyGoogleCredentialToken,
@@ -29,6 +28,7 @@ import {
     ISignup,
     Tokens,
     IJwtPayload,
+    UserRole,
 } from '../types';
 import { getEmailVerificationTemplate } from '../templates/signupVerificationEmail';
 
@@ -42,7 +42,7 @@ export class UserService {
     ) {}
 
     public async signUp(userRegisterDto: ISignup): Promise<IUserDocument | null> {
-        const { email } = userRegisterDto;
+        const { name, email } = userRegisterDto;
         const session = await mongoose.startSession();
         session.startTransaction();
 
@@ -73,7 +73,7 @@ export class UserService {
                     session,
                 );
 
-                await this.sendVerificationEmail(email, otp);
+                await this.sendVerificationEmail(name, email, otp);
                 // Commit the transaction
                 await session.commitTransaction();
                 session.endSession();
@@ -88,7 +88,7 @@ export class UserService {
             const otp: string = generateOtp();
             await this.otpTokenRepository.create({ userId: user._id.toString(), otp }, session);
 
-            await this.sendVerificationEmail(email, otp);
+            await this.sendVerificationEmail(name, email, otp);
 
             // Commit the transaction
             await session.commitTransaction();
@@ -113,12 +113,12 @@ export class UserService {
         // Check if the user is signedup using google
         if (existingUser.googleId) throw new BadRequestError('use another way to login');
         if (existingUser.role !== role) throw new BadRequestError('Role is not matching');
-        if (existingUser.isBlocked) throw new ForbiddenError('You are a blocked user');
 
-        if (role === ROLES_CONSTANTS.ADMIN) {
+        if (role === UserRole.ADMIN) {
             if (email !== existingUser.email && password !== existingUser.password)
                 throw new BadRequestError('Invalid email or password');
         } else {
+            if (existingUser.isBlocked) throw new ForbiddenError('You are a blocked user');
             const isSamePassword: boolean = await comparePassword(password!, existingUser.password!);
             if (!isSamePassword) throw new BadRequestError('Invalid email or password');
 
@@ -165,9 +165,9 @@ export class UserService {
                     session,
                 );
                 const userId: string = user._id.toString();
-                if (user.role === ROLES_CONSTANTS.USER) {
+                if (user.role === UserRole.USER) {
                     await this.profileRepository.create({ userId, imageUrl: picture }, session);
-                } else if (user.role === ROLES_CONSTANTS.RESTAURANT) {
+                } else if (user.role === UserRole.RESTAURANT) {
                     await this.restaurantRepository.create({ ownerId: userId, imageUrl: picture }, session);
                 }
 
@@ -183,7 +183,7 @@ export class UserService {
             if (existingUser.role !== role) throw new BadRequestError('Role is not matching');
             if (existingUser.isBlocked) throw new ForbiddenError('You are a blocked user');
 
-            if (role === ROLES_CONSTANTS.RESTAURANT) {
+            if (role === UserRole.RESTAURANT) {
                 const restaurant: IRestaurantDocument | null =
                     await this.restaurantRepository.findMyRestaurant(existingUser._id.toString());
                 if (restaurant?.imageUrl !== picture) {
@@ -191,7 +191,7 @@ export class UserService {
                         imageUrl: picture,
                     });
                 }
-            } else if (role === ROLES_CONSTANTS.USER) {
+            } else if (role === UserRole.USER) {
                 const profile: IProfileDocument | null = await this.profileRepository.findByUserId(
                     existingUser._id.toString(),
                 );
@@ -247,8 +247,8 @@ export class UserService {
         return { accessToken: jwtAccessToken, refreshToken: jwtRefreshToken };
     }
 
-    private async sendVerificationEmail(email: string, otp: string): Promise<void> {
-        const emailTemplate: IEmailTemplate = getEmailVerificationTemplate(otp);
+    private async sendVerificationEmail(name: string, email: string, otp: string): Promise<void> {
+        const emailTemplate: IEmailTemplate = getEmailVerificationTemplate(name, otp);
         await sendEmail(email, emailTemplate);
     }
 }

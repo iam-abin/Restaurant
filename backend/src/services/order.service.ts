@@ -44,9 +44,9 @@ export class OrderService {
             if (cartItems.length === 0) throw new NotFoundError('Must contain cart items to place order');
 
             const totalAmount: number = this.findtotalAmount(cartItems);
-            if (!address) throw new NotFoundError('Address not found');
-            if (address.userId.toString() !== userId)
-                throw new ForbiddenError('You cannot use others address');
+            if (!address) throw new NotFoundError('Must fill address details');
+            // if (address.userId.toString() !== userId)
+            //     throw new ForbiddenError('You cannot use others address');
 
             // Create the order
             const order: IOrderDocument | null = await this.orderRepository.create(

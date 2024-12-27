@@ -17,7 +17,7 @@ const router: Router = express.Router();
 
 router.post('/signin', signinRequestBodyValidator, validateRequest, authController.signin);
 
-router.post('/refresh', authController.signin);
+router.post('/refresh', authController.refresh);
 
 router.post('/signup', signupRequestBodyValidator, validateRequest, authController.signup);
 

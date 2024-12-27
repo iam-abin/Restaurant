@@ -8,7 +8,7 @@ type ApiCallParams = {
     data?: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
     isFileUpload?: boolean;
 };
-const makeApiCall = async <T>({ method, url, data, isFileUpload = false }: ApiCallParams) => {
+const makeApiCall = async ({ method, url, data, isFileUpload = false }: ApiCallParams) => {
     const config = isFileUpload ? { headers: { 'Content-Type': 'multipart/form-data' } } : {};
     const response = await axios[method](url, data, config);
     return response.data;

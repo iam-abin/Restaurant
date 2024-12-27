@@ -1,4 +1,4 @@
-export const getEmailVerificationTemplate = function (otp: string) {
+export const getEmailVerificationTemplate = function (name: string, otp: string) {
     const html = `
     <!doctype html>
       <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -35,7 +35,7 @@ export const getEmailVerificationTemplate = function (otp: string) {
                           >
                       </div>
                       <p style="font-size: 1.1em">Hi,</p>
-                      RestaurantApp
+                        ${name}
                       <p>
                           Thank you for choosing RestaurantApp. Use the following OTP to complete your Sign Up
                           procedures. This OTP is valid for 10 minutes from the time this email was sent. After this
