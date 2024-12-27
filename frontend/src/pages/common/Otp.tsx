@@ -1,10 +1,11 @@
 import { Button } from '@mui/material';
 import { FormEvent, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import LoaderCircle from '../../components/Loader/LoaderCircle';
-import { verifyOtpApi } from '../../api/apiMethods/auth';
+
+import { verifyOtpApi } from '../../api/apiMethods';
 import { hotToastMessage } from '../../utils/hotToast';
 import { ROLES_CONSTANTS } from '../../utils/constants';
+import LoaderCircle from '../../components/Loader/LoaderCircle';
 
 const Otp = () => {
     const inputRef = useRef<(HTMLInputElement | null)[]>([]);
@@ -12,7 +13,7 @@ const Otp = () => {
     const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const location = useLocation();
-    const { userId, role } = location.state;
+    const { userId, role } = location?.state;
     console.log('userId ', userId);
     console.log('role ', role);
 

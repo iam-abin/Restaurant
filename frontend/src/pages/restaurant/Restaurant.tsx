@@ -1,11 +1,11 @@
-import { Button } from '@mui/material';
-import { RestaurantFormSchema, restaurantFromSchema } from '../../utils/schema/restaurantSchema';
 import { FormEvent, useEffect, useState } from 'react';
-import LoaderCircle from '../../components/Loader/LoaderCircle';
-import { getMyRestaurantApi, updateRestaurantApi } from '../../api/apiMethods/restaurant';
+import { Button } from '@mui/material';
+
+import { RestaurantFormSchema, restaurantFromSchema } from '../../utils/schema/restaurantSchema';
+import { getMyRestaurantApi, updateRestaurantApi } from '../../api/apiMethods';
 import { hotToastMessage } from '../../utils/hotToast';
-import { IResponse } from '../../types/api';
-import { ICuisine, ICuisineResponse, IRestaurant, IRestaurantResponse } from '../../types';
+import { IResponse, ICuisine, ICuisineResponse, IRestaurant, IRestaurantResponse } from '../../types';
+import LoaderCircle from '../../components/Loader/LoaderCircle';
 
 const Restaurant = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);

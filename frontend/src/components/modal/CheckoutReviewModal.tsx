@@ -9,6 +9,7 @@ import LoaderCircle from '../Loader/LoaderCircle';
 import { useAppSelector } from '../../redux/hooks';
 import { checkoutOrderApi } from '../../api/apiMethods/order';
 import { IAddress, ICart, ICheckoutResponse } from '../../types';
+import { hotToastMessage } from '../../utils/hotToast';
 
 const style = {
     position: 'absolute',
@@ -57,6 +58,8 @@ export default function CheckoutReviewModal({
         try {
             const response = await checkoutOrderApi({ restaurantId });
             window.location.href = (response.data as ICheckoutResponse).stripePaymentUrl;
+        }catch(error: unknown){
+            hotToastMessage((error as Error).message, 'error')
         } finally {
             setIsLoading(false);
         }

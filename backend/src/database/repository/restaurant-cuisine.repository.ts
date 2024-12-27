@@ -17,8 +17,18 @@ export class RestaurantCuisineRepository {
         return restaurantCuisine[0];
     }
 
-    async find(restaurantId: string): Promise<IRestaurantCuisineDocument[]> {
-        const cuisines = await RestaurantCuisineModel.find({ restaurantId }).populate('cuisineId');
-        return cuisines;
+    async findRestaurantCuisines(restaurantId: string): Promise<IRestaurantCuisineDocument[]> {
+        return await RestaurantCuisineModel.find({ restaurantId }).populate('cuisineId');
+    }
+
+    async findRestaurantCuisine(
+        restaurantId: string,
+        cuisineId: string,
+    ): Promise<IRestaurantCuisineDocument | null> {
+        return await RestaurantCuisineModel.findOne({ restaurantId, cuisineId }).populate('cuisineId');
+    }
+
+    async countRestaurantCuisines(restaurantId: string): Promise<number> {
+        return await RestaurantCuisineModel.countDocuments({ restaurantId });
     }
 }

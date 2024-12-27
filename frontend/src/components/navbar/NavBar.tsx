@@ -82,7 +82,7 @@ const NavBar = ({ currentUser, handleLogout }: { currentUser: IUser; handleLogou
         setOpen(true);
     };
     return (
-        <div className="md:w-4/5 px-3 md:mx-auto bg-white shadow-lg">
+        <div className="md:max-w-7xl px-3 md:mx-auto bg-white shadow-lg">
             <div className="flex items-center justify-between h-14">
                 <Link to="/">
                     <h1 className="font-bold md:font-extrabold text-2xl">Restaurant App</h1>

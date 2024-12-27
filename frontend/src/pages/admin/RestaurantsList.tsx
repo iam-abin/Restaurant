@@ -10,8 +10,8 @@ import { getRestaurantsApi } from '../../api/apiMethods/restaurant';
 function RestaurantsList() {
     const [restaurantsData, setRestaurantsData] = useState<IRestaurant[]>([]);
     const [numberOfPages, setNumberOfPages] = useState(1);
-    const [currentPage, setCurrentPage] = useState(1);
-
+    // const [currentPage, setCurrentPage] = useState(1);
+    const currentPage = 1;
 
     const [searchKey, setSearchKey] = useState('');
 
@@ -22,9 +22,9 @@ function RestaurantsList() {
         // if (!searchKey) {
         console.log('no search key');
         restaurantsData = await getRestaurantsApi(currentPage, USERS_PER_PAGE);
-        const data = restaurantsData?.data as IRestaurantsResponse
-        setRestaurantsData( data.restaurants as IRestaurant[]);
-        setNumberOfPages( data.numberOfPages)
+        const data = restaurantsData?.data as IRestaurantsResponse;
+        setRestaurantsData(data.restaurants as IRestaurant[]);
+        setNumberOfPages(data.numberOfPages);
     };
 
     useEffect(() => {
@@ -41,10 +41,10 @@ function RestaurantsList() {
                 if (restaurant.ownerId._id === userId) {
                     return {
                         ...restaurant,
-                       ownerId: {
-                        ...restaurant.ownerId,
-                        isBlocked: (updatedUser?.data as IUser).isBlocked,
-                       }
+                        ownerId: {
+                            ...restaurant.ownerId,
+                            isBlocked: (updatedUser?.data as IUser).isBlocked,
+                        },
                     };
                 }
 
@@ -83,7 +83,7 @@ function RestaurantsList() {
         },
         {
             Header: 'Action',
-            button: (row: {ownerId:{ _id: string; isBlocked: boolean }}) => (
+            button: (row: { ownerId: { _id: string; isBlocked: boolean } }) => (
                 <button
                     onClick={() => {
                         handleBlockUnblock(row.ownerId._id);
@@ -106,7 +106,12 @@ function RestaurantsList() {
             <div className="flex flex-row justify-end my-2">
                 <SearchBar placeholder={'search with name'} onSearch={setSearchKey} />
             </div>
-            <Table columns={columns} data={restaurantsData} numberOfPages={numberOfPages} fetchData={fetchUsers} />
+            <Table
+                columns={columns}
+                data={restaurantsData}
+                numberOfPages={numberOfPages}
+                fetchData={fetchUsers}
+            />
             {/* <ConfirmationDialogue
                     open={open}
                     setOpen={setOpen}

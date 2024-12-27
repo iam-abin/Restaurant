@@ -30,6 +30,9 @@ const restaurantCuisineSchema = new Schema<IRestaurantCuisineDocument>(
     },
 );
 
+// Compound index for restaurantId and cuisineId
+restaurantCuisineSchema.index({ restaurantId: 1, cuisineId: 1 });
+
 export const RestaurantCuisineModel = mongoose.model<IRestaurantCuisineDocument>(
     'RestaurantCuisine',
     restaurantCuisineSchema,

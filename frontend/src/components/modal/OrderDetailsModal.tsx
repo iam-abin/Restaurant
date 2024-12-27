@@ -4,7 +4,6 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import CloseIcon from '@mui/icons-material/Close';
 import { formatDateWithTime } from '../../utils/date-format';
 import { IRestaurantOrder } from '../../types';
-import { useLocation } from 'react-router-dom';
 import { useAppSelector } from '../../redux/hooks';
 import { ROLES_CONSTANTS } from '../../utils/constants';
 

@@ -49,7 +49,6 @@ const Table = ({
                     </thead>
                     <tbody>
                         {data && data.length > 0 ? (
-                            //  eslint-disable-next-line @typescript-eslint/no-explicit-any
                             data.map((row: IProfile, rowIndex: number) => (
                                 <tr
                                     key={rowIndex}

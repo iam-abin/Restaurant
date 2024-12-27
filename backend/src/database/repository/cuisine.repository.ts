@@ -11,12 +11,12 @@ export class CuisineRepository {
         return await CuisineModel.findOne({ name: cuisine });
     }
 
-    async findCuisines(): Promise<ICuisineDocument[]> {
-        return await CuisineModel.find().limit(2);
+    async findCuisines(limit?: number): Promise<ICuisineDocument[]> {
+        return await CuisineModel.find().limit(limit ?? 0); // limit(0) is equivalent to setting no limit.
     }
 
-    async searchCuisines(searchText: string): Promise<ICuisineDocument[]> {
+    async searchCuisines(searchText: string, limit: number): Promise<ICuisineDocument[]> {
         const regex: RegExp = new RegExp(searchText, 'i');
-        return await CuisineModel.find({ name: { $regex: regex } }).limit(5);
+        return await CuisineModel.find({ name: { $regex: regex } }).limit(limit);
     }
 }

@@ -1,15 +1,15 @@
-import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
-import { Badge, Chip, IconButton, Typography } from '@mui/material';
-import MenuCardSkeleton from '../../components/shimmer/MenuCardSkeleton';
 import { useEffect, useState } from 'react';
-import { getARestaurantApi } from '../../api/apiMethods/restaurant';
 import { Link, useParams } from 'react-router-dom';
+import { Badge, Chip, IconButton, Typography } from '@mui/material';
+import { ShoppingCart, TimerOutlined } from '@mui/icons-material';
+
 import { ICuisine, IMenu, IRestaurantResponse2 } from '../../types';
-import MenuCard from '../../components/cards/MenuCard';
+import { getARestaurantApi } from '../../api/apiMethods';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { fetchCartItems } from '../../redux/thunk/cartThunk';
 import { ROLES_CONSTANTS } from '../../utils/constants';
+import MenuCardSkeleton from '../../components/shimmer/MenuCardSkeleton';
+import MenuCard from '../../components/cards/MenuCard';
 
 const RestaurantDetails = () => {
     const params = useParams();
@@ -57,7 +57,7 @@ const RestaurantDetails = () => {
                             <IconButton aria-label="cart  ">
                                 <Badge badgeContent={cartData.length} color="primary">
                                     <Link to={'/cart'}>
-                                        <ShoppingCartIcon />
+                                        <ShoppingCart />
                                     </Link>
                                 </Badge>
                             </IconButton>
@@ -65,7 +65,7 @@ const RestaurantDetails = () => {
 
                         <div className="flex md:flex-row flex-col gap-2 my-5">
                             <div className="flex items-center gap-2">
-                                <TimerOutlinedIcon className="w-5 h-5" />
+                                <TimerOutlined className="w-5 h-5" />
                                 <h1 className="flex items-center gap-2 font-medium">
                                     Delivery Time:{' '}
                                     <Typography className="text-[#D19254]">

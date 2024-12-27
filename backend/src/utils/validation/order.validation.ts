@@ -1,5 +1,7 @@
 import { body } from 'express-validator';
 
+const STATUSES: string[] = ['preparing', 'outfordelivery', 'delivered'];
+
 export const updateOrderStatusRequestBodyValidator = [
     body('status')
         .notEmpty()
@@ -7,7 +9,7 @@ export const updateOrderStatusRequestBodyValidator = [
         .isString()
         .withMessage('Status must be a string')
         .trim()
-        .isIn(['preparing', 'outfordelivery', 'delivered'])
-        .withMessage('Status must be one of: preparing, outfordelivery, delivered')
+        .isIn(STATUSES)
+        .withMessage(`Status must be one of: ${STATUSES.join(', ')}`)
         .escape(),
 ];

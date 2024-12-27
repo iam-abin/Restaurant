@@ -22,8 +22,4 @@ export class UserRepository {
     ): Promise<IUserDocument | null> {
         return await UserModel.findByIdAndUpdate(userId, updateData, { new: true, session });
     }
-
-    async updateUserVerification(userId: string): Promise<IUserDocument | null> {
-        return await UserModel.findByIdAndUpdate(userId, { isVerified: true }, { new: true });
-    }
 }

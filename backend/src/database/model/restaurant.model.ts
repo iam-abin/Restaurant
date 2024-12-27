@@ -22,7 +22,6 @@ const restaurantSchema = new Schema<IRestaurantDocument>(
         addressId: {
             type: Schema.Types.ObjectId,
             ref: 'Address',
-            unique: true,
         },
         deliveryTime: {
             type: Number,

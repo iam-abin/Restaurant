@@ -1,4 +1,5 @@
 import { PieChart } from '@mui/x-charts/PieChart';
+
 import { IOrderStatusWithCounts } from '../../types';
 
 export default function PieChartGraph({ statusCounts }: { statusCounts: IOrderStatusWithCounts[] }) {

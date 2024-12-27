@@ -20,7 +20,7 @@
 //     useEffect(()=>{
 //         (
 //             async()=>{
-//                 const cuisines = await  
+//                 const cuisines = await
 //             }
 //         )()
 //     })

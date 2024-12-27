@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react';
-// import { useLocation, useNavigate } from 'react-router-dom';
-// import { ROLES_CONSTANTS } from '../../utils/constants';
-import { IProfile, IProfilesResponse, IUser } from '../../types';
-import { IResponse } from '../../types/api';
+
+import { IResponse, IProfile, IProfilesResponse, IUser } from '../../types';
+import { hotToastMessage } from '../../utils/hotToast';
+import { getProfilesApi, blockUnblockUserApi } from '../../api/apiMethods';
 import SearchBar from '../../components/search/SearchBar';
 import Table from '../../components/table/Table';
-import { hotToastMessage } from '../../utils/hotToast';
-import { getProfilesApi } from '../../api/apiMethods/profile';
-import { blockUnblockUserApi } from '../../api/apiMethods/auth';
 
 function UsersList() {
     const [profilesData, setProfilesData] = useState<IProfile[]>([]);
@@ -22,7 +19,7 @@ function UsersList() {
         // if (!searchKey) {
         console.log('no search key');
         profilesData = await getProfilesApi(currentPage, USERS_PER_PAGE);
-        const data = profilesData?.data as IProfilesResponse
+        const data = profilesData?.data as IProfilesResponse;
         // currentPage,
         // USERS_PER_PAGE
         setProfilesData(data.profiles as IProfile[]);
@@ -51,10 +48,10 @@ function UsersList() {
                 if ((user.userId as IUser)._id === userId) {
                     return {
                         ...user,
-                       userId: {
-                        ...(user.userId as IUser),
-                        isBlocked: (updatedUser?.data as IUser).isBlocked,
-                       }
+                        userId: {
+                            ...(user.userId as IUser),
+                            isBlocked: (updatedUser?.data as IUser).isBlocked,
+                        },
                     };
                 }
 
@@ -114,7 +111,12 @@ function UsersList() {
             <div className="flex flex-row justify-end my-2">
                 <SearchBar placeholder={'search with name'} onSearch={setSearchKey} />
             </div>
-            <Table columns={columns} data={profilesData} numberOfPages={numberOfPages} fetchData={fetchUsers} />
+            <Table
+                columns={columns}
+                data={profilesData}
+                numberOfPages={numberOfPages}
+                fetchData={fetchUsers}
+            />
             {/* <ConfirmationDialogue
                     open={open}
                     setOpen={setOpen}

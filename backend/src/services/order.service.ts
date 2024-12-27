@@ -1,7 +1,6 @@
 import { autoInjectable } from 'tsyringe';
 import mongoose from 'mongoose';
 import Stripe from 'stripe';
-
 import { IOrder, IRestaurantResponse } from '../types';
 import {
     OrderRepository,
@@ -43,13 +42,11 @@ export class OrderService {
             ]);
 
             if (cartItems.length === 0) throw new NotFoundError('Must contain cart items to place order');
-            // const restaurantId = this.checkSameRestaurant(cartItems);
-            // const restaurant = this.restaurantRepository.findRestaurant(restaurantId);
-            // if (!restaurant) throw new NotFoundError('Restaurant not found');
-            const totalAmound: number = this.findTotalAmound(cartItems);
-            if (!address) throw new NotFoundError('Address not found');
-            if (address.userId.toString() !== userId)
-                throw new ForbiddenError('You cannot use others address');
+
+            const totalAmount: number = this.findtotalAmount(cartItems);
+            if (!address) throw new NotFoundError('Must fill address details');
+            // if (address.userId.toString() !== userId)
+            //     throw new ForbiddenError('You cannot use others address');
 
             // Create the order
             const order: IOrderDocument | null = await this.orderRepository.create(
@@ -57,7 +54,7 @@ export class OrderService {
                     userId,
                     restaurantId,
                     addressId: address._id.toString(),
-                    totalAmound,
+                    totalAmount,
                     status: 'pending',
                 },
                 session,
@@ -76,12 +73,10 @@ export class OrderService {
                 success_url: appConfig.PAYMENT_SUCCESS_URL,
                 cancel_url: appConfig.PAYMENT_CANCEL_URL,
                 metadata: {
-                    orderId: order.id.toString(),
+                    orderId: order._id.toString(),
                     images: JSON.stringify(cartItems.map((item) => (item.itemId as IMenuDocument).imageUrl)),
                 },
             });
-
-            console.log('checkoutSession is ', checkoutSession);
 
             if (!checkoutSession.url) {
                 throw new Error('Error while creating checkout session');
@@ -89,7 +84,6 @@ export class OrderService {
 
             // Delete cart items in bulk
             await this.cartRepository.deleteAllItems(userId, session);
-            console.log(cartItems);
 
             const orderedItems = cartItems.map((item) => ({
                 userId,
@@ -114,35 +108,17 @@ export class OrderService {
         }
     }
 
-    // private checkSameRestaurant(cartItems: ICartDocument[]) {
-    //     if (cartItems.length === 0) throw new Error('Cart is empty');
-
-    //     // Extract the restaurantId of the first cart item
-    //     const firstRestaurantId = (cartItems[0].itemId as IMenuDocument).restaurantId.toString();
-
-    //     // Check if all items in the cart have the same restaurantId
-    //     for (const item of cartItems) {
-    //         const currentRestaurantId = (item.itemId as IMenuDocument).restaurantId.toString();
-    //         if (currentRestaurantId !== firstRestaurantId) {
-    //             throw new Error('All items in the cart must be from the same restaurant');
-    //         }
-    //     }
-
-    //     // Return the restaurantId if all are the same
-    //     return firstRestaurantId;
-    // }
-
-    private findTotalAmound(cartItems: ICartDocument[]) {
+    private findtotalAmount(cartItems: ICartDocument[]) {
         if (cartItems.length === 0) throw new Error('Cart is empty');
 
         // Check if all items in the cart have the same restaurantId
-        const totalAmound = cartItems.reduce((acc: number, currItem: ICartDocument) => {
+        const totalAmount = cartItems.reduce((acc: number, currItem: ICartDocument) => {
             acc = acc + (currItem.itemId as IMenuDocument).price * currItem.quantity;
             return acc;
         }, 0);
 
         // Return the restaurantId if all are the same
-        return totalAmound;
+        return totalAmount;
     }
 
     private createLineItems(cartItems: ICartDocument[]) {
@@ -186,14 +162,12 @@ export class OrderService {
         signature: string | Buffer | Array<string>,
     ): Promise<IOrderDocument | null> {
         const webhookEndPointSecret: string = appConfig.STRIPE_WEBHOOK_ENDPOINT_SECRET;
-        console.log('webhookEndPointSecret', webhookEndPointSecret);
 
         const event: Stripe.Event = stripeInstance.webhooks.constructEvent(
             JSON.stringify(requestBody),
             signature,
             webhookEndPointSecret,
         );
-        console.log('event', event);
         // Handle the checkout session completed event
         if (event.type !== 'checkout.session.completed') {
             throw new Error('Payment confirmation failed');

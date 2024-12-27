@@ -1,39 +1,35 @@
 import express, { Router } from 'express';
 import { checkCurrentUser, auth, multerUpload, validateRequest } from '../middlewares';
-import {
-    mongoIdParamsValidator,
-    restaurantUpdateValidator,
-    ROLES_CONSTANTS,
-    searchRestaurantValidator,
-} from '../utils';
-import { restaurantController } from '../controllers/restaurant.controller';
+import { mongoIdParamsValidator, restaurantUpdateValidator, searchRestaurantValidator } from '../utils';
+import { restaurantController } from '../controllers';
+import { UserRole } from '../types';
 
 const router: Router = express.Router();
 
-router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.RESTAURANT), restaurantController.getMyRestaurant);
+router.get('/', checkCurrentUser, auth(UserRole.RESTAURANT), restaurantController.getMyRestaurant);
 
 router.get(
     '/restaurants/:page/:limit',
     checkCurrentUser,
-    auth(ROLES_CONSTANTS.ADMIN),
+    auth(UserRole.ADMIN),
     restaurantController.getRestaurants,
 );
 
 router.get(
     '/:restaurantId',
+    checkCurrentUser,
     mongoIdParamsValidator('restaurantId'),
     validateRequest,
-    checkCurrentUser,
     restaurantController.getARestaurant,
 );
 
 router.patch(
     '/',
+    checkCurrentUser,
+    auth(UserRole.RESTAURANT),
+    multerUpload.single('image'),
     restaurantUpdateValidator,
     validateRequest,
-    checkCurrentUser,
-    auth(ROLES_CONSTANTS.RESTAURANT),
-    multerUpload.single('image'),
     restaurantController.editRestaurant,
 );
 

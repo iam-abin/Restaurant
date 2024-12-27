@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 import { IProfileDocument } from '../database/model';
-
 import { createSuccessResponse } from '../utils';
 import { ProfileService } from '../services';
 import { IProfilesData, ProfileUpdate } from '../types';
+
 const profileService = container.resolve(ProfileService);
 
 class ProfileController {

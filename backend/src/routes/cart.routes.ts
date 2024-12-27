@@ -1,51 +1,51 @@
 import express, { Router } from 'express';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
 import {
-    ROLES_CONSTANTS,
     addToCartRequestBodyValidator,
     mongoIdParamsValidator,
     updateCartRequestBodyValidator,
 } from '../utils';
-import { cartController } from '../controllers/cart.controller';
+import { cartController } from '../controllers';
+import { UserRole } from '../types';
 
 const router: Router = express.Router();
 
 router.post(
     '/',
+    checkCurrentUser,
+    auth(UserRole.USER),
     addToCartRequestBodyValidator,
     validateRequest,
-    checkCurrentUser,
-    auth(ROLES_CONSTANTS.USER),
     cartController.addToCart,
 );
 
 router.get(
     '/:restaurantId',
+    checkCurrentUser,
+    auth(UserRole.USER),
     mongoIdParamsValidator('restaurantId'),
     validateRequest,
-    checkCurrentUser,
-    auth(ROLES_CONSTANTS.USER),
     cartController.getCartItems,
 );
 
 router.patch(
     '/quantity/:cartItemId',
+    checkCurrentUser,
+    auth(UserRole.USER),
     mongoIdParamsValidator('cartItemId'),
     updateCartRequestBodyValidator,
     validateRequest,
-    checkCurrentUser,
-    auth(ROLES_CONSTANTS.USER),
     cartController.updateQuantity,
 );
 
-router.delete('/', checkCurrentUser, auth(ROLES_CONSTANTS.USER), cartController.removeCartItems);
+router.delete('/', checkCurrentUser, auth(UserRole.USER), cartController.removeCartItems);
 
 router.delete(
     '/:cartItemId',
+    checkCurrentUser,
+    auth(UserRole.USER),
     mongoIdParamsValidator('cartItemId'),
     validateRequest,
-    checkCurrentUser,
-    auth(ROLES_CONSTANTS.USER),
     cartController.removeCartItem,
 );
 

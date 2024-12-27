@@ -1,11 +1,12 @@
 import { Button } from '@mui/material';
 import { useState } from 'react';
-import TableCart from '../../components/table/TableCart';
-import CartEmptyGif from '../../assets/cart-is-empty.jpeg';
-import CheckoutReviewModal from '../../components/modal/CheckoutReviewModal';
+
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { changeCartItemQuantity, removeCartItem, removeCartItems } from '../../redux/thunk/cartThunk';
 import { ICart } from '../../types';
+import TableCart from '../../components/table/TableCart';
+import CheckoutReviewModal from '../../components/modal/CheckoutReviewModal';
+import CartEmptyGif from '../../assets/cart-is-empty.jpeg';
 
 const Cart = () => {
     const [isOpen, setIsOpen] = useState(false);

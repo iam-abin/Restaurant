@@ -4,9 +4,10 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import { emailSchema } from '../../utils/schema/userSchema';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import { Link, useNavigate } from 'react-router-dom';
-import { ForgotPasswordEmailApi } from '../../api/apiMethods/auth';
+import { ForgotPasswordEmailApi } from '../../api/apiMethods';
 import { IResponse } from '../../types/api';
 import { hotToastMessage } from '../../utils/hotToast';
+import { IUser } from '../../types';
 
 export interface IForgotPasswordEmail {
     email: string;
@@ -50,11 +51,16 @@ const ForgotPasswordEmail = () => {
         try {
             setIsLoading(true);
             const response: IResponse = await ForgotPasswordEmailApi({ email });
-            if (response.data) {
+            const userData = response.data as IUser
+            if (userData) {
                 hotToastMessage(response.message, 'success');
                 setEmail('');
-                navigate('/forgot-password/otp');
+                navigate('/forgot-password/otp',{
+                    state:{userId: userData._id, role: userData.role}
+                });
             }
+        }catch(error: unknown){
+            hotToastMessage((error as Error).message, 'error')
         } finally {
             setIsLoading(false);
         }

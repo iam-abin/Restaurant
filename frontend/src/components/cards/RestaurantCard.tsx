@@ -12,7 +12,7 @@ import { IRestaurantCard } from '../../types';
 
 const RestaurantCard = ({ restaurant }: { restaurant: IRestaurantCard }) => {
     return (
-        <Card sx={{ maxWidth: 345 }}>
+        <Card sx={{ width: '100%' }} className="w-full">
             <div className="relative">
                 <CardMedia
                     component="img"

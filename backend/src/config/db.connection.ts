@@ -5,15 +5,11 @@ import { DatabaseConnectionError } from '../errors';
 
 const connectDb = async () => {
     try {
-        await mongoose.connect(appConfig.MONGO_URI, {
-            dbName: appConfig.DB_NAME,
-            // retryWrites: true,
-            // w: 'majority',
-            // connectTimeoutMS: 30000, // Increase connection timeout to 30 seconds
-            // socketTimeoutMS: 45000, // Increase socket timeout to 45 seconds
-        });
+        await mongoose.connect(`${appConfig.MONGO_URI}/${appConfig.DB_NAME}`);
+        // eslint-disable-next-line no-console
         console.log('🛢 Successfully connected to MongoDB...');
     } catch (error: unknown) {
+        // eslint-disable-next-line no-console
         console.error(error);
         throw new DatabaseConnectionError();
     }

@@ -1,4 +1,5 @@
 export * from './address';
+export * from './api';
 export * from './cart';
 export * from './cuisine';
 export * from './dashboard';

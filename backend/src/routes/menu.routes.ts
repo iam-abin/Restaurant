@@ -1,19 +1,19 @@
 import express, { Router } from 'express';
 import { checkCurrentUser, auth, multerUpload, validateRequest } from '../middlewares';
 import {
-    ROLES_CONSTANTS,
     addMenuRequestBodyValidator,
     updateMenuRequestBodyValidator,
     mongoIdParamsValidator,
 } from '../utils';
-import { menuController } from '../controllers/menu.controller';
+import { menuController } from '../controllers';
+import { UserRole } from '../types';
 
 const router: Router = express.Router();
 
 router.post(
     '/',
     checkCurrentUser,
-    auth(ROLES_CONSTANTS.RESTAURANT),
+    auth(UserRole.RESTAURANT),
     multerUpload.single('image'),
     addMenuRequestBodyValidator,
     validateRequest,
@@ -22,28 +22,28 @@ router.post(
 
 router.get(
     '/:menuId',
+    checkCurrentUser,
     mongoIdParamsValidator('menuId'),
     validateRequest,
-    checkCurrentUser,
     menuController.getMenu,
 );
 
 router.get(
     '/restaurant/:restaurantId',
+    checkCurrentUser,
     mongoIdParamsValidator('restaurantId'),
     validateRequest,
-    checkCurrentUser,
     menuController.getMenus,
 );
 
 router.patch(
     '/:menuId',
+    checkCurrentUser,
+    auth(UserRole.RESTAURANT),
+    multerUpload.single('image'),
     mongoIdParamsValidator('menuId'),
     updateMenuRequestBodyValidator,
     validateRequest,
-    checkCurrentUser,
-    auth(ROLES_CONSTANTS.RESTAURANT),
-    multerUpload.single('image'),
     menuController.editMenu,
 );
 

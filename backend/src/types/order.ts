@@ -4,7 +4,7 @@ export interface IOrder {
     userId: string;
     restaurantId: string;
     addressId: string;
-    totalAmound: number;
+    totalAmount: number;
     status: OrderStatus;
 }
 

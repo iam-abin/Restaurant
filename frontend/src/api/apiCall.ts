@@ -23,12 +23,10 @@ const makeApiCall = async <T>(
         if (error instanceof AxiosError && error.response?.data) {
             const apiError = error.response.data as ApiErrorResponse;
             if (apiError.errors && apiError.errors.length > 0) {
-                hotToastMessage(apiError.errors[0].message, 'error');
-            } else {
-                hotToastMessage('Something went wrong', 'error');
+                throw apiError.errors[0];
             }
         } else {
-            hotToastMessage('An unexpected error occurred', 'error');
+            hotToastMessage('Something went wrong', 'error');
         }
         throw error;
     }

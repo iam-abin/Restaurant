@@ -1,5 +1,7 @@
 import { body } from 'express-validator';
-import { ROLES_CONSTANTS } from '../constants';
+import { UserRole } from '../../types';
+
+const ROLES: string[] = [UserRole.ADMIN, UserRole.RESTAURANT, UserRole.USER];
 
 export const signinRequestBodyValidator = [
     body('email')
@@ -14,10 +16,8 @@ export const signinRequestBodyValidator = [
     body('role')
         .notEmpty()
         .withMessage('Role is required')
-        .isIn([ROLES_CONSTANTS.ADMIN, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.USER])
-        .withMessage(
-            `Role must be one of ${ROLES_CONSTANTS.ADMIN}, ${ROLES_CONSTANTS.RESTAURANT}, or ${ROLES_CONSTANTS.USER}`,
-        )
+        .isIn(ROLES)
+        .withMessage(`Role must be one of ${ROLES.join(', ')}`)
         .trim()
         .escape(),
 ];
@@ -41,10 +41,8 @@ export const signupRequestBodyValidator = [
     body('role')
         .notEmpty()
         .withMessage('Role is required')
-        .isIn([ROLES_CONSTANTS.ADMIN, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.USER])
-        .withMessage(
-            `Role must be one of ${ROLES_CONSTANTS.ADMIN}, ${ROLES_CONSTANTS.RESTAURANT}, or ${ROLES_CONSTANTS.USER}`,
-        )
+        .isIn(ROLES)
+        .withMessage(`Role must be one of ${ROLES.join(', ')}`)
         .trim()
         .escape(),
     body('phone')
@@ -65,42 +63,18 @@ export const signupRequestBodyValidator = [
 ];
 
 export const googleAuthRequestBodyValidator = [
-    body('name')
+    body('credential')
         .notEmpty()
-        .withMessage('Name is required')
+        .withMessage('credential is required')
         .isString()
-        .withMessage('Name must be a string')
-        .trim()
-        .escape(),
-    body('email')
-        .notEmpty()
-        .withMessage('Email is required')
-        .isEmail()
-        .withMessage('Email must be valid')
-        .toLowerCase()
+        .withMessage('credential must be a string')
         .trim()
         .escape(),
     body('role')
         .notEmpty()
         .withMessage('Role is required')
-        .isIn([ROLES_CONSTANTS.ADMIN, ROLES_CONSTANTS.RESTAURANT, ROLES_CONSTANTS.USER])
-        .withMessage(
-            `Role must be one of ${ROLES_CONSTANTS.ADMIN}, ${ROLES_CONSTANTS.RESTAURANT}, or ${ROLES_CONSTANTS.USER}`,
-        )
-        .trim()
-        .escape(),
-    body('imageUrl')
-        .notEmpty()
-        .withMessage('ImageUrl is required')
-        .isURL()
-        .withMessage('ImageUrl is invalid')
-        .trim()
-        .escape(),
-    body('googleId')
-        .notEmpty()
-        .withMessage('googleId is required')
-        .isString()
-        .withMessage('googleId must be a string')
+        .isIn(ROLES)
+        .withMessage(`Role must be one of ${ROLES.join(', ')}`)
         .trim()
         .escape(),
 ];

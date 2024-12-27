@@ -1,17 +1,19 @@
 import { Request } from 'express';
-import multer, { Multer } from 'multer';
+import multer, { Multer, StorageEngine } from 'multer';
 import path from 'path';
 
-const storage = multer.memoryStorage(); // Store in memory instead of public folder
+const storage: StorageEngine = multer.memoryStorage(); // Store in memory instead of public folder
 
 const limits = { fileSize: 10 * 1024 * 1024 }; // 10 MB limit (adjust as needed)
+
+const allowedImageFormats: string[] = ['.jpg', '.jpeg', '.png'];
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
 const fileFilter = (req: Request, file: Express.Multer.File, cb: any) => {
     const extension = path.extname(file.originalname).toLowerCase();
     const mimeType = file.mimetype;
 
-    if (!['.jpg', '.jpeg', '.png'].includes(extension) || !mimeType.startsWith('image/')) {
+    if (!allowedImageFormats.includes(extension) || !mimeType.startsWith('image/')) {
         cb(new Error(`${extension} is unsupported file type! Only jpeg, jgp, and png are allowed.`), false);
         return;
     }

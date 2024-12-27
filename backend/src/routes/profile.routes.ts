@@ -1,25 +1,21 @@
 import express, { Router } from 'express';
-import { profileController } from '../controllers/profile.controller';
-import { ROLES_CONSTANTS, updateProfileRequestBodyValidator } from '../utils';
+import { profileController } from '../controllers';
+import { updateProfileRequestBodyValidator } from '../utils';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
+import { UserRole } from '../types';
 
 const router: Router = express.Router();
 
-router.get('/', checkCurrentUser, auth(ROLES_CONSTANTS.USER), profileController.getProfile);
+router.get('/', checkCurrentUser, auth(UserRole.USER), profileController.getProfile);
 
-router.get(
-    '/users/:page/:limit',
-    checkCurrentUser,
-    auth(ROLES_CONSTANTS.ADMIN),
-    profileController.getProfiles,
-);
+router.get('/users/:page/:limit', checkCurrentUser, auth(UserRole.ADMIN), profileController.getProfiles);
 
 router.patch(
     '/',
     checkCurrentUser,
+    auth(UserRole.USER),
     updateProfileRequestBodyValidator,
     validateRequest,
-    auth(ROLES_CONSTANTS.USER),
     profileController.editProfile,
 );
 

@@ -9,15 +9,11 @@ export class MenuRepository {
     }
 
     async findMenu(menuId: string): Promise<IMenuDocument | null> {
-        console.log(menuId);
-
-        const menu: IMenuDocument | null = await MenuModel.findById(menuId);
-        return menu;
+        return await MenuModel.findById(menuId);
     }
 
     async findMenus(restaurantId: string): Promise<IMenuDocument[]> {
-        const menu: IMenuDocument[] = await MenuModel.find({ restaurantId });
-        return menu;
+        return await MenuModel.find({ restaurantId });
     }
 
     async update(menuId: string, updatedData: Partial<IMenu>): Promise<IMenuDocument | null> {
@@ -25,5 +21,9 @@ export class MenuRepository {
             new: true,
         });
         return menu;
+    }
+
+    async countRestaurantMenus(restaurantId: string): Promise<number> {
+        return MenuModel.countDocuments({ restaurantId });
     }
 }

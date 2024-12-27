@@ -1,4 +1,4 @@
-import makeApiCall from '../apiCalls';
+import makeApiCall from '../apiCall';
 import authApiUrls from '../urls/auth';
 import { IResponse } from '../../types/api';
 import { IGoogleAuth, IOtp, IResetPasswordRequest, ISignin, ISignup } from '../../types';
@@ -12,7 +12,7 @@ export const signupApi = async (data: ISignup): Promise<IResponse> => {
     return await makeApiCall('post', authApiUrls.signupUrl, data);
 };
 
-export const googleAuthApi = async (data: Omit<IGoogleAuth, 'picture'>): Promise<IResponse> => {
+export const googleAuthApi = async (data: IGoogleAuth): Promise<IResponse> => {
     return await makeApiCall('post', authApiUrls.googleAuthUrl, data);
 };
 

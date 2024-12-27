@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import AddMenuModal from '../../components/modal/AddMenuModal';
+import { RestaurantMenu } from '@mui/icons-material'; // MUI Icon
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
-import MenuCard from '../../components/cards/MenuCard';
+
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchMenus } from '../../redux/thunk/menusThunk';
 import { IMenu, IRestaurantResponse } from '../../types';
-
-import { RestaurantMenu } from '@mui/icons-material'; // MUI Icon
-import { useNavigate } from 'react-router-dom';
+import AddMenuModal from '../../components/modal/AddMenuModal';
+import MenuCard from '../../components/cards/MenuCard';
 
 const Menu = () => {
     const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);

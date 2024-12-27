@@ -43,7 +43,6 @@ export class CartService {
         if (userId !== (cartItem.userId as IUserDocument)._id.toString())
             throw new ForbiddenError('You cannot modify others cart item');
         const updatedCartItem: ICartDocument | null = await this.cartRepository.update(cartItemId, quantity);
-        console.log('after update updatedCartItem ', updatedCartItem);
 
         return updatedCartItem;
     }
@@ -51,8 +50,6 @@ export class CartService {
     public async removeCartItem(cartItemId: string, userId: string): Promise<ICartDocument> {
         const cartItem: ICartDocument | null = await this.cartRepository.findById(cartItemId);
         if (!cartItem) throw new NotFoundError('Cart item not found');
-        console.log(cartItem);
-        console.log(userId);
 
         if (userId !== (cartItem.userId as IUserDocument)._id.toString())
             throw new ForbiddenError('You cannot remove others cart item');

@@ -1,6 +1,6 @@
 import { ClientSession } from 'mongoose';
 import { IProfileDocument, ProfileModel } from '../model';
-import { IProfile } from '../../types';
+import { CountByDay, IProfile } from '../../types';
 
 export class ProfileRepository {
     async create(
@@ -33,5 +33,38 @@ export class ProfileRepository {
 
     async countProfiles(): Promise<number> {
         return await ProfileModel.countDocuments();
+    }
+
+    async countLast7DaysCreatedProfiles(startDate: Date): Promise<CountByDay[]> {
+        const counts: CountByDay[] = await ProfileModel.aggregate([
+            {
+                $match: {
+                    createdAt: { $gte: startDate }, // Only include documents from the last 7 days
+                },
+            },
+            {
+                $project: {
+                    date: {
+                        $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }, // Format date to 'YYYY-MM-DD'
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: '$date', // Group by formatted date
+                    count: { $sum: 1 }, // Count the number of users for each date
+                },
+            },
+            {
+                $addFields: { date: '$_id' }, // Copy `_id` to `date`
+            },
+            {
+                $project: { _id: 0 }, // Remove the `_id` field
+            },
+            {
+                $sort: { date: 1 }, // Sort by date in ascending order
+            },
+        ]);
+        return counts;
     }
 }

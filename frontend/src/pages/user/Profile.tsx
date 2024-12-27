@@ -1,29 +1,25 @@
-import { Avatar, Box, Button, Tooltip } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
-import LoaderCircle from '../../components/Loader/LoaderCircle';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import EmailIcon from '@mui/icons-material/Email';
-import FlagIcon from '@mui/icons-material/Flag';
-import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
+import { Avatar, Box, Button, Tooltip } from '@mui/material';
+import { Add, Email, Flag, LocationOn, LocationSearching } from '@mui/icons-material';
+
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchUserProfile, updateUserProfile } from '../../redux/thunk/profileThunk';
 import { IAddress } from '../../types';
+import LoaderCircle from '../../components/Loader/LoaderCircle';
 
 const Profile = () => {
-    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [selectedProfilePicture, setSelectedProfilePicture] = useState<string>('');
     const dispatch = useAppDispatch();
 
     const { authData } = useAppSelector((state) => state.authReducer);
-    const { myProfile } = useAppSelector((state) => state.profileReducer);
+    const { myProfile, status } = useAppSelector((state) => state.profileReducer);
     console.log('authData ', authData);
     console.log('myProfile ', myProfile);
 
     useEffect(() => {
         dispatch(fetchUserProfile());
     }, []);
-
+    const isLoading: boolean = status === 'loading';
     const imageRef = useRef<HTMLInputElement | null>(null);
     const [profileData, setProfileData] = useState({
         name: authData?.name || '',
@@ -57,10 +53,8 @@ const Profile = () => {
 
     const updateProfileHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setIsLoading(true);
         console.log({ ...profileData, image: selectedProfilePicture });
         dispatch(updateUserProfile({ ...profileData, image: selectedProfilePicture }));
-        setIsLoading(false);
         setSelectedProfilePicture('');
     };
 
@@ -104,7 +98,7 @@ const Profile = () => {
                                 onChange={fileChangeHandler}
                                 className="hidden bg-inherit"
                             />
-                            <AddIcon
+                            <Add
                                 className="hover:cursor-pointer text-white w-10 h-10"
                                 onClick={() => imageRef.current?.click()}
                             />
@@ -123,7 +117,7 @@ const Profile = () => {
             <div className="grid md:grid-cols-4 md:gap-2 gap-3 my-10">
                 <Tooltip title="Cannot modify email field">
                     <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
-                        <EmailIcon className="text-gray-500" />
+                        <Email className="text-gray-500" />
                         <div className="w-full">
                             <label>Email</label>
                             <span className="w-full block text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none">
@@ -133,7 +127,7 @@ const Profile = () => {
                     </div>
                 </Tooltip>
                 <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
-                    <LocationOnIcon className="text-gray-500" />
+                    <LocationOn className="text-gray-500" />
                     <div className="w-full">
                         <label>
                             Address{' '}
@@ -149,7 +143,7 @@ const Profile = () => {
                     </div>
                 </div>
                 <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
-                    <LocationSearchingIcon className="text-gray-500" />
+                    <LocationSearching className="text-gray-500" />
                     <div className="w-full">
                         <label>
                             City
@@ -164,7 +158,7 @@ const Profile = () => {
                     </div>
                 </div>
                 <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
-                    <FlagIcon className="text-gray-500" />
+                    <Flag className="text-gray-500" />
                     <div className="w-full">
                         <label>
                             Country

@@ -1,14 +1,16 @@
 import express, { Router } from 'express';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
-import { ROLES_CONSTANTS, searchCuisineValidator } from '../utils';
-import { cuisineController } from '../controllers/cuisine.controller';
+import { searchCuisineValidator } from '../utils';
+import { cuisineController } from '../controllers';
+import { UserRole } from '../types';
 
 const router: Router = express.Router();
+router.get('/', checkCurrentUser, auth(UserRole.USER), cuisineController.getCuisines);
 
 router.get(
     '/search',
     checkCurrentUser,
-    auth(ROLES_CONSTANTS.RESTAURANT),
+    auth(UserRole.RESTAURANT),
     searchCuisineValidator,
     validateRequest,
     cuisineController.searchCuisine,

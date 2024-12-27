@@ -1,8 +1,9 @@
 import { ChangeEvent, useState } from 'react';
-import SearchIcon from '@mui/icons-material/Search';
-import { Button } from '@mui/material';
-import PizzaImage from '../../assets/hero_pizza.png';
 import { useNavigate } from 'react-router-dom';
+import { Search } from '@mui/icons-material';
+import { Button } from '@mui/material';
+
+import PizzaImage from '../../assets/hero_pizza.png';
 
 const Landing = () => {
     const [searchText, setSearchText] = useState<string>('');
@@ -27,7 +28,7 @@ const Landing = () => {
                 </div>
                 <div className="relative flex gap-1">
                     <div className="w-full">
-                        <SearchIcon className="absolute text-gray-500 inset-y-3 left-2" />
+                        <Search className="absolute text-gray-500 inset-y-3 left-2" />
                         <input
                             type="text"
                             value={searchText}

@@ -1,14 +1,10 @@
 import { useState, KeyboardEvent, MouseEvent, Fragment } from 'react';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import LunchDiningIcon from '@mui/icons-material/LunchDining';
-import { IMenuItems2 } from '../navbar/NavBar';
 import { Link } from 'react-router-dom';
+
+import { Box, Drawer, Button, List, Divider, ListItem, ListItemButton } from '@mui/material';
+import { LunchDining } from '@mui/icons-material';
+
+import { IMenuItems2 } from '../navbar/NavBar';
 
 type Anchor = 'right';
 
@@ -67,7 +63,7 @@ export default function RightDrawer({
             {(['right'] as const).map((anchor) => (
                 <Fragment key={anchor}>
                     <Button onClick={toggleDrawer(anchor, true)}>
-                        <LunchDiningIcon />
+                        <LunchDining />
                     </Button>
                     <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
                         {list(anchor)}

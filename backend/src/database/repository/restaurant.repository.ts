@@ -1,5 +1,5 @@
 import mongoose, { ClientSession } from 'mongoose';
-import { IRestaurant, IRestaurantResponse, ISearchResult } from '../../types';
+import { CountByDay, IRestaurant, IRestaurantResponse, ISearchResult } from '../../types';
 import { IRestaurantDocument, RestaurantModel } from '../model';
 
 export class RestaurantRepository {
@@ -12,8 +12,7 @@ export class RestaurantRepository {
     }
 
     async findRestaurants(skip: number, limit: number): Promise<IRestaurantDocument[]> {
-        const restaurants = await RestaurantModel.find().skip(skip).limit(limit).populate('ownerId');
-        return restaurants;
+        return await RestaurantModel.find().skip(skip).limit(limit).populate('ownerId');
     }
 
     async findRestaurant(restaurantId: string): Promise<IRestaurantResponse | null> {
@@ -160,9 +159,6 @@ export class RestaurantRepository {
                     as: 'restaurantCuisines',
                 },
             },
-            // {
-            //     $unwind: { path: '$restaurantCuisines', preserveNullAndEmptyArrays: true },
-            // },
             {
                 $lookup: {
                     from: 'cuisines',
@@ -230,5 +226,38 @@ export class RestaurantRepository {
 
     async countRestaurants(): Promise<number> {
         return RestaurantModel.countDocuments();
+    }
+
+    async countLast7DaysCreatedRestaurants(startDate: Date): Promise<CountByDay[]> {
+        const counts: CountByDay[] = await RestaurantModel.aggregate([
+            {
+                $match: {
+                    createdAt: { $gte: startDate }, // Only include documents from the last 7 days
+                },
+            },
+            {
+                $project: {
+                    date: {
+                        $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }, // Format date to 'YYYY-MM-DD'
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: '$date', // Group by formatted date
+                    count: { $sum: 1 }, // Count the number of restaurants for each date
+                },
+            },
+            {
+                $addFields: { date: '$_id' }, // Copy `_id` to `date`
+            },
+            {
+                $project: { _id: 0 }, // Remove the `_id` field
+            },
+            {
+                $sort: { date: 1 }, // Sort by date in ascending order
+            },
+        ]);
+        return counts;
     }
 }

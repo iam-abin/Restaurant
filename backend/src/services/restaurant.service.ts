@@ -2,7 +2,6 @@ import { autoInjectable } from 'tsyringe';
 import { IRestaurantResponse, IRestaurantsData, IRestaurantUpdate, ISearchResult } from '../types';
 import {
     AddressRepository,
-    CuisineRepository,
     RestaurantCuisineRepository,
     RestaurantRepository,
     UserRepository,
@@ -33,9 +32,8 @@ export class RestaurantService {
         const restaurant: IRestaurantDocument | null =
             await this.restaurantRepository.findMyRestaurant(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
-        const cuisines: IRestaurantCuisineDocument[] = await this.restaurantCuisineRepository.find(
-            restaurant?._id.toString(),
-        );
+        const cuisines: IRestaurantCuisineDocument[] =
+            await this.restaurantCuisineRepository.findRestaurantCuisines(restaurant?._id.toString());
         return { restaurant, cuisines };
     }
 
@@ -114,8 +112,6 @@ export class RestaurantService {
         let cuisinesArray: string[] = selectedCuisines.split(',');
         if (cuisinesArray.length) {
             cuisinesArray = cuisinesArray.filter((cuisine: string) => cuisine); // It avoid falsy values
-            console.log(cuisinesArray, ' cuisinesArray');
-            console.log(cuisinesArray.length, ' cuisinesArray');
         }
 
         // const cuisinesArray: string[] = selectedCuisines.split(', ').filter((cuisine: string) => cuisine); // It avoid falsy values

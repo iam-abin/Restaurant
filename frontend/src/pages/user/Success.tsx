@@ -1,5 +1,5 @@
-import { Button, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { Button, Typography } from '@mui/material';
 
 const Success = () => {
     return (

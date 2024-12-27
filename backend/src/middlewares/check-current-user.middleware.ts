@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { ForbiddenError, NotAuthorizedError, NotFoundError } from '../errors';
-import { IJwtPayload, verifyJwtAccessToken } from '../utils';
+import { verifyJwtAccessToken } from '../utils';
 import { UserRepository } from '../database/repository';
+import { IJwtPayload } from '../types';
+import { IUserDocument } from '../database/model';
 
 // Extend Express's Request interface globally
 declare global {
@@ -17,11 +19,11 @@ const userRepository = new UserRepository();
 // Middleware to get current user from token and assign it to req.currentUser
 export const checkCurrentUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const accessToken = req.cookies?.jwtToken;
+        const accessToken: string = req.cookies?.jwtToken;
         if (!accessToken) return next();
 
         const payload = verifyJwtAccessToken(accessToken);
-        const user = await userRepository.findUserById(payload.userId);
+        const user: IUserDocument | null = await userRepository.findUserById(payload.userId);
         if (!user) throw new NotFoundError('User Not found');
         if (!user.isVerified) throw new ForbiddenError('Your are not verified');
         if (user.isBlocked) throw new ForbiddenError('You are a blocked user');

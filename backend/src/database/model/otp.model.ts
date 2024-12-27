@@ -4,11 +4,12 @@ import { omitDocFields } from '../../utils';
 
 // Use Omit to exclude 'string type' userId from IOtpToken and redefine it in IOtpTokenDocument
 export interface IOtpTokenDocument extends Document, Omit<IOtpToken, 'userId'> {
+    _id: Types.ObjectId;
     userId: Types.ObjectId;
     createdAt: Date;
 }
 
-// Here can also store token
+// Here we store otp as well as token
 const otpTokenSchema = new Schema<IOtpTokenDocument>(
     {
         userId: {

@@ -85,7 +85,7 @@ export class OrderRepository {
                     _id: '$_id', // Group by order ID
                     restaurantDetails: { $first: '$restaurantDetails' },
                     status: { $first: '$status' }, // Delivery status
-                    totalAmound: { $first: '$totalAmound' }, // Preserve totalAmound
+                    totalAmount: { $first: '$totalAmount' }, // Preserve totalAmount
                     // imageUrl: { $first: '$menuItemDetails.imageUrl' }, // Representative image
                     address: { $first: '$address' }, // Preserve address
                     orderedItems: {
@@ -106,7 +106,7 @@ export class OrderRepository {
                     _id: 1, // Include Order ID
                     restaurantDetails: { name: '$restaurantDetails.name', email: '$restaurantDetails.email' }, // Include only the email field
                     status: 1,
-                    totalAmound: 1,
+                    totalAmount: 1,
                     address: 1,
                     orderedItems: 1, // Array of grouped ordered items
                     createdAt: 1,
@@ -177,7 +177,7 @@ export class OrderRepository {
                     _id: '$_id', // Group by order ID
                     userDetails: { $first: '$userDetails' }, // Preserve user details
                     status: { $first: '$status' }, // Preserve status
-                    totalAmound: { $first: '$totalAmound' }, // Preserve totalAmound
+                    totalAmount: { $first: '$totalAmount' }, // Preserve totalAmount
                     address: { $first: '$address' }, // Preserve address
                     orderedItems: {
                         $push: {
@@ -197,7 +197,7 @@ export class OrderRepository {
                     _id: 1, // Include Order ID
                     userDetails: { name: '$userDetails.name', email: '$userDetails.email' }, // Include only the email field
                     status: 1,
-                    totalAmound: 1,
+                    totalAmount: 1,
                     address: 1,
                     orderedItems: 1, // Array of grouped ordered items
                     createdAt: 1,
@@ -251,13 +251,13 @@ export class OrderRepository {
 
     // menuItemPrice
 
-    async totalOrderedPrice(): Promise<number> {
+    async findTotalOrderedPrice(): Promise<number> {
         const total = await OrderModel.aggregate([
             {
                 $group: {
                     _id: null,
                     totalSellPrice: {
-                        $sum: '$totalAmound',
+                        $sum: '$totalAmount',
                     },
                 },
             },
@@ -265,12 +265,32 @@ export class OrderRepository {
         return total.length ? total[0].totalSellPrice : 0;
     }
 
-    async percentageCommitionAmound(percentageDecimal: number): Promise<number> {
+    async findRestaurantTotalOrdersPrice(restaurantId: string): Promise<number> {
+        const total = await OrderModel.aggregate([
+            {
+                $match: {
+                    restaurantId: new mongoose.Types.ObjectId(restaurantId),
+                    status: 'delivered',
+                },
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalSellPrice: {
+                        $sum: '$totalAmount',
+                    },
+                },
+            },
+        ]);
+        return total.length ? total[0].totalSellPrice : 0;
+    }
+
+    async findPercentageCommitionAmount(percentageDecimal: number): Promise<number> {
         const result = await OrderModel.aggregate([
             {
                 $project: {
                     // Multiply totalAmount by the percentage
-                    percentageAmount: { $multiply: ['$totalAmound', percentageDecimal] },
+                    percentageAmount: { $multiply: ['$totalAmount', percentageDecimal] },
                 },
             },
             {
