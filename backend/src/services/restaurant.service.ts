@@ -1,12 +1,16 @@
 import { autoInjectable } from 'tsyringe';
-import { IRestaurantResponse, IRestaurantsData, IRestaurantUpdate, ISearchResult } from '../types';
+import { IRestaurantResponse, IRestaurantResult, IRestaurantsData, IRestaurantUpdate, ISearchResult } from '../types';
 import {
     AddressRepository,
+    RatingRepository,
     RestaurantCuisineRepository,
     RestaurantRepository,
     UserRepository,
 } from '../database/repository';
-import { IAddressDocument, IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
+import {
+    IAddressDocument,
+    IRestaurantDocument,
+} from '../database/model';
 import { uploadImageOnCloudinary } from '../utils';
 import { NotFoundError } from '../errors';
 import mongoose from 'mongoose';
@@ -19,22 +23,34 @@ export class RestaurantService {
         private readonly addressRepository: AddressRepository,
         private readonly restaurantRepository: RestaurantRepository,
         private readonly restaurantCuisineRepository: RestaurantCuisineRepository,
+        private readonly ratingRepository: RatingRepository,
     ) {}
 
-    public async getARestaurant(restaurantId: string): Promise<IRestaurantResponse | null> {
+    public async getARestaurant(restaurantId: string, userId: string): Promise<IRestaurantResult | null> {
         const restaurant: IRestaurantResponse | null =
             await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
-        return restaurant;
+
+        const [restaurantRating, restaurantRatingsCount, myRating] = await Promise.all([
+            this.ratingRepository.findRestaurantRating(restaurantId),
+            this.ratingRepository.countRestaurantRatings(restaurant._id.toString()),
+            this.ratingRepository.findUserRating(restaurant._id.toString(), userId),
+        ]);
+
+        return { restaurant, restaurantRating, restaurantRatingsCount, myRating };
     }
 
     public async getMyRestaurant(userId: string): Promise<RestaurantWithCuisines> {
         const restaurant: IRestaurantDocument | null =
             await this.restaurantRepository.findMyRestaurant(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
-        const cuisines: IRestaurantCuisineDocument[] =
-            await this.restaurantCuisineRepository.findRestaurantCuisines(restaurant?._id.toString());
-        return { restaurant, cuisines };
+
+        const [cuisines, restaurantRating, restaurantRatingsCount] = await Promise.all([
+            this.restaurantCuisineRepository.findRestaurantCuisines(restaurant._id.toString()),
+            this.ratingRepository.findRestaurantRating(restaurant._id.toString()),
+            this.ratingRepository.countRestaurantRatings(restaurant._id.toString()),
+        ]);
+        return { restaurant, cuisines, restaurantRating, restaurantRatingsCount };
     }
 
     public async getRestaurants(page: number, limit: number): Promise<IRestaurantsData> {

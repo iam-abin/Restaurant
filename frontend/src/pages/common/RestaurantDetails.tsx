@@ -3,13 +3,14 @@ import { Link, useParams } from 'react-router-dom';
 import { Badge, Chip, IconButton, Typography } from '@mui/material';
 import { ShoppingCart, TimerOutlined } from '@mui/icons-material';
 
-import { ICuisine, IMenu, IRestaurantResponse2 } from '../../types';
-import { getARestaurantApi } from '../../api/apiMethods';
+import { ICuisine, IMenu, IRestaurantResponse2, IRestaurantResult } from '../../types';
+import { changeRatingApi, getARestaurantApi } from '../../api/apiMethods';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchCartItems } from '../../redux/thunk/cartThunk';
 import { ROLES_CONSTANTS } from '../../utils/constants';
 import MenuCardSkeleton from '../../components/shimmer/MenuCardSkeleton';
 import MenuCard from '../../components/cards/MenuCard';
+import StarRating from '../../components/rating/StarRating';
 
 const RestaurantDetails = () => {
     const params = useParams();
@@ -19,11 +20,30 @@ const RestaurantDetails = () => {
     const cartData = useAppSelector((state) => state.cartReducer.cartData);
     const authData = useAppSelector((state) => state.authReducer.authData);
     const { restaurantId } = params;
+    const [ratingValue, setRatingValue] = useState<number>(0);
+    const [restaurantRatingValue, setRestaurantRatingValue] = useState<number>(0);
+    const [restaurantRatingCount, setRestaurantRatingCount] = useState<number>(0);
+
+    const handleRatingChange = async (
+        event: React.SyntheticEvent<Element, Event>,
+        value: number | null,
+    ): Promise<void> => {
+        setRatingValue(value ?? 0);
+
+        console.log('value ', value);
+        console.log('state ratingValue', ratingValue);
+
+        const response = await changeRatingApi({ restaurantId: restaurant?._id!, rating: value ?? 0 });
+        console.log('rating api call response ', response);
+    };
+
     useEffect(() => {
         (async () => {
             setIsLoading(true);
             const response = await getARestaurantApi(restaurantId!);
-            setRestaurant(response.data as IRestaurantResponse2);
+            setRestaurant((response.data as IRestaurantResult).restaurant as IRestaurantResponse2);
+            setRestaurantRatingValue((response.data as IRestaurantResult).restaurantRating);
+            setRestaurantRatingCount((response.data as IRestaurantResult).restaurantRatingsCount);
             setIsLoading(false);
         })();
     }, []);
@@ -73,6 +93,14 @@ const RestaurantDetails = () => {
                                     </Typography>
                                 </h1>
                             </div>
+                        </div>
+                        <div className='flex'>
+                            <StarRating
+                                ratingValue={restaurantRatingValue}
+                                isReadOnly={true}
+                                handleRatingChange={handleRatingChange}
+                            />{' '}
+                           <span> of {restaurantRatingCount} ratings</span>
                         </div>
                     </div>
                 </div>

@@ -3,13 +3,15 @@ import { container } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
 import { IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
 import { RestaurantService } from '../services';
-import { IRestaurantResponse, IRestaurantsData, IRestaurantUpdate, ISearchResult } from '../types';
+import { IRestaurantResult, IRestaurantsData, IRestaurantUpdate, ISearchResult } from '../types';
 
 const restaurantService = container.resolve(RestaurantService);
 
 export type RestaurantWithCuisines = {
     restaurant: IRestaurantDocument | null;
     cuisines: IRestaurantCuisineDocument[];
+    restaurantRating: number;
+     restaurantRatingsCount: number;
 };
 
 class RestaurantController {
@@ -32,7 +34,8 @@ class RestaurantController {
 
     public async getARestaurant(req: Request, res: Response): Promise<void> {
         const { restaurantId } = req.params;
-        const restaurant: IRestaurantResponse | null = await restaurantService.getARestaurant(restaurantId);
+        const { userId } = req.body;
+        const restaurant: IRestaurantResult | null = await restaurantService.getARestaurant(restaurantId, userId );
         res.status(200).json(createSuccessResponse('Restaurant fetched successfully', restaurant));
     }
 

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IRestaurantDocument } from '../database/model';
+import { IRatingDocument, IRestaurantDocument } from '../database/model';
 
 export interface IRestaurant {
     ownerId: string;
@@ -27,6 +27,13 @@ export interface ISearchResult {
     restaurantName: string;
     cuisines: string[];
     _id: mongoose.Schema.Types.ObjectId;
+}
+
+export interface IRestaurantResult {
+    restaurant: IRestaurantResponse
+    restaurantRating: number;
+    restaurantRatingsCount: number;
+    myRating: IRatingDocument | null;
 }
 
 export interface IRestaurantResponse {

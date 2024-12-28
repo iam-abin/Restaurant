@@ -1,5 +1,6 @@
 import { IAddress } from './address';
 import { ICuisine, ICuisineResponse } from './cuisine';
+import { IRating } from './rating';
 import { IUser } from './user';
 
 export interface IRestaurant {
@@ -41,6 +42,13 @@ export interface ISearchResult {
     country: string;
     restaurantName: string;
     cuisines: string[];
+}
+
+export interface IRestaurantResult {
+    restaurant: IRestaurantResponse2
+    restaurantRating: number;
+    restaurantRatingsCount: number;
+    myRating: IRating | null;
 }
 
 export interface IRestaurantResponse2 {

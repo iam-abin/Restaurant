@@ -3,7 +3,7 @@ import { IRatingDocument, RatingModel } from '../model/rating.model';
 import mongoose, { DeleteResult } from 'mongoose';
 
 export class RatingRepository {
-    async findRating(restaurantId: string, userId: string): Promise<IRatingDocument | null> {
+    async findUserRating(restaurantId: string, userId: string): Promise<IRatingDocument | null> {
         return await RatingModel.findOne({ restaurantId, userId });
     }
 
@@ -20,7 +20,7 @@ export class RatingRepository {
             },
         ]);
 
-        return result[0].averageRating;
+        return result.length > 0 ? result[0].averageRating : 0;
     }
 
     async updateRating({ userId, restaurantId, rating }: IRating): Promise<IRatingDocument | null> {
@@ -31,7 +31,7 @@ export class RatingRepository {
         );
     }
 
-    async countRestaurantRating(restaurantId: string): Promise<number> {
+    async countRestaurantRatings(restaurantId: string): Promise<number> {
         return await RatingModel.countDocuments({ restaurantId });
     }
 
