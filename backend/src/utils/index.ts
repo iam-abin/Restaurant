@@ -17,6 +17,7 @@ export * from './validation/order.validation';
 export * from './validation/otp.validation';
 export * from './validation/password.validation';
 export * from './validation/profile.validaton';
+export * from './validation/rating.validation';
 export * from './validation/restaurant.validation';
 export * from './validation/user.validation';
 export * from './winston-logger';

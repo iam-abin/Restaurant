@@ -5,4 +5,5 @@ export * from './dashboard.routes';
 export * from './menu.routes';
 export * from './order.routes';
 export * from './profile.routes';
+export * from './rating.routes';
 export * from './restaurant.routes';

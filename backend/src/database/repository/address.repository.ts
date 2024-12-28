@@ -1,6 +1,6 @@
 import { ClientSession } from 'mongoose';
 import { IAddressDocument, AddressModel } from '../model';
-import { IAddress, IProfile } from '../../types';
+import { IAddress } from '../../types';
 
 export class AddressRepository {
     async findById(addressId: string): Promise<IAddressDocument | null> {

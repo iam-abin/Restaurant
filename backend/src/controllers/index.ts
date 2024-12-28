@@ -5,4 +5,5 @@ export * from './dashboard.controller';
 export * from './menu.controller';
 export * from './order.controller';
 export * from './profile.controller';
+export * from './rating.controller';
 export * from './restaurant.controller';

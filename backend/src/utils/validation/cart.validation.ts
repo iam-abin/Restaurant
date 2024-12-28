@@ -1,4 +1,4 @@
-import { body, param } from 'express-validator';
+import { body } from 'express-validator';
 import { mongoIdBodyValidator } from './mongodb-id.validation';
 
 export const addToCartRequestBodyValidator = [...mongoIdBodyValidator(['itemId', 'restaurantId'])];

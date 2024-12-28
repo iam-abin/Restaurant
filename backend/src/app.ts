@@ -6,7 +6,6 @@ import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
-
 import { NotFoundError } from './errors';
 import { errorHandler } from './middlewares';
 import {
@@ -17,6 +16,7 @@ import {
     menuRoutes,
     orderRoutes,
     profileRoutes,
+    ratingRoutes,
     restaurantRoutes,
 } from './routes';
 import { appConfig } from './config/app.config';
@@ -52,6 +52,7 @@ app.use(`${appConfig.API_PREFIX}/dashboard`, dashboardRoutes);
 app.use(`${appConfig.API_PREFIX}/menu`, menuRoutes);
 app.use(`${appConfig.API_PREFIX}/order`, orderRoutes);
 app.use(`${appConfig.API_PREFIX}/profile`, profileRoutes);
+app.use(`${appConfig.API_PREFIX}/rating`, ratingRoutes);
 app.use(`${appConfig.API_PREFIX}/restaurant`, restaurantRoutes);
 
 app.all('*', (req: Request, res: Response): never => {
