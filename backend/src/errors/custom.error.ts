@@ -7,6 +7,7 @@ export abstract class CustomError extends Error {
     }
 
     abstract serializeErrors(): {
+        success: boolean;
         message: string;
         field?: string; // To show form validation error fields
     }[];
