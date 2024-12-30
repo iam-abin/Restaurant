@@ -41,8 +41,10 @@ const appConfig: Readonly<IAppConfig> = Object.freeze({
     LOG_FILE_PATH: 'error.log',
     JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET!,
     JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET!,
-    JWT_ACCESS_EXPIRY_TIME: '3h',
-    JWT_REFRESH_EXPIRY_TIME: '7d',
+    JWT_ACCESS_EXPIRY_TIME: '1m',
+    JWT_REFRESH_EXPIRY_TIME: '2m',
+    // JWT_ACCESS_EXPIRY_TIME: '3h',
+    // JWT_REFRESH_EXPIRY_TIME: '7d',
 
     COOKIE_JWT_ACCESS_EXPIRY_TIME: 3 * 60 * 60 * 1000, // Convert hours to milliseconds (3 hour),
     COOKIE_JWT_REFRESH_EXPIRY_TIME: 7 * 24 * 60 * 60 * 1000, // Convert days to milliseconds (7 days)
