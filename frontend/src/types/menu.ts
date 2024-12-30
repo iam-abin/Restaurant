@@ -3,6 +3,7 @@ export interface IMenu {
     name: string;
     description: string;
     price: number;
+    salePrice?: number | undefined;
     imageUrl: string;
     restaurantId: string;
     isClosed: boolean;

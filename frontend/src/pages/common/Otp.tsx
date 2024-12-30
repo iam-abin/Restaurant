@@ -13,9 +13,7 @@ const Otp = () => {
     const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const location = useLocation();
-    const { userId, role } = location?.state;
-    console.log('userId ', userId);
-    console.log('role ', role);
+    const { userId, role } = location.state;
 
     const isUser = role === ROLES_CONSTANTS.USER;
     const isRestaurant = role === ROLES_CONSTANTS.RESTAURANT;

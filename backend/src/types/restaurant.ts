@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IRatingDocument, IRestaurantDocument } from '../database/model';
+import { IRestaurantDocument } from '../database/model';
 
 export interface IRestaurant {
     ownerId: string;
@@ -30,10 +30,10 @@ export interface ISearchResult {
 }
 
 export interface IRestaurantResult {
-    restaurant: IRestaurantResponse
+    restaurant: IRestaurantResponse;
     restaurantRating: number;
     restaurantRatingsCount: number;
-    myRating: IRatingDocument | null;
+    myRating: number;
 }
 
 export interface IRestaurantResponse {

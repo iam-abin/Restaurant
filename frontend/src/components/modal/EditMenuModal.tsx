@@ -41,8 +41,8 @@ export default function EditMenuModal({
     const [input, setInput] = useState<MenuFormSchema>({
         name: menu.name,
         description: menu.description,
-        // cuisine: menu.cuisine,
         price: menu.price,
+        salePrice: menu.salePrice,
         image: undefined,
     });
 
@@ -53,6 +53,7 @@ export default function EditMenuModal({
         const inputData = {
             ...input,
             price: input.price ? Number(input.price) : undefined,
+            salePrice: input.salePrice ? Number(input.salePrice) : undefined,
         };
 
         const result = menuSchema.safeParse(inputData);
@@ -66,6 +67,7 @@ export default function EditMenuModal({
             formData.append('name', inputData.name);
             formData.append('description', inputData.description);
             formData.append('price', inputData.price!.toString());
+            formData.append('salePrice', input.salePrice!.toString());
             if (inputData.image) formData.append('image', inputData.image);
 
             const response: IResponse = await editMenuApi(menu._id.toString(), formData);
@@ -156,6 +158,18 @@ export default function EditMenuModal({
                             placeholder="Enter menu price"
                         />
                         {errors.price && <p className="text-sm text-red-500 mt-1">{errors.price}</p>}
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Sale price</label>
+                        <input
+                            className="h-10 w-full bg-gray-100 border border-gray-300 rounded-lg px-3"
+                            type="text"
+                            name="salePrice"
+                            value={input.salePrice}
+                            onChange={changeEventHandler}
+                            placeholder="Enter menu sale price"
+                        />
+                        {errors.salePrice && <p className="text-sm text-red-500 mt-1">{errors.salePrice}</p>}
                     </div>
                     <div>
                         <label className="block text-sm font-medium mb-1">Upload Image</label>

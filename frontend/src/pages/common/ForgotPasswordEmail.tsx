@@ -51,16 +51,16 @@ const ForgotPasswordEmail = () => {
         try {
             setIsLoading(true);
             const response: IResponse = await ForgotPasswordEmailApi({ email });
-            const userData = response.data as IUser
+            const userData = response.data as IUser;
             if (userData) {
                 hotToastMessage(response.message, 'success');
                 setEmail('');
-                navigate('/forgot-password/otp',{
-                    state:{userId: userData._id, role: userData.role}
+                navigate('/forgot-password/otp', {
+                    state: { userId: userData._id, role: userData.role },
                 });
             }
-        }catch(error: unknown){
-            hotToastMessage((error as Error).message, 'error')
+        } catch (error: unknown) {
+            hotToastMessage((error as Error).message, 'error');
         } finally {
             setIsLoading(false);
         }

@@ -1,5 +1,11 @@
 import { autoInjectable } from 'tsyringe';
-import { IRestaurantResponse, IRestaurantResult, IRestaurantsData, IRestaurantUpdate, ISearchResult } from '../types';
+import {
+    IRestaurantResponse,
+    IRestaurantResult,
+    IRestaurantsData,
+    IRestaurantUpdate,
+    ISearchResult,
+} from '../types';
 import {
     AddressRepository,
     RatingRepository,
@@ -7,10 +13,7 @@ import {
     RestaurantRepository,
     UserRepository,
 } from '../database/repository';
-import {
-    IAddressDocument,
-    IRestaurantDocument,
-} from '../database/model';
+import { IAddressDocument, IRestaurantDocument } from '../database/model';
 import { uploadImageOnCloudinary } from '../utils';
 import { NotFoundError } from '../errors';
 import mongoose from 'mongoose';
@@ -37,7 +40,7 @@ export class RestaurantService {
             this.ratingRepository.findUserRating(restaurant._id.toString(), userId),
         ]);
 
-        return { restaurant, restaurantRating, restaurantRatingsCount, myRating };
+        return { restaurant, restaurantRating, restaurantRatingsCount, myRating: myRating?myRating.rating:0 };
     }
 
     public async getMyRestaurant(userId: string): Promise<RestaurantWithCuisines> {

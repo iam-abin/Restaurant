@@ -11,7 +11,7 @@ export type RestaurantWithCuisines = {
     restaurant: IRestaurantDocument | null;
     cuisines: IRestaurantCuisineDocument[];
     restaurantRating: number;
-     restaurantRatingsCount: number;
+    restaurantRatingsCount: number;
 };
 
 class RestaurantController {
@@ -34,8 +34,11 @@ class RestaurantController {
 
     public async getARestaurant(req: Request, res: Response): Promise<void> {
         const { restaurantId } = req.params;
-        const { userId } = req.body;
-        const restaurant: IRestaurantResult | null = await restaurantService.getARestaurant(restaurantId, userId );
+        const { userId } = req.currentUser!;
+        const restaurant: IRestaurantResult | null = await restaurantService.getARestaurant(
+            restaurantId,
+            userId,
+        );
         res.status(200).json(createSuccessResponse('Restaurant fetched successfully', restaurant));
     }
 

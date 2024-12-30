@@ -58,8 +58,8 @@ export default function CheckoutReviewModal({
         try {
             const response = await checkoutOrderApi({ restaurantId });
             window.location.href = (response.data as ICheckoutResponse).stripePaymentUrl;
-        }catch(error: unknown){
-            hotToastMessage((error as Error).message, 'error')
+        } catch (error: unknown) {
+            hotToastMessage((error as Error).message, 'error');
         } finally {
             setIsLoading(false);
         }

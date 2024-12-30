@@ -11,6 +11,7 @@ import { ROLES_CONSTANTS } from '../../utils/constants';
 import MenuCardSkeleton from '../../components/shimmer/MenuCardSkeleton';
 import MenuCard from '../../components/cards/MenuCard';
 import StarRating from '../../components/rating/StarRating';
+import RatingModal from '../../components/modal/RatingModal';
 
 const RestaurantDetails = () => {
     const params = useParams();
@@ -20,21 +21,26 @@ const RestaurantDetails = () => {
     const cartData = useAppSelector((state) => state.cartReducer.cartData);
     const authData = useAppSelector((state) => state.authReducer.authData);
     const { restaurantId } = params;
-    const [ratingValue, setRatingValue] = useState<number>(0);
+    const [myRatingValue, setMyRatingValue] = useState<number>(0);
     const [restaurantRatingValue, setRestaurantRatingValue] = useState<number>(0);
     const [restaurantRatingCount, setRestaurantRatingCount] = useState<number>(0);
+
+    const [isRatingModalOpen, setIsRatingModalOpen] = useState<boolean>(false);
+    const handleOpenModal = () => setIsRatingModalOpen(true);
+
+    const handleCloseModal = () => setIsRatingModalOpen(false);
 
     const handleRatingChange = async (
         event: React.SyntheticEvent<Element, Event>,
         value: number | null,
     ): Promise<void> => {
-        setRatingValue(value ?? 0);
-
+        setMyRatingValue(value ?? 0);
         console.log('value ', value);
-        console.log('state ratingValue', ratingValue);
 
-        const response = await changeRatingApi({ restaurantId: restaurant?._id!, rating: value ?? 0 });
-        console.log('rating api call response ', response);
+        if (restaurant) {
+            const response = await changeRatingApi({ restaurantId: restaurant._id!, rating: value ?? 0 });
+            console.log('rating api call response ', response);
+        }
     };
 
     useEffect(() => {
@@ -44,9 +50,10 @@ const RestaurantDetails = () => {
             setRestaurant((response.data as IRestaurantResult).restaurant as IRestaurantResponse2);
             setRestaurantRatingValue((response.data as IRestaurantResult).restaurantRating);
             setRestaurantRatingCount((response.data as IRestaurantResult).restaurantRatingsCount);
+            setMyRatingValue((response.data as IRestaurantResult).myRating);
             setIsLoading(false);
         })();
-    }, []);
+    }, [myRatingValue]);
 
     useEffect(() => {
         if (authData?.role === ROLES_CONSTANTS.USER) {
@@ -94,13 +101,17 @@ const RestaurantDetails = () => {
                                 </h1>
                             </div>
                         </div>
-                        <div className='flex'>
-                            <StarRating
-                                ratingValue={restaurantRatingValue}
-                                isReadOnly={true}
-                                handleRatingChange={handleRatingChange}
-                            />{' '}
-                           <span> of {restaurantRatingCount} ratings</span>
+                        <div className="flex ">
+                            <StarRating ratingValue={restaurantRatingValue} isReadOnly={true} />{' '}
+                            <span>
+                                ( {restaurantRatingCount} ){' '}
+                                <span
+                                    className="font-medium text-gray-600 hover:cursor-pointer hover:text-sky-700"
+                                    onClick={handleOpenModal}
+                                >
+                                    Rate this restaurant
+                                </span>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -130,6 +141,13 @@ const RestaurantDetails = () => {
                     </div>
                 </div>
             </div>
+            {/* Rating modal */}
+            <RatingModal
+                handleRatingChange={handleRatingChange}
+                isModalOpen={isRatingModalOpen}
+                myRating={myRatingValue}
+                closeRatingModal={handleCloseModal}
+            />
         </div>
     );
 };

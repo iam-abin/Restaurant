@@ -96,8 +96,17 @@ export class MenuService {
     ): Promise<IMenuDocument | null> {
         await this.validateRestaurantOwnership(userId);
 
+        console.log("updateData ",updateData);
+        
         const menu: IMenuDocument | null = await this.menuRepository.findMenu(menuId);
         if (!menu) throw new NotFoundError('Menu not found');
+
+        if (updateData.salePrice && updateData.salePrice > menu.price) {
+            throw new BadRequestError('Sale price must be less than or equal to the original price');
+        }
+        if (updateData.price && updateData.price < menu.salePrice) {
+            throw new BadRequestError('price must be grater than or equal to the original sale price');
+        }
 
         let imageUrl: string | undefined;
         if (file) {

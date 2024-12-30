@@ -44,8 +44,8 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
     const [input, setInput] = useState<MenuFormSchema>({
         name: '',
         description: '',
-        cuisine: '',
         price: 0,
+        salePrice: undefined,
         image: undefined,
     });
     const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -92,8 +92,8 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
 
             formData.append('name', inputData.name);
             formData.append('description', inputData.description);
-            formData.append('cuisine', inputData.cuisine!);
             formData.append('price', inputData.price?.toString() ?? '0');
+            formData.append('salePrice', inputData.salePrice ? inputData.salePrice?.toString() : '0');
             if (inputData.image) formData.append('image', inputData.image);
 
             const restaurantId = restaurantData?.restaurant._id;
@@ -110,24 +110,13 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
             const response: IResponse = await addMenuApi(formData);
             hotToastMessage(response.message, 'success');
             dispatch(fetchMenus({ restaurantId }));
-            setInput({ name: '', description: '', cuisine: '', price: 0, image: undefined });
+            setInput({ name: '', description: '', price: 0, salePrice: undefined, image: undefined });
             setPreviewImage(null);
             handleClose();
         } finally {
             setIsLoading(false);
         }
     };
-
-    // ==========================================================
-    // const colorStyles = {
-    //     control: (styles: any) => ({ ...styles, backgroundColor: 'white' }),
-    // };
-
-    // const [cuisineOptions, setCuisineOptions] = useState<ICuisineResponse1[]>([
-    //     { value: 'opt1', label: 'Option 1' },
-    //     { value: 'opt2', label: 'Option 2' },
-    //     { value: 'opt3', label: 'Option 3' },
-    // ]);
 
     const [cuisineOptions, setCuisineOptions] = useState<OptionType[]>([]);
 
@@ -199,7 +188,6 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
                                 rows={3}
                             />
                         </Grid>
-                        {/* select options add here */}
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
@@ -214,8 +202,23 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
                             />
                         </Grid>
                         <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                label="Sale Price (in ₹)"
+                                name="salePrice"
+                                value={input.salePrice}
+                                onChange={handleInputChange}
+                                error={!!errors.salePrice}
+                                helperText={errors.salePrice}
+                                variant="outlined"
+                                type="number"
+                            />
+                        </Grid>
+                        {/* select options add here */}
+                        <Grid item xs={12}>
                             <AsyncCreatableSelect
                                 cacheOptions
+                                placeholder={'select cuisine...'}
                                 options={cuisineOptions}
                                 defaultOptions={cuisineOptions}
                                 loadOptions={promiseOptions}

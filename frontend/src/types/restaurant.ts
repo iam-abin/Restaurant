@@ -45,10 +45,10 @@ export interface ISearchResult {
 }
 
 export interface IRestaurantResult {
-    restaurant: IRestaurantResponse2
+    restaurant: IRestaurantResponse2;
     restaurantRating: number;
     restaurantRatingsCount: number;
-    myRating: IRating | null;
+    myRating: number;
 }
 
 export interface IRestaurantResponse2 {
