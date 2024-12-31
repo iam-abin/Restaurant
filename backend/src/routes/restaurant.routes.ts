@@ -1,6 +1,11 @@
 import express, { Router } from 'express';
 import { checkCurrentUser, auth, multerUpload, validateRequest } from '../middlewares';
-import { mongoIdParamsValidator, restaurantUpdateValidator, searchRestaurantValidator } from '../utils';
+import {
+    mongoIdParamsValidator,
+    paginationValidator,
+    restaurantUpdateValidator,
+    searchRestaurantValidator,
+} from '../utils';
 import { restaurantController } from '../controllers';
 import { UserRole } from '../types';
 
@@ -12,6 +17,8 @@ router.get(
     '/restaurants/:page/:limit',
     checkCurrentUser,
     auth(UserRole.ADMIN),
+    paginationValidator,
+    validateRequest,
     restaurantController.getRestaurants,
 );
 

@@ -36,7 +36,7 @@ const Dashboard = () => {
                     title="Total Turnover"
                     number={dashboardData?.totalTurnover ?? 0}
                     icon={svgIcon}
-                    description="Amound earned by all restaurants"
+                    description="Amount earned by all restaurants"
                 />
                 <DashboardCard
                     title="Total Users"

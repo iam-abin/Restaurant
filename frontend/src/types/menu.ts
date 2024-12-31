@@ -8,3 +8,9 @@ export interface IMenu {
     restaurantId: string;
     isClosed: boolean;
 }
+
+
+export type Menus = {
+    menus: IMenu[]
+    numberOfPages: number
+}

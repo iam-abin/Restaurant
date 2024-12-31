@@ -5,7 +5,7 @@ import { NotFoundError } from '../errors';
 import { AddressRepository, ProfileRepository } from '../database/repository';
 import { IAddressDocument, IProfileDocument } from '../database/model';
 import { IAddress, IProfile, IProfilesData, IUser } from '../types';
-import { uploadImageOnCloudinary } from '../utils';
+import { getPaginationSkipValue, getPaginationTotalNumberOfPages, uploadImageOnCloudinary } from '../utils';
 import mongoose from 'mongoose';
 
 @autoInjectable()
@@ -22,10 +22,10 @@ export class ProfileService {
     }
 
     public async getUserProfiles(page: number, limit: number): Promise<IProfilesData> {
-        const skip: number = (page - 1) * limit;
-        const profiles: IProfileDocument[] = await this.profileRepository.find(skip, limit);
+        const skip: number = getPaginationSkipValue(page, limit);
+        const profiles: IProfileDocument[] = await this.profileRepository.findProfiles(skip, limit);
         const profilesCount: number = await this.profileRepository.countProfiles();
-        const numberOfPages: number = Math.ceil(profilesCount / limit);
+        const numberOfPages: number = getPaginationTotalNumberOfPages(profilesCount, limit);
         return { profiles, numberOfPages };
     }
 

@@ -14,7 +14,7 @@ import {
     UserRepository,
 } from '../database/repository';
 import { IAddressDocument, IRestaurantDocument } from '../database/model';
-import { uploadImageOnCloudinary } from '../utils';
+import { getPaginationSkipValue, getPaginationTotalNumberOfPages, uploadImageOnCloudinary } from '../utils';
 import { NotFoundError } from '../errors';
 import mongoose from 'mongoose';
 import { RestaurantWithCuisines } from '../controllers/restaurant.controller';
@@ -40,7 +40,12 @@ export class RestaurantService {
             this.ratingRepository.findUserRating(restaurant._id.toString(), userId),
         ]);
 
-        return { restaurant, restaurantRating, restaurantRatingsCount, myRating: myRating?myRating.rating:0 };
+        return {
+            restaurant,
+            restaurantRating,
+            restaurantRatingsCount,
+            myRating: myRating ? myRating.rating : 0,
+        };
     }
 
     public async getMyRestaurant(userId: string): Promise<RestaurantWithCuisines> {
@@ -57,13 +62,14 @@ export class RestaurantService {
     }
 
     public async getRestaurants(page: number, limit: number): Promise<IRestaurantsData> {
-        const skip: number = (page - 1) * limit;
+        const skip: number = getPaginationSkipValue(page, limit);
         const restaurants: IRestaurantDocument[] = await this.restaurantRepository.findRestaurants(
             skip,
             limit,
         );
         const restaurantsCount: number = await this.restaurantRepository.countRestaurants();
-        const numberOfPages: number = Math.ceil(restaurantsCount / limit);
+        const numberOfPages: number = getPaginationTotalNumberOfPages(restaurantsCount, limit);
+
         return { restaurants, numberOfPages };
     }
 

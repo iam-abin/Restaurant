@@ -29,7 +29,7 @@ const SearchResult = () => {
                 searchQuery,
                 selectedCuisines: selectedFilters,
             });
-            setSearchResults((response.data as ISearchResult[]) || []);
+            setSearchResults(response.data as ISearchResult[]);
         } catch (error) {
             console.error('Error fetching search results:', error);
             setSearchResults([]);
@@ -75,7 +75,7 @@ const SearchResult = () => {
                     filtersList={filtersList}
                 />
             </div>
-            <div className="flex-1 bg-green-100 py-3 rounded-lg">
+            <div className="flex-col bg-green-100 py-3 rounded-lg">
                 <div className="relative flex items-center gap-1">
                     <div className="w-full">
                         <Search className="absolute text-gray-500 inset-y-3 left-2" />
@@ -119,13 +119,13 @@ const SearchResult = () => {
                         {searchResults.map((restaurant, index) => (
                             <RestaurantCard key={index} restaurant={restaurant} />
                         ))}
-                        {/* {searchResults.map((restaurant, index) => (
+                        {searchResults.map((restaurant, index) => (
                             <RestaurantCard key={index} restaurant={restaurant} />
                         ))}
 
                         {searchResults.map((restaurant, index) => (
                             <RestaurantCard key={index} restaurant={restaurant} />
-                        ))} */}
+                        ))}
                     </div>
                 ) : (
                     <NoResultFound

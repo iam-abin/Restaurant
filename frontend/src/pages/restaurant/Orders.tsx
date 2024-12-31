@@ -17,31 +17,35 @@ import {
 import { getRestaurantOrdersApi, updateOrderStatusApi } from '../../api/apiMethods';
 import { useAppSelector } from '../../redux/hooks';
 import OrdersTableRestaurantSkelton from '../../components/shimmer/OrdersTableRestaurantSkelton';
-import { IRestaurantOrder } from '../../types';
+import { IResponse, IRestaurantOrder, Orders } from '../../types';
 import { hotToastMessage } from '../../utils/hotToast';
 import OrderDetailsModal from '../../components/modal/OrderDetailsModal';
+import PaginationButtons from '../../components/pagination/PaginationButtons';
+import usePagination from '../../hooks/usePagination';
 
 const OrdersListPage: React.FC = () => {
     const [orders, setOrders] = useState<IRestaurantOrder[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedOrder, setSelectedOrder] = useState<IRestaurantOrder | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
-
+    const {currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages} = usePagination({})
     const restaurant = useAppSelector((store) => store.restaurantReducer.restaurantData?.restaurant);
-
+    
+    
     useEffect(() => {
         (async () => {
             if (restaurant?._id) {
                 setLoading(true);
                 try {
-                    const orders = await getRestaurantOrdersApi(restaurant._id);
-                    setOrders(orders.data as IRestaurantOrder[]);
+                    const orders: IResponse = await getRestaurantOrdersApi(restaurant._id, currentPage);
+                    setOrders((orders.data as Orders).orders);
+                    setTotalNumberOfPages((orders.data as Orders).numberOfPages)
                 } finally {
                     setLoading(false);
                 }
             }
         })();
-    }, [restaurant]);
+    }, [restaurant, currentPage]);
 
     const handleStatusChange = async (id: string, newStatus: string) => {
         setOrders((prevOrders) =>
@@ -83,7 +87,7 @@ const OrdersListPage: React.FC = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {orders.map((order) => (
+                            {orders.map((order:IRestaurantOrder) => (
                                 <TableRow key={order._id}>
                                     <TableCell>
                                         <img
@@ -94,7 +98,7 @@ const OrdersListPage: React.FC = () => {
                                     </TableCell>
                                     <TableCell>{order._id}</TableCell>
                                     <TableCell>{order.userDetails.email}</TableCell>
-                                    <TableCell>{order.totalAmound}</TableCell>
+                                    <TableCell>{order.totalAmount}</TableCell>
                                     <TableCell>
                                         <Select
                                             value={order.status}
@@ -146,6 +150,10 @@ const OrdersListPage: React.FC = () => {
                     selectedOrder={selectedOrder}
                 />
             )}
+
+<div className="flex justify-center my-10">
+                <PaginationButtons handlePageChange={handlePageChange} numberOfPages={totalNumberOfPages} currentPage={currentPage}/>
+            </div>
         </Box>
     );
 };

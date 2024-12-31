@@ -1,3 +1,5 @@
+import { IOrderDocument } from '../database/model';
+
 type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'outfordelivery' | 'delivered';
 
 export interface IOrder {
@@ -8,6 +10,11 @@ export interface IOrder {
     status: OrderStatus;
 }
 
+export type Orders = {
+    orders: IOrderDocument[];
+    numberOfPages: number;
+};
+
 export interface IOrderedItem {
     userId: string;
     orderId: string;
@@ -16,3 +23,10 @@ export interface IOrderedItem {
     menuItemPrice: number;
     quantity: number;
 }
+
+export type GetRestaurantOrders = {
+    ownerId: string;
+    restaurantId: string;
+    page: number;
+    limit: number;
+};

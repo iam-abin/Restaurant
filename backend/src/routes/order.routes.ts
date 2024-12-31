@@ -1,12 +1,19 @@
 import express, { Router } from 'express';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
-import { mongoIdParamsValidator, updateOrderStatusRequestBodyValidator } from '../utils';
+import { mongoIdParamsValidator, paginationValidator, updateOrderStatusRequestBodyValidator } from '../utils';
 import { orderController } from '../controllers';
 import { UserRole } from '../types';
 
 const router: Router = express.Router();
 
-router.get('/', checkCurrentUser, auth(UserRole.USER), orderController.getMyOrders);
+router.get(
+    '/',
+    checkCurrentUser,
+    auth(UserRole.USER),
+    paginationValidator,
+    validateRequest,
+    orderController.getMyOrders,
+);
 
 router.post('/payment/checkout', checkCurrentUser, auth(UserRole.USER), orderController.addOrder);
 
@@ -17,6 +24,7 @@ router.get(
     checkCurrentUser,
     auth(UserRole.RESTAURANT),
     mongoIdParamsValidator('restaurantId'),
+    paginationValidator,
     validateRequest,
     orderController.getRestaurantOrders,
 );

@@ -1,7 +1,7 @@
 import { autoInjectable } from 'tsyringe';
 import mongoose from 'mongoose';
 import Stripe from 'stripe';
-import { IOrder, IRestaurantResponse } from '../types';
+import { GetRestaurantOrders, IOrder, IRestaurantResponse, Orders } from '../types';
 import {
     OrderRepository,
     RestaurantRepository,
@@ -13,6 +13,7 @@ import { ICartDocument, IMenuDocument, IOrderDocument } from '../database/model'
 import { ForbiddenError, NotFoundError } from '../errors';
 import { stripeInstance } from '../config/stripe';
 import { appConfig } from '../config/app.config';
+import { getPaginationSkipValue, getPaginationTotalNumberOfPages } from '../utils';
 
 @autoInjectable()
 export class OrderService {
@@ -142,18 +143,31 @@ export class OrderService {
         return lineItems;
     }
 
-    public async getRestaurantOrders(restaurantId: string, ownerId: string): Promise<IOrderDocument[]> {
+    public async getRestaurantOrders({
+        restaurantId,
+        ownerId,
+        page,
+        limit,
+    }: GetRestaurantOrders): Promise<Orders> {
         const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         if ('_id' in restaurant.owner! && restaurant.owner._id.toString() !== ownerId)
             throw new ForbiddenError('You cannot access other restaurant orders');
-        const orders: IOrderDocument[] = await this.orderRepository.findOrders(restaurantId);
-        return orders;
+        const skip: number = getPaginationSkipValue(page, limit);
+
+        const orders: IOrderDocument[] = await this.orderRepository.findOrders(restaurantId, skip, limit);
+        const myOrdersCount: number = await this.orderRepository.countRestaurantOrders({ restaurantId });
+        const numberOfPages: number = getPaginationTotalNumberOfPages(myOrdersCount, limit);
+        return { orders, numberOfPages };
     }
 
-    public async getMyOrders(userId: string): Promise<IOrderDocument[]> {
-        const restaurant: IOrderDocument[] = await this.orderRepository.findMyOrders(userId);
-        return restaurant;
+    public async getMyOrders(userId: string, page: number, limit: number): Promise<Orders> {
+        const skip: number = getPaginationSkipValue(page, limit);
+        const orders: IOrderDocument[] = await this.orderRepository.findMyOrders(userId, skip, limit);
+
+        const myOrdersCount: number = await this.orderRepository.countUserOrders({ userId });
+        const numberOfPages: number = getPaginationTotalNumberOfPages(myOrdersCount, limit);
+        return { orders, numberOfPages };
     }
 
     public async confirmOrder(

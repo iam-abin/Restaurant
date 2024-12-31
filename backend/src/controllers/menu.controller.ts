@@ -3,7 +3,7 @@ import { container } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
 import { IMenuDocument } from '../database/model';
 import { MenuService } from '../services';
-import { IMenu } from '../types';
+import { IMenu, Menus } from '../types';
 
 const menuService = container.resolve(MenuService);
 
@@ -21,7 +21,13 @@ class MenuController {
 
     public async getMenus(req: Request, res: Response): Promise<void> {
         const { restaurantId } = req.params;
-        const menu: IMenuDocument[] = await menuService.getMenus(restaurantId);
+        const { page = 1, limit = 10 } = req.query;
+
+        const menu: Menus = await menuService.getMenus(
+            restaurantId,
+            parseInt(page as string),
+            parseInt(limit as string),
+        );
         res.status(200).json(createSuccessResponse('Menus fetched successfully', menu));
     }
 

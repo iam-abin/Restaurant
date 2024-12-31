@@ -12,8 +12,10 @@ export class MenuRepository {
         return await MenuModel.findById(menuId);
     }
 
-    async findMenus(restaurantId: string): Promise<IMenuDocument[]> {
-        return await MenuModel.find({ restaurantId });
+    async findMenus(restaurantId: string, skip: number, limit: number): Promise<IMenuDocument[]> {
+        return await MenuModel.find({ restaurantId })
+            .skip(skip ?? 0)
+            .limit(limit ?? 0);
     }
 
     async update(menuId: string, updatedData: Partial<IMenu>): Promise<IMenuDocument | null> {

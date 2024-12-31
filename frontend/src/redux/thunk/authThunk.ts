@@ -4,7 +4,6 @@ import { IGoogleAuth, ISignin, IUser } from '../../types';
 import { hotToastMessage } from '../../utils/hotToast';
 import { IResponse } from '../../types/api';
 
-
 // Async thunk for user sign-in
 export const signinUser = createAsyncThunk<
     IUser, // Return type of the resolved value

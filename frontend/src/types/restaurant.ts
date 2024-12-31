@@ -1,6 +1,5 @@
 import { IAddress } from './address';
 import { ICuisine, ICuisineResponse } from './cuisine';
-import { IRating } from './rating';
 import { IUser } from './user';
 
 export interface IRestaurant {

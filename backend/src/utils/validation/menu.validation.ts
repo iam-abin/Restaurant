@@ -27,11 +27,11 @@ export const addMenuRequestBodyValidator = [
         .withMessage('Price is required')
         .isFloat({ min: 0 })
         .withMessage('Price must be a positive number')
-        .custom((value:number, {req})=>{
+        .custom((value: number, { req }) => {
             if (req.body.price && value > req.body.price) {
                 throw new BadRequestError('Sale price must be less than or equal to the original price');
             }
-            return true
+            return true;
         }),
 ];
 

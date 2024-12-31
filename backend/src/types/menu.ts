@@ -1,3 +1,5 @@
+import { IMenuDocument } from '../database/model';
+
 export interface IMenu {
     name: string;
     description: string;
@@ -8,3 +10,8 @@ export interface IMenu {
     cuisineId?: string;
     restaurantId: string;
 }
+
+export type Menus = {
+    menus: IMenuDocument[];
+    numberOfPages: number;
+};

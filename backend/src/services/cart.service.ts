@@ -1,8 +1,9 @@
 import { autoInjectable } from 'tsyringe';
-import { ICart } from '../types';
+import { GetCartItemsByRestaurantParams, ICart } from '../types';
 import { CartRepository, MenuRepository } from '../database/repository';
 import { ICartDocument, IMenuDocument, IUserDocument } from '../database/model';
 import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
+import { getPaginationSkipValue } from '../utils';
 
 @autoInjectable()
 export class CartService {
@@ -19,7 +20,7 @@ export class CartService {
         const menuItem: IMenuDocument | null = await this.menuRepository.findMenu(itemId);
         if (!menuItem) throw new NotFoundError('MenuItem not found');
         const cartItem: ICartDocument | null = await this.cartRepository.find(userId, restaurantId, itemId);
-        if (cartItem) throw new BadRequestError('CartItem already exist');
+        if (cartItem) throw new BadRequestError('Item already exist in the cart');
         const addedCartItem: ICartDocument = await this.cartRepository.create({
             ...cartData,
             userId,
@@ -28,8 +29,19 @@ export class CartService {
         return addedCartItem;
     }
 
-    public async getCartItemsByRestaurant(userId: string, restaurantId: string): Promise<ICartDocument[]> {
-        const cartItems = await this.cartRepository.getCartItemsByRestaurant(userId, restaurantId);
+    public async getCartItemsByRestaurant({
+        userId,
+        restaurantId,
+        page,
+        limit,
+    }: GetCartItemsByRestaurantParams): Promise<ICartDocument[]> {
+        const skip: number = getPaginationSkipValue(page, limit);
+        const cartItems = await this.cartRepository.getCartItemsByRestaurant(
+            userId,
+            restaurantId,
+            skip,
+            limit,
+        );
         return cartItems;
     }
 

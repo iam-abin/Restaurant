@@ -3,7 +3,7 @@ import { container } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
 import { IOrderDocument } from '../database/model';
 import { OrderService } from '../services';
-import { IOrder } from '../types';
+import { IOrder, Orders } from '../types';
 
 const orderService = container.resolve(OrderService);
 
@@ -43,14 +43,24 @@ class OrderController {
     public async getRestaurantOrders(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
         const { restaurantId } = req.params;
-
-        const orders: IOrderDocument[] = await orderService.getRestaurantOrders(restaurantId, userId);
+        const { page = 1, limit = 10 } = req.query;
+        const orders: Orders = await orderService.getRestaurantOrders({
+            restaurantId,
+            ownerId: userId,
+            page: parseInt(page as string),
+            limit: parseInt(limit as string),
+        });
         res.status(200).json(createSuccessResponse('Restaurant orders fetched successfully', orders));
     }
 
     public async getMyOrders(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
-        const orders: IOrderDocument[] = await orderService.getMyOrders(userId);
+        const { page = 1, limit = 10 } = req.query;
+
+        console.log('page ', page, 'limit ', limit);
+        console.log('page ', typeof page, 'limit ', typeof limit);
+
+        const orders: Orders = await orderService.getMyOrders(userId, page as number, limit as number);
         res.status(200).json(createSuccessResponse('Your orders fetched successfully', orders));
     }
 

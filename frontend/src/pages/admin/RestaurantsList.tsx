@@ -24,6 +24,8 @@ function RestaurantsList() {
         restaurantsData = await getRestaurantsApi(currentPage, USERS_PER_PAGE);
         const data = restaurantsData?.data as IRestaurantsResponse;
         setRestaurantsData(data.restaurants as IRestaurant[]);
+        console.log("data", data);
+        
         setNumberOfPages(data.numberOfPages);
     };
 
@@ -112,15 +114,6 @@ function RestaurantsList() {
                 numberOfPages={numberOfPages}
                 fetchData={fetchUsers}
             />
-            {/* <ConfirmationDialogue
-                    open={open}
-                    setOpen={setOpen}
-                    title={`Do you want to ${isBlocked ? "block" : "unblock"} this user?`}
-                    description="Are you sure?"
-                    onAgree={handleBlockUnblock(userId, isBlocked)}
-                    closeText='No'
-                    okayText={isBlocked ? "active" : "inActive"}
-                /> */}
         </div>
     );
 }

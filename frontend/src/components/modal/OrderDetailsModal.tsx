@@ -112,7 +112,7 @@ const OrderDetailsModal = ({
                                 <Divider sx={{ margin: '16px 0' }} />
                                 <Typography variant="h6" className="flex items-center">
                                     Total Amount: <CurrencyRupeeIcon style={{ fontSize: '1.15rem' }} />
-                                    {selectedOrder?.totalAmound}
+                                    {selectedOrder?.totalAmount}
                                 </Typography>
                                 <Typography variant="body1">Order Status: {selectedOrder?.status}</Typography>
                                 <Typography variant="body1">

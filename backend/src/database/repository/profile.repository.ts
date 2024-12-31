@@ -19,8 +19,11 @@ export class ProfileRepository {
         return await ProfileModel.findById(profileId).populate('userId');
     }
 
-    async find(skip: number, limit: number): Promise<IProfileDocument[]> {
-        return await ProfileModel.find().skip(skip).limit(limit).populate('userId');
+    async findProfiles(skip: number, limit: number): Promise<IProfileDocument[]> {
+        return await ProfileModel.find()
+            .skip(skip ?? 0)
+            .limit(limit ?? 0)
+            .populate('userId');
     }
 
     async update(

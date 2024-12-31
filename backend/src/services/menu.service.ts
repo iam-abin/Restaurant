@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { autoInjectable } from 'tsyringe';
-import { IMenu } from '../types';
+import { IMenu, Menus } from '../types';
 import {
     AddressRepository,
     CuisineRepository,
@@ -9,7 +9,7 @@ import {
     RestaurantRepository,
 } from '../database/repository';
 import { IAddressDocument, ICuisineDocument, IMenuDocument, IRestaurantDocument } from '../database/model';
-import { uploadImageOnCloudinary } from '../utils';
+import { getPaginationSkipValue, getPaginationTotalNumberOfPages, uploadImageOnCloudinary } from '../utils';
 import { BadRequestError, NotFoundError } from '../errors';
 
 @autoInjectable()
@@ -75,11 +75,14 @@ export class MenuService {
         }
     }
 
-    public async getMenus(restaurantId: string): Promise<IMenuDocument[]> {
+    public async getMenus(restaurantId: string, page: number, limit: number): Promise<Menus> {
         const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
-        const menus: IMenuDocument[] = await this.menuRepository.findMenus(restaurantId);
-        return menus;
+        const skip: number = getPaginationSkipValue(page, limit);
+        const menus: IMenuDocument[] = await this.menuRepository.findMenus(restaurantId, skip, limit);
+        const myOrdersCount: number = await this.menuRepository.countRestaurantMenus(restaurantId);
+        const numberOfPages: number = getPaginationTotalNumberOfPages(myOrdersCount, limit);
+        return { menus, numberOfPages };
     }
 
     public async getMenu(menuId: string): Promise<IMenuDocument> {
@@ -96,8 +99,6 @@ export class MenuService {
     ): Promise<IMenuDocument | null> {
         await this.validateRestaurantOwnership(userId);
 
-        console.log("updateData ",updateData);
-        
         const menu: IMenuDocument | null = await this.menuRepository.findMenu(menuId);
         if (!menu) throw new NotFoundError('Menu not found');
 

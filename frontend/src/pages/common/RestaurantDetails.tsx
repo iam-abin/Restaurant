@@ -31,7 +31,7 @@ const RestaurantDetails = () => {
     const handleCloseModal = () => setIsRatingModalOpen(false);
 
     const handleRatingChange = async (
-        event: React.SyntheticEvent<Element, Event>,
+        _event: React.SyntheticEvent<Element, Event>,
         value: number | null,
     ): Promise<void> => {
         setMyRatingValue(value ?? 0);

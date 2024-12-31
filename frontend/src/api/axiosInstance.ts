@@ -10,7 +10,6 @@ export const axiosInstance = axios.create({
 // import { store } from '../redux/store'; // Import your Redux store
 // import { resetAuth } from '../redux/slice/authSlice'; // Import an action to reset auth state
 
-
 declare module 'axios' {
     export interface AxiosRequestConfig {
         _retry?: boolean; // Add the _retry property as optional
@@ -42,7 +41,7 @@ axiosInstance.interceptors.response.use(
         // Reject other errors
 
         if (originalRequest?._retry) {
-             // Clear auth state in Redux
+            // Clear auth state in Redux
             //  store.dispatch(resetAuth()); // Reset the auth state (clears authData)
             window.location.href = '/auth';
         }

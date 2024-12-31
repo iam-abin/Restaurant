@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { IProfile } from '../../types';
+import PaginationButtons from '../pagination/PaginationButtons';
+import usePagination from '../../hooks/usePagination';
 
 const Table = ({
     columns,
@@ -14,21 +16,33 @@ const Table = ({
     numberOfPages: number;
     fetchData: (page: number) => Promise<void>;
 }) => {
-    const [currentPage, setCurrentPage] = useState(1);
     //  eslint-disable-next-line @typescript-eslint/no-explicit-any
     const getNestedValue = (nestedObj: any, path: string) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return path.split('.').reduce((acc: any, curr: string) => acc && acc[curr], nestedObj);
     };
 
-    const handlePageChange = async (pageNumber: number) => {
-        setCurrentPage(pageNumber);
-        await fetchData(pageNumber); // Fetch data for the new page
-    };
 
-    useEffect(() => {
-        setCurrentPage(currentPage);
-    }, [data]);
+    const {currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages} = usePagination({});
+
+    // const handlePageChange = async (pageNumber: number) => {
+    //     setCurrentPage(pageNumber);
+    //     await fetchData(pageNumber); // Fetch data for the new page
+    // };
+
+    // useEffect(() => {
+    //     setCurrentPage(currentPage);
+    // }, [data]);
+
+     useEffect(() => {
+        // setCurrentPage(currentPage);
+        (async()=>{
+            await fetchData(currentPage);
+            console.log(numberOfPages);
+            
+            setTotalNumberOfPages(numberOfPages)
+        })()
+    }, [ currentPage, numberOfPages]);
 
     return (
         <>
@@ -79,24 +93,8 @@ const Table = ({
                 </table>
             </div>
 
-            <div className="flex justify-between items-center mt-4">
-                <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="px-4 py-2 bg-gray-300 text-gray-600 rounded disabled:opacity-50"
-                >
-                    Previous
-                </button>
-                <span className="text-gray-700">
-                    Page {currentPage} of {numberOfPages}
-                </span>
-                <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === numberOfPages}
-                    className="px-4 py-2 bg-gray-300 text-gray-600 rounded disabled:opacity-50"
-                >
-                    Next
-                </button>
+              <div className="flex justify-center my-10">
+                <PaginationButtons handlePageChange={handlePageChange} numberOfPages={totalNumberOfPages} currentPage={currentPage}/>
             </div>
         </>
     );

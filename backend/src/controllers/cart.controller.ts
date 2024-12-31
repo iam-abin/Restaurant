@@ -20,7 +20,13 @@ class CartController {
     public async getCartItems(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
         const { restaurantId } = req.params;
-        const cartItems: ICartDocument[] = await cartService.getCartItemsByRestaurant(userId, restaurantId);
+        const { page = 1, limit = 10 } = req.query;
+        const cartItems: ICartDocument[] = await cartService.getCartItemsByRestaurant({
+            userId,
+            restaurantId,
+            page: parseInt(page as string),
+            limit: parseInt(limit as string),
+        });
         res.status(200).json(createSuccessResponse('Cart item fetched successfully', cartItems));
     }
 

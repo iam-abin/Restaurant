@@ -1,15 +1,16 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { getMenusApi } from '../../api/apiMethods/menu';
-import { IMenu } from '../../types';
+import { IMenu, Menus } from '../../types';
 
 // Async thunk for fetching user menus
-export const fetchMenus = createAsyncThunk<IMenu, { restaurantId: string }, { rejectValue: string | null }>(
+export const fetchMenus = createAsyncThunk<IMenu[], { restaurantId: string, setTotalNumberOfPages: React.Dispatch<React.SetStateAction<number>> }, { rejectValue: string | null }>(
     'menus/fetchUserMenus',
-    async ({ restaurantId }, { rejectWithValue }) => {
+    async ({ restaurantId , setTotalNumberOfPages}, { rejectWithValue }) => {
         try {
             console.log('thunk ', restaurantId);
             const menus = await getMenusApi(restaurantId);
-            return menus.data as IMenu;
+            setTotalNumberOfPages((menus.data as Menus).numberOfPages)
+            return (menus.data as Menus).menus;
         } catch (error: unknown) {
             return rejectWithValue((error as Error).message);
         }

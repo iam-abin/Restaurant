@@ -8,6 +8,8 @@ import { fetchMenus } from '../../redux/thunk/menusThunk';
 import { IMenu, IRestaurantResponse } from '../../types';
 import AddMenuModal from '../../components/modal/AddMenuModal';
 import MenuCard from '../../components/cards/MenuCard';
+import usePagination from '../../hooks/usePagination';
+import PaginationButtons from '../../components/pagination/PaginationButtons';
 
 const Menu = () => {
     const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
@@ -15,7 +17,8 @@ const Menu = () => {
     const handleAddMenuClose = () => setIsAddMenuOpen(false);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-
+    const {currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages} = usePagination({});
+    
     const restaurantData: IRestaurantResponse | null = useAppSelector(
         (state) => state.restaurantReducer.restaurantData,
     );
@@ -23,11 +26,9 @@ const Menu = () => {
 
     useEffect(() => {
         if (restaurantData?.restaurant._id) {
-            console.log(' ===== ', restaurantData, ' ===== ');
-
-            dispatch(fetchMenus({ restaurantId: restaurantData.restaurant._id }));
+            dispatch(fetchMenus({ restaurantId: restaurantData.restaurant._id , setTotalNumberOfPages}));
         }
-    }, [dispatch, restaurantData]);
+    }, [dispatch, restaurantData, currentPage]);
 
     return (
         <div className="my-5">
@@ -46,6 +47,9 @@ const Menu = () => {
                     {menus.map((menu: IMenu) => (
                         <MenuCard key={menu._id} menu={menu} />
                     ))}
+                      <div className="flex justify-center my-10">
+                <PaginationButtons handlePageChange={handlePageChange} numberOfPages={totalNumberOfPages} currentPage={currentPage}/>
+            </div>
                 </div>
             ) : (
                 <div className="flex flex-col items-center justify-center h-screen">

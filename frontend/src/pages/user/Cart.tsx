@@ -32,12 +32,12 @@ const Cart = () => {
         dispatch(changeCartItemQuantity({ cartItemId, quantity }));
     };
 
-    const findTotalAmound = (cartItems: ICart[]) => {
-        const totalAmound = cartItems.reduce((acc: number, currItem: ICart) => {
+    const findTotalAmount = (cartItems: ICart[]) => {
+        const totalAmount = cartItems.reduce((acc: number, currItem: ICart) => {
             acc += currItem?.itemId.price * currItem.quantity;
             return acc;
         }, 0);
-        return totalAmound;
+        return totalAmount;
     };
 
     return (
@@ -58,7 +58,7 @@ const Cart = () => {
                         <div className="mt-3 flex flex-col items-end gap-5">
                             <div>
                                 <span className="font-extrabold text-xl">Total: </span>{' '}
-                                <span className="text-xl">₹{findTotalAmound(cartData)}</span>
+                                <span className="text-xl">₹{findTotalAmount(cartData)}</span>
                             </div>
                             <Button className="h-10" color="warning" variant="contained" onClick={handleOpen}>
                                 Proceed to checkout
