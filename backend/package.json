@@ -14,7 +14,6 @@
   "author": "abin",
   "license": "ISC",
   "dependencies": {
-    "@types/axios": "^0.14.4",
     "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",

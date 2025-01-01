@@ -1,0 +1,23 @@
+services:
+    frontend:
+        image: abinv/restaurant-frontend-prod
+        build:
+            context: ./frontend
+            dockerfile: ./docker/Dockerfile.prod
+        container_name: frontend-container-prod
+        ports:
+            - 5000:5000
+        restart: on-failure
+        env_file:
+            - ./frontend/.env
+    backend:
+        image: abinv/restaurant-backend-prod
+        build:
+            context: ./backend
+            dockerfile: ./docker/Dockerfile.prod
+        container_name: backend-container-prod
+        ports:
+            - 3000:3000
+        restart: on-failure
+        env_file:
+            - ./backend/.env.production
