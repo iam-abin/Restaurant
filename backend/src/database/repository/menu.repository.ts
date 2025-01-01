@@ -14,6 +14,7 @@ export class MenuRepository {
 
     async findMenus(restaurantId: string, skip: number, limit: number): Promise<IMenuDocument[]> {
         return await MenuModel.find({ restaurantId })
+            .sort({ updatedAt: -1 })
             .skip(skip ?? 0)
             .limit(limit ?? 0);
     }

@@ -26,16 +26,19 @@ const Menu = () => {
 
     useEffect(() => {
         if (restaurantData?.restaurant._id) {
-            dispatch(
-                fetchMenus({
-                    restaurantId: restaurantData.restaurant._id,
-                    setTotalNumberOfPages,
-                    currentPage,
-                }),
-            );
+            handleMenusDispatch(restaurantData.restaurant._id);
         }
     }, [dispatch, restaurantData, currentPage]);
 
+    const handleMenusDispatch = (restaurantId: string): void => {
+        dispatch(
+            fetchMenus({
+                restaurantId,
+                setTotalNumberOfPages,
+                currentPage,
+            }),
+        );
+    };
     return (
         <div className="my-5">
             <div className="flex justify-between items-center">
@@ -45,7 +48,13 @@ const Menu = () => {
                         Add menu
                     </Button>
                 </div>
-                {isAddMenuOpen && <AddMenuModal isOpen={isAddMenuOpen} handleClose={handleAddMenuClose} />}
+                {isAddMenuOpen && (
+                    <AddMenuModal
+                        isOpen={isAddMenuOpen}
+                        handleMenusDispatch={handleMenusDispatch}
+                        handleClose={handleAddMenuClose}
+                    />
+                )}
             </div>
             {menus && menus.length > 0 ? (
                 <div className=" flex flex-col gap-2 items-center my-4">

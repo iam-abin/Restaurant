@@ -7,10 +7,7 @@ import Typography from '@mui/material/Typography';
 import { Button, CircularProgress } from '@mui/material';
 import { MenuFormSchema, menuSchema } from '../../utils/schema/menuSchema';
 import { IMenu } from '../../types';
-import { IResponse } from '../../types/api';
-import { hotToastMessage } from '../../utils/hotToast';
-import { editMenuApi } from '../../api/apiMethods/menu';
-import { fetchMenus } from '../../redux/thunk/menusThunk';
+import { updateMenu } from '../../redux/thunk/menusThunk';
 import { useAppDispatch } from '../../redux/hooks';
 
 const style = {
@@ -42,6 +39,7 @@ export default function EditMenuModal({
         name: menu.name,
         description: menu.description,
         price: menu.price,
+        cuisine: menu.cuisine,
         salePrice: menu.salePrice,
         image: undefined,
     });
@@ -70,9 +68,10 @@ export default function EditMenuModal({
             formData.append('salePrice', input.salePrice!.toString());
             if (inputData.image) formData.append('image', inputData.image);
 
-            const response: IResponse = await editMenuApi(menu._id.toString(), formData);
-            hotToastMessage(response.message, 'success');
-            dispatch(fetchMenus({ restaurantId: menu.restaurantId }));
+            await dispatch(
+                updateMenu({ menuId: menu._id.toString(), updateData: formData as Partial<IMenu> }),
+            );
+
             handleClose();
         } finally {
             setIsLoading(false);

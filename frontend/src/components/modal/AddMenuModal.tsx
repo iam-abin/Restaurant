@@ -6,10 +6,9 @@ import { MenuFormSchema, menuSchema } from '../../utils/schema/menuSchema';
 import { IResponse } from '../../types/api';
 import { addMenuApi } from '../../api/apiMethods/menu';
 import { hotToastMessage } from '../../utils/hotToast';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { fetchMenus } from '../../redux/thunk/menusThunk';
+import { useAppSelector } from '../../redux/hooks';
 import { searchCuisineApi } from '../../api/apiMethods/cuisine';
-import { ICuisineResponse1 } from '../../types';
+import { ICuisineResponse1, IMenu } from '../../types';
 import AsyncCreatableSelect from 'react-select/async-creatable';
 
 const style = {
@@ -39,11 +38,20 @@ export type SearchableSelectProps = {
     ) => void | Promise<OptionType[]>;
 };
 
-export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean; handleClose: () => void }) {
+export default function AddMenuModal({
+    isOpen,
+    handleClose,
+    handleMenusDispatch,
+}: {
+    isOpen: boolean;
+    handleClose: () => void;
+    handleMenusDispatch: (restaurantId: string) => void;
+}) {
     const [isLoading, setIsLoading] = useState(false);
     const [input, setInput] = useState<MenuFormSchema>({
         name: '',
         description: '',
+        cuisine: '',
         price: 0,
         salePrice: undefined,
         image: undefined,
@@ -52,7 +60,6 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
     const [errors, setErrors] = useState<Partial<MenuFormSchema>>({});
 
     const restaurantData = useAppSelector((state) => state.restaurantReducer.restaurantData);
-    const dispatch = useAppDispatch();
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -75,7 +82,11 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
         e.preventDefault();
         setIsLoading(true);
         setErrors({});
-        const inputData = { ...input, price: Number(input.price) || undefined };
+        const inputData = {
+            ...input,
+            price: Number(input.price) || undefined,
+            salePrice: input.salePrice ? Number(input.salePrice) : undefined,
+        };
 
         const result = menuSchema.safeParse(inputData);
         if (!result.success) {
@@ -86,20 +97,14 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
 
         try {
             const formData = new FormData();
-            console.log('inputData');
-            console.log(inputData);
-            console.log('inputData');
-
             formData.append('name', inputData.name);
             formData.append('description', inputData.description);
+            formData.append('cuisine', inputData.cuisine!);
             formData.append('price', inputData.price?.toString() ?? '0');
             formData.append('salePrice', inputData.salePrice ? inputData.salePrice?.toString() : '0');
             if (inputData.image) formData.append('image', inputData.image);
 
             const restaurantId = restaurantData?.restaurant._id;
-            console.log('formData');
-            console.log([...formData.entries()]);
-            console.log('formData');
 
             if (!restaurantId) {
                 hotToastMessage('Restaurant ID is missing', 'error');
@@ -107,12 +112,21 @@ export default function AddMenuModal({ isOpen, handleClose }: { isOpen: boolean;
                 return;
             }
 
-            const response: IResponse = await addMenuApi(formData);
+            const response: IResponse = await addMenuApi(formData as unknown as IMenu);
             hotToastMessage(response.message, 'success');
-            dispatch(fetchMenus({ restaurantId }));
-            setInput({ name: '', description: '', price: 0, salePrice: undefined, image: undefined });
+            handleMenusDispatch(restaurantId);
+            setInput({
+                name: '',
+                description: '',
+                cuisine: '',
+                price: 0,
+                salePrice: undefined,
+                image: undefined,
+            });
             setPreviewImage(null);
             handleClose();
+        } catch (error: unknown) {
+            hotToastMessage((error as Error).message, 'error');
         } finally {
             setIsLoading(false);
         }

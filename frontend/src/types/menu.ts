@@ -2,6 +2,7 @@ export interface IMenu {
     _id: string;
     name: string;
     description: string;
+    cuisine: string;
     price: number;
     salePrice?: number | undefined;
     imageUrl: string;

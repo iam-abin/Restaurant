@@ -17,6 +17,14 @@ export const addMenuRequestBodyValidator = [
         .trim()
         .isLength({ max: 200 })
         .withMessage('Description must not exceed 200 characters'),
+    body('cuisine')
+        .notEmpty()
+        .withMessage('Cuisine is required')
+        .isString()
+        .withMessage('Cuisine must be a string')
+        .trim()
+        .isLength({ min: 4, max: 50 })
+        .withMessage('Cuisine name must be between 4 and 50 characters long'),
     body('price')
         .notEmpty()
         .withMessage('Price is required')
