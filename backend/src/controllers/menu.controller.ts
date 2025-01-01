@@ -23,11 +23,7 @@ class MenuController {
         const { restaurantId } = req.params;
         const { page = 1, limit = 10 } = req.query;
 
-        const menu: Menus = await menuService.getMenus(
-            restaurantId,
-            parseInt(page as string),
-            parseInt(limit as string),
-        );
+        const menu: Menus = await menuService.getMenus(restaurantId, page as number, limit as number);
         res.status(200).json(createSuccessResponse('Menus fetched successfully', menu));
     }
 

@@ -48,6 +48,7 @@ export interface IRestaurantResult {
     restaurantRating: number;
     restaurantRatingsCount: number;
     myRating: number;
+    cartItemsCount: number;
 }
 
 export interface IRestaurantResponse2 {
@@ -78,3 +79,8 @@ export interface IRestaurantResponse2 {
     deliveryTime: number; // Delivery time in minutes (or other unit)
     imageUrl: string; // Image URL for the restaurant
 }
+
+export type SearchResponse = {
+    restaurants: ISearchResult[];
+    numberOfPages: number;
+};

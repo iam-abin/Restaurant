@@ -16,8 +16,11 @@ class ProfileController {
     }
 
     public async getProfiles(req: Request, res: Response): Promise<void> {
-        const { page, limit } = req.params;
-        const profilesData: IProfilesData = await profileService.getUserProfiles(Number(page), Number(limit));
+        const { page = 1, limit = 10 } = req.query;
+        const profilesData: IProfilesData = await profileService.getUserProfiles(
+            page as number,
+            limit as number,
+        );
         res.status(200).json(createSuccessResponse('User Profiles fetched successfully', profilesData));
     }
 

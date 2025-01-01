@@ -50,5 +50,5 @@ export interface IRestaurantOrder {
 
 export type Orders = {
     orders: IRestaurantOrder[];
-    numberOfPages: number
-}
+    numberOfPages: number;
+};

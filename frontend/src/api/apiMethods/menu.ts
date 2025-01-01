@@ -10,8 +10,8 @@ export const getMenuApi = async (menuId: string): Promise<IResponse> => {
     return await makeApiCall('get', menuApiUrls.getMenuUrl(menuId));
 };
 
-export const getMenusApi = async (restaurantId: string): Promise<IResponse> => {
-    return await makeApiCall('get', menuApiUrls.getMenusUrl(restaurantId));
+export const getMenusApi = async (restaurantId: string, page: number, limit?: number): Promise<IResponse> => {
+    return await makeApiCall('get', menuApiUrls.getMenusUrl(restaurantId, page, limit));
 };
 
 export const editMenuApi = async (menuId: string, data: FormData): Promise<IResponse> => {

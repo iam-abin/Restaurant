@@ -9,8 +9,7 @@ export interface IMenu {
     isClosed: boolean;
 }
 
-
 export type Menus = {
-    menus: IMenu[]
-    numberOfPages: number
-}
+    menus: IMenu[];
+    numberOfPages: number;
+};

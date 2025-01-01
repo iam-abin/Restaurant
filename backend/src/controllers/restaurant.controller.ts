@@ -3,7 +3,7 @@ import { container } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
 import { IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
 import { RestaurantService } from '../services';
-import { IRestaurantResult, IRestaurantsData, IRestaurantUpdate, ISearchResult } from '../types';
+import { IRestaurantResult, IRestaurantsData, IRestaurantUpdate, SearchData } from '../types';
 
 const restaurantService = container.resolve(RestaurantService);
 
@@ -43,10 +43,10 @@ class RestaurantController {
     }
 
     public async getRestaurants(req: Request, res: Response): Promise<void> {
-        const { page, limit } = req.params;
+        const { page = 1, limit = 10 } = req.query;
         const restaurantsData: IRestaurantsData = await restaurantService.getRestaurants(
-            Number(page),
-            Number(limit),
+            page as number,
+            limit as number,
         );
         res.status(200).json(createSuccessResponse('Restaurants fetched successfully', restaurantsData));
     }
@@ -54,12 +54,15 @@ class RestaurantController {
     public async searchRestaurant(req: Request, res: Response): Promise<void> {
         const searchText: string = req.params.searchText || ''; // From home page search bar
         const searchQuery: string = (req.query.searchQuery as string) || ''; // From search page search bar
+        const { page = 1, limit = 10 } = req.query;
         const selectedCuisines: string = (req.query.selectedCuisines as string) || ''; // From filter area
-        const restaurant: ISearchResult[] = await restaurantService.searchRestaurant(
+        const restaurant: SearchData = await restaurantService.searchRestaurant({
             searchText,
             searchQuery,
             selectedCuisines,
-        );
+            page: page as number,
+            limit: limit as number,
+        });
         res.status(200).json(createSuccessResponse('Searched restaurants fetched successfully', restaurant));
     }
 }

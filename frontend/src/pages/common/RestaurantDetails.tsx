@@ -5,9 +5,7 @@ import { ShoppingCart, TimerOutlined } from '@mui/icons-material';
 
 import { ICuisine, IMenu, IRestaurantResponse2, IRestaurantResult } from '../../types';
 import { changeRatingApi, getARestaurantApi } from '../../api/apiMethods';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { fetchCartItems } from '../../redux/thunk/cartThunk';
-import { ROLES_CONSTANTS } from '../../utils/constants';
+
 import MenuCardSkeleton from '../../components/shimmer/MenuCardSkeleton';
 import MenuCard from '../../components/cards/MenuCard';
 import StarRating from '../../components/rating/StarRating';
@@ -17,11 +15,10 @@ const RestaurantDetails = () => {
     const params = useParams();
     const [restaurant, setRestaurant] = useState<IRestaurantResponse2 | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const dispatch = useAppDispatch();
-    const cartData = useAppSelector((state) => state.cartReducer.cartData);
-    const authData = useAppSelector((state) => state.authReducer.authData);
+
     const { restaurantId } = params;
     const [myRatingValue, setMyRatingValue] = useState<number>(0);
+    const [cartItemsCount, setCartItemsCount] = useState<number>(0);
     const [restaurantRatingValue, setRestaurantRatingValue] = useState<number>(0);
     const [restaurantRatingCount, setRestaurantRatingCount] = useState<number>(0);
 
@@ -51,15 +48,11 @@ const RestaurantDetails = () => {
             setRestaurantRatingValue((response.data as IRestaurantResult).restaurantRating);
             setRestaurantRatingCount((response.data as IRestaurantResult).restaurantRatingsCount);
             setMyRatingValue((response.data as IRestaurantResult).myRating);
+            setCartItemsCount((response.data as IRestaurantResult).cartItemsCount);
             setIsLoading(false);
         })();
     }, [myRatingValue]);
 
-    useEffect(() => {
-        if (authData?.role === ROLES_CONSTANTS.USER) {
-            dispatch(fetchCartItems(restaurantId!));
-        }
-    }, []);
     return (
         <div className="max-w-6xl mx-auto my-10">
             <div className="w-full">
@@ -82,8 +75,8 @@ const RestaurantDetails = () => {
                                 ))}
                             </div>
                             <IconButton aria-label="cart  ">
-                                <Badge badgeContent={cartData.length} color="primary">
-                                    <Link to={'/cart'}>
+                                <Badge badgeContent={cartItemsCount} color="primary">
+                                    <Link to={`/cart/${restaurantId}`}>
                                         <ShoppingCart />
                                     </Link>
                                 </Badge>

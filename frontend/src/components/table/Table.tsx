@@ -22,8 +22,7 @@ const Table = ({
         return path.split('.').reduce((acc: any, curr: string) => acc && acc[curr], nestedObj);
     };
 
-
-    const {currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages} = usePagination({});
+    const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
 
     // const handlePageChange = async (pageNumber: number) => {
     //     setCurrentPage(pageNumber);
@@ -34,15 +33,15 @@ const Table = ({
     //     setCurrentPage(currentPage);
     // }, [data]);
 
-     useEffect(() => {
+    useEffect(() => {
         // setCurrentPage(currentPage);
-        (async()=>{
+        (async () => {
             await fetchData(currentPage);
             console.log(numberOfPages);
-            
-            setTotalNumberOfPages(numberOfPages)
-        })()
-    }, [ currentPage, numberOfPages]);
+
+            setTotalNumberOfPages(numberOfPages);
+        })();
+    }, [currentPage, numberOfPages]);
 
     return (
         <>
@@ -93,8 +92,12 @@ const Table = ({
                 </table>
             </div>
 
-              <div className="flex justify-center my-10">
-                <PaginationButtons handlePageChange={handlePageChange} numberOfPages={totalNumberOfPages} currentPage={currentPage}/>
+            <div className="flex justify-center my-10">
+                <PaginationButtons
+                    handlePageChange={handlePageChange}
+                    numberOfPages={totalNumberOfPages}
+                    currentPage={currentPage}
+                />
             </div>
         </>
     );

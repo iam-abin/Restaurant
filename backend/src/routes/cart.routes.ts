@@ -3,6 +3,7 @@ import { checkCurrentUser, auth, validateRequest } from '../middlewares';
 import {
     addToCartRequestBodyValidator,
     mongoIdParamsValidator,
+    paginationValidator,
     updateCartRequestBodyValidator,
 } from '../utils';
 import { cartController } from '../controllers';
@@ -24,6 +25,7 @@ router.get(
     checkCurrentUser,
     auth(UserRole.USER),
     mongoIdParamsValidator('restaurantId'),
+    paginationValidator,
     validateRequest,
     cartController.getCartItems,
 );

@@ -4,9 +4,6 @@ import mongoose, { DeleteResult } from 'mongoose';
 
 export class RatingRepository {
     async findUserRating(restaurantId: string, userId: string): Promise<IRatingDocument | null> {
-        console.log('restaurantId : ', restaurantId);
-        console.log('userId : ', userId);
-
         return await RatingModel.findOne({ restaurantId, userId });
     }
 

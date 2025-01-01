@@ -120,7 +120,7 @@ export class OrderRepository {
         return userOrders;
     }
 
-    async findOrders(restaurantId: string, skip: number, limit: number): Promise<IOrderDocument[]> {
+    async findOrders(restaurantId: string, skip: number, limit?: number): Promise<IOrderDocument[]> {
         const restaurantOrders = await OrderModel.aggregate([
             // Match orders by restaurantId
             { $match: { restaurantId: new mongoose.Types.ObjectId(restaurantId) } },
@@ -207,6 +207,8 @@ export class OrderRepository {
                     createdAt: 1,
                 },
             },
+            ...(skip ? [{ $skip: skip }] : []), // Skip documents if skip is provided
+            ...(limit ? [{ $limit: limit }] : []), // Limit documents if limit is provided
         ]);
         return restaurantOrders;
     }

@@ -14,7 +14,7 @@ const router: Router = express.Router();
 router.get('/', checkCurrentUser, auth(UserRole.RESTAURANT), restaurantController.getMyRestaurant);
 
 router.get(
-    '/restaurants/:page/:limit',
+    '/restaurants',
     checkCurrentUser,
     auth(UserRole.ADMIN),
     paginationValidator,
@@ -43,6 +43,7 @@ router.patch(
 router.get(
     '/search/:searchText',
     searchRestaurantValidator,
+    paginationValidator,
     validateRequest,
     restaurantController.searchRestaurant,
 );

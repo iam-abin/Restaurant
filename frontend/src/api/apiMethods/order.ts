@@ -10,7 +10,11 @@ export const getMyOrdersApi = async (currentPage: number, limit?: number): Promi
     return await makeApiCall('get', orderApiUrls.getMyOrdersUrl(currentPage, limit));
 };
 
-export const getRestaurantOrdersApi = async (restaurantId: string, currentPage: number, limit?: number): Promise<IResponse> => {
+export const getRestaurantOrdersApi = async (
+    restaurantId: string,
+    currentPage: number,
+    limit?: number,
+): Promise<IResponse> => {
     return await makeApiCall('get', orderApiUrls.getRestaurantOrdersUrl(restaurantId, currentPage, limit));
 };
 

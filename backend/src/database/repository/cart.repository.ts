@@ -39,4 +39,8 @@ export class CartRepository {
     async deleteAllItems(userId: string, session?: ClientSession): Promise<DeleteResult> {
         return await CartModel.deleteMany({ userId }, { session });
     }
+
+    async countCartItems(userId: string, restaurantId: string): Promise<number> {
+        return CartModel.countDocuments({ userId, restaurantId });
+    }
 }

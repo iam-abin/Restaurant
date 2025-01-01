@@ -4,10 +4,13 @@ import {
     IRestaurantResult,
     IRestaurantsData,
     IRestaurantUpdate,
-    ISearchResult,
+    SearchData,
+    SearchRestaurant,
+    SearchResult,
 } from '../types';
 import {
     AddressRepository,
+    CartRepository,
     RatingRepository,
     RestaurantCuisineRepository,
     RestaurantRepository,
@@ -27,6 +30,7 @@ export class RestaurantService {
         private readonly restaurantRepository: RestaurantRepository,
         private readonly restaurantCuisineRepository: RestaurantCuisineRepository,
         private readonly ratingRepository: RatingRepository,
+        private readonly cartRepository: CartRepository,
     ) {}
 
     public async getARestaurant(restaurantId: string, userId: string): Promise<IRestaurantResult | null> {
@@ -34,10 +38,11 @@ export class RestaurantService {
             await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
 
-        const [restaurantRating, restaurantRatingsCount, myRating] = await Promise.all([
+        const [restaurantRating, restaurantRatingsCount, myRating, cartItemsCount] = await Promise.all([
             this.ratingRepository.findRestaurantRating(restaurantId),
             this.ratingRepository.countRestaurantRatings(restaurant._id.toString()),
             this.ratingRepository.findUserRating(restaurant._id.toString(), userId),
+            this.cartRepository.countCartItems(userId, restaurantId),
         ]);
 
         return {
@@ -45,6 +50,7 @@ export class RestaurantService {
             restaurantRating,
             restaurantRatingsCount,
             myRating: myRating ? myRating.rating : 0,
+            cartItemsCount,
         };
     }
 
@@ -117,23 +123,15 @@ export class RestaurantService {
         }
     }
 
-    public async searchRestaurant(
-        searchText: string,
-        searchQuery: string,
-        selectedCuisines: string,
-    ): Promise<ISearchResult[]> {
-        // search is based on ( name, city, country, cuisines )
+    public async searchRestaurant({
+        searchText,
+        searchQuery,
+        selectedCuisines,
+        page,
+        limit,
+    }: SearchRestaurant): Promise<SearchData> {
+        const skip: number = getPaginationSkipValue(page, limit);
 
-        // console.log('-------------------');
-        // console.log(
-        //     'searchText==> ',
-        //     searchText,
-        //     'searchQuery==> ',
-        //     searchQuery,
-        //     'selectedCuisines==> ',
-        //     selectedCuisines,
-        // );
-        // console.log('-------------------');
         let cuisinesArray: string[] = selectedCuisines.split(',');
         if (cuisinesArray.length) {
             cuisinesArray = cuisinesArray.filter((cuisine: string) => cuisine); // It avoid falsy values
@@ -141,12 +139,16 @@ export class RestaurantService {
 
         // const cuisinesArray: string[] = selectedCuisines.split(', ').filter((cuisine: string) => cuisine); // It avoid falsy values
 
-        const restaurant: ISearchResult[] = await this.restaurantRepository.searchRestaurants(
+        const restaurant: SearchResult = await this.restaurantRepository.searchRestaurants(
             searchText,
             searchQuery,
             cuisinesArray,
+            skip,
+            limit,
         );
 
-        return restaurant;
+        // return restaurant;
+        const numberOfPages: number = getPaginationTotalNumberOfPages(restaurant.totalCount, limit);
+        return { restaurants: restaurant.restaurants, numberOfPages };
     }
 }

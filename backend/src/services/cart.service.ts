@@ -1,9 +1,9 @@
 import { autoInjectable } from 'tsyringe';
-import { GetCartItemsByRestaurantParams, ICart } from '../types';
+import { GetCartItemsByRestaurantParams, ICart, ICartItemsData } from '../types';
 import { CartRepository, MenuRepository } from '../database/repository';
 import { ICartDocument, IMenuDocument, IUserDocument } from '../database/model';
 import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
-import { getPaginationSkipValue } from '../utils';
+import { getPaginationSkipValue, getPaginationTotalNumberOfPages } from '../utils';
 
 @autoInjectable()
 export class CartService {
@@ -34,7 +34,7 @@ export class CartService {
         restaurantId,
         page,
         limit,
-    }: GetCartItemsByRestaurantParams): Promise<ICartDocument[]> {
+    }: GetCartItemsByRestaurantParams): Promise<ICartItemsData> {
         const skip: number = getPaginationSkipValue(page, limit);
         const cartItems = await this.cartRepository.getCartItemsByRestaurant(
             userId,
@@ -42,7 +42,11 @@ export class CartService {
             skip,
             limit,
         );
-        return cartItems;
+
+        const cartItemsCount: number = await this.cartRepository.countCartItems(userId, restaurantId);
+        const numberOfPages: number = getPaginationTotalNumberOfPages(cartItemsCount, limit);
+
+        return { cartItems, numberOfPages };
     }
 
     public async updateItemQuantity(

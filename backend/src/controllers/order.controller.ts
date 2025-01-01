@@ -47,8 +47,8 @@ class OrderController {
         const orders: Orders = await orderService.getRestaurantOrders({
             restaurantId,
             ownerId: userId,
-            page: parseInt(page as string),
-            limit: parseInt(limit as string),
+            page: page as number,
+            limit: limit as number,
         });
         res.status(200).json(createSuccessResponse('Restaurant orders fetched successfully', orders));
     }
@@ -56,9 +56,6 @@ class OrderController {
     public async getMyOrders(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
         const { page = 1, limit = 10 } = req.query;
-
-        console.log('page ', page, 'limit ', limit);
-        console.log('page ', typeof page, 'limit ', typeof limit);
 
         const orders: Orders = await orderService.getMyOrders(userId, page as number, limit as number);
         res.status(200).json(createSuccessResponse('Your orders fetched successfully', orders));

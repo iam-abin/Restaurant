@@ -24,8 +24,8 @@ function RestaurantsList() {
         restaurantsData = await getRestaurantsApi(currentPage, USERS_PER_PAGE);
         const data = restaurantsData?.data as IRestaurantsResponse;
         setRestaurantsData(data.restaurants as IRestaurant[]);
-        console.log("data", data);
-        
+        console.log('data', data);
+
         setNumberOfPages(data.numberOfPages);
     };
 

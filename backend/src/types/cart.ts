@@ -1,3 +1,5 @@
+import { ICartDocument } from '../database/model';
+
 export interface ICart {
     userId: string;
     restaurantId: string;
@@ -11,3 +13,8 @@ export type GetCartItemsByRestaurantParams = {
     page: number;
     limit: number;
 };
+
+export interface ICartItemsData {
+    cartItems: ICartDocument[];
+    numberOfPages: number;
+}

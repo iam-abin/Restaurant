@@ -28,10 +28,9 @@ const OrdersListPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [selectedOrder, setSelectedOrder] = useState<IRestaurantOrder | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
-    const {currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages} = usePagination({})
+    const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
     const restaurant = useAppSelector((store) => store.restaurantReducer.restaurantData?.restaurant);
-    
-    
+
     useEffect(() => {
         (async () => {
             if (restaurant?._id) {
@@ -39,7 +38,7 @@ const OrdersListPage: React.FC = () => {
                 try {
                     const orders: IResponse = await getRestaurantOrdersApi(restaurant._id, currentPage);
                     setOrders((orders.data as Orders).orders);
-                    setTotalNumberOfPages((orders.data as Orders).numberOfPages)
+                    setTotalNumberOfPages((orders.data as Orders).numberOfPages);
                 } finally {
                     setLoading(false);
                 }
@@ -87,7 +86,7 @@ const OrdersListPage: React.FC = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {orders.map((order:IRestaurantOrder) => (
+                            {orders.map((order: IRestaurantOrder) => (
                                 <TableRow key={order._id}>
                                     <TableCell>
                                         <img
@@ -151,8 +150,12 @@ const OrdersListPage: React.FC = () => {
                 />
             )}
 
-<div className="flex justify-center my-10">
-                <PaginationButtons handlePageChange={handlePageChange} numberOfPages={totalNumberOfPages} currentPage={currentPage}/>
+            <div className="flex justify-center my-10">
+                <PaginationButtons
+                    handlePageChange={handlePageChange}
+                    numberOfPages={totalNumberOfPages}
+                    currentPage={currentPage}
+                />
             </div>
         </Box>
     );

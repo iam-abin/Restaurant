@@ -1,17 +1,32 @@
 import { Button } from '@mui/material';
-import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { changeCartItemQuantity, removeCartItem, removeCartItems } from '../../redux/thunk/cartThunk';
 import { ICart } from '../../types';
 import TableCart from '../../components/table/TableCart';
 import CheckoutReviewModal from '../../components/modal/CheckoutReviewModal';
+import { fetchCartItems } from '../../redux/thunk/cartThunk';
+import { ROLES_CONSTANTS } from '../../utils/constants';
 import CartEmptyGif from '../../assets/cart-is-empty.jpeg';
+import usePagination from '../../hooks/usePagination';
+import PaginationButtons from '../../components/pagination/PaginationButtons';
 
 const Cart = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { cartData } = useAppSelector((store) => store.cartReducer);
     const dispatch = useAppDispatch();
+    const { restaurantId } = useParams();
+
+    const authData = useAppSelector((state) => state.authReducer.authData);
+    const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
+
+    useEffect(() => {
+        if (authData?.role === ROLES_CONSTANTS.USER) {
+            dispatch(fetchCartItems({ restaurantId: restaurantId!, setTotalNumberOfPages }));
+        }
+    }, []);
 
     const handleOpen = () => {
         setIsOpen(true);
@@ -72,6 +87,13 @@ const Cart = () => {
                     <img src={CartEmptyGif} alt="Empty Cart" className="empty-cart-gif w-3/4 md:w-1/4" />
                 </div>
             )}
+            <div className="flex justify-center my-10">
+                <PaginationButtons
+                    handlePageChange={handlePageChange}
+                    numberOfPages={totalNumberOfPages}
+                    currentPage={currentPage}
+                />
+            </div>
         </>
     );
 };

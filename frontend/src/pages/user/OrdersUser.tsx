@@ -13,8 +13,8 @@ const OrdersUser: React.FC = () => {
     const [selectedOrder, setSelectedOrder] = useState<IRestaurantOrder | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [orders, setOrders] = useState<IRestaurantOrder[]>([]);
-    const {currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages} = usePagination({});
- 
+    const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
+
     useEffect(() => {
         (async () => {
             try {
@@ -108,7 +108,11 @@ const OrdersUser: React.FC = () => {
                 />
             )}
             <div className="flex justify-center my-10">
-                <PaginationButtons handlePageChange={handlePageChange} numberOfPages={totalNumberOfPages} currentPage={currentPage}/>
+                <PaginationButtons
+                    handlePageChange={handlePageChange}
+                    numberOfPages={totalNumberOfPages}
+                    currentPage={currentPage}
+                />
             </div>
         </Box>
     );

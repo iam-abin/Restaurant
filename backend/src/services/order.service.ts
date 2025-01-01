@@ -153,6 +153,7 @@ export class OrderService {
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         if ('_id' in restaurant.owner! && restaurant.owner._id.toString() !== ownerId)
             throw new ForbiddenError('You cannot access other restaurant orders');
+
         const skip: number = getPaginationSkipValue(page, limit);
 
         const orders: IOrderDocument[] = await this.orderRepository.findOrders(restaurantId, skip, limit);

@@ -22,3 +22,8 @@ export interface ICartResponse {
     restaurantId: string | IRestaurant;
     quantity: number;
 }
+
+export interface ICartItemsData {
+    cartItems: ICart[];
+    numberOfPages: number;
+}

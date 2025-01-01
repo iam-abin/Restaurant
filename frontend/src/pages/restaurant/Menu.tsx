@@ -17,8 +17,8 @@ const Menu = () => {
     const handleAddMenuClose = () => setIsAddMenuOpen(false);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const {currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages} = usePagination({});
-    
+    const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
+
     const restaurantData: IRestaurantResponse | null = useAppSelector(
         (state) => state.restaurantReducer.restaurantData,
     );
@@ -26,7 +26,13 @@ const Menu = () => {
 
     useEffect(() => {
         if (restaurantData?.restaurant._id) {
-            dispatch(fetchMenus({ restaurantId: restaurantData.restaurant._id , setTotalNumberOfPages}));
+            dispatch(
+                fetchMenus({
+                    restaurantId: restaurantData.restaurant._id,
+                    setTotalNumberOfPages,
+                    currentPage,
+                }),
+            );
         }
     }, [dispatch, restaurantData, currentPage]);
 
@@ -47,9 +53,13 @@ const Menu = () => {
                     {menus.map((menu: IMenu) => (
                         <MenuCard key={menu._id} menu={menu} />
                     ))}
-                      <div className="flex justify-center my-10">
-                <PaginationButtons handlePageChange={handlePageChange} numberOfPages={totalNumberOfPages} currentPage={currentPage}/>
-            </div>
+                    <div className="flex justify-center my-10">
+                        <PaginationButtons
+                            handlePageChange={handlePageChange}
+                            numberOfPages={totalNumberOfPages}
+                            currentPage={currentPage}
+                        />
+                    </div>
                 </div>
             ) : (
                 <div className="flex flex-col items-center justify-center h-screen">

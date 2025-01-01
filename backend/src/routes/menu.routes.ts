@@ -4,6 +4,7 @@ import {
     addMenuRequestBodyValidator,
     updateMenuRequestBodyValidator,
     mongoIdParamsValidator,
+    paginationValidator,
 } from '../utils';
 import { menuController } from '../controllers';
 import { UserRole } from '../types';
@@ -32,6 +33,7 @@ router.get(
     '/restaurant/:restaurantId',
     checkCurrentUser,
     mongoIdParamsValidator('restaurantId'),
+    paginationValidator,
     validateRequest,
     menuController.getMenus,
 );
