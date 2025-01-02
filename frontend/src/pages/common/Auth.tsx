@@ -121,7 +121,6 @@ const Auth = () => {
 
     // google login
     const handleSuccess = async (googleResponse: CredentialResponse) => {
-        
         const { credential } = googleResponse;
         try {
             const response = await dispatch(googleAuthThunk({ credential: credential!, role }));
@@ -131,7 +130,7 @@ const Auth = () => {
                 naivgate('/');
             }
         } catch (error: unknown) {
-            console.error(error);
+            hotToastMessage((error as Error).message, 'error');
         }
     };
 

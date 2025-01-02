@@ -1,30 +1,41 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { getMenusApi } from '../../api/apiMethods/menu';
-import { IMenu } from '../../types';
+import { editMenuApi, getMenusApi } from '../../api/apiMethods/menu';
+import { IMenu, IResponse, Menus } from '../../types';
+import { hotToastMessage } from '../../utils/hotToast';
 
 // Async thunk for fetching user menus
-export const fetchMenus = createAsyncThunk<IMenu, { restaurantId: string }, { rejectValue: string | null }>(
+export const fetchMenus = createAsyncThunk<
+    IMenu[],
+    {
+        restaurantId: string;
+        setTotalNumberOfPages: React.Dispatch<React.SetStateAction<number>>;
+        currentPage: number;
+    },
+    { rejectValue: string | null }
+>(
     'menus/fetchUserMenus',
-    async ({ restaurantId }, { rejectWithValue }) => {
+    async ({ restaurantId, setTotalNumberOfPages, currentPage }, { rejectWithValue }) => {
         try {
-            console.log('thunk ', restaurantId);
-            const menus = await getMenusApi(restaurantId);
-            return menus.data as IMenu;
+            const menus = await getMenusApi(restaurantId, currentPage, 2);
+            setTotalNumberOfPages((menus.data as Menus).numberOfPages);
+            return (menus.data as Menus).menus;
         } catch (error: unknown) {
             return rejectWithValue((error as Error).message);
         }
     },
 );
 
-// // Async thunk for updating user menus
-// export const updateMenu = createAsyncThunk(
-//     'menu/updateUserMenu',
-//     async (updateData: any, { rejectWithValue }) => {
-//         try {
-//             // const updatedData = await updateMenu(updateData)
-//             // return updatedData.data
-//         } catch (error) {
-//             return rejectWithValue('Failed to update menu')
-//         }
-//     }
-// )
+// Async thunk for updating user menus
+export const updateMenu = createAsyncThunk<
+    IMenu,
+    { menuId: string; updateData: Partial<IMenu> },
+    { rejectValue: string | null }
+>('menu/updateUserMenu', async ({ menuId, updateData }, { rejectWithValue }) => {
+    try {
+        const updatedData: IResponse = await editMenuApi(menuId, updateData);
+        hotToastMessage(updatedData.message, 'success');
+        return updatedData.data as IMenu;
+    } catch (error: unknown) {
+        return rejectWithValue((error as Error).message);
+    }
+});

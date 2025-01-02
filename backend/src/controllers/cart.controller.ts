@@ -3,7 +3,7 @@ import { container } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
 import { ICartDocument } from '../database/model';
 import { CartService } from '../services';
-import { ICart } from '../types';
+import { ICart, ICartItemsData } from '../types';
 
 const cartService = container.resolve(CartService);
 
@@ -20,8 +20,14 @@ class CartController {
     public async getCartItems(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
         const { restaurantId } = req.params;
-        const cartItems: ICartDocument[] = await cartService.getCartItemsByRestaurant(userId, restaurantId);
-        res.status(200).json(createSuccessResponse('Cart item fetched successfully', cartItems));
+        const { page = 1, limit = 10 } = req.query;
+        const cartItems: ICartItemsData = await cartService.getCartItemsByRestaurant({
+            userId,
+            restaurantId,
+            page: page as number,
+            limit: limit as number,
+        });
+        res.status(200).json(createSuccessResponse('Cart items fetched successfully', cartItems));
     }
 
     public async updateQuantity(req: Request, res: Response): Promise<void> {

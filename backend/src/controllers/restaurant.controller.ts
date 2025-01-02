@@ -3,13 +3,15 @@ import { container } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
 import { IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
 import { RestaurantService } from '../services';
-import { IRestaurantResponse, IRestaurantsData, IRestaurantUpdate, ISearchResult } from '../types';
+import { IRestaurantResult, IRestaurantsData, IRestaurantUpdate, SearchData } from '../types';
 
 const restaurantService = container.resolve(RestaurantService);
 
 export type RestaurantWithCuisines = {
     restaurant: IRestaurantDocument | null;
     cuisines: IRestaurantCuisineDocument[];
+    restaurantRating: number;
+    restaurantRatingsCount: number;
 };
 
 class RestaurantController {
@@ -32,15 +34,19 @@ class RestaurantController {
 
     public async getARestaurant(req: Request, res: Response): Promise<void> {
         const { restaurantId } = req.params;
-        const restaurant: IRestaurantResponse | null = await restaurantService.getARestaurant(restaurantId);
+        const { userId } = req.currentUser!;
+        const restaurant: IRestaurantResult | null = await restaurantService.getARestaurant(
+            restaurantId,
+            userId,
+        );
         res.status(200).json(createSuccessResponse('Restaurant fetched successfully', restaurant));
     }
 
     public async getRestaurants(req: Request, res: Response): Promise<void> {
-        const { page, limit } = req.params;
+        const { page = 1, limit = 10 } = req.query;
         const restaurantsData: IRestaurantsData = await restaurantService.getRestaurants(
-            Number(page),
-            Number(limit),
+            page as number,
+            limit as number,
         );
         res.status(200).json(createSuccessResponse('Restaurants fetched successfully', restaurantsData));
     }
@@ -48,12 +54,15 @@ class RestaurantController {
     public async searchRestaurant(req: Request, res: Response): Promise<void> {
         const searchText: string = req.params.searchText || ''; // From home page search bar
         const searchQuery: string = (req.query.searchQuery as string) || ''; // From search page search bar
+        const { page = 1, limit = 10 } = req.query;
         const selectedCuisines: string = (req.query.selectedCuisines as string) || ''; // From filter area
-        const restaurant: ISearchResult[] = await restaurantService.searchRestaurant(
+        const restaurant: SearchData = await restaurantService.searchRestaurant({
             searchText,
             searchQuery,
             selectedCuisines,
-        );
+            page: page as number,
+            limit: limit as number,
+        });
         res.status(200).json(createSuccessResponse('Searched restaurants fetched successfully', restaurant));
     }
 }

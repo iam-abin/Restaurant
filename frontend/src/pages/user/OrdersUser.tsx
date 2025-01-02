@@ -2,27 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardMedia, Typography, Box, Button, Grid } from '@mui/material';
 
 import { getMyOrdersApi } from '../../api/apiMethods';
-import { IMenu, IRestaurantOrder } from '../../types';
+import { IMenu, IRestaurantOrder, Orders } from '../../types';
 import OrderDetailsModal from '../../components/modal/OrderDetailsModal';
 import OrderCardSkelton from '../../components/shimmer/OrderCardSkelton';
+import PaginationButtons from '../../components/pagination/PaginationButtons';
+import usePagination from '../../hooks/usePagination';
 
-const Orders: React.FC = () => {
-    const [orders, setOrders] = useState<IRestaurantOrder[]>([]);
+const OrdersUser: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [selectedOrder, setSelectedOrder] = useState<IRestaurantOrder | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
+    const [orders, setOrders] = useState<IRestaurantOrder[]>([]);
+    const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
 
     useEffect(() => {
         (async () => {
             try {
                 setLoading(true);
-                const orders = await getMyOrdersApi();
-                setOrders(orders.data as IRestaurantOrder[]);
+                const orders = await getMyOrdersApi(currentPage);
+                setOrders((orders.data as Orders).orders);
+                setTotalNumberOfPages((orders.data as Orders).numberOfPages);
             } finally {
                 setLoading(false);
             }
         })();
-    }, []);
+    }, [currentPage]);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleOpen = (order: any) => {
@@ -74,7 +78,7 @@ const Orders: React.FC = () => {
                                                   )}
                                           </Typography>
                                           <Typography variant="body2" color="textSecondary">
-                                              Total price: {order.orderedItems && order.totalAmound}
+                                              Total price: {order.orderedItems && order.totalAmount}
                                           </Typography>
                                           <Typography variant="body2" sx={{ marginTop: 1 }}>
                                               Status: {order.status}
@@ -103,8 +107,15 @@ const Orders: React.FC = () => {
                     selectedOrder={selectedOrder}
                 />
             )}
+            <div className="flex justify-center my-10">
+                <PaginationButtons
+                    handlePageChange={handlePageChange}
+                    numberOfPages={totalNumberOfPages}
+                    currentPage={currentPage}
+                />
+            </div>
         </Box>
     );
 };
 
-export default Orders;
+export default OrdersUser;

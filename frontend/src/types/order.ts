@@ -7,7 +7,7 @@ export interface IOrder {
     restaurantId: string;
     // cartId: string;
     addressId: string;
-    totalAmound: number;
+    totalAmount: number;
     status: 'pending' | 'confirmed' | 'preparing' | 'outfordelivery' | 'delivered';
 }
 
@@ -45,5 +45,10 @@ export interface IRestaurantOrder {
     status: string;
     createdAt: string;
     orderedItems: OrderItem[];
-    totalAmound: number;
+    totalAmount: number;
 }
+
+export type Orders = {
+    orders: IRestaurantOrder[];
+    numberOfPages: number;
+};

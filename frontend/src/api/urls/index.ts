@@ -5,4 +5,5 @@ export * from './dashboard';
 export * from './menu';
 export * from './order';
 export * from './profile';
+export * from './rating';
 export * from './restaurant';

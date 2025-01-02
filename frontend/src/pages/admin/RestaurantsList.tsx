@@ -20,10 +20,10 @@ function RestaurantsList() {
     const fetchUsers = async (currentPage: number) => {
         let restaurantsData: IResponse | [] = [];
         // if (!searchKey) {
-        console.log('no search key');
         restaurantsData = await getRestaurantsApi(currentPage, USERS_PER_PAGE);
         const data = restaurantsData?.data as IRestaurantsResponse;
         setRestaurantsData(data.restaurants as IRestaurant[]);
+
         setNumberOfPages(data.numberOfPages);
     };
 
@@ -54,8 +54,6 @@ function RestaurantsList() {
             setRestaurantsData(restaurants);
         }
     };
-
-    console.log(restaurantsData);
 
     const columns = [
         { Header: 'Name', accessor: 'ownerId.name' },
@@ -112,15 +110,6 @@ function RestaurantsList() {
                 numberOfPages={numberOfPages}
                 fetchData={fetchUsers}
             />
-            {/* <ConfirmationDialogue
-                    open={open}
-                    setOpen={setOpen}
-                    title={`Do you want to ${isBlocked ? "block" : "unblock"} this user?`}
-                    description="Are you sure?"
-                    onAgree={handleBlockUnblock(userId, isBlocked)}
-                    closeText='No'
-                    okayText={isBlocked ? "active" : "inActive"}
-                /> */}
         </div>
     );
 }

@@ -11,7 +11,6 @@ const Landing = () => {
 
     const handleSearchClick = () => {
         if (!searchText) return;
-        console.log(searchText);
 
         navigate(`/search/${searchText}`);
     };

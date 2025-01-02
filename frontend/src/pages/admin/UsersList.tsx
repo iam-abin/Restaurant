@@ -17,7 +17,6 @@ function UsersList() {
     const fetchUsers = async (currentPage: number) => {
         let profilesData: IResponse | [] = [];
         // if (!searchKey) {
-        console.log('no search key');
         profilesData = await getProfilesApi(currentPage, USERS_PER_PAGE);
         const data = profilesData?.data as IProfilesResponse;
         // currentPage,

@@ -26,7 +26,6 @@ const ResetPassword = () => {
             const response: IResponse = await verifyResetTokenApi({
                 resetToken: uniqueId!,
             });
-            console.log(response);
 
             if (response.data) {
                 setUser(response.data as IUser);
@@ -73,8 +72,8 @@ const ResetPassword = () => {
             }); // Pass the uniqueId if required by the API
             hotToastMessage(response.message, 'success');
             navigate('/auth');
-        } catch (error) {
-            console.error('Reset password error:', error);
+        } catch (error: unknown) {
+            hotToastMessage((error as Error).message, 'error');
         } finally {
             setIsLoading(false);
         }

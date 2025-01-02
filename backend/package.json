@@ -4,8 +4,8 @@
   "description": "this is backend of restaurant application",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix",
+    "lint": "eslint 'src/**/*.ts'",
+    "lint:fix": "eslint 'src/**/*.ts' --fix",
     "format": "prettier --write 'src/**/*.ts'",
     "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
     "build": "tsc",
@@ -14,7 +14,6 @@
   "author": "abin",
   "license": "ISC",
   "dependencies": {
-    "@types/axios": "^0.14.4",
     "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",

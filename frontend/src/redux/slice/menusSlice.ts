@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { addAsyncThunkCases } from '../../utils/addCase';
-import { fetchMenus } from '../thunk/menusThunk';
+import { fetchMenus, updateMenu } from '../thunk/menusThunk';
+import { IMenu } from '../../types';
 
 interface IMenusSlice {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    menusData: any | null;
+    menusData: IMenu[] | null;
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
 }
@@ -27,6 +27,17 @@ const menusSlice = createSlice({
         addAsyncThunkCases(builder, fetchMenus, (state, action) => {
             state.status = 'succeeded';
             state.menusData = action.payload;
+        });
+
+        addAsyncThunkCases(builder, updateMenu, (state, action) => {
+            state.status = 'succeeded';
+            // Safely update the `menusData` only if it's not null
+            if (state.menusData) {
+                state.menusData = state.menusData.map((menuItem: IMenu) => {
+                    if (menuItem._id === action.payload._id) return action.payload;
+                    return menuItem;
+                });
+            }
         });
     },
 });

@@ -43,6 +43,14 @@ export interface ISearchResult {
     cuisines: string[];
 }
 
+export interface IRestaurantResult {
+    restaurant: IRestaurantResponse2;
+    restaurantRating: number;
+    restaurantRatingsCount: number;
+    myRating: number;
+    cartItemsCount: number;
+}
+
 export interface IRestaurantResponse2 {
     _id: string; // Restaurant ID (MongoDB ObjectId as string)
     name: string; // Restaurant name
@@ -71,3 +79,8 @@ export interface IRestaurantResponse2 {
     deliveryTime: number; // Delivery time in minutes (or other unit)
     imageUrl: string; // Image URL for the restaurant
 }
+
+export type SearchResponse = {
+    restaurants: ISearchResult[];
+    numberOfPages: number;
+};

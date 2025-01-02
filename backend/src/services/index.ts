@@ -6,4 +6,5 @@ export * from './menu.service';
 export * from './order.service';
 export * from './otp.service';
 export * from './profile.service';
+export * from './rating.service';
 export * from './restaurant.service';

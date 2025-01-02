@@ -1,0 +1,42 @@
+services:
+    frontend:
+        image: restaurant-frontend-dev
+        build:
+            context: ./frontend
+            dockerfile: docker/Dockerfile.dev
+        container_name: frontend-container-dev
+        ports:
+            - 5000:5000
+        restart: always
+        env_file:
+            - ./frontend/.env
+        volumes:
+            - ./frontend:/app
+            - /app/node_modules
+    backend:
+        image: restaurant-backend-dev
+        build:
+            context: ./backend
+            dockerfile: docker/Dockerfile.dev
+        container_name: backend-container-dev
+        ports:
+            - 3000:3000
+        restart: always
+        env_file:
+            - ./backend/.env.development
+        volumes:
+            - ./backend:/app
+            - /app/node_modules
+    nginx:
+        container_name: nginx_proxy
+        build:
+            context: ./proxy
+            dockerfile: Dockerfile
+        ports:
+            - 8080:80
+        depends_on:
+            - frontend
+            - backend
+        volumes:
+            - ./proxy/nginx.conf:/etc/nginx/nginx.conf
+        restart: always

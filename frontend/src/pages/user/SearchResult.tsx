@@ -4,12 +4,14 @@ import { Button, Chip } from '@mui/material';
 import { Search } from '@mui/icons-material';
 
 import { getCuisinesApi, searchRestaurantApi } from '../../api/apiMethods';
-import { ICuisineResponse1, IResponse, ISearchResult } from '../../types';
+import { ICuisineResponse1, IResponse, ISearchResult, SearchResponse } from '../../types';
 import { NoResultFound } from '../../components/NoResultFound';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import RestaurantCard from '../../components/cards/RestaurantCard';
 import RestaurantCardSkeleton from '../../components/shimmer/RestaurantCardSkeleton';
 import Filter from '../../components/Filter';
+import PaginationButtons from '../../components/pagination/PaginationButtons';
+import usePagination from '../../hooks/usePagination';
 
 const SearchResult = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -17,10 +19,10 @@ const SearchResult = () => {
     const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
     const [searchResults, setSearchResults] = useState<ISearchResult[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
 
     const params = useParams();
     const searchText = params.searchText || '';
-
     const fetchRestaurants = async () => {
         setIsLoading(true);
         try {
@@ -28,10 +30,11 @@ const SearchResult = () => {
                 searchText,
                 searchQuery,
                 selectedCuisines: selectedFilters,
+                page: currentPage,
             });
-            setSearchResults((response.data as ISearchResult[]) || []);
-        } catch (error) {
-            console.error('Error fetching search results:', error);
+            setSearchResults((response.data as SearchResponse).restaurants);
+            setTotalNumberOfPages((response.data as SearchResponse).numberOfPages);
+        } catch {
             setSearchResults([]);
         } finally {
             setIsLoading(false);
@@ -62,7 +65,6 @@ const SearchResult = () => {
 
     const handleSearchKeyChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.value === '') fetchRestaurants();
-        console.log(searchQuery);
         setSearchQuery(e.target.value);
     };
 
@@ -75,7 +77,7 @@ const SearchResult = () => {
                     filtersList={filtersList}
                 />
             </div>
-            <div className="flex-1 bg-green-100 py-3 rounded-lg">
+            <div className="flex-col bg-green-100 py-3 rounded-lg">
                 <div className="relative flex items-center gap-1">
                     <div className="w-full">
                         <Search className="absolute text-gray-500 inset-y-3 left-2" />
@@ -119,13 +121,13 @@ const SearchResult = () => {
                         {searchResults.map((restaurant, index) => (
                             <RestaurantCard key={index} restaurant={restaurant} />
                         ))}
-                        {/* {searchResults.map((restaurant, index) => (
+                        {searchResults.map((restaurant, index) => (
                             <RestaurantCard key={index} restaurant={restaurant} />
                         ))}
 
                         {searchResults.map((restaurant, index) => (
                             <RestaurantCard key={index} restaurant={restaurant} />
-                        ))} */}
+                        ))}
                     </div>
                 ) : (
                     <NoResultFound
@@ -134,6 +136,13 @@ const SearchResult = () => {
                         filterList={selectedFilters}
                     />
                 )}
+                <div className="flex justify-center my-10">
+                    <PaginationButtons
+                        handlePageChange={handlePageChange}
+                        numberOfPages={totalNumberOfPages}
+                        currentPage={currentPage}
+                    />
+                </div>
             </div>
         </div>
     );

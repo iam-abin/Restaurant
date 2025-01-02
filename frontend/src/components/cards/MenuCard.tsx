@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { ROLES_CONSTANTS } from '../../utils/constants';
 import { addToCart } from '../../redux/thunk/cartThunk';
 import { useParams } from 'react-router-dom';
+import { hotToastMessage } from '../../utils/hotToast';
 
 const MenuCard = ({ menu }: { menu: IMenu }) => {
     const authData = useAppSelector((store) => store.authReducer.authData);
@@ -23,7 +24,12 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
     const params = useParams();
 
     const addItemToCartHandler = async (menuItemId: string) => {
-        dispatch(addToCart({ itemId: menuItemId, restaurantId: params.restaurantId! }));
+        const response = await dispatch(
+            addToCart({ itemId: menuItemId, restaurantId: params.restaurantId! }),
+        );
+        if (response.meta.requestStatus === 'rejected') {
+            hotToastMessage(response.payload as string, 'error');
+        }
     };
 
     return (
@@ -48,9 +54,20 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
                     </Typography>
 
                     <p>{menu.description}</p>
-                    <h2 className="text-lg font-semibold mt-4">
-                        Price: <Typography className="text-yellow-600">₹{menu.price}</Typography>
-                    </h2>
+                    <div className="flex">
+                        <h2 className="text-lg font-semibold mt-4 flex items-center gap-3">
+                            <Typography component="span"> Price: </Typography>
+                            <Typography
+                                component="span"
+                                className={`text-yellow-600 ${menu.salePrice ? 'line-through' : ''}`}
+                            >
+                                ₹{menu.price}
+                            </Typography>
+                            <Typography component="span" className="text-yellow-600">
+                                {menu?.salePrice}
+                            </Typography>
+                        </h2>
+                    </div>
                 </CardContent>
 
                 <div className="flex items-center justify-center px-4 py-2">

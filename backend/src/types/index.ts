@@ -9,6 +9,7 @@ export * from './order';
 export * from './otp';
 export * from './password';
 export * from './profile';
+export * from './rating';
 export * from './restaurant';
 export * from './roles';
 export * from './user';

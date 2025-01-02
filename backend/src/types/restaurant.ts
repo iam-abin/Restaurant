@@ -20,13 +20,21 @@ export interface IRestaurantsData {
     numberOfPages: number;
 }
 
-export interface ISearchResult {
+export interface ISearchRestaurantResult {
     imageUrl: string;
     city: string;
     country: string;
     restaurantName: string;
     cuisines: string[];
     _id: mongoose.Schema.Types.ObjectId;
+}
+
+export interface IRestaurantResult {
+    restaurant: IRestaurantResponse;
+    restaurantRating: number;
+    restaurantRatingsCount: number;
+    myRating: number;
+    cartItemsCount: number;
 }
 
 export interface IRestaurantResponse {
@@ -57,3 +65,20 @@ export interface IRestaurantResponse {
     deliveryTime: number; // Delivery time in minutes (or other unit)
     imageUrl: string; // Image URL for the restaurant
 }
+
+export type SearchRestaurant = {
+    searchText: string;
+    searchQuery: string;
+    selectedCuisines: string;
+    page: number;
+    limit: number;
+};
+
+export type SearchResult = {
+    restaurants: ISearchRestaurantResult[];
+    totalCount: number;
+};
+
+export type SearchData = Omit<SearchResult, 'totalCount'> & {
+    numberOfPages: number;
+};

@@ -59,14 +59,21 @@ class AuthController {
     };
 
     public refresh = async (req: Request, res: Response): Promise<void> => {
-        const { refreshToken } = req.body;
-        const { accessToken }: { accessToken: string } = await userService.jwtRefresh(refreshToken);
-        res.cookie(
-            JWT_KEYS_CONSTANTS.JWT_TOKEN,
-            accessToken,
-            this.getCookieOptions(appConfig.COOKIE_JWT_ACCESS_EXPIRY_TIME),
-        );
-        res.status(200).json(createSuccessResponse('Token refreshed successfully'));
+        const { jwtRefreshToken } = req.cookies;
+
+        try {
+            const { accessToken }: { accessToken: string } = await userService.jwtRefresh(jwtRefreshToken);
+            res.cookie(
+                JWT_KEYS_CONSTANTS.JWT_TOKEN,
+                accessToken,
+                this.getCookieOptions(appConfig.COOKIE_JWT_ACCESS_EXPIRY_TIME),
+            );
+            res.status(200).json(createSuccessResponse('Token refreshed successfully'));
+        } catch {
+            res.clearCookie(JWT_KEYS_CONSTANTS.JWT_TOKEN);
+            res.clearCookie(JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN);
+            res.status(400).json('Token refresh failed');
+        }
     };
 
     private getCookieOptions(maxAge: number = 30 * 60 * 1000): CustomCookieOptions {

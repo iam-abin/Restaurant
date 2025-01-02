@@ -3,36 +3,53 @@ import { Link, useParams } from 'react-router-dom';
 import { Badge, Chip, IconButton, Typography } from '@mui/material';
 import { ShoppingCart, TimerOutlined } from '@mui/icons-material';
 
-import { ICuisine, IMenu, IRestaurantResponse2 } from '../../types';
-import { getARestaurantApi } from '../../api/apiMethods';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { fetchCartItems } from '../../redux/thunk/cartThunk';
-import { ROLES_CONSTANTS } from '../../utils/constants';
+import { ICuisine, IMenu, IRestaurantResponse2, IRestaurantResult } from '../../types';
+import { changeRatingApi, getARestaurantApi } from '../../api/apiMethods';
+
 import MenuCardSkeleton from '../../components/shimmer/MenuCardSkeleton';
 import MenuCard from '../../components/cards/MenuCard';
+import StarRating from '../../components/rating/StarRating';
+import RatingModal from '../../components/modal/RatingModal';
 
 const RestaurantDetails = () => {
     const params = useParams();
     const [restaurant, setRestaurant] = useState<IRestaurantResponse2 | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const dispatch = useAppDispatch();
-    const cartData = useAppSelector((state) => state.cartReducer.cartData);
-    const authData = useAppSelector((state) => state.authReducer.authData);
+
     const { restaurantId } = params;
+    const [myRatingValue, setMyRatingValue] = useState<number>(0);
+    const [cartItemsCount, setCartItemsCount] = useState<number>(0);
+    const [restaurantRatingValue, setRestaurantRatingValue] = useState<number>(0);
+    const [restaurantRatingCount, setRestaurantRatingCount] = useState<number>(0);
+
+    const [isRatingModalOpen, setIsRatingModalOpen] = useState<boolean>(false);
+    const handleOpenModal = () => setIsRatingModalOpen(true);
+
+    const handleCloseModal = () => setIsRatingModalOpen(false);
+
+    const handleRatingChange = async (
+        _event: React.SyntheticEvent<Element, Event>,
+        value: number | null,
+    ): Promise<void> => {
+        setMyRatingValue(value ?? 0);
+        if (restaurant) {
+            await changeRatingApi({ restaurantId: restaurant._id!, rating: value ?? 0 });
+        }
+    };
+
     useEffect(() => {
         (async () => {
             setIsLoading(true);
             const response = await getARestaurantApi(restaurantId!);
-            setRestaurant(response.data as IRestaurantResponse2);
+            setRestaurant((response.data as IRestaurantResult).restaurant as IRestaurantResponse2);
+            setRestaurantRatingValue((response.data as IRestaurantResult).restaurantRating);
+            setRestaurantRatingCount((response.data as IRestaurantResult).restaurantRatingsCount);
+            setMyRatingValue((response.data as IRestaurantResult).myRating);
+            setCartItemsCount((response.data as IRestaurantResult).cartItemsCount);
             setIsLoading(false);
         })();
-    }, []);
+    }, [myRatingValue]);
 
-    useEffect(() => {
-        if (authData?.role === ROLES_CONSTANTS.USER) {
-            dispatch(fetchCartItems(restaurantId!));
-        }
-    }, []);
     return (
         <div className="max-w-6xl mx-auto my-10">
             <div className="w-full">
@@ -55,8 +72,8 @@ const RestaurantDetails = () => {
                                 ))}
                             </div>
                             <IconButton aria-label="cart  ">
-                                <Badge badgeContent={cartData.length} color="primary">
-                                    <Link to={'/cart'}>
+                                <Badge badgeContent={cartItemsCount} color="primary">
+                                    <Link to={`/cart/${restaurantId}`}>
                                         <ShoppingCart />
                                     </Link>
                                 </Badge>
@@ -73,6 +90,18 @@ const RestaurantDetails = () => {
                                     </Typography>
                                 </h1>
                             </div>
+                        </div>
+                        <div className="flex ">
+                            <StarRating ratingValue={restaurantRatingValue} isReadOnly={true} />{' '}
+                            <span>
+                                ( {restaurantRatingCount} ){' '}
+                                <span
+                                    className="font-medium text-gray-600 hover:cursor-pointer hover:text-sky-700"
+                                    onClick={handleOpenModal}
+                                >
+                                    Rate this restaurant
+                                </span>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -102,6 +131,13 @@ const RestaurantDetails = () => {
                     </div>
                 </div>
             </div>
+            {/* Rating modal */}
+            <RatingModal
+                handleRatingChange={handleRatingChange}
+                isModalOpen={isRatingModalOpen}
+                myRating={myRatingValue}
+                closeRatingModal={handleCloseModal}
+            />
         </div>
     );
 };

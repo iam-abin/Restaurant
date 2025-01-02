@@ -24,6 +24,16 @@ const menuSchema = new Schema<IMenuDocument>(
             required: true,
             min: [0, 'Price cannot be less than zero'],
         },
+        salePrice: {
+            type: Number,
+            min: [0, 'Price cannot be less than zero'],
+            validate: {
+                validator: function (value: number) {
+                    return value <= this.price;
+                },
+                message: 'Sale price must be less than or equal to the original price',
+            },
+        },
         imageUrl: {
             type: String,
             required: true,
@@ -36,7 +46,7 @@ const menuSchema = new Schema<IMenuDocument>(
         },
         cuisineId: {
             type: Schema.Types.ObjectId,
-            ref: 'Menu',
+            ref: 'Cuisine',
             required: true,
             index: true,
         },

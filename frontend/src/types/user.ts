@@ -21,4 +21,3 @@ export interface ISignin extends Pick<IUser, 'email' | 'role'> {
 export interface IGoogleAuth extends Pick<IUser, 'role'> {
     credential: string;
 }
-

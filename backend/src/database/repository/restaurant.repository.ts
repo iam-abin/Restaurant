@@ -1,5 +1,5 @@
 import mongoose, { ClientSession } from 'mongoose';
-import { CountByDay, IRestaurant, IRestaurantResponse, ISearchResult } from '../../types';
+import { CountByDay, IRestaurant, IRestaurantResponse, SearchResult } from '../../types';
 import { IRestaurantDocument, RestaurantModel } from '../model';
 
 export class RestaurantRepository {
@@ -12,7 +12,10 @@ export class RestaurantRepository {
     }
 
     async findRestaurants(skip: number, limit: number): Promise<IRestaurantDocument[]> {
-        return await RestaurantModel.find().skip(skip).limit(limit).populate('ownerId');
+        return await RestaurantModel.find()
+            .skip(skip ?? 0)
+            .limit(limit ?? 0)
+            .populate('ownerId');
     }
 
     async findRestaurant(restaurantId: string): Promise<IRestaurantResponse | null> {
@@ -122,9 +125,9 @@ export class RestaurantRepository {
         searchText: string,
         searchQuery: string,
         selectedCuisines: string[],
-    ): Promise<ISearchResult[]> {
-        console.log(searchText, searchQuery, selectedCuisines);
-
+        skip: number,
+        limit: number,
+    ): Promise<SearchResult> {
         const pipeline = [
             // Lookup address details
             {
@@ -218,10 +221,27 @@ export class RestaurantRepository {
                     cuisines: 1,
                 },
             },
+            // Use $facet to separate the total count and paginated results
+            {
+                $facet: {
+                    results: [
+                        { $skip: skip }, // Skip documents for pagination
+                        { $limit: limit }, // Limit the number of documents returned
+                    ],
+                    totalCount: [
+                        { $count: 'count' }, // Count the total number of matched documents
+                    ],
+                },
+            },
         ];
 
-        const restaurants = await RestaurantModel.aggregate(pipeline);
-        return restaurants;
+        const result = await RestaurantModel.aggregate(pipeline);
+
+        // Extract results and totalCount from the pipeline output
+        const restaurants = result[0]?.results || [];
+        const totalCount = result[0]?.totalCount?.[0]?.count || 0;
+
+        return { restaurants, totalCount };
     }
 
     async countRestaurants(): Promise<number> {

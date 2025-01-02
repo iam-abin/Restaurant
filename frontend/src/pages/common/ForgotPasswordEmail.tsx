@@ -35,15 +35,12 @@ const ForgotPasswordEmail = () => {
         setErrors({});
 
         if (Object.keys(errors).length) {
-            console.log('errors', errors);
             return;
         }
         // Form validation
         const result = emailSchema.safeParse({ email });
 
         if (!result.success) {
-            console.log('result submit', result);
-            console.log('email submit', email);
             const fieldErrors = result.error.formErrors.fieldErrors;
             setErrors(fieldErrors as Partial<IForgotPasswordEmail>);
             return;
@@ -51,16 +48,16 @@ const ForgotPasswordEmail = () => {
         try {
             setIsLoading(true);
             const response: IResponse = await ForgotPasswordEmailApi({ email });
-            const userData = response.data as IUser
+            const userData = response.data as IUser;
             if (userData) {
                 hotToastMessage(response.message, 'success');
                 setEmail('');
-                navigate('/forgot-password/otp',{
-                    state:{userId: userData._id, role: userData.role}
+                navigate('/forgot-password/otp', {
+                    state: { userId: userData._id, role: userData.role },
                 });
             }
-        }catch(error: unknown){
-            hotToastMessage((error as Error).message, 'error')
+        } catch (error: unknown) {
+            hotToastMessage((error as Error).message, 'error');
         } finally {
             setIsLoading(false);
         }

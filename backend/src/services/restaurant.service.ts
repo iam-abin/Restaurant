@@ -1,13 +1,23 @@
 import { autoInjectable } from 'tsyringe';
-import { IRestaurantResponse, IRestaurantsData, IRestaurantUpdate, ISearchResult } from '../types';
+import {
+    IRestaurantResponse,
+    IRestaurantResult,
+    IRestaurantsData,
+    IRestaurantUpdate,
+    SearchData,
+    SearchRestaurant,
+    SearchResult,
+} from '../types';
 import {
     AddressRepository,
+    CartRepository,
+    RatingRepository,
     RestaurantCuisineRepository,
     RestaurantRepository,
     UserRepository,
 } from '../database/repository';
-import { IAddressDocument, IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
-import { uploadImageOnCloudinary } from '../utils';
+import { IAddressDocument, IRestaurantDocument } from '../database/model';
+import { getPaginationSkipValue, getPaginationTotalNumberOfPages, uploadImageOnCloudinary } from '../utils';
 import { NotFoundError } from '../errors';
 import mongoose from 'mongoose';
 import { RestaurantWithCuisines } from '../controllers/restaurant.controller';
@@ -19,32 +29,53 @@ export class RestaurantService {
         private readonly addressRepository: AddressRepository,
         private readonly restaurantRepository: RestaurantRepository,
         private readonly restaurantCuisineRepository: RestaurantCuisineRepository,
+        private readonly ratingRepository: RatingRepository,
+        private readonly cartRepository: CartRepository,
     ) {}
 
-    public async getARestaurant(restaurantId: string): Promise<IRestaurantResponse | null> {
+    public async getARestaurant(restaurantId: string, userId: string): Promise<IRestaurantResult | null> {
         const restaurant: IRestaurantResponse | null =
             await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
-        return restaurant;
+
+        const [restaurantRating, restaurantRatingsCount, myRating, cartItemsCount] = await Promise.all([
+            this.ratingRepository.findRestaurantRating(restaurantId),
+            this.ratingRepository.countRestaurantRatings(restaurant._id.toString()),
+            this.ratingRepository.findUserRating(restaurant._id.toString(), userId),
+            this.cartRepository.countCartItems(userId, restaurantId),
+        ]);
+
+        return {
+            restaurant,
+            restaurantRating,
+            restaurantRatingsCount,
+            myRating: myRating ? myRating.rating : 0,
+            cartItemsCount,
+        };
     }
 
     public async getMyRestaurant(userId: string): Promise<RestaurantWithCuisines> {
         const restaurant: IRestaurantDocument | null =
             await this.restaurantRepository.findMyRestaurant(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
-        const cuisines: IRestaurantCuisineDocument[] =
-            await this.restaurantCuisineRepository.findRestaurantCuisines(restaurant?._id.toString());
-        return { restaurant, cuisines };
+
+        const [cuisines, restaurantRating, restaurantRatingsCount] = await Promise.all([
+            this.restaurantCuisineRepository.findRestaurantCuisines(restaurant._id.toString()),
+            this.ratingRepository.findRestaurantRating(restaurant._id.toString()),
+            this.ratingRepository.countRestaurantRatings(restaurant._id.toString()),
+        ]);
+        return { restaurant, cuisines, restaurantRating, restaurantRatingsCount };
     }
 
     public async getRestaurants(page: number, limit: number): Promise<IRestaurantsData> {
-        const skip: number = (page - 1) * limit;
+        const skip: number = getPaginationSkipValue(page, limit);
         const restaurants: IRestaurantDocument[] = await this.restaurantRepository.findRestaurants(
             skip,
             limit,
         );
         const restaurantsCount: number = await this.restaurantRepository.countRestaurants();
-        const numberOfPages: number = Math.ceil(restaurantsCount / limit);
+        const numberOfPages: number = getPaginationTotalNumberOfPages(restaurantsCount, limit);
+
         return { restaurants, numberOfPages };
     }
 
@@ -92,23 +123,15 @@ export class RestaurantService {
         }
     }
 
-    public async searchRestaurant(
-        searchText: string,
-        searchQuery: string,
-        selectedCuisines: string,
-    ): Promise<ISearchResult[]> {
-        // search is based on ( name, city, country, cuisines )
+    public async searchRestaurant({
+        searchText,
+        searchQuery,
+        selectedCuisines,
+        page,
+        limit,
+    }: SearchRestaurant): Promise<SearchData> {
+        const skip: number = getPaginationSkipValue(page, limit);
 
-        // console.log('-------------------');
-        // console.log(
-        //     'searchText==> ',
-        //     searchText,
-        //     'searchQuery==> ',
-        //     searchQuery,
-        //     'selectedCuisines==> ',
-        //     selectedCuisines,
-        // );
-        // console.log('-------------------');
         let cuisinesArray: string[] = selectedCuisines.split(',');
         if (cuisinesArray.length) {
             cuisinesArray = cuisinesArray.filter((cuisine: string) => cuisine); // It avoid falsy values
@@ -116,12 +139,16 @@ export class RestaurantService {
 
         // const cuisinesArray: string[] = selectedCuisines.split(', ').filter((cuisine: string) => cuisine); // It avoid falsy values
 
-        const restaurant: ISearchResult[] = await this.restaurantRepository.searchRestaurants(
+        const restaurant: SearchResult = await this.restaurantRepository.searchRestaurants(
             searchText,
             searchQuery,
             cuisinesArray,
+            skip,
+            limit,
         );
 
-        return restaurant;
+        // return restaurant;
+        const numberOfPages: number = getPaginationTotalNumberOfPages(restaurant.totalCount, limit);
+        return { restaurants: restaurant.restaurants, numberOfPages };
     }
 }
