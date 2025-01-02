@@ -152,7 +152,6 @@ export default function AddMenuModal({
 
     const handleSelectInputChange = (newValue: OptionType | null) => {
         setInput((prev) => ({ ...prev, cuisine: newValue ? newValue.value : '' }));
-        console.log('Selected or Created Value:', input);
         // Do something with the selected/created value
     };
 

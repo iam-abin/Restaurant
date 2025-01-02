@@ -34,8 +34,7 @@ const SearchResult = () => {
             });
             setSearchResults((response.data as SearchResponse).restaurants);
             setTotalNumberOfPages((response.data as SearchResponse).numberOfPages);
-        } catch (error) {
-            console.error('Error fetching search results:', error);
+        } catch {
             setSearchResults([]);
         } finally {
             setIsLoading(false);
@@ -66,7 +65,6 @@ const SearchResult = () => {
 
     const handleSearchKeyChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.value === '') fetchRestaurants();
-        console.log(searchQuery);
         setSearchQuery(e.target.value);
     };
 

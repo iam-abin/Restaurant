@@ -130,7 +130,7 @@ const Auth = () => {
                 naivgate('/');
             }
         } catch (error: unknown) {
-            console.error(error);
+            hotToastMessage((error as Error).message, 'error');
         }
     };
 

@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { BASE_URL_BACKEND } from '../utils/constants';
 
 export const axiosInstance = axios.create({
@@ -18,7 +17,6 @@ declare module 'axios' {
 
 axiosInstance.interceptors.response.use(
     (response) => {
-        console.log('hello interceptor');
         return response;
     },
     async (error: AxiosError) => {

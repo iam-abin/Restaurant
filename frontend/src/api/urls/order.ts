@@ -1,4 +1,4 @@
-const ORDER_URL = `/order`;
+const ORDER_URL = '/order';
 
 const orderApiUrls = {
     getMyOrdersUrl: (page: number, limit?: number) =>

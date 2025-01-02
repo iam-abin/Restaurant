@@ -20,6 +20,18 @@ export default [
         rules: {
             'react/react-in-jsx-scope': 'off', // Disable rule for JSX scope
             'react/prop-types': 'off',
+            'no-console': 'error',
+            'prefer-const': 'error',
+            'no-duplicate-imports': 'error',
+            'no-confusing-arrow': 'error',
+            'arrow-spacing': 'error',
+            'max-lines': ['error', { max: 500 }],
+            quotes: ['error', 'single'],
+            'no-multiple-empty-lines': ['error', { max: 2, maxEOF: 1 }],
+            eqeqeq: 'error',
+            semi: 'error',
+            '@typescript-eslint/no-explicit-any': 'warn',
+            'no-unused-vars': 'off', // Turn off the base rule as it conflicts with TS-specific rules
         },
     },
 ];

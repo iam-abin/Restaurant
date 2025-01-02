@@ -3,11 +3,15 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { changeCartItemQuantity, removeCartItem, removeCartItems } from '../../redux/thunk/cartThunk';
+import {
+    changeCartItemQuantity,
+    removeCartItem,
+    removeCartItems,
+    fetchCartItems,
+} from '../../redux/thunk/cartThunk';
 import { ICart } from '../../types';
 import TableCart from '../../components/table/TableCart';
 import CheckoutReviewModal from '../../components/modal/CheckoutReviewModal';
-import { fetchCartItems } from '../../redux/thunk/cartThunk';
 import { ROLES_CONSTANTS } from '../../utils/constants';
 import CartEmptyGif from '../../assets/cart-is-empty.jpeg';
 import usePagination from '../../hooks/usePagination';

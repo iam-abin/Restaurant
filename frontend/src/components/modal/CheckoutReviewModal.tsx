@@ -46,7 +46,6 @@ export default function CheckoutReviewModal({
 
     const paymentCheckoutHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(cartData);
         if (!cartData) return;
 
         const cartItem: ICart = cartData[0];

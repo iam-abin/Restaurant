@@ -18,8 +18,8 @@ const Otp = () => {
     const isUser = role === ROLES_CONSTANTS.USER;
     const isRestaurant = role === ROLES_CONSTANTS.RESTAURANT;
 
-    const isSignupOtpPage = location.pathname == '/signup/otp';
-    const isForgotPasswordEmailOtpPage = location.pathname == '/forgot-password/otp';
+    const isSignupOtpPage = location.pathname === '/signup/otp';
+    const isForgotPasswordEmailOtpPage = location.pathname === '/forgot-password/otp';
 
     const handleChange = (index: number, value: string) => {
         if (/^[a-zA-Z0-9]$/.test(value) || value === '') {
@@ -53,9 +53,6 @@ const Otp = () => {
             if (response.data) {
                 hotToastMessage(response.message, 'success');
                 if (isSignupOtpPage) {
-                    console.log('signupOtpPage isRestaurant ', isRestaurant);
-                    console.log('signupOtpPage isUser ', isUser);
-
                     if (isRestaurant) {
                         navigate('/restaurant/auth');
                     }

@@ -16,7 +16,6 @@ export const fetchMenus = createAsyncThunk<
     'menus/fetchUserMenus',
     async ({ restaurantId, setTotalNumberOfPages, currentPage }, { rejectWithValue }) => {
         try {
-            console.log('thunk ', restaurantId);
             const menus = await getMenusApi(restaurantId, currentPage, 2);
             setTotalNumberOfPages((menus.data as Menus).numberOfPages);
             return (menus.data as Menus).menus;

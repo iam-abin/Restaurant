@@ -4,8 +4,6 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import CloseIcon from '@mui/icons-material/Close';
 import { formatDateWithTime } from '../../utils/date-format';
 import { IRestaurantOrder } from '../../types';
-import { useAppSelector } from '../../redux/hooks';
-import { ROLES_CONSTANTS } from '../../utils/constants';
 
 const OrderDetailsModal = ({
     modalOpen,
@@ -16,12 +14,6 @@ const OrderDetailsModal = ({
     handleCloseModal: () => void;
     selectedOrder: IRestaurantOrder;
 }) => {
-    const user = useAppSelector((store) => store.authReducer.authData);
-    const isRestaurant = user?.role === ROLES_CONSTANTS.RESTAURANT;
-    console.log(isRestaurant);
-
-    console.log('selectedOrder ===', selectedOrder);
-
     return (
         <Modal
             open={modalOpen}

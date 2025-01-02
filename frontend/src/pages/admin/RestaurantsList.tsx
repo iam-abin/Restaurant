@@ -20,11 +20,9 @@ function RestaurantsList() {
     const fetchUsers = async (currentPage: number) => {
         let restaurantsData: IResponse | [] = [];
         // if (!searchKey) {
-        console.log('no search key');
         restaurantsData = await getRestaurantsApi(currentPage, USERS_PER_PAGE);
         const data = restaurantsData?.data as IRestaurantsResponse;
         setRestaurantsData(data.restaurants as IRestaurant[]);
-        console.log('data', data);
 
         setNumberOfPages(data.numberOfPages);
     };
@@ -56,8 +54,6 @@ function RestaurantsList() {
             setRestaurantsData(restaurants);
         }
     };
-
-    console.log(restaurantsData);
 
     const columns = [
         { Header: 'Name', accessor: 'ownerId.name' },

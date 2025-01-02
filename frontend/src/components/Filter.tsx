@@ -17,9 +17,9 @@ const Filter = ({
 }) => {
     const applyFilterCheck = (item: string) => {
         setSelectedFilters((prevFilters) =>
-            prevFilters.includes(item)
+            (prevFilters.includes(item)
                 ? prevFilters.filter((filter) => filter !== item)
-                : [...prevFilters, item],
+                : [...prevFilters, item]),
         );
     };
 

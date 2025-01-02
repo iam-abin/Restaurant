@@ -1,4 +1,4 @@
-const CUISINE_URL = `/cuisine`;
+const CUISINE_URL = '/cuisine';
 
 const cuisineApiUrls = {
     getCuisinesUrl: `${CUISINE_URL}`,

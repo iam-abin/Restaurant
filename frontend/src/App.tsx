@@ -2,7 +2,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast';
 import { lazy } from 'react';
 
-import { DEVELOPMENT_BACKEND_ORIGIN, ROLES_CONSTANTS } from './utils/constants';
+import { ROLES_CONSTANTS } from './utils/constants';
 import { useAppSelector } from './redux/hooks';
 
 import { RoleProtectedRoute } from './components/ProtectedRoute';
@@ -155,8 +155,6 @@ const appRouter = createBrowserRouter(
 );
 
 export default function App() {
-    console.log(DEVELOPMENT_BACKEND_ORIGIN);
-
     return (
         <main>
             <Toaster

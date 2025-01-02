@@ -1,4 +1,4 @@
-const MENU_URL = `/menu`;
+const MENU_URL = '/menu';
 
 const menuApiUrls = {
     addMenuUrl: `${MENU_URL}`,

@@ -37,8 +37,6 @@ const Table = ({
         // setCurrentPage(currentPage);
         (async () => {
             await fetchData(currentPage);
-            console.log(numberOfPages);
-
             setTotalNumberOfPages(numberOfPages);
         })();
     }, [currentPage, numberOfPages]);

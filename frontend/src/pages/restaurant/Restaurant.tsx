@@ -96,8 +96,6 @@ const Restaurant = () => {
         e.preventDefault();
         setIsLoading(true);
 
-        console.log('input is ', input);
-
         const result = restaurantFromSchema.safeParse({
             ...input,
             cuisines: input.cuisines,

@@ -6,7 +6,5 @@ export const changeRatingApi = async (ratingData: {
     restaurantId: string;
     rating: number;
 }): Promise<IResponse> => {
-    console.log(ratingData);
-
     return await makeApiCall('post', ratingApiUrls.changeRatingUrl, ratingData);
 };

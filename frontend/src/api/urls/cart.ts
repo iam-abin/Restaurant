@@ -1,4 +1,4 @@
-const CART_URL = `/cart`;
+const CART_URL = '/cart';
 
 const cartApiUrls = {
     addToCartUrl: `${CART_URL}`,

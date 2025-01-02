@@ -25,8 +25,8 @@ const app: Application = express();
 
 const isProductionENV: boolean = appConfig.NODE_ENVIRONMENT === 'production';
 
-// // Set trust proxy
-// app.set('trust proxy', true); // Trust all proxies
+// Set trust proxy
+app.set('trust proxy', 2); // Trust all proxies
 
 // Middlewares
 app.use(express.json({ limit: '10mb' }));
@@ -35,7 +35,8 @@ app.use(helmet());
 app.disable('x-powered-by');
 app.use(
     cors({
-        origin: appConfig.FRONTEND_URL,
+        // origin: appConfig.FRONTEND_URL,
+        origin: '*',
         credentials: true,
     }),
 );

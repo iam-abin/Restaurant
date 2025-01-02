@@ -1,4 +1,4 @@
-const AUTH_URL = `/auth`;
+const AUTH_URL = '/auth';
 
 const authApiUrls = {
     signinUrl: `${AUTH_URL}/signin`,

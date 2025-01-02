@@ -32,11 +32,8 @@ const RestaurantDetails = () => {
         value: number | null,
     ): Promise<void> => {
         setMyRatingValue(value ?? 0);
-        console.log('value ', value);
-
         if (restaurant) {
-            const response = await changeRatingApi({ restaurantId: restaurant._id!, rating: value ?? 0 });
-            console.log('rating api call response ', response);
+            await changeRatingApi({ restaurantId: restaurant._id!, rating: value ?? 0 });
         }
     };
 

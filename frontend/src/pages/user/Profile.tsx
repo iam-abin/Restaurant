@@ -13,8 +13,6 @@ const Profile = () => {
 
     const { authData } = useAppSelector((state) => state.authReducer);
     const { myProfile, status } = useAppSelector((state) => state.profileReducer);
-    console.log('authData ', authData);
-    console.log('myProfile ', myProfile);
 
     useEffect(() => {
         dispatch(fetchUserProfile());
@@ -53,7 +51,6 @@ const Profile = () => {
 
     const updateProfileHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log({ ...profileData, image: selectedProfilePicture });
         dispatch(updateUserProfile({ ...profileData, image: selectedProfilePicture }));
         setSelectedProfilePicture('');
     };
@@ -69,7 +66,7 @@ const Profile = () => {
                                 height: 80,
                                 md: { width: 112, height: 112 },
                             }}
-                            src={profileData.image || `/broken-image.jpg`}
+                            src={profileData.image || '/broken-image.jpg'}
                         />
                         {/* Overlay for hover effect */}
                         <Box

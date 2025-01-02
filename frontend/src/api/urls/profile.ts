@@ -1,4 +1,4 @@
-const PROFILE_URL = `/profile`;
+const PROFILE_URL = '/profile';
 
 const profileApiUrls = {
     getProfileUrl: `${PROFILE_URL}`,

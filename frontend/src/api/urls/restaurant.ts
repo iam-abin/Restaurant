@@ -1,6 +1,6 @@
 import { ISearchRestaurantApi } from '../apiMethods/restaurant';
 
-const RESTAURANT_URL = `/restaurant`;
+const RESTAURANT_URL = '/restaurant';
 
 const restaurantApiUrls = {
     getARestaurantUrl: (restaurantId: string) => `${RESTAURANT_URL}/${restaurantId}`,
