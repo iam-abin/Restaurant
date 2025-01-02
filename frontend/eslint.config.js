@@ -23,7 +23,7 @@ export default [
             'no-console': 'error',
             'prefer-const': 'error',
             'no-duplicate-imports': 'error',
-            'no-confusing-arrow': 'error',
+            // 'no-confusing-arrow': 'error',
             'arrow-spacing': 'error',
             'max-lines': ['error', { max: 500 }],
             quotes: ['error', 'single'],

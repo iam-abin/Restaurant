@@ -41,9 +41,9 @@ const cartSlice = createSlice({
             // Remove the item with the given ID from cartData
             state.status = 'succeeded';
             state.cartData = state.cartData.map((item: ICart) =>
-                (item._id === action.payload.cartItemId
+                item._id === action.payload.cartItemId
                     ? { ...item, quantity: action.payload.quantity }
-                    : item),
+                    : item,
             );
         });
 
