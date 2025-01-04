@@ -81,7 +81,7 @@ class AuthController {
         return {
             httpOnly: true,
             secure: isProduction(),
-            sameSite: 'strict',
+            sameSite: 'lax',
             maxAge,
         };
     }

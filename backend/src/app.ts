@@ -34,17 +34,12 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(helmet());
 app.disable('x-powered-by');
 app.use(
-    cors(
-        {
-            origin: appConfig.FRONTEND_URL,
-            // origin: isProductionENV ? ['http://localhost:8080'] : [appConfig.FRONTEND_URL],
-            // methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-            // allowedHeaders: ['Content-Type', 'Authorization', 'Set-Cookie'],
-            credentials: true,
-            // exposedHeaders: ['Set-Cookie']
-          
-    }
-),
+    cors({
+        origin: appConfig.FRONTEND_URL,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+        allowedHeaders: ['Content-Type', 'Set-Cookie'],
+        credentials: true,
+    }),
 );
 app.use(compression());
 app.use(cookieParser());
