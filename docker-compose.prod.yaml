@@ -1,23 +1,42 @@
 services:
     frontend:
-        image: abinv/restaurant-frontend-prod
         build:
             context: ./frontend
             dockerfile: ./docker/Dockerfile.prod
         container_name: frontend-container-prod
         ports:
             - 5000:5000
-        restart: on-failure
+        restart: unless-stopped
         env_file:
             - ./frontend/.env
+        networks:
+            - restaurant_network
+        depends_on:
+            - backend
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:5000"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+
     backend:
-        image: abinv/restaurant-backend-prod
         build:
             context: ./backend
             dockerfile: ./docker/Dockerfile.prod
         container_name: backend-container-prod
         ports:
             - 3000:3000
-        restart: on-failure
+        restart: unless-stopped
         env_file:
             - ./backend/.env.production
+        networks:
+            - restaurant_network
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:3000"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+
+networks:
+  restaurant_network:
+    driver: bridge

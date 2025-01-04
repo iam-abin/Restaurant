@@ -13,6 +13,10 @@ services:
         volumes:
             - ./frontend:/app
             - /app/node_modules
+        depends_on:
+            - backend
+        networks:
+            - restaurant_network
     backend:
         image: restaurant-backend-dev
         build:
@@ -27,6 +31,8 @@ services:
         volumes:
             - ./backend:/app
             - /app/node_modules
+        networks:
+            - restaurant_network
     nginx:
         container_name: nginx_proxy
         build:
@@ -40,3 +46,9 @@ services:
         volumes:
             - ./proxy/nginx.conf:/etc/nginx/nginx.conf
         restart: always
+        networks:
+            - restaurant_network
+
+networks:
+  restaurant_network:
+    driver: bridge

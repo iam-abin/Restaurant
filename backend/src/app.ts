@@ -26,7 +26,7 @@ const app: Application = express();
 const isProductionENV: boolean = appConfig.NODE_ENVIRONMENT === 'production';
 
 // Set trust proxy
-app.set('trust proxy', 2); // Trust all proxies
+app.set('trust proxy', true); // Trust all proxies
 
 // Middlewares
 app.use(express.json({ limit: '10mb' }));
@@ -34,11 +34,17 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(helmet());
 app.disable('x-powered-by');
 app.use(
-    cors({
-        // origin: appConfig.FRONTEND_URL,
-        origin: '*',
-        credentials: true,
-    }),
+    cors(
+        {
+            origin: appConfig.FRONTEND_URL,
+            // origin: isProductionENV ? ['http://localhost:8080'] : [appConfig.FRONTEND_URL],
+            // methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+            // allowedHeaders: ['Content-Type', 'Authorization', 'Set-Cookie'],
+            credentials: true,
+            // exposedHeaders: ['Set-Cookie']
+          
+    }
+),
 );
 app.use(compression());
 app.use(cookieParser());
@@ -59,6 +65,7 @@ app.use(`${appConfig.API_PREFIX}/restaurant`, restaurantRoutes);
 app.all('*', (req: Request, res: Response): never => {
     throw new NotFoundError();
 });
+console.log(appConfig.NODE_ENVIRONMENT);
 
 app.use(errorHandler);
 
