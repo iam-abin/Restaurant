@@ -122,15 +122,12 @@ const Auth = () => {
     // google login
     const handleSuccess = async (googleResponse: CredentialResponse) => {
         const { credential } = googleResponse;
-        try {
-            const response = await dispatch(googleAuthThunk({ credential: credential!, role }));
-
-            // Check if the action was rejected
-            if (response.meta.requestStatus !== 'rejected') {
-                naivgate('/');
-            }
-        } catch (error: unknown) {
-            hotToastMessage((error as Error).message, 'error');
+        const response = await dispatch(googleAuthThunk({ credential: credential!, role }));
+        // Check if the action was rejected
+        if (response.meta.requestStatus !== 'rejected') {
+            naivgate('/');
+        } else {
+            hotToastMessage(response.payload as string, 'error');
         }
     };
 

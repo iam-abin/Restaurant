@@ -38,7 +38,8 @@ export class MenuService {
             if (!addressData.city && !addressData.country)
                 throw new BadRequestError('Must have city and country to create menu');
 
-            let cuisineData: ICuisineDocument | null = await this.cuisineRepository.findCuisine(cuisine);
+            let cuisineData: ICuisineDocument | null =
+                await this.cuisineRepository.findCuisineByName(cuisine);
             if (!cuisineData) {
                 cuisineData = await this.cuisineRepository.createCuisine({ name: cuisine }, session);
             }
@@ -79,8 +80,12 @@ export class MenuService {
         const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         const skip: number = getPaginationSkipValue(page, limit);
-        const menus: IMenuDocument[] = await this.menuRepository.findMenus(restaurantId, skip, limit);
-        const myOrdersCount: number = await this.menuRepository.countRestaurantMenus(restaurantId);
+
+        const [menus, myOrdersCount]: [IMenuDocument[], number] = await Promise.all([
+            this.menuRepository.findMenus(restaurantId, skip, limit),
+            this.menuRepository.countRestaurantMenus(restaurantId),
+        ]);
+
         const numberOfPages: number = getPaginationTotalNumberOfPages(myOrdersCount, limit);
         return { menus, numberOfPages };
     }

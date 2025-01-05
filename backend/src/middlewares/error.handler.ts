@@ -13,7 +13,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
     if (err instanceof CustomError) {
         // Clear the JWT cookie if the error is NotAuthorizedError (e.g., due to token expiration or invalid token)
         if (err instanceof NotAuthorizedError) {
-            res.clearCookie(JWT_KEYS_CONSTANTS.JWT_TOKEN);
+            res.clearCookie(JWT_KEYS_CONSTANTS.JWT_ACCESS_TOKEN);
         }
 
         // Send the serialized error response

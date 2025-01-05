@@ -19,7 +19,11 @@ export class CartService {
         const { itemId, restaurantId } = cartData;
         const menuItem: IMenuDocument | null = await this.menuRepository.findMenu(itemId);
         if (!menuItem) throw new NotFoundError('MenuItem not found');
-        const cartItem: ICartDocument | null = await this.cartRepository.find(userId, restaurantId, itemId);
+        const cartItem: ICartDocument | null = await this.cartRepository.findCartItem(
+            userId,
+            restaurantId,
+            itemId,
+        );
         if (cartItem) throw new BadRequestError('Item already exist in the cart');
         const addedCartItem: ICartDocument = await this.cartRepository.create({
             ...cartData,
@@ -36,14 +40,12 @@ export class CartService {
         limit,
     }: GetCartItemsByRestaurantParams): Promise<ICartItemsData> {
         const skip: number = getPaginationSkipValue(page, limit);
-        const cartItems = await this.cartRepository.getCartItemsByRestaurant(
-            userId,
-            restaurantId,
-            skip,
-            limit,
-        );
 
-        const cartItemsCount: number = await this.cartRepository.countCartItems(userId, restaurantId);
+        const [cartItems, cartItemsCount]: [ICartDocument[], number] = await Promise.all([
+            this.cartRepository.getCartItemsByRestaurant(userId, restaurantId, skip, limit),
+            this.cartRepository.countCartItems(restaurantId, userId),
+        ]);
+
         const numberOfPages: number = getPaginationTotalNumberOfPages(cartItemsCount, limit);
 
         return { cartItems, numberOfPages };
@@ -54,27 +56,29 @@ export class CartService {
         cartItemId: string,
         quantity: number,
     ): Promise<ICartDocument | null> {
-        const cartItem: ICartDocument | null = await this.cartRepository.findById(cartItemId);
-        if (!cartItem) throw new NotFoundError('CartItem not found');
-        if (userId !== (cartItem.userId as IUserDocument)._id.toString())
-            throw new ForbiddenError('You cannot modify others cart item');
+        await this.validateCartOwnership(cartItemId, userId);
         const updatedCartItem: ICartDocument | null = await this.cartRepository.update(cartItemId, quantity);
 
         return updatedCartItem;
     }
 
     public async removeCartItem(cartItemId: string, userId: string): Promise<ICartDocument> {
-        const cartItem: ICartDocument | null = await this.cartRepository.findById(cartItemId);
-        if (!cartItem) throw new NotFoundError('Cart item not found');
-
-        if (userId !== (cartItem.userId as IUserDocument)._id.toString())
-            throw new ForbiddenError('You cannot remove others cart item');
-        await this.cartRepository.delete(cartItemId);
+        const cartItem: ICartDocument = await this.validateCartOwnership(cartItemId, userId);
+        await this.cartRepository.deleteById(cartItemId);
         return cartItem;
     }
 
     public async removeCartItems(userId: string): Promise<{ deleted: boolean }> {
-        this.cartRepository.deleteAllItems(userId);
+        await this.cartRepository.deleteAllItems(userId);
         return { deleted: true };
+    }
+
+    private async validateCartOwnership(cartItemId: string, userId: string): Promise<ICartDocument> {
+        const cartItem = await this.cartRepository.findById(cartItemId);
+        if (!cartItem) throw new NotFoundError('Cart item not found');
+        if (userId !== (cartItem.userId as IUserDocument)._id.toString()) {
+            throw new ForbiddenError('You cannot modify others cart item');
+        }
+        return cartItem;
     }
 }

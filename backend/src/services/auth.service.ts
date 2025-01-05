@@ -47,7 +47,7 @@ export class UserService {
         session.startTransaction();
 
         try {
-            const existingUser: IUserDocument | null = await this.userRepository.findByEmail(email);
+            const existingUser: IUserDocument | null = await this.userRepository.findUserByEmail(email);
             // If the user already exists but is not verified
             if (existingUser && !existingUser.isVerified) {
                 // Check if an OTP already exists and hasn't expired (optional, based on use case)
@@ -107,7 +107,7 @@ export class UserService {
     ): Promise<{ user: IUserDocument; accessToken: string; refreshToken: string }> {
         const { email, password, role } = userSignInDto;
 
-        const existingUser: IUserDocument | null = await this.userRepository.findByEmail(email);
+        const existingUser: IUserDocument | null = await this.userRepository.findUserByEmail(email);
         if (!existingUser) throw new BadRequestError('Invalid email or password');
 
         // Check if the user is signedup using google
@@ -148,17 +148,17 @@ export class UserService {
 
             if (!email_verified) throw new ForbiddenError('Email is not verified');
 
-            const userData: Omit<IGoogleAuth, 'picture'> = {
-                name,
-                email,
-                imageUrl: picture,
-                role,
-                googleId: sub,
-            };
-
             // Check if the user exists
-            const existingUser: IUserDocument | null = await this.userRepository.findByEmail(email);
+            const existingUser: IUserDocument | null = await this.userRepository.findUserByEmail(email);
             if (!existingUser) {
+                const userData: Omit<IGoogleAuth, 'picture'> = {
+                    name,
+                    email,
+                    imageUrl: picture,
+                    role,
+                    googleId: sub,
+                };
+
                 // Create a new user
                 const user: IUserDocument = await this.userRepository.createUser(
                     { ...userData, isVerified: true },

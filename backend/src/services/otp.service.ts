@@ -86,7 +86,7 @@ export class OtpService {
     }
 
     public async forgotPassword(email: string): Promise<IUserDocument> {
-        const user: IUserDocument | null = await this.userRepository.findByEmail(email);
+        const user: IUserDocument | null = await this.userRepository.findUserByEmail(email);
         if (!user) throw new NotFoundError('This user does not exist');
         if (!user.isVerified)
             throw new ForbiddenError('You are not verified. Please signup again with email to get verified');

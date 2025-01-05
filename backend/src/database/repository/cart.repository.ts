@@ -8,7 +8,7 @@ export class CartRepository {
         return cartItem;
     }
 
-    async find(userId: string, restaurantId: string, itemId: string): Promise<ICartDocument | null> {
+    async findCartItem(userId: string, restaurantId: string, itemId: string): Promise<ICartDocument | null> {
         return await CartModel.findOne({ userId, restaurantId, itemId });
     }
 
@@ -32,7 +32,7 @@ export class CartRepository {
         return await CartModel.findByIdAndUpdate(cartItemId, { quantity }, { new: true });
     }
 
-    async delete(cartItemId: string, session?: ClientSession): Promise<DeleteResult | null> {
+    async deleteById(cartItemId: string, session?: ClientSession): Promise<DeleteResult | null> {
         return await CartModel.findByIdAndDelete(cartItemId, { new: true, session });
     }
 
@@ -40,7 +40,7 @@ export class CartRepository {
         return await CartModel.deleteMany({ userId }, { session });
     }
 
-    async countCartItems(userId: string, restaurantId: string): Promise<number> {
-        return CartModel.countDocuments({ userId, restaurantId });
+    async countCartItems(restaurantId: string, userId: string): Promise<number> {
+        return CartModel.countDocuments({ restaurantId, userId });
     }
 }

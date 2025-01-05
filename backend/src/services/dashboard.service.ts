@@ -25,39 +25,48 @@ export class DashboardService {
             await this.restaurantRepository.findMyRestaurant(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
 
-        const orderStatusesWithCounts: IOrderStatusWithCounts[] = await this.orderRepository.countStatuses(
-            restaurant?._id.toString(),
-        );
+        const restaurantId: string = restaurant._id.toString();
 
-        const transformedStatusesWithCount: IOrderStatusWithCounts[] =
+        // Fetch all required data concurrently
+        const [orderStatusesWithCounts, totalRevenue, menusCount, cuisinesCount]: [
+            IOrderStatusWithCounts[],
+            number,
+            number,
+            number,
+        ] = await Promise.all([
+            this.orderRepository.countStatuses(restaurantId),
+            this.orderRepository.findRestaurantTotalOrdersPrice(restaurantId),
+            this.menuRepository.countRestaurantMenus(restaurantId),
+            this.restaurantCuisineRepository.countRestaurantCuisines(restaurantId),
+        ]);
+
+        // Transform statuses
+        const transformedStatusesWithCounts: IOrderStatusWithCounts[] =
             this.mapOrderStatusesWithCounts(orderStatusesWithCounts);
 
-        const totalRevenue: number = await this.orderRepository.findRestaurantTotalOrdersPrice(
-            restaurant?._id.toString(),
-        );
-
-        const menusCount: number = await this.menuRepository.countRestaurantMenus(restaurant?._id.toString());
-        const cuisinesCount: number = await this.restaurantCuisineRepository.countRestaurantCuisines(
-            restaurant?._id.toString(),
-        );
         // totalRevenue: totalOrderedPrice, //
         // lastSevenDaysUsers,
         // lastSevenDaysRestaurants,
-        return { orderStatusData: transformedStatusesWithCount, totalRevenue, menusCount, cuisinesCount };
+        return { orderStatusData: transformedStatusesWithCounts, totalRevenue, menusCount, cuisinesCount };
     }
 
     public async getAdminDashboardData(): Promise<IAdminDashboard> {
         const PERCENTAGE: number = 0.5; // Commission percentage
         const percentageDecimal: number = PERCENTAGE / 100; // Calculate commission percentage in decimal
 
-        const [restaurantsCount, usersCount, orderStatusesWithCounts, totalOrderedPrice, totalCommission] =
-            await Promise.all([
-                this.restaurantRepository.countRestaurants(),
-                this.profileRepository.countProfiles(),
-                this.orderRepository.countStatuses(),
-                this.orderRepository.findTotalOrderedPrice(),
-                this.orderRepository.findPercentageCommitionAmount(percentageDecimal),
-            ]);
+        const [restaurantsCount, usersCount, orderStatusesWithCounts, totalOrderedPrice, totalCommission]: [
+            number,
+            number,
+            IOrderStatusWithCounts[],
+            number,
+            number,
+        ] = await Promise.all([
+            this.restaurantRepository.countRestaurants(),
+            this.profileRepository.countProfiles(),
+            this.orderRepository.countStatuses(),
+            this.orderRepository.findTotalOrderedPrice(),
+            this.orderRepository.findPercentageCommitionAmount(percentageDecimal),
+        ]);
 
         // Transform order statuses
         const transformedStatusesWithCount: IOrderStatusWithCounts[] =

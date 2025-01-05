@@ -28,34 +28,20 @@ class AuthController {
     public signin = async (req: Request, res: Response): Promise<void> => {
         const { user, accessToken, refreshToken } = await userService.signIn(req.body as ISignin);
 
-        res.cookie(
-            JWT_KEYS_CONSTANTS.JWT_TOKEN,
-            accessToken,
-            this.getCookieOptions(appConfig.COOKIE_JWT_ACCESS_EXPIRY_TIME),
-        );
-        res.cookie(
-            JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN,
-            refreshToken,
-            this.getCookieOptions(appConfig.COOKIE_JWT_REFRESH_EXPIRY_TIME),
-        );
+        this.setTokenToCookie(res, accessToken, 'accessToken');
+        this.setTokenToCookie(res, refreshToken, 'refreshToken');
 
         res.status(200).json(createSuccessResponse('Login success', user));
     };
 
     public googleAuth = async (req: Request, res: Response): Promise<void> => {
-        await userService.googleAuth(req.body as IGoogleAuthCredential);
-        // res.cookie(
-        //     JWT_KEYS_CONSTANTS.JWT_TOKEN,
-        //     accessToken,
-        //     this.getCookieOptions(appConfig.COOKIE_JWT_ACCESS_EXPIRY_TIME),
-        // );
-        // res.cookie(
-        //     JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN,
-        //     refreshToken,
-        //     this.getCookieOptions(appConfig.COOKIE_JWT_REFRESH_EXPIRY_TIME),
-        // );
+        const { user, accessToken, refreshToken } = await userService.googleAuth(
+            req.body as IGoogleAuthCredential,
+        );
+        this.setTokenToCookie(res, accessToken, 'accessToken');
+        this.setTokenToCookie(res, refreshToken, 'refreshToken');
 
-        // res.status(200).json(createSuccessResponse('Login success', user));
+        res.status(200).json(createSuccessResponse('Login success', user));
     };
 
     public refresh = async (req: Request, res: Response): Promise<void> => {
@@ -63,18 +49,27 @@ class AuthController {
 
         try {
             const { accessToken }: { accessToken: string } = await userService.jwtRefresh(jwtRefreshToken);
-            res.cookie(
-                JWT_KEYS_CONSTANTS.JWT_TOKEN,
-                accessToken,
-                this.getCookieOptions(appConfig.COOKIE_JWT_ACCESS_EXPIRY_TIME),
-            );
+            this.setTokenToCookie(res, accessToken, 'accessToken');
             res.status(200).json(createSuccessResponse('Token refreshed successfully'));
         } catch {
-            res.clearCookie(JWT_KEYS_CONSTANTS.JWT_TOKEN);
+            res.clearCookie(JWT_KEYS_CONSTANTS.JWT_ACCESS_TOKEN);
             res.clearCookie(JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN);
             res.status(400).json('Token refresh failed');
         }
     };
+
+    private setTokenToCookie(res: Response, token: string, tokenType: 'accessToken' | 'refreshToken') {
+        const isAccessToken: boolean = tokenType === 'accessToken';
+        res.cookie(
+            isAccessToken ? JWT_KEYS_CONSTANTS.JWT_ACCESS_TOKEN : JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN,
+            token,
+            this.getCookieOptions(
+                isAccessToken
+                    ? appConfig.COOKIE_JWT_ACCESS_EXPIRY_TIME
+                    : appConfig.COOKIE_JWT_REFRESH_EXPIRY_TIME,
+            ),
+        );
+    }
 
     private getCookieOptions(maxAge: number = 30 * 60 * 1000): CustomCookieOptions {
         // Default maxAge 30 min
@@ -134,7 +129,7 @@ class AuthController {
     }
 
     public async logout(req: Request, res: Response): Promise<void> {
-        res.clearCookie(JWT_KEYS_CONSTANTS.JWT_TOKEN);
+        res.clearCookie(JWT_KEYS_CONSTANTS.JWT_ACCESS_TOKEN);
         res.clearCookie(JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN);
         res.status(200).json(createSuccessResponse('Successfully logged out'));
     }

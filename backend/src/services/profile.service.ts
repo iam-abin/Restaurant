@@ -23,8 +23,12 @@ export class ProfileService {
 
     public async getUserProfiles(page: number, limit: number): Promise<IProfilesData> {
         const skip: number = getPaginationSkipValue(page, limit);
-        const profiles: IProfileDocument[] = await this.profileRepository.findProfiles(skip, limit);
-        const profilesCount: number = await this.profileRepository.countProfiles();
+
+        const [profiles, profilesCount]: [IProfileDocument[], number] = await Promise.all([
+            this.profileRepository.findProfiles(skip, limit),
+            this.profileRepository.countProfiles(),
+        ]);
+
         const numberOfPages: number = getPaginationTotalNumberOfPages(profilesCount, limit);
         return { profiles, numberOfPages };
     }

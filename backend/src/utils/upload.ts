@@ -43,9 +43,9 @@ export const uploadImageOnCloudinary = async (file: Express.Multer.File | string
         const matches = file.match(/^data:image\/([a-zA-Z0-9]+);base64,([^\s,]+)$/);
         if (matches && matches.length === 3) {
             // Base64 string: Convert it to a Buffer
-            const base64Data = matches[2];
-            const buffer = Buffer.from(base64Data, 'base64');
-            const uploadResponse = await uploadStreamToCloudinary(buffer);
+            const base64Data: string = matches[2];
+            const buffer: Buffer = Buffer.from(base64Data, 'base64');
+            const uploadResponse: CloudinaryUploadResult = await uploadStreamToCloudinary(buffer);
             return uploadResponse.secure_url;
         } else {
             throw new Error('Invalid Base64 string');
@@ -54,7 +54,7 @@ export const uploadImageOnCloudinary = async (file: Express.Multer.File | string
 
     // If the file is an object (file uploaded via Multer), use its buffer
     if (file && file.buffer) {
-        const uploadResponse = await uploadStreamToCloudinary(file.buffer);
+        const uploadResponse: CloudinaryUploadResult = await uploadStreamToCloudinary(file.buffer);
         return uploadResponse.secure_url;
     }
 
