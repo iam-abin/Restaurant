@@ -7,7 +7,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import { NotFoundError } from './errors';
-import { errorHandler } from './middlewares';
+import { errorHandler, rateLimiter } from './middlewares';
 import {
     authRoutes,
     cartRoutes,
@@ -45,7 +45,8 @@ app.use(compression());
 app.use(cookieParser());
 if (!isProductionENV) app.use(morgan('dev'));
 
-// app.use(rateLimiter);
+app.use(rateLimiter);
+
 // Routes
 app.use(`${appConfig.API_PREFIX}/auth`, authRoutes);
 app.use(`${appConfig.API_PREFIX}/cart`, cartRoutes);
@@ -60,7 +61,6 @@ app.use(`${appConfig.API_PREFIX}/restaurant`, restaurantRoutes);
 app.all('*', (req: Request, res: Response): never => {
     throw new NotFoundError();
 });
-console.log(appConfig.NODE_ENVIRONMENT);
 
 app.use(errorHandler);
 

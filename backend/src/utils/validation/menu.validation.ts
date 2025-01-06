@@ -1,7 +1,7 @@
-import { body } from 'express-validator';
+import { body, ValidationChain } from 'express-validator';
 import { BadRequestError } from '../../errors';
 
-export const addMenuRequestBodyValidator = [
+export const addMenuRequestBodyValidator: ValidationChain[] = [
     body('name')
         .notEmpty()
         .withMessage('Name is required')
@@ -43,7 +43,7 @@ export const addMenuRequestBodyValidator = [
         }),
 ];
 
-export const updateMenuRequestBodyValidator = [
+export const updateMenuRequestBodyValidator: ValidationChain[] = [
     body('name')
         .optional()
         .isString()

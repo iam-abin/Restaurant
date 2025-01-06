@@ -19,7 +19,7 @@ const mongoIdValidator = (
 };
 
 // Specialized validators using the generic function
-export const mongoIdParamsValidator = (mongoIdField: string | string[]) =>
+export const mongoIdParamsValidator = (mongoIdField: string | string[]): ValidationChain[] =>
     mongoIdValidator('param', mongoIdField);
-export const mongoIdBodyValidator = (mongoIdField: string | string[]) =>
+export const mongoIdBodyValidator = (mongoIdField: string | string[]): ValidationChain[] =>
     mongoIdValidator('body', mongoIdField);

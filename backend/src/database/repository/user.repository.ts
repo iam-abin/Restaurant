@@ -8,7 +8,7 @@ export class UserRepository {
         return user[0];
     }
 
-    async findByEmail(email: string): Promise<IUserDocument | null> {
+    async findUserByEmail(email: string): Promise<IUserDocument | null> {
         return await UserModel.findOne({ email });
     }
 

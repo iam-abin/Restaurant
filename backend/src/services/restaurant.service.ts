@@ -16,7 +16,12 @@ import {
     RestaurantRepository,
     UserRepository,
 } from '../database/repository';
-import { IAddressDocument, IRestaurantDocument } from '../database/model';
+import {
+    IAddressDocument,
+    IRatingDocument,
+    IRestaurantCuisineDocument,
+    IRestaurantDocument,
+} from '../database/model';
 import { getPaginationSkipValue, getPaginationTotalNumberOfPages, uploadImageOnCloudinary } from '../utils';
 import { NotFoundError } from '../errors';
 import mongoose from 'mongoose';
@@ -38,11 +43,16 @@ export class RestaurantService {
             await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
 
-        const [restaurantRating, restaurantRatingsCount, myRating, cartItemsCount] = await Promise.all([
+        const [restaurantRating, restaurantRatingsCount, myRating, cartItemsCount]: [
+            number,
+            number,
+            IRatingDocument | null,
+            number,
+        ] = await Promise.all([
             this.ratingRepository.findRestaurantRating(restaurantId),
             this.ratingRepository.countRestaurantRatings(restaurant._id.toString()),
             this.ratingRepository.findUserRating(restaurant._id.toString(), userId),
-            this.cartRepository.countCartItems(userId, restaurantId),
+            this.cartRepository.countCartItems(restaurantId, userId),
         ]);
 
         return {
@@ -59,7 +69,11 @@ export class RestaurantService {
             await this.restaurantRepository.findMyRestaurant(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
 
-        const [cuisines, restaurantRating, restaurantRatingsCount] = await Promise.all([
+        const [cuisines, restaurantRating, restaurantRatingsCount]: [
+            IRestaurantCuisineDocument[],
+            number,
+            number,
+        ] = await Promise.all([
             this.restaurantCuisineRepository.findRestaurantCuisines(restaurant._id.toString()),
             this.ratingRepository.findRestaurantRating(restaurant._id.toString()),
             this.ratingRepository.countRestaurantRatings(restaurant._id.toString()),
@@ -69,11 +83,12 @@ export class RestaurantService {
 
     public async getRestaurants(page: number, limit: number): Promise<IRestaurantsData> {
         const skip: number = getPaginationSkipValue(page, limit);
-        const restaurants: IRestaurantDocument[] = await this.restaurantRepository.findRestaurants(
-            skip,
-            limit,
-        );
-        const restaurantsCount: number = await this.restaurantRepository.countRestaurants();
+
+        const [restaurants, restaurantsCount]: [IRestaurantDocument[], number] = await Promise.all([
+            this.restaurantRepository.findRestaurants(skip, limit),
+            this.restaurantRepository.countRestaurants(),
+        ]);
+
         const numberOfPages: number = getPaginationTotalNumberOfPages(restaurantsCount, limit);
 
         return { restaurants, numberOfPages };
@@ -137,9 +152,7 @@ export class RestaurantService {
             cuisinesArray = cuisinesArray.filter((cuisine: string) => cuisine); // It avoid falsy values
         }
 
-        // const cuisinesArray: string[] = selectedCuisines.split(', ').filter((cuisine: string) => cuisine); // It avoid falsy values
-
-        const restaurant: SearchResult = await this.restaurantRepository.searchRestaurants(
+        const restaurantSearchResult: SearchResult = await this.restaurantRepository.searchRestaurants(
             searchText,
             searchQuery,
             cuisinesArray,
@@ -147,8 +160,10 @@ export class RestaurantService {
             limit,
         );
 
-        // return restaurant;
-        const numberOfPages: number = getPaginationTotalNumberOfPages(restaurant.totalCount, limit);
-        return { restaurants: restaurant.restaurants, numberOfPages };
+        const numberOfPages: number = getPaginationTotalNumberOfPages(
+            restaurantSearchResult.totalCount,
+            limit,
+        );
+        return { restaurants: restaurantSearchResult.restaurants, numberOfPages };
     }
 }

@@ -3,22 +3,29 @@ import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { appConfig } from '../config/app.config';
 import { IEmailTemplate } from '../types';
 
+// SMTP Transporter instance (reused for multiple emails)
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    auth: {
+        user: appConfig.EMAIL_USER,
+        pass: appConfig.EMAIL_PASSWORD,
+    },
+    connectionTimeout: 10000,
+});
+
+/**
+ * Sends an email using the provided template.
+ * @param toEmail - Recipient's email address.
+ * @param template - The email template containing subject and HTML content.
+ * @returns A promise that resolves to the sent message info.
+ */
 export const sendEmail = async (
     toEmail: string,
     template: IEmailTemplate,
 ): Promise<SMTPTransport.SentMessageInfo> => {
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        auth: {
-            user: appConfig.EMAIL_USER,
-            pass: appConfig.EMAIL_PASSWORD,
-        },
-        connectionTimeout: 10000,
-    });
-
     const mailOptions = {
         from: `RestaurantApp ${appConfig.EMAIL_USER}`,
         to: toEmail,
@@ -27,6 +34,5 @@ export const sendEmail = async (
     };
 
     const info = await transporter.sendMail(mailOptions);
-
     return info;
 };

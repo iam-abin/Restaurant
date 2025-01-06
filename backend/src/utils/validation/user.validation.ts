@@ -1,9 +1,9 @@
-import { body } from 'express-validator';
+import { body, ValidationChain } from 'express-validator';
 import { UserRole } from '../../types';
 
 const ROLES: string[] = [UserRole.ADMIN, UserRole.RESTAURANT, UserRole.USER];
 
-export const signinRequestBodyValidator = [
+export const signinRequestBodyValidator: ValidationChain[] = [
     body('email')
         .notEmpty()
         .withMessage('Email is required')
@@ -22,7 +22,7 @@ export const signinRequestBodyValidator = [
         .escape(),
 ];
 
-export const signupRequestBodyValidator = [
+export const signupRequestBodyValidator: ValidationChain[] = [
     body('name')
         .notEmpty()
         .withMessage('Name is required')

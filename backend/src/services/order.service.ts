@@ -9,7 +9,7 @@ import {
     CartRepository,
     AddressRepository,
 } from '../database/repository';
-import { ICartDocument, IMenuDocument, IOrderDocument } from '../database/model';
+import { IAddressDocument, ICartDocument, IMenuDocument, IOrderDocument } from '../database/model';
 import { ForbiddenError, NotFoundError } from '../errors';
 import { stripeInstance } from '../config/stripe';
 import { appConfig } from '../config/app.config';
@@ -37,7 +37,7 @@ export class OrderService {
                 await this.restaurantRepository.findRestaurant(restaurantId);
             if (!restaurant) throw new NotFoundError('Restaurant not found');
 
-            const [cartItems, address] = await Promise.all([
+            const [cartItems, address]: [ICartDocument[], IAddressDocument | null] = await Promise.all([
                 this.cartRepository.getCartItemsByRestaurant(userId, restaurantId),
                 this.addressRepository.findByUserId(userId),
             ]);
@@ -156,17 +156,23 @@ export class OrderService {
 
         const skip: number = getPaginationSkipValue(page, limit);
 
-        const orders: IOrderDocument[] = await this.orderRepository.findOrders(restaurantId, skip, limit);
-        const myOrdersCount: number = await this.orderRepository.countRestaurantOrders({ restaurantId });
+        const [orders, myOrdersCount]: [IOrderDocument[], number] = await Promise.all([
+            this.orderRepository.findOrders(restaurantId, skip, limit),
+            this.orderRepository.countRestaurantOrders({ restaurantId }),
+        ]);
+
         const numberOfPages: number = getPaginationTotalNumberOfPages(myOrdersCount, limit);
         return { orders, numberOfPages };
     }
 
     public async getMyOrders(userId: string, page: number, limit: number): Promise<Orders> {
         const skip: number = getPaginationSkipValue(page, limit);
-        const orders: IOrderDocument[] = await this.orderRepository.findMyOrders(userId, skip, limit);
 
-        const myOrdersCount: number = await this.orderRepository.countUserOrders({ userId });
+        const [orders, myOrdersCount]: [IOrderDocument[], number] = await Promise.all([
+            this.orderRepository.findMyOrders(userId, skip, limit),
+            this.orderRepository.countUserOrders({ userId }),
+        ]);
+
         const numberOfPages: number = getPaginationTotalNumberOfPages(myOrdersCount, limit);
         return { orders, numberOfPages };
     }

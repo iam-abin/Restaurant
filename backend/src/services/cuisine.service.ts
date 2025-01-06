@@ -11,7 +11,7 @@ export class CuisineService {
         if (!searchText) {
             return await this.cuisineRepository.findCuisines(limit);
         }
-        return await this.cuisineRepository.searchCuisines(searchText, limit);
+        return await this.cuisineRepository.searchCuisinesByName(searchText, limit);
     }
 
     public async getCuisines(): Promise<ICuisineDocument[]> {
