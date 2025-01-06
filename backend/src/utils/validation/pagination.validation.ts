@@ -1,6 +1,6 @@
-import { query } from 'express-validator';
+import { query, ValidationChain } from 'express-validator';
 
-export const paginationValidator = [
+export const paginationValidator: ValidationChain[] = [
     query('page')
         .optional()
         .trim()

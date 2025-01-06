@@ -3,7 +3,7 @@ import { autoInjectable } from 'tsyringe';
 
 import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
 import {
-    checkOtpIntervalCompleted,
+    isOtpResendAllowed,
     generateOtp,
     comparePassword,
     createJwtAccessToken,
@@ -55,7 +55,7 @@ export class UserService {
                     existingUser._id.toString(),
                 );
                 if (existingOtp) {
-                    const isResendTimeLimitCompleted = checkOtpIntervalCompleted(existingOtp.createdAt);
+                    const isResendTimeLimitCompleted = isOtpResendAllowed(existingOtp.createdAt);
                     if (!isResendTimeLimitCompleted) {
                         throw new BadRequestError(
                             'OTP has been recently sent. Please wait a minute before requesting again.',

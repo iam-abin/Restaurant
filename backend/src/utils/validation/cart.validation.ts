@@ -1,9 +1,9 @@
-import { body } from 'express-validator';
+import { body, ValidationChain } from 'express-validator';
 import { mongoIdBodyValidator } from './mongodb-id.validation';
 
 export const addToCartRequestBodyValidator = [...mongoIdBodyValidator(['itemId', 'restaurantId'])];
 
-export const updateCartRequestBodyValidator = [
+export const updateCartRequestBodyValidator: ValidationChain[] = [
     body('quantity')
         .notEmpty()
         .withMessage('Quantity is required')

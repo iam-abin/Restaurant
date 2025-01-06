@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { autoInjectable } from 'tsyringe';
 
 import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
-import { generateOtp, checkOtpIntervalCompleted, sendEmail, RESET_PASSWORD_URL, createToken } from '../utils';
+import { generateOtp, isOtpResendAllowed, sendEmail, RESET_PASSWORD_URL, createToken } from '../utils';
 import {
     OtpTokenRepository,
     UserRepository,
@@ -70,7 +70,7 @@ export class OtpService {
         // Check if an OTP already exists and hasn't expired
         const existOtp: IOtpTokenDocument | null = await this.otpTokenRepository.findByUserId(userId);
         if (existOtp) {
-            const isResendTimeLimitCompleted = checkOtpIntervalCompleted(existOtp.createdAt);
+            const isResendTimeLimitCompleted = isOtpResendAllowed(existOtp.createdAt);
             if (!isResendTimeLimitCompleted) {
                 throw new BadRequestError('OTP has been recently sent. Please wait before requesting again.');
             }
@@ -96,7 +96,7 @@ export class OtpService {
             user._id.toString(),
         );
         if (existToken) {
-            const isResendTimeLimitCompleted: boolean = checkOtpIntervalCompleted(existToken.createdAt);
+            const isResendTimeLimitCompleted: boolean = isOtpResendAllowed(existToken.createdAt);
             if (!isResendTimeLimitCompleted) {
                 throw new BadRequestError(
                     'Token has been recently sent. Please wait a minute before requesting again.',

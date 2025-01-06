@@ -1,6 +1,6 @@
-import { body } from 'express-validator';
+import { body, ValidationChain } from 'express-validator';
 
-export const updateProfileRequestBodyValidator = [
+export const updateProfileRequestBodyValidator: ValidationChain[] = [
     body('image').optional().isString().withMessage('Image must be a string').trim(),
     body('name')
         .notEmpty()

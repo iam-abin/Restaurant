@@ -1,10 +1,10 @@
-import { body } from 'express-validator';
+import { body, ValidationChain } from 'express-validator';
 import { mongoIdBodyValidator } from './mongodb-id.validation';
 export const forgotPasswordRequestBodyValidator = [
     body('email').isEmail().withMessage('Email must be valid').toLowerCase().trim().escape(),
 ];
 
-export const resetPasswordRequestBodyValidator = [
+export const resetPasswordRequestBodyValidator: ValidationChain[] = [
     ...mongoIdBodyValidator('userId'),
     body('password')
         .notEmpty()
@@ -15,6 +15,6 @@ export const resetPasswordRequestBodyValidator = [
         .escape(), // used to sanitize input by escaping characters that could be used in cross-site scripting (XSS) attacks or other injection vulnerabilities.
 ];
 
-export const verifyTokenRequestBodyValidator = [
+export const verifyTokenRequestBodyValidator: ValidationChain[] = [
     body('resetToken').trim().isLength({ min: 80, max: 80 }).withMessage('invalid reset token').escape(), // used to sanitize input by escaping characters that could be used in cross-site scripting (XSS) attacks or other injection vulnerabilities.
 ];

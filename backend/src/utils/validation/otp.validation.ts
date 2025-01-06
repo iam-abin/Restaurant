@@ -1,7 +1,7 @@
-import { body } from 'express-validator';
+import { body, ValidationChain } from 'express-validator';
 import { mongoIdBodyValidator } from './mongodb-id.validation';
 
-export const verifyOtpRequestBodyValidator = [
+export const verifyOtpRequestBodyValidator: ValidationChain[] = [
     body('otp')
         .notEmpty()
         .withMessage('Otp is required')
@@ -12,4 +12,4 @@ export const verifyOtpRequestBodyValidator = [
     ...mongoIdBodyValidator('userId'),
 ];
 
-export const resendOtpRequestBodyValidator = [...mongoIdBodyValidator('userId')];
+export const resendOtpRequestBodyValidator: ValidationChain[] = [...mongoIdBodyValidator('userId')];

@@ -1,8 +1,8 @@
-import { body } from 'express-validator';
+import { body, ValidationChain } from 'express-validator';
 
 const STATUSES: string[] = ['preparing', 'outfordelivery', 'delivered'];
 
-export const updateOrderStatusRequestBodyValidator = [
+export const updateOrderStatusRequestBodyValidator: ValidationChain[] = [
     body('status')
         .notEmpty()
         .withMessage('Status is required')

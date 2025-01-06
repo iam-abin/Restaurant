@@ -1,6 +1,6 @@
-import { param, query, body } from 'express-validator';
+import { param, query, body, ValidationChain } from 'express-validator';
 
-export const restaurantUpdateValidator = [
+export const restaurantUpdateValidator: ValidationChain[] = [
     body('name')
         .notEmpty()
         .withMessage('Name is required')
@@ -29,7 +29,7 @@ export const restaurantUpdateValidator = [
         .withMessage('Delivery time must be a positive integer'),
 ];
 
-export const searchRestaurantValidator = [
+export const searchRestaurantValidator: ValidationChain[] = [
     // Validate the `searchText` in the URL parameter
     param('searchText')
         .notEmpty()
