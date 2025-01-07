@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 import { IUserDocument } from '../database/model';
-import { isProduction, createSuccessResponse, JWT_KEYS_CONSTANTS } from '../utils';
+import { createSuccessResponse, JWT_KEYS_CONSTANTS } from '../utils';
 import { OtpService, UserService } from '../services';
 import {
     IOtpToken,
@@ -26,20 +26,20 @@ class AuthController {
     }
 
     public signin = async (req: Request, res: Response): Promise<void> => {
-        const { user, accessToken, refreshToken } = await userService.signIn(req.body as ISignin);
+        const { user, jwtAccessToken, jwtRefreshToken } = await userService.signIn(req.body as ISignin);
 
-        this.setTokenToCookie(res, accessToken, 'accessToken');
-        this.setTokenToCookie(res, refreshToken, 'refreshToken');
+        this.setTokenToCookie(res, jwtAccessToken, 'jwtAccessToken');
+        this.setTokenToCookie(res, jwtRefreshToken, 'jwtRefreshToken');
 
         res.status(200).json(createSuccessResponse('Login success', user));
     };
 
     public googleAuth = async (req: Request, res: Response): Promise<void> => {
-        const { user, accessToken, refreshToken } = await userService.googleAuth(
+        const { user, jwtAccessToken, jwtRefreshToken } = await userService.googleAuth(
             req.body as IGoogleAuthCredential,
         );
-        this.setTokenToCookie(res, accessToken, 'accessToken');
-        this.setTokenToCookie(res, refreshToken, 'refreshToken');
+        this.setTokenToCookie(res, jwtAccessToken, 'jwtAccessToken');
+        this.setTokenToCookie(res, jwtRefreshToken, 'jwtRefreshToken');
 
         res.status(200).json(createSuccessResponse('Login success', user));
     };
@@ -48,8 +48,8 @@ class AuthController {
         const { jwtRefreshToken } = req.cookies;
 
         try {
-            const { accessToken }: { accessToken: string } = await userService.jwtRefresh(jwtRefreshToken);
-            this.setTokenToCookie(res, accessToken, 'accessToken');
+            const { jwtAccessToken }: { jwtAccessToken: string } = await userService.jwtRefresh(jwtRefreshToken);
+            this.setTokenToCookie(res, jwtAccessToken, 'jwtAccessToken');
             res.status(200).json(createSuccessResponse('Token refreshed successfully'));
         } catch {
             res.clearCookie(JWT_KEYS_CONSTANTS.JWT_ACCESS_TOKEN);
@@ -58,8 +58,8 @@ class AuthController {
         }
     };
 
-    private setTokenToCookie(res: Response, token: string, tokenType: 'accessToken' | 'refreshToken') {
-        const isAccessToken: boolean = tokenType === 'accessToken';
+    private setTokenToCookie(res: Response, token: string, tokenType: 'jwtAccessToken' | 'jwtRefreshToken') {
+        const isAccessToken: boolean = tokenType === 'jwtAccessToken';
         res.cookie(
             isAccessToken ? JWT_KEYS_CONSTANTS.JWT_ACCESS_TOKEN : JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN,
             token,
@@ -75,7 +75,7 @@ class AuthController {
         // Default maxAge 30 min
         return {
             httpOnly: true,
-            secure: isProduction(),
+            secure: true,
             sameSite: 'none',
             maxAge,
         };

@@ -20,7 +20,10 @@ import AuthRestaurantImage from '../../assets/auth-restaurant.png';
 import AuthUserImage from '../../assets/auth-user.png';
 import AuthAdminImage from '../../assets/auth-admin.png';
 
-import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import { CredentialResponse, GoogleLogin,
+    //  useGoogleLogin 
+
+} from '@react-oauth/google';
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -130,6 +133,13 @@ const Auth = () => {
             hotToastMessage(response.payload as string, 'error');
         }
     };
+
+
+	// const googleLogin = useGoogleLogin({
+	// 	onSuccess: responseGoogle,
+	// 	onError: responseGoogle,
+	// 	flow: "auth-code",
+	// });
 
     const handleError = () => {
         hotToastMessage('Login failed', 'error');

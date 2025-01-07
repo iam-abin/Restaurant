@@ -104,7 +104,7 @@ export class UserService {
 
     public async signIn(
         userSignInDto: ISignin,
-    ): Promise<{ user: IUserDocument; accessToken: string; refreshToken: string }> {
+    ): Promise<{ user: IUserDocument; jwtAccessToken: string; jwtRefreshToken: string }> {
         const { email, password, role } = userSignInDto;
 
         const existingUser: IUserDocument | null = await this.userRepository.findUserByEmail(email);
@@ -130,13 +130,13 @@ export class UserService {
             }
         }
 
-        const { accessToken, refreshToken }: Tokens = await this.generateTokens(existingUser);
-        return { user: existingUser, accessToken, refreshToken };
+        const { jwtAccessToken, jwtRefreshToken }: Tokens = await this.generateTokens(existingUser);
+        return { user: existingUser, jwtAccessToken, jwtRefreshToken };
     }
 
     public async googleAuth(
         authCredential: IGoogleAuthCredential,
-    ): Promise<{ user: IUserDocument; accessToken: string; refreshToken: string }> {
+    ): Promise<{ user: IUserDocument; jwtAccessToken: string; jwtRefreshToken: string }> {
         const { credential, role } = authCredential;
 
         const session = await mongoose.startSession();
@@ -164,6 +164,9 @@ export class UserService {
                     { ...userData, isVerified: true },
                     session,
                 );
+
+                console.log("user", user);
+                
                 const userId: string = user._id.toString();
                 if (user.role === UserRole.USER) {
                     await this.profileRepository.create({ userId, imageUrl: picture }, session);
@@ -171,11 +174,11 @@ export class UserService {
                     await this.restaurantRepository.create({ ownerId: userId, imageUrl: picture }, session);
                 }
 
-                const { accessToken, refreshToken }: Tokens = await this.generateTokens(user);
+                const { jwtAccessToken, jwtRefreshToken }: Tokens = await this.generateTokens(user);
 
                 // Commit the transaction
                 await session.commitTransaction();
-                return { user, accessToken, refreshToken };
+                return { user, jwtAccessToken, jwtRefreshToken };
             }
 
             // Check if the user is loggedin using google
@@ -200,9 +203,9 @@ export class UserService {
                 }
             }
 
-            const { accessToken, refreshToken }: Tokens = await this.generateTokens(existingUser);
+            const { jwtAccessToken, jwtRefreshToken }: Tokens = await this.generateTokens(existingUser);
 
-            return { user: existingUser, accessToken, refreshToken };
+            return { user: existingUser, jwtAccessToken, jwtRefreshToken };
         } catch (error) {
             // Rollback the transaction if something goes wrong
             await session.abortTransaction();
@@ -212,15 +215,15 @@ export class UserService {
         }
     }
 
-    public async jwtRefresh(refreshToken: string | undefined): Promise<{ accessToken: string }> {
-        if (!refreshToken) throw new NotFoundError('RefreshToken not found');
-        const { userId }: IJwtPayload = verifyJwtRefreshToken(refreshToken);
+    public async jwtRefresh(jwtRefreshToken: string | undefined): Promise<{ jwtAccessToken: string }> {
+        if (!jwtRefreshToken) throw new NotFoundError('RefreshToken not found');
+        const { userId }: IJwtPayload = verifyJwtRefreshToken(jwtRefreshToken);
         const user = await this.userRepository.findUserById(userId);
         if (!user) throw new NotFoundError('This user does not exist');
 
         // Generate JWT
-        const { accessToken }: Tokens = await this.generateTokens(user);
-        return { accessToken };
+        const { jwtAccessToken }: Tokens = await this.generateTokens(user);
+        return { jwtAccessToken };
     }
 
     public async updateBlockStatus(userId: string): Promise<IUserDocument | null> {
@@ -245,7 +248,7 @@ export class UserService {
         };
         const jwtAccessToken: string = createJwtAccessToken(userPayload);
         const jwtRefreshToken: string = createJwtRefreshToken(userPayload);
-        return { accessToken: jwtAccessToken, refreshToken: jwtRefreshToken };
+        return { jwtAccessToken: jwtAccessToken, jwtRefreshToken: jwtRefreshToken };
     }
 
     private async sendVerificationEmail(name: string, email: string, otp: string): Promise<void> {

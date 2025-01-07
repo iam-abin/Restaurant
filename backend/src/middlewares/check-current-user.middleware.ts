@@ -19,10 +19,11 @@ const userRepository = new UserRepository();
 // Middleware to get current user from token and assign it to req.currentUser
 export const checkCurrentUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const accessToken: string = req.cookies?.jwtToken;
-        if (!accessToken) return next();
-
-        const payload = verifyJwtAccessToken(accessToken);
+        const jwtAccessToken: string = req.cookies?.jwtAccessToken;
+        console.log(jwtAccessToken);
+        if (!jwtAccessToken) return next();
+        
+        const payload = verifyJwtAccessToken(jwtAccessToken);
         const user: IUserDocument | null = await userRepository.findUserById(payload.userId);
         if (!user) throw new NotFoundError('User Not found');
         if (!user.isVerified) throw new ForbiddenError('Your are not verified');
