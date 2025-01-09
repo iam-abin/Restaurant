@@ -6,10 +6,11 @@ import { MenuFormSchema, menuSchema } from '../../utils/schema/menuSchema';
 import { IResponse } from '../../types/api';
 import { addMenuApi } from '../../api/apiMethods/menu';
 import { hotToastMessage } from '../../utils/hotToast';
-import { useAppSelector } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { searchCuisineApi } from '../../api/apiMethods/cuisine';
 import { ICuisineResponse1, IMenu } from '../../types';
 import AsyncCreatableSelect from 'react-select/async-creatable';
+import { updateMenu } from '../../redux/thunk/menusThunk';
 
 const style = {
     position: 'absolute' as const,
@@ -18,10 +19,12 @@ const style = {
     transform: 'translate(-50%, -50%)',
     width: '90%',
     maxWidth: 600,
+    maxHeight: '95vh',
     bgcolor: 'background.paper',
     borderRadius: 4,
     boxShadow: 24,
     p: 4,
+    overflowY: 'auto',
 };
 export interface OptionType {
     value: string;
@@ -38,14 +41,18 @@ export type SearchableSelectProps = {
     ) => void | Promise<OptionType[]>;
 };
 
-export default function AddMenuModal({
+export default function MenuModal({
     isOpen,
     handleClose,
     handleMenusDispatch,
+    initialValues,
+    isEditMode,
 }: {
     isOpen: boolean;
     handleClose: () => void;
-    handleMenusDispatch: (restaurantId: string) => void;
+    handleMenusDispatch?: (restaurantId: string) => void;
+    initialValues?: IMenu;
+    isEditMode?: boolean;
 }) {
     const [isLoading, setIsLoading] = useState(false);
     const [input, setInput] = useState<MenuFormSchema>({
@@ -58,8 +65,21 @@ export default function AddMenuModal({
     });
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [errors, setErrors] = useState<Partial<MenuFormSchema>>({});
-
+    const dispatch = useAppDispatch();
     const restaurantData = useAppSelector((state) => state.restaurantReducer.restaurantData);
+
+    const transformInitialValueCuisine = (initialValues: IMenu) => {
+        return { ...initialValues, cuisine: (initialValues.cuisineId as ICuisineResponse1).name };
+    };
+
+    // Populate fields with initial values in edit mode
+    useEffect(() => {
+        if (isEditMode && initialValues) {
+            setInput(transformInitialValueCuisine(initialValues));
+            // setPreviewImage(initialValues.imageUrl ? URL.createObjectURL(initialValues.imageUrl) : null);
+            setPreviewImage(initialValues.imageUrl ? initialValues.imageUrl : null);
+        }
+    }, [isEditMode, initialValues]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -112,9 +132,21 @@ export default function AddMenuModal({
                 return;
             }
 
-            const response: IResponse = await addMenuApi(formData as unknown as IMenu);
-            hotToastMessage(response.message, 'success');
-            handleMenusDispatch(restaurantId);
+            if (isEditMode) {
+                // Call the API to update the menu
+                await dispatch(
+                    updateMenu({ menuId: initialValues?._id!, updateData: formData as Partial<IMenu> }),
+                );
+
+            } else {
+                // Call the API to add a new menu
+                const response: IResponse = await addMenuApi(formData as unknown as IMenu);
+                hotToastMessage(response.message, 'success');
+            }
+            if (handleMenusDispatch) {
+                handleMenusDispatch(restaurantId);
+            }
+
             setInput({
                 name: '',
                 description: '',
@@ -136,13 +168,14 @@ export default function AddMenuModal({
 
     useEffect(() => {
         (async () => {
-            await fetchSearchResult();
+            // To show in the dropdown area of cuisine
+            await fetchCuisineSearchResult();
         })();
     }, []);
 
-    const fetchSearchResult = async (searchtext?: string) => {
+    const fetchCuisineSearchResult = async (searchtext?: string) => {
         const result: IResponse = await searchCuisineApi(searchtext);
-        const mappedCuisineOptions = mapCusineOptions(result.data as ICuisineResponse1[]);
+        const mappedCuisineOptions: OptionType[] = mapCusineOptions(result.data as ICuisineResponse1[]);
         setCuisineOptions(mappedCuisineOptions);
     };
 
@@ -157,7 +190,7 @@ export default function AddMenuModal({
 
     const promiseOptions = (inputValue: string) =>
         new Promise<OptionType[]>((resolve) => {
-            fetchSearchResult(inputValue).then(() => {
+            fetchCuisineSearchResult(inputValue).then(() => {
                 //   setTimeout(() => {
                 resolve(cuisineOptions);
                 //   }, 1000);
@@ -171,7 +204,7 @@ export default function AddMenuModal({
                     <CloseIcon />
                 </IconButton>
                 <Typography variant="h5" align="center" gutterBottom>
-                    Add New Menu
+                    {isEditMode ? 'Edit Menu' : 'Add New Menu'}
                 </Typography>
                 <form onSubmit={submitHandler}>
                     <Grid container spacing={3}>
@@ -231,11 +264,14 @@ export default function AddMenuModal({
                         <Grid item xs={12}>
                             <AsyncCreatableSelect
                                 cacheOptions
-                                placeholder={'select cuisine...'}
+                                placeholder={'Select cuisine...'}
                                 options={cuisineOptions}
                                 defaultOptions={cuisineOptions}
                                 loadOptions={promiseOptions}
                                 onChange={handleSelectInputChange}
+                                defaultValue={
+                                    input?.cuisine ? { value: input.cuisine, label: input.cuisine } : null
+                                }
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -266,7 +302,7 @@ export default function AddMenuModal({
                                 color="primary"
                                 disabled={isLoading}
                             >
-                                {isLoading ? <LoaderCircle /> : 'Submit'}
+                                {isLoading ? <LoaderCircle /> : isEditMode ? 'Update' : 'Submit'}
                             </Button>
                         </Grid>
                     </Grid>

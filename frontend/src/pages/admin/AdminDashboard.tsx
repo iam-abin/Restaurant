@@ -5,7 +5,7 @@ import { IAdminDashboard } from '../../types';
 import LineGraph from '../../components/charts/LineGraph';
 import DashboardCard from '../../components/cards/DashboardCard';
 
-const Dashboard = () => {
+const AdminDashboard = () => {
     const [dashboardData, setDashboardData] = useState<IAdminDashboard | null>(null);
     useEffect(() => {
         (async () => {
@@ -65,4 +65,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default AdminDashboard;

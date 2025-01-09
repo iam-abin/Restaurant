@@ -17,16 +17,16 @@ const Profile = lazy(() => import('./pages/user/Profile'));
 const SearchResult = lazy(() => import('./pages/user/SearchResult'));
 const RestaurantDetails = lazy(() => import('./pages/common/RestaurantDetails'));
 const Cart = lazy(() => import('./pages/user/Cart'));
-const Restaurant = lazy(() => import('./pages/restaurant/Restaurant'));
+const RestaurantProfile = lazy(() => import('./pages/restaurant/RestaurantProfile'));
 const Menu = lazy(() => import('./pages/restaurant/Menu'));
 const Orders = lazy(() => import('./pages/restaurant/Orders'));
 const Success = lazy(() => import('./pages/user/Success'));
 const Error404 = lazy(() => import('./pages/common/Error404'));
-const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const Users = lazy(() => import('./pages/admin/UsersList'));
 const RestaurantsList = lazy(() => import('./pages/admin/RestaurantsList'));
 const OrdersUser = lazy(() => import('./pages/user/OrdersUser'));
-const DashBoard = lazy(() => import('./pages/restaurant/DashBoard'));
+const RestaurantDashBoard = lazy(() => import('./pages/restaurant/RestaurantDashBoard'));
 
 const AuthenticatedUser = ({ children }: { children: React.ReactNode }) => {
     const authData = useAppSelector((state) => state.authReducer.authData);
@@ -63,7 +63,6 @@ const appRouter = createBrowserRouter(
                 { path: '/cart/:restaurantId', element: <Cart /> },
                 { path: '/orders', element: <OrdersUser /> },
                 { path: '/order/status', element: <Success /> },
-                { path: '*', element: <Error404 /> },
             ],
         },
         {
@@ -74,8 +73,8 @@ const appRouter = createBrowserRouter(
                 </RoleProtectedRoute>
             ),
             children: [
-                { path: '', element: <DashBoard /> }, // Correct relative path
-                { path: 'details', element: <Restaurant /> }, // Correct relative path
+                { path: '', element: <RestaurantDashBoard /> }, // Correct relative path
+                { path: 'details', element: <RestaurantProfile /> }, // Correct relative path
                 { path: 'menu', element: <Menu /> },
                 { path: 'orders', element: <Orders /> },
             ],
@@ -88,7 +87,7 @@ const appRouter = createBrowserRouter(
                 </RoleProtectedRoute>
             ),
             children: [
-                { path: '', element: <Dashboard /> },
+                { path: '', element: <AdminDashboard /> },
                 { path: 'users', element: <Users /> },
                 { path: 'restaurants', element: <RestaurantsList /> },
             ],
@@ -104,7 +103,7 @@ const appRouter = createBrowserRouter(
             ),
         },
         {
-            path: '/restaurant/auth',
+            path: '/auth/restaurant',
             element: (
                 <AuthenticatedUser>
                     {' '}
@@ -113,7 +112,7 @@ const appRouter = createBrowserRouter(
             ),
         },
         {
-            path: '/admin/auth',
+            path: '/auth/admin',
             element: (
                 <AuthenticatedUser>
                     {' '}
@@ -142,6 +141,7 @@ const appRouter = createBrowserRouter(
             path: '/signup/otp',
             element: <Otp />,
         },
+        { path: '*', element: <Error404 /> },
     ],
     {
         future: {

@@ -4,7 +4,7 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
-import EditMenuModal from '../modal/EditMenuModal';
+import MenuModal from '../modal/MenuModal';
 import { IMenu } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { ROLES_CONSTANTS } from '../../utils/constants';
@@ -36,9 +36,16 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
         // <div className="flex justify-center bg-yellow-700">
         <Card sx={{ width: 11 / 12 }}>
             {/* modal start */}
-            {menu && <EditMenuModal menu={menu} isOpen={isEditMenuOpen} handleClose={handleEditMenuClose} />}
+            {menu && (
+                <MenuModal
+                    initialValues={menu}
+                    isEditMode={true}
+                    isOpen={isEditMenuOpen}
+                    handleClose={handleEditMenuClose}
+                />
+            )}
             {/* modal end */}
-            {/* <div className="flex justify-between bg-yellow-200"> */}
+
             <div className="flex flex-col md:flex-row md:justify-between bg-yellow-300 w-full">
                 <div className="w-full md:w-80">
                     <CardMedia
@@ -50,7 +57,7 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
                 </div>
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
-                        <h1 className="text-2xl font-bold text-gray-900">{menu.name}</h1>
+                        <h1 className="text-2xl font-bold text-gray-900">{menu?.name}</h1>
                     </Typography>
 
                     <p>{menu.description}</p>

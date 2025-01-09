@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 import { IUserDocument } from '../database/model';
-import { createSuccessResponse, JWT_KEYS_CONSTANTS } from '../utils';
+import { createSuccessResponse } from '../utils';
 import { OtpService, UserService } from '../services';
 import {
     IOtpToken,
@@ -11,6 +11,7 @@ import {
     IUser,
     CustomCookieOptions,
     IGoogleAuthCredential,
+    TokenType,
 } from '../types';
 import { appConfig } from '../config/app.config';
 
@@ -28,8 +29,8 @@ class AuthController {
     public signin = async (req: Request, res: Response): Promise<void> => {
         const { user, jwtAccessToken, jwtRefreshToken } = await userService.signIn(req.body as ISignin);
 
-        this.setTokenToCookie(res, jwtAccessToken, 'jwtAccessToken');
-        this.setTokenToCookie(res, jwtRefreshToken, 'jwtRefreshToken');
+        this.setTokenToCookie(res, jwtAccessToken, TokenType.JwtAccessToken);
+        this.setTokenToCookie(res, jwtRefreshToken, TokenType.JwtRefreshToken);
 
         res.status(200).json(createSuccessResponse('Login success', user));
     };
@@ -38,8 +39,8 @@ class AuthController {
         const { user, jwtAccessToken, jwtRefreshToken } = await userService.googleAuth(
             req.body as IGoogleAuthCredential,
         );
-        this.setTokenToCookie(res, jwtAccessToken, 'jwtAccessToken');
-        this.setTokenToCookie(res, jwtRefreshToken, 'jwtRefreshToken');
+        this.setTokenToCookie(res, jwtAccessToken, TokenType.JwtAccessToken);
+        this.setTokenToCookie(res, jwtRefreshToken, TokenType.JwtRefreshToken);
 
         res.status(200).json(createSuccessResponse('Login success', user));
     };
@@ -48,20 +49,21 @@ class AuthController {
         const { jwtRefreshToken } = req.cookies;
 
         try {
-            const { jwtAccessToken }: { jwtAccessToken: string } = await userService.jwtRefresh(jwtRefreshToken);
-            this.setTokenToCookie(res, jwtAccessToken, 'jwtAccessToken');
+            const { jwtAccessToken }: { jwtAccessToken: string } =
+                await userService.jwtRefresh(jwtRefreshToken);
+            this.setTokenToCookie(res, jwtAccessToken, TokenType.JwtAccessToken);
             res.status(200).json(createSuccessResponse('Token refreshed successfully'));
         } catch {
-            res.clearCookie(JWT_KEYS_CONSTANTS.JWT_ACCESS_TOKEN);
-            res.clearCookie(JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN);
+            res.clearCookie(TokenType.JwtAccessToken);
+            res.clearCookie(TokenType.JwtRefreshToken);
             res.status(400).json('Token refresh failed');
         }
     };
 
-    private setTokenToCookie(res: Response, token: string, tokenType: 'jwtAccessToken' | 'jwtRefreshToken') {
-        const isAccessToken: boolean = tokenType === 'jwtAccessToken';
+    private setTokenToCookie(res: Response, token: string, tokenType: TokenType) {
+        const isAccessToken: boolean = tokenType === TokenType.JwtAccessToken;
         res.cookie(
-            isAccessToken ? JWT_KEYS_CONSTANTS.JWT_ACCESS_TOKEN : JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN,
+            isAccessToken ? TokenType.JwtAccessToken : TokenType.JwtRefreshToken,
             token,
             this.getCookieOptions(
                 isAccessToken
@@ -129,8 +131,8 @@ class AuthController {
     }
 
     public async logout(req: Request, res: Response): Promise<void> {
-        res.clearCookie(JWT_KEYS_CONSTANTS.JWT_ACCESS_TOKEN);
-        res.clearCookie(JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN);
+        res.clearCookie(TokenType.JwtAccessToken);
+        res.clearCookie(TokenType.JwtRefreshToken);
         res.status(200).json(createSuccessResponse('Successfully logged out'));
     }
 }

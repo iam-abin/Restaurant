@@ -5,6 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Fade from '@mui/material/Fade';
 import { Link } from 'react-router-dom';
 import { IMenuItems } from '../navbar/NavBar';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 const FadeMenu: React.FC<{ menuItems: (IMenuItems | boolean)[] }> = ({ menuItems }) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -16,6 +17,11 @@ const FadeMenu: React.FC<{ menuItems: (IMenuItems | boolean)[] }> = ({ menuItems
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    // Reset anchorEl on route change
+    React.useEffect(() => {
+        setAnchorEl(null);
+    }, [location]);
 
     // Type guard to filter valid IMenuItems
     const isValidMenuItem = (item: IMenuItems | boolean): item is IMenuItems =>
@@ -32,7 +38,7 @@ const FadeMenu: React.FC<{ menuItems: (IMenuItems | boolean)[] }> = ({ menuItems
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
             >
-                Dashboard
+                <ArrowDropDownIcon className="text-5xl" /> {/* Dropdown icon */}
             </Button>
             <Menu
                 id="fade-menu"

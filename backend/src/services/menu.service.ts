@@ -9,7 +9,12 @@ import {
     RestaurantRepository,
 } from '../database/repository';
 import { IAddressDocument, ICuisineDocument, IMenuDocument, IRestaurantDocument } from '../database/model';
-import { getPaginationSkipValue, getPaginationTotalNumberOfPages, uploadImageOnCloudinary } from '../utils';
+import {
+    executeTransaction,
+    getPaginationSkipValue,
+    getPaginationTotalNumberOfPages,
+    uploadImageOnCloudinary,
+} from '../utils';
 import { BadRequestError, NotFoundError } from '../errors';
 
 @autoInjectable()
@@ -27,9 +32,8 @@ export class MenuService {
         menuData: Omit<IMenu, 'imageUrl' | 'restaurantId' | 'cuisineId'>,
         file: Express.Multer.File,
     ): Promise<IMenuDocument> {
-        const session = await mongoose.startSession();
-        session.startTransaction();
-        try {
+        
+        return executeTransaction(async (session) => {
             const restaurant: IRestaurantDocument = await this.validateRestaurantOwnership(userId);
             const { cuisine } = menuData;
 
@@ -38,21 +42,11 @@ export class MenuService {
             if (!addressData.city && !addressData.country)
                 throw new BadRequestError('Must have city and country to create menu');
 
-            let cuisineData: ICuisineDocument | null =
-                await this.cuisineRepository.findCuisineByName(cuisine);
-            if (!cuisineData) {
-                cuisineData = await this.cuisineRepository.createCuisine({ name: cuisine }, session);
-            }
-            const restaurantCuisine = await this.restaurantCuisineRepository.findRestaurantCuisine(
+            const cuisineData: ICuisineDocument | null = await this.handleCuisine(
+                cuisine,
                 restaurant._id.toString(),
-                cuisineData._id.toString(),
+                session,
             );
-            if (!restaurantCuisine) {
-                await this.restaurantCuisineRepository.create(
-                    { cuisineId: cuisineData._id.toString(), restaurantId: restaurant._id.toString() },
-                    session,
-                );
-            }
 
             const imageUrl: string = await uploadImageOnCloudinary(file);
             const menu: IMenuDocument | null = await this.menuRepository.create(
@@ -64,16 +58,8 @@ export class MenuService {
                 },
                 session,
             );
-            // Commit the transaction
-            await session.commitTransaction();
             return menu;
-        } catch (error) {
-            // Rollback the transaction if something goes wrong
-            await session.abortTransaction();
-            throw error;
-        } finally {
-            session.endSession();
-        }
+        });
     }
 
     public async getMenus(restaurantId: string, page: number, limit: number): Promise<Menus> {
@@ -102,28 +88,41 @@ export class MenuService {
         updateData: Partial<IMenu>,
         file: Express.Multer.File,
     ): Promise<IMenuDocument | null> {
-        await this.validateRestaurantOwnership(userId);
+        return executeTransaction(async(session)=>{
+            
+            const restaurant: IRestaurantDocument = await this.validateRestaurantOwnership(userId);
 
-        const menu: IMenuDocument | null = await this.menuRepository.findMenu(menuId);
-        if (!menu) throw new NotFoundError('Menu not found');
+            const menu: IMenuDocument | null = await this.menuRepository.findMenu(menuId);
+            if (!menu) throw new NotFoundError('Menu not found');
 
-        if (updateData.salePrice && updateData.salePrice > menu.price) {
-            throw new BadRequestError('Sale price must be less than or equal to the original price');
-        }
-        if (updateData.price && updateData.price < menu.salePrice) {
-            throw new BadRequestError('price must be grater than or equal to the original sale price');
-        }
+            if (updateData.salePrice && updateData.salePrice > menu.price) {
+                throw new BadRequestError('Sale price must be less than or equal to the original price');
+            }
+            if (updateData.price && updateData.price < menu.salePrice) {
+                throw new BadRequestError('price must be grater than or equal to the original sale price');
+            }
 
-        let imageUrl: string | undefined;
-        if (file) {
-            imageUrl = await uploadImageOnCloudinary(file);
-        }
+            const { cuisine } = updateData;
+            let cuisineData: ICuisineDocument | null = null;
+            if (cuisine) {
+                cuisineData = await this.handleCuisine(cuisine, restaurant._id.toString(), session);
+            }
 
-        const updatedMenu: IMenuDocument | null = await this.menuRepository.update(menuId, {
-            ...updateData,
-            imageUrl,
-        });
-        return updatedMenu;
+            if (!cuisineData) throw new BadRequestError('Menu must have a cuisine');
+
+            let imageUrl: string | undefined;
+            if (file) {
+                imageUrl = await uploadImageOnCloudinary(file);
+            }
+
+            const updatedMenu: IMenuDocument | null = await this.menuRepository.update(menuId, {
+                ...updateData,
+                cuisineId: cuisineData._id.toString(),
+                imageUrl,
+            });
+            return updatedMenu;
+        })
+     
     }
 
     private async validateRestaurantOwnership(userId: string): Promise<IRestaurantDocument> {
@@ -131,5 +130,29 @@ export class MenuService {
             await this.restaurantRepository.findMyRestaurant(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         return restaurant;
+    }
+
+    private async handleCuisine(
+        cuisineName: string,
+        restaurantId: string,
+        session: mongoose.ClientSession,
+    ): Promise<ICuisineDocument> {
+        let cuisine = await this.cuisineRepository.findCuisineByName(cuisineName);
+        if (!cuisine) {
+            cuisine = await this.cuisineRepository.createCuisine({ name: cuisineName }, session);
+        }
+
+        const restaurantCuisine = await this.restaurantCuisineRepository.findRestaurantCuisine(
+            restaurantId,
+            cuisine._id.toString(),
+        );
+        if (!restaurantCuisine) {
+            await this.restaurantCuisineRepository.create(
+                { cuisineId: cuisine._id.toString(), restaurantId },
+                session,
+            );
+        }
+
+        return cuisine;
     }
 }

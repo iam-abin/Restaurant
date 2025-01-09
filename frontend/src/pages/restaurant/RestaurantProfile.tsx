@@ -2,16 +2,23 @@ import { FormEvent, useEffect, useState } from 'react';
 import { Button } from '@mui/material';
 
 import { RestaurantFormSchema, restaurantFromSchema } from '../../utils/schema/restaurantSchema';
-import { getMyRestaurantApi, updateRestaurantApi } from '../../api/apiMethods';
+import { updateRestaurantApi } from '../../api/apiMethods';
 import { hotToastMessage } from '../../utils/hotToast';
 import { IResponse, ICuisine, ICuisineResponse, IRestaurant, IRestaurantResponse } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
 
-const Restaurant = () => {
+const RestaurantProfile = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [restaurant, setRestaurant] = useState<IRestaurant | null>(null);
     const [cuisines, setCuisines] = useState<ICuisineResponse[]>([]);
     const [selectedImage, setSelectedImage] = useState<File | string | null>(null);
+    const dispatch = useAppDispatch();
+
+    const restaurantData: IRestaurantResponse | null = useAppSelector(
+        (state) => state.restaurantReducer.restaurantData,
+    );
 
     const [input, setInput] = useState<RestaurantFormSchema>({
         name: restaurant?.ownerId.name ?? '',
@@ -25,11 +32,7 @@ const Restaurant = () => {
 
     useEffect(() => {
         (async () => {
-            const response: IResponse = await getMyRestaurantApi();
-            const { restaurant, cuisines } = response.data as IRestaurantResponse;
-            setRestaurant(restaurant);
-            setCuisines(cuisines);
-            setSelectedImage(restaurant.imageUrl);
+            await dispatch(fetchMyRestaurant());
         })();
     }, []);
 
@@ -45,6 +48,15 @@ const Restaurant = () => {
             }));
         }
     }, [restaurant]);
+
+    useEffect(() => {
+        if (restaurantData) {
+            const { restaurant, cuisines } = restaurantData as IRestaurantResponse;
+            setRestaurant(restaurant);
+            setCuisines(cuisines);
+            setSelectedImage(restaurant.imageUrl);
+        }
+    }, [restaurantData]);
 
     const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type } = e.target;
@@ -277,4 +289,4 @@ const Restaurant = () => {
     );
 };
 
-export default Restaurant;
+export default RestaurantProfile;

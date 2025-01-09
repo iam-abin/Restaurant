@@ -20,9 +20,10 @@ import AuthRestaurantImage from '../../assets/auth-restaurant.png';
 import AuthUserImage from '../../assets/auth-user.png';
 import AuthAdminImage from '../../assets/auth-admin.png';
 
-import { CredentialResponse, GoogleLogin,
-    //  useGoogleLogin 
-
+import {
+    CredentialResponse,
+    GoogleLogin,
+    //  useGoogleLogin
 } from '@react-oauth/google';
 
 const Auth = () => {
@@ -134,12 +135,11 @@ const Auth = () => {
         }
     };
 
-
-	// const googleLogin = useGoogleLogin({
-	// 	onSuccess: responseGoogle,
-	// 	onError: responseGoogle,
-	// 	flow: "auth-code",
-	// });
+    // const googleLogin = useGoogleLogin({
+    // 	onSuccess: responseGoogle,
+    // 	onError: responseGoogle,
+    // 	flow: "auth-code",
+    // });
 
     const handleError = () => {
         hotToastMessage('Login failed', 'error');
@@ -260,7 +260,7 @@ const Auth = () => {
                     {!isAdminPage && (
                         <div className="mt-5">
                             <Divider className="mt-5" />
-                            <Typography className="text-sm flex mt-3">
+                            <Typography variant="caption" component={'h1'} className="text-sm flex mt-3">
                                 {isLogin ? (
                                     <>
                                         Dont have an account?{' '}

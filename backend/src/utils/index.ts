@@ -9,6 +9,7 @@ export * from './otp';
 export * from './pagination';
 export * from './password';
 export * from './response';
+export * from './transaction';
 export * from './upload';
 export * from './validation';
 export * from './winston-logger';

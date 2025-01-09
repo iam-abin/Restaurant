@@ -22,12 +22,14 @@ import { hotToastMessage } from '../../utils/hotToast';
 import OrderDetailsModal from '../../components/modal/OrderDetailsModal';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
 import usePagination from '../../hooks/usePagination';
+import { useNavigate } from 'react-router-dom';
 
 const OrdersListPage: React.FC = () => {
     const [orders, setOrders] = useState<IRestaurantOrder[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedOrder, setSelectedOrder] = useState<IRestaurantOrder | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
+    const navigate = useNavigate()
     const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
     const restaurant = useAppSelector((store) => store.restaurantReducer.restaurantData?.restaurant);
 
@@ -134,9 +136,9 @@ const OrdersListPage: React.FC = () => {
                         variant="contained"
                         color="primary"
                         className="mt-6"
-                        onClick={() => alert('Redirecting to menu...')}
+                        onClick={() => navigate("/")}
                     >
-                        Browse Menu
+                        Go to home
                     </Button>
                 </div>
             )}

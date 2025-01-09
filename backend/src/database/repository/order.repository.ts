@@ -291,7 +291,7 @@ export class OrderRepository {
         return total.length ? total[0].totalSellPrice : 0;
     }
 
-    async findPercentageCommitionAmount(percentageDecimal: number): Promise<number> {
+    async findPercentageCommitionAmount(percentageDecimal: number, precision: number = 2): Promise<number> {
         const result = await OrderModel.aggregate([
             {
                 $project: {
@@ -306,7 +306,11 @@ export class OrderRepository {
                 },
             },
         ]);
-        return result[0]?.totalPercentageSum || 0;
+        // Get the total sum or default to 0
+        const totalSum: number = result[0]?.totalPercentageSum || 0;
+
+        // Round the result to the desired precision
+        return parseFloat(totalSum.toFixed(precision));
     }
 
     async countUserOrders({ userId }: { userId: string }): Promise<number> {

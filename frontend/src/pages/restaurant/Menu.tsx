@@ -6,7 +6,7 @@ import { Button } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchMenus } from '../../redux/thunk/menusThunk';
 import { IMenu, IRestaurantResponse } from '../../types';
-import AddMenuModal from '../../components/modal/AddMenuModal';
+import MenuModal from '../../components/modal/MenuModal';
 import MenuCard from '../../components/cards/MenuCard';
 import usePagination from '../../hooks/usePagination';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
@@ -49,7 +49,7 @@ const Menu = () => {
                     </Button>
                 </div>
                 {isAddMenuOpen && (
-                    <AddMenuModal
+                    <MenuModal
                         isOpen={isAddMenuOpen}
                         handleMenusDispatch={handleMenusDispatch}
                         handleClose={handleAddMenuClose}

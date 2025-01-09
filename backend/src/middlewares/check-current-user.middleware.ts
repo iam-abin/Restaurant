@@ -20,9 +20,8 @@ const userRepository = new UserRepository();
 export const checkCurrentUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const jwtAccessToken: string = req.cookies?.jwtAccessToken;
-        console.log(jwtAccessToken);
         if (!jwtAccessToken) return next();
-        
+
         const payload = verifyJwtAccessToken(jwtAccessToken);
         const user: IUserDocument | null = await userRepository.findUserById(payload.userId);
         if (!user) throw new NotFoundError('User Not found');

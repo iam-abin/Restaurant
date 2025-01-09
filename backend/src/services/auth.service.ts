@@ -165,8 +165,6 @@ export class UserService {
                     session,
                 );
 
-                console.log("user", user);
-                
                 const userId: string = user._id.toString();
                 if (user.role === UserRole.USER) {
                     await this.profileRepository.create({ userId, imageUrl: picture }, session);
