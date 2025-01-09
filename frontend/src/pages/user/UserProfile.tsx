@@ -6,10 +6,12 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchUserProfile, updateUserProfile } from '../../redux/thunk/profileThunk';
 import { IAddress } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
+import { useConfirmationContext } from '../../context/confirmationContext';
 
 const Profile = () => {
     const [selectedProfilePicture, setSelectedProfilePicture] = useState<string>('');
     const dispatch = useAppDispatch();
+    const { showConfirmation } = useConfirmationContext();
 
     const { authData } = useAppSelector((state) => state.authReducer);
     const { myProfile, status } = useAppSelector((state) => state.profileReducer);
@@ -49,14 +51,24 @@ const Profile = () => {
         setProfileData({ ...profileData, [name]: value });
     };
 
-    const updateProfileHandler = async (e: FormEvent<HTMLFormElement>) => {
+    const handleUpdateProfileButton = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        showConfirmation({
+            title: 'Do you want to update profile',
+            description: 'Are you sure?',
+            onAgree: () => updateProfileHandler(),
+            closeText: 'No',
+            okayText: 'Yes"}',
+        });
+    };
+
+    const updateProfileHandler = async () => {
         dispatch(updateUserProfile({ ...profileData, image: selectedProfilePicture }));
         setSelectedProfilePicture('');
     };
 
     return (
-        <form onSubmit={updateProfileHandler} className=" mx-auto my-5">
+        <form onSubmit={handleUpdateProfileButton} className=" mx-auto my-5">
             <div className="flex items-center justify-between">
                 <div className="flex gap-2 items-center">
                     <div className="flex items-center gap-2 relative">

@@ -8,6 +8,7 @@ import { IResponse, ICuisine, ICuisineResponse, IRestaurant, IRestaurantResponse
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
+import { useConfirmationContext } from '../../context/confirmationContext';
 
 const RestaurantProfile = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -15,6 +16,7 @@ const RestaurantProfile = () => {
     const [cuisines, setCuisines] = useState<ICuisineResponse[]>([]);
     const [selectedImage, setSelectedImage] = useState<File | string | null>(null);
     const dispatch = useAppDispatch();
+    const { showConfirmation } = useConfirmationContext();
 
     const restaurantData: IRestaurantResponse | null = useAppSelector(
         (state) => state.restaurantReducer.restaurantData,
@@ -104,8 +106,18 @@ const RestaurantProfile = () => {
         };
     }, [selectedImage]);
 
-    const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
+    const handleUpdateProfileButton = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        showConfirmation({
+            title: 'Do you want to update restaurant profile',
+            description: 'Are you sure?',
+            onAgree: () => submitHandler(),
+            closeText: 'No',
+            okayText: 'Yes',
+        });
+    };
+
+    const submitHandler = async () => {
         setIsLoading(true);
 
         const result = restaurantFromSchema.safeParse({
@@ -145,7 +157,7 @@ const RestaurantProfile = () => {
         <div className="max-w-6xl mx-auto my-10">
             <div>
                 <h1 className="font-extrabold text-2xl mb-5">Update Restaurant</h1>
-                <form onSubmit={submitHandler} className="md:grid md:grid-cols-3 md:gap-6">
+                <form onSubmit={handleUpdateProfileButton} className="md:grid md:grid-cols-3 md:gap-6">
                     {/* Left Side Form Inputs */}
                     <div className="md:col-span-2 space-y-4">
                         <div className="md:grid grid-cols-2 gap-6 space-y-2 md:space-y-0">

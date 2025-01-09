@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { getAdminDashboardApi } from '../../api/apiMethods';
-import { IAdminDashboard } from '../../types';
+import { IAdminDashboard, IResponse } from '../../types';
 import LineGraph from '../../components/charts/LineGraph';
 import DashboardCard from '../../components/cards/DashboardCard';
 
@@ -9,10 +9,11 @@ const AdminDashboard = () => {
     const [dashboardData, setDashboardData] = useState<IAdminDashboard | null>(null);
     useEffect(() => {
         (async () => {
-            const result = await getAdminDashboardApi();
+            const result: IResponse = await getAdminDashboardApi();
             setDashboardData(result.data as IAdminDashboard);
         })();
     }, []);
+
     const svgIcon = (
         <svg
             xmlns="http://www.w3.org/2000/svg"

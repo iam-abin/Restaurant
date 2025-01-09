@@ -6,12 +6,14 @@ import Table from '../../components/table/Table';
 import { hotToastMessage } from '../../utils/hotToast';
 import { blockUnblockUserApi } from '../../api/apiMethods/auth';
 import { getRestaurantsApi } from '../../api/apiMethods/restaurant';
+import { useConfirmationContext } from '../../context/confirmationContext';
+import { Chip } from '@mui/material';
 
 function RestaurantsList() {
     const [restaurantsData, setRestaurantsData] = useState<IRestaurant[]>([]);
     const [numberOfPages, setNumberOfPages] = useState(1);
-    // const [currentPage, setCurrentPage] = useState(1);
-    const currentPage = 1;
+    const { showConfirmation } = useConfirmationContext();
+    const currentPage: number = 1;
 
     const [searchKey, setSearchKey] = useState('');
 
@@ -30,6 +32,16 @@ function RestaurantsList() {
     useEffect(() => {
         fetchUsers(1); // Fetch initial data for the first page
     }, [searchKey, currentPage]);
+
+    const handleBlockUnblockButton = (userId: string, isBlocked: boolean) => {
+        showConfirmation({
+            title: `Do you want to ${isBlocked ? 'unblock' : 'block'} this restaurant`,
+            description: 'Are you sure?',
+            onAgree: () => handleBlockUnblock(userId),
+            closeText: 'No',
+            okayText: `Yes ${isBlocked ? 'unblock' : 'block'}`,
+        });
+    };
 
     const handleBlockUnblock = async (userId: string) => {
         const updatedUser: IResponse | null = await blockUnblockUserApi(userId);
@@ -68,15 +80,11 @@ function RestaurantsList() {
         {
             Header: 'Status',
             button: (row: { ownerId?: { isBlocked: boolean } }) => (
-                <div
-                    className={`badge ${
-                        row?.ownerId?.isBlocked
-                            ? 'badge badge-success gap-2 w-20'
-                            : 'badge badge-error gap-2 w-20'
-                    } `}
-                >
-                    {row?.ownerId?.isBlocked ? 'inActive' : 'active'}
-                </div>
+                <Chip
+                    label={row?.ownerId?.isBlocked ? 'inActive' : 'active'}
+                    color={row?.ownerId?.isBlocked ? 'error' : 'success'}
+                    variant="filled"
+                />
             ),
         },
         {
@@ -84,7 +92,7 @@ function RestaurantsList() {
             button: (row: { ownerId: { _id: string; isBlocked: boolean } }) => (
                 <button
                     onClick={() => {
-                        handleBlockUnblock(row.ownerId._id);
+                        handleBlockUnblockButton(row.ownerId._id, row.ownerId.isBlocked);
                     }}
                     className={`btn ${
                         row.ownerId.isBlocked

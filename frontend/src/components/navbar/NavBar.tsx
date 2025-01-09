@@ -9,7 +9,7 @@ import FlatwareIcon from '@mui/icons-material/Flatware';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { ROLES_CONSTANTS } from '../../utils/constants';
 import { useAppSelector } from '../../redux/hooks';
-import ConfirmationDialogue from '../alert/ConfirmationDialogue';
+import { useConfirmationContext } from '../../context/confirmationContext';
 import { IUser } from '../../types';
 
 export interface IMenuItems {
@@ -24,6 +24,7 @@ export interface IMenuItems2 {
 }
 
 const NavBar = ({ currentUser, handleLogout }: { currentUser: IUser; handleLogout: () => void }) => {
+    const { showConfirmation } = useConfirmationContext();
     const { myProfile } = useAppSelector((store) => store.profileReducer);
 
     const isAdmin = currentUser && currentUser.role === ROLES_CONSTANTS.ADMIN;
@@ -75,11 +76,14 @@ const NavBar = ({ currentUser, handleLogout }: { currentUser: IUser; handleLogou
             },
         { name: 'logout', icon: <LogoutIcon /> },
     ];
-
-    const [open, setOpen] = React.useState(false);
-
     const handleLogoutButton = () => {
-        setOpen(true);
+        showConfirmation({
+            title: 'Do you want to logout',
+            description: 'Are you sure?',
+            onAgree: handleLogout,
+            closeText: 'No',
+            okayText: 'Yes logout',
+        });
     };
     return (
         <div className="md:max-w-7xl px-3 md:mx-auto bg-white shadow-lg">
@@ -87,15 +91,6 @@ const NavBar = ({ currentUser, handleLogout }: { currentUser: IUser; handleLogou
                 <Link to="/">
                     <h1 className="font-bold md:font-extrabold text-2xl">Restaurant App</h1>
                 </Link>
-                <ConfirmationDialogue
-                    open={open}
-                    setOpen={setOpen}
-                    title="Do you want to logout"
-                    description="Are you sure?"
-                    onAgree={handleLogout}
-                    closeText="No"
-                    okayText="Yes Logout "
-                />
                 <div className="hidden md:flex gap-10 items-center ">
                     {currentUser && isUser && (
                         <>

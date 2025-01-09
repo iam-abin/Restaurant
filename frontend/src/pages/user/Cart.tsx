@@ -16,12 +16,14 @@ import { ROLES_CONSTANTS } from '../../utils/constants';
 import CartEmptyGif from '../../assets/cart-is-empty.jpeg';
 import usePagination from '../../hooks/usePagination';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
+import { useConfirmationContext } from '../../context/confirmationContext';
 
 const Cart = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { cartData } = useAppSelector((store) => store.cartReducer);
     const dispatch = useAppDispatch();
     const { restaurantId } = useParams();
+    const { showConfirmation } = useConfirmationContext();
 
     const authData = useAppSelector((state) => state.authReducer.authData);
     const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
@@ -37,6 +39,26 @@ const Cart = () => {
     };
     const handleClose = () => {
         setIsOpen(false);
+    };
+
+    const handleremoveCartItemsButton = () => {
+        showConfirmation({
+            title: 'Do you want to remove all the cart items',
+            description: 'Are you sure?',
+            onAgree: () => removeCartItemsHandler(),
+            closeText: 'No',
+            okayText: 'Yes remove all',
+        });
+    };
+
+    const handleremoveCartItemButton = (cartItemId: string) => {
+        showConfirmation({
+            title: 'Do you want to remove this cart item',
+            description: 'Are you sure?',
+            onAgree: () => removeCartItemHandler(cartItemId),
+            closeText: 'No',
+            okayText: 'Yes remove',
+        });
     };
 
     const removeCartItemsHandler = () => {
@@ -64,13 +86,13 @@ const Cart = () => {
             {cartData.length > 0 ? (
                 <div className="flex flex-col max-w-7xl mx-auto my-10">
                     <div className="flex justify-end">
-                        <Button onClick={removeCartItemsHandler} variant="text">
+                        <Button onClick={handleremoveCartItemsButton} variant="text">
                             Clear all
                         </Button>
                     </div>
                     <TableCart
                         cartItems={cartData}
-                        removeCartItemHandler={removeCartItemHandler}
+                        removeCartItemHandler={handleremoveCartItemButton}
                         changeQuantityHandler={changeQuantityHandler}
                     />
                     <div className="mt-3 flex flex-row justify-end">
