@@ -32,7 +32,6 @@ export class MenuService {
         menuData: Omit<IMenu, 'imageUrl' | 'restaurantId' | 'cuisineId'>,
         file: Express.Multer.File,
     ): Promise<IMenuDocument> {
-        
         return executeTransaction(async (session) => {
             const restaurant: IRestaurantDocument = await this.validateRestaurantOwnership(userId);
             const { cuisine } = menuData;
@@ -88,8 +87,7 @@ export class MenuService {
         updateData: Partial<IMenu>,
         file: Express.Multer.File,
     ): Promise<IMenuDocument | null> {
-        return executeTransaction(async(session)=>{
-            
+        return executeTransaction(async (session) => {
             const restaurant: IRestaurantDocument = await this.validateRestaurantOwnership(userId);
 
             const menu: IMenuDocument | null = await this.menuRepository.findMenu(menuId);
@@ -121,8 +119,7 @@ export class MenuService {
                 imageUrl,
             });
             return updatedMenu;
-        })
-     
+        });
     }
 
     private async validateRestaurantOwnership(userId: string): Promise<IRestaurantDocument> {

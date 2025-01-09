@@ -132,12 +132,11 @@ export default function MenuModal({
                 return;
             }
 
-            if (isEditMode) {
+            if (isEditMode && initialValues) {
                 // Call the API to update the menu
                 await dispatch(
-                    updateMenu({ menuId: initialValues?._id!, updateData: formData as Partial<IMenu> }),
+                    updateMenu({ menuId: initialValues._id, updateData: formData as Partial<IMenu> }),
                 );
-
             } else {
                 // Call the API to add a new menu
                 const response: IResponse = await addMenuApi(formData as unknown as IMenu);

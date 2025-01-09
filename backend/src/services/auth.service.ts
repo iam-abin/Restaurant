@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { autoInjectable } from 'tsyringe';
 
 import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
@@ -11,6 +10,7 @@ import {
     verifyJwtRefreshToken,
     createJwtRefreshToken,
     verifyGoogleCredentialToken,
+    executeTransaction,
 } from '../utils';
 import {
     OtpTokenRepository,
@@ -42,11 +42,8 @@ export class UserService {
     ) {}
 
     public async signUp(userRegisterDto: ISignup): Promise<IUserDocument | null> {
-        const { name, email } = userRegisterDto;
-        const session = await mongoose.startSession();
-        session.startTransaction();
-
-        try {
+        return executeTransaction(async (session) => {
+            const { name, email } = userRegisterDto;
             const existingUser: IUserDocument | null = await this.userRepository.findUserByEmail(email);
             // If the user already exists but is not verified
             if (existingUser && !existingUser.isVerified) {
@@ -74,9 +71,7 @@ export class UserService {
                 );
 
                 await this.sendVerificationEmail(name, email, otp);
-                // Commit the transaction
-                await session.commitTransaction();
-                session.endSession();
+
                 return updatedUser;
             }
 
@@ -90,16 +85,8 @@ export class UserService {
 
             await this.sendVerificationEmail(name, email, otp);
 
-            // Commit the transaction
-            await session.commitTransaction();
             return user;
-        } catch (error) {
-            // Rollback the transaction if something goes wrong
-            await session.abortTransaction();
-            throw error;
-        } finally {
-            session.endSession();
-        }
+        });
     }
 
     public async signIn(
@@ -138,11 +125,7 @@ export class UserService {
         authCredential: IGoogleAuthCredential,
     ): Promise<{ user: IUserDocument; jwtAccessToken: string; jwtRefreshToken: string }> {
         const { credential, role } = authCredential;
-
-        const session = await mongoose.startSession();
-        session.startTransaction();
-
-        try {
+        return executeTransaction(async (session) => {
             const { name, email, picture, email_verified, sub }: DecodedGoogleToken =
                 await verifyGoogleCredentialToken(credential);
 
@@ -174,8 +157,6 @@ export class UserService {
 
                 const { jwtAccessToken, jwtRefreshToken }: Tokens = await this.generateTokens(user);
 
-                // Commit the transaction
-                await session.commitTransaction();
                 return { user, jwtAccessToken, jwtRefreshToken };
             }
 
@@ -204,13 +185,7 @@ export class UserService {
             const { jwtAccessToken, jwtRefreshToken }: Tokens = await this.generateTokens(existingUser);
 
             return { user: existingUser, jwtAccessToken, jwtRefreshToken };
-        } catch (error) {
-            // Rollback the transaction if something goes wrong
-            await session.abortTransaction();
-            throw error;
-        } finally {
-            session.endSession();
-        }
+        });
     }
 
     public async jwtRefresh(jwtRefreshToken: string | undefined): Promise<{ jwtAccessToken: string }> {

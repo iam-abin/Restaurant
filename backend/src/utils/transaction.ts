@@ -11,7 +11,7 @@ export const executeTransaction = async <T>(
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-        const result = await action(session);
+        const result: T = await action(session);
 
         // Commit the transaction
         await session.commitTransaction();

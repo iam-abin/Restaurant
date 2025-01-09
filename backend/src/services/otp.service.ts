@@ -1,8 +1,14 @@
-import mongoose from 'mongoose';
 import { autoInjectable } from 'tsyringe';
 
 import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
-import { generateOtp, isOtpResendAllowed, sendEmail, RESET_PASSWORD_URL, createToken } from '../utils';
+import {
+    generateOtp,
+    isOtpResendAllowed,
+    sendEmail,
+    RESET_PASSWORD_URL,
+    createToken,
+    executeTransaction,
+} from '../utils';
 import {
     OtpTokenRepository,
     UserRepository,
@@ -24,9 +30,7 @@ export class OtpService {
     ) {}
 
     public async verifyOtp(userId: string, otp: string): Promise<IUserDocument | null> {
-        const session = await mongoose.startSession();
-        session.startTransaction();
-        try {
+        return executeTransaction(async (session) => {
             const user: IUserDocument = await this.validateUserExistence(userId);
 
             // Check if the user is already verified
@@ -50,16 +54,9 @@ export class OtpService {
             }
 
             await this.otpTokenRepository.delete(otpData._id.toString(), session);
-            // Commit the transaction
-            await session.commitTransaction();
+
             return updatedUser;
-        } catch (error) {
-            // Rollback the transaction if something goes wrong
-            await session.abortTransaction();
-            throw error;
-        } finally {
-            session.endSession();
-        }
+        });
     }
 
     public async resendOtp(userId: string): Promise<IUserDocument> {

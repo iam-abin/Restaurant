@@ -37,7 +37,6 @@ class MenuController {
         const { userId } = req.currentUser!;
         const { menuId } = req.params;
         const file: Express.Multer.File = req.file!;
-        console.log(req.body as Partial<IMenu>);
 
         const menu: IMenuDocument | null = await menuService.updateMenu(
             userId,

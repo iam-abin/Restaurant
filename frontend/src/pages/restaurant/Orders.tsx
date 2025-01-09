@@ -29,7 +29,7 @@ const OrdersListPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [selectedOrder, setSelectedOrder] = useState<IRestaurantOrder | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
     const restaurant = useAppSelector((store) => store.restaurantReducer.restaurantData?.restaurant);
 
@@ -136,7 +136,7 @@ const OrdersListPage: React.FC = () => {
                         variant="contained"
                         color="primary"
                         className="mt-6"
-                        onClick={() => navigate("/")}
+                        onClick={() => navigate('/')}
                     >
                         Go to home
                     </Button>

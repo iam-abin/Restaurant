@@ -5,8 +5,12 @@ import { NotFoundError } from '../errors';
 import { AddressRepository, ProfileRepository } from '../database/repository';
 import { IAddressDocument, IProfileDocument } from '../database/model';
 import { IAddress, IProfile, IProfilesData, IUser } from '../types';
-import { getPaginationSkipValue, getPaginationTotalNumberOfPages, uploadImageOnCloudinary } from '../utils';
-import mongoose from 'mongoose';
+import {
+    executeTransaction,
+    getPaginationSkipValue,
+    getPaginationTotalNumberOfPages,
+    uploadImageOnCloudinary,
+} from '../utils';
 
 @autoInjectable()
 export class ProfileService {
@@ -39,9 +43,7 @@ export class ProfileService {
     ): Promise<IProfileDocument | null> {
         const { city, country, address, image } = updateData;
 
-        const session = await mongoose.startSession();
-        session.startTransaction();
-        try {
+        return executeTransaction(async (session) => {
             let imageUrl: string | undefined;
             if (image) {
                 imageUrl = await uploadImageOnCloudinary(image);
@@ -63,15 +65,7 @@ export class ProfileService {
                 session,
             );
 
-            // Commit the transaction
-            await session.commitTransaction();
             return profile;
-        } catch (error) {
-            // Rollback the transaction if something goes wrong
-            await session.abortTransaction();
-            throw error;
-        } finally {
-            session.endSession();
-        }
+        });
     }
 }
