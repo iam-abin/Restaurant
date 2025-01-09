@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import FadeMenu from '../list/FadeMenu';
-import { Avatar } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import RightDrawer from '../drawer/RightDrawer';
 import LogoutIcon from '@mui/icons-material/Logout';
