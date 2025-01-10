@@ -5,7 +5,7 @@ import { Skeleton } from '@mui/material';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import PublicIcon from '@mui/icons-material/Public';
 
-export default function RestaurantCardSkeleton() {
+const RestaurantCardSkeleton: React.FC = () => {
     return (
         <Card sx={{ maxWidth: 345 }}>
             <div className="relative">
@@ -33,4 +33,6 @@ export default function RestaurantCardSkeleton() {
             </CardActions>
         </Card>
     );
-}
+};
+
+export default RestaurantCardSkeleton;

@@ -5,7 +5,7 @@ import { Button } from '@mui/material';
 
 import PizzaImage from '../../assets/hero_pizza.png';
 
-const Landing = () => {
+const Landing: React.FC = () => {
     const [searchText, setSearchText] = useState<string>('');
     const navigate = useNavigate();
 

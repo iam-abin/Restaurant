@@ -1,10 +1,14 @@
-import * as React from 'react';
+import { useState } from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-export default function DropDown({ statusList }: { statusList: string[] }) {
-    const [status, setStatus] = React.useState('');
+type DropdownProps = {
+    statusList: string[];
+};
+
+const DropDown: React.FC<DropdownProps> = ({ statusList }) => {
+    const [status, setStatus] = useState('');
 
     const handleChange = (event: SelectChangeEvent) => {
         setStatus(event.target.value);
@@ -26,4 +30,6 @@ export default function DropDown({ statusList }: { statusList: string[] }) {
             </FormControl>
         </div>
     );
-}
+};
+
+export default DropDown;

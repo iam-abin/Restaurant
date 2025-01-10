@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -16,16 +16,8 @@ const Transition = React.forwardRef(function Transition(
 ) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
-export default function ConfirmationDialogue({
-    open,
-    setOpen,
-    title,
-    description,
-    onAgree,
-    onDisagree,
-    closeText = 'Close',
-    okayText = 'Agree',
-}: {
+
+interface IConfirmationDialogueProps {
     open: boolean;
     setOpen: (value: boolean) => void;
     title: string;
@@ -34,8 +26,19 @@ export default function ConfirmationDialogue({
     onDisagree?: () => void;
     closeText?: string;
     okayText?: string;
-}) {
-    const handleClose = () => {
+}
+
+const ConfirmationDialogue: React.FC<IConfirmationDialogueProps> = ({
+    open,
+    setOpen,
+    title,
+    description,
+    onAgree,
+    onDisagree,
+    closeText = 'Close',
+    okayText = 'Agree',
+}) => {
+    const handleClose = (): void => {
         setOpen(false);
     };
 
@@ -118,4 +121,6 @@ export default function ConfirmationDialogue({
             </DialogActions>
         </Dialog>
     );
-}
+};
+
+export default ConfirmationDialogue;

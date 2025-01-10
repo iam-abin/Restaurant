@@ -4,14 +4,13 @@ import { Button, Input, Typography, Divider } from '@mui/material';
 import { Email, Person, Lock, LocalPhone } from '@mui/icons-material';
 
 import { signInSchema, signUpSchema } from '../../utils/schema/userSchema';
-import { ROLES_CONSTANTS } from '../../utils/constants';
 import { hotToastMessage } from '../../utils/hotToast';
 import { useAppDispatch } from '../../redux/hooks';
 import { googleAuthThunk, signinUser } from '../../redux/thunk/authThunk';
 import { signupApi } from '../../api/apiMethods';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 
-import { ISignup, IUser } from '../../types';
+import { ISignup, IUser, UserRole } from '../../types';
 
 import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
 import { fetchUserProfile } from '../../redux/thunk/profileThunk';
@@ -20,23 +19,28 @@ import AuthRestaurantImage from '../../assets/auth-restaurant.png';
 import AuthUserImage from '../../assets/auth-user.png';
 import AuthAdminImage from '../../assets/auth-admin.png';
 
-import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import {
+    CredentialResponse,
+    GoogleLogin,
+    //  useGoogleLogin
+} from '@react-oauth/google';
+import { checkRole } from '../../utils';
 
-const Auth = () => {
+const Auth: React.FC = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const dispatch = useAppDispatch();
     const naivgate = useNavigate();
     const location = useLocation();
 
-    const isRestaurantPage = location.pathname.includes(ROLES_CONSTANTS.RESTAURANT);
-    const isAdminPage = location.pathname.includes(ROLES_CONSTANTS.ADMIN);
+    const isRestaurantPage: boolean = location.pathname.includes(UserRole.RESTAURANT);
+    const isAdminPage: boolean = location.pathname.includes(UserRole.ADMIN);
 
-    const role: string = isRestaurantPage
-        ? ROLES_CONSTANTS.RESTAURANT
+    const role: UserRole = isRestaurantPage
+        ? UserRole.RESTAURANT
         : isAdminPage
-          ? ROLES_CONSTANTS.ADMIN
-          : ROLES_CONSTANTS.USER;
+          ? UserRole.ADMIN
+          : UserRole.USER;
 
     const [input, setInput] = useState<ISignup>({
         name: '',
@@ -47,16 +51,16 @@ const Auth = () => {
     });
     const [errors, setErrors] = useState<Partial<ISignup>>({});
 
-    const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    const changeEventHandler = (e: ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = e.target;
         setInput({ ...input, [name]: value });
     };
 
-    const handlePageSwitch = () => {
+    const handlePageSwitch = (): void => {
         setIsLogin((state) => !state);
     };
 
-    const handleSubmit = async (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent): Promise<void> => {
         try {
             e.preventDefault();
             // Clear existing errors
@@ -90,11 +94,11 @@ const Auth = () => {
                     return;
                 }
 
-                if (role === ROLES_CONSTANTS.RESTAURANT) {
+                if (checkRole(UserRole.RESTAURANT, role)) {
                     await dispatch(fetchMyRestaurant());
                 }
 
-                if (role === ROLES_CONSTANTS.USER) {
+                if (checkRole(UserRole.USER, role)) {
                     await dispatch(fetchUserProfile());
                 }
 
@@ -120,7 +124,7 @@ const Auth = () => {
     };
 
     // google login
-    const handleSuccess = async (googleResponse: CredentialResponse) => {
+    const handleSuccess = async (googleResponse: CredentialResponse): Promise<void> => {
         const { credential } = googleResponse;
         const response = await dispatch(googleAuthThunk({ credential: credential!, role }));
         // Check if the action was rejected
@@ -131,7 +135,13 @@ const Auth = () => {
         }
     };
 
-    const handleError = () => {
+    // const googleLogin = useGoogleLogin({
+    // 	onSuccess: responseGoogle,
+    // 	onError: responseGoogle,
+    // 	flow: "auth-code",
+    // });
+
+    const handleError = (): void => {
         hotToastMessage('Login failed', 'error');
     };
 
@@ -250,7 +260,7 @@ const Auth = () => {
                     {!isAdminPage && (
                         <div className="mt-5">
                             <Divider className="mt-5" />
-                            <Typography className="text-sm flex mt-3">
+                            <Typography variant="caption" component={'h1'} className="text-sm flex mt-3">
                                 {isLogin ? (
                                     <>
                                         Dont have an account?{' '}

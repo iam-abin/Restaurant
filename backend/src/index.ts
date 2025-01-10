@@ -43,8 +43,8 @@ const PORT: number = appConfig.PORT;
 // Handle Graceful shutdown
 /* eslint-disable no-console */
 const shutdown = () => {
-    console.log('Shutting down server...');
-    console.log('Shutdown complete');
+    console.log('🛑 Shutting down server...');
+    console.log('✅ Shutdown complete');
     process.exit(0);
 };
 /* eslint-enable no-console */

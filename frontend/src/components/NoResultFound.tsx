@@ -1,14 +1,16 @@
 import { Button, Card, CardContent, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-export const NoResultFound = ({
-    searchText,
-    searchQuery,
-    filterList = [],
-}: {
+interface INoResultFoundProps {
     searchText: string;
     searchQuery: string;
     filterList: string[];
+}
+
+export const NoResultFound: React.FC<INoResultFoundProps> = ({
+    searchText,
+    searchQuery,
+    filterList = [],
 }) => {
     return (
         <Card className="max-w-md mx-auto mt-10 shadow-lg">

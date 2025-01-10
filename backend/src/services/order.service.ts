@@ -1,5 +1,4 @@
 import { autoInjectable } from 'tsyringe';
-import mongoose from 'mongoose';
 import Stripe from 'stripe';
 import { GetRestaurantOrders, IOrder, IRestaurantResponse, Orders } from '../types';
 import {
@@ -13,7 +12,7 @@ import { IAddressDocument, ICartDocument, IMenuDocument, IOrderDocument } from '
 import { ForbiddenError, NotFoundError } from '../errors';
 import { stripeInstance } from '../config/stripe';
 import { appConfig } from '../config/app.config';
-import { getPaginationSkipValue, getPaginationTotalNumberOfPages } from '../utils';
+import { executeTransaction, getPaginationSkipValue, getPaginationTotalNumberOfPages } from '../utils';
 
 @autoInjectable()
 export class OrderService {
@@ -29,10 +28,8 @@ export class OrderService {
         userId: string,
         orderData: Pick<IOrder, 'restaurantId'>,
     ): Promise<{ stripePaymentUrl: string }> {
-        const session = await mongoose.startSession();
-        session.startTransaction();
-        try {
-            const { restaurantId } = orderData;
+        const { restaurantId } = orderData;
+        return executeTransaction(async (session) => {
             const restaurant: IRestaurantResponse | null =
                 await this.restaurantRepository.findRestaurant(restaurantId);
             if (!restaurant) throw new NotFoundError('Restaurant not found');
@@ -97,16 +94,9 @@ export class OrderService {
 
             // Adding ordered items to OrderedItems collection
             await this.orderedItemRepository.create(orderedItems, session);
-            // Commit the transaction
-            await session.commitTransaction();
+
             return { stripePaymentUrl: checkoutSession.url };
-        } catch (error) {
-            // Rollback the transaction if something goes wrong
-            await session.abortTransaction();
-            throw error;
-        } finally {
-            session.endSession();
-        }
+        });
     }
 
     private findtotalAmount(cartItems: ICartDocument[]) {
@@ -193,18 +183,21 @@ export class OrderService {
         if (event.type !== 'checkout.session.completed') {
             throw new Error('Payment confirmation failed');
         }
-        const session = event.data.object as Stripe.Checkout.Session;
+        const checkoutSession = event.data.object as Stripe.Checkout.Session;
 
-        if (!session.metadata?.orderId) throw new Error('Order ID is missing in the session metadata');
+        if (!checkoutSession.metadata?.orderId)
+            throw new Error('Order ID is missing in the session metadata');
 
-        const order: IOrderDocument | null = await this.orderRepository.findOrder(session.metadata.orderId!);
+        const order: IOrderDocument | null = await this.orderRepository.findOrder(
+            checkoutSession.metadata.orderId!,
+        );
 
         if (!order) throw new NotFoundError('Order not found');
 
         const confirmedOrder = this.orderRepository.updateStatus(order._id.toString(), status);
         // Update the order with the amount and status
-        // if (session.amount_total) {
-        //     order.totalAmount = session.amount_total;
+        // if (checkoutSession.amount_total) {
+        //     order.totalAmount = checkoutSession.amount_total;
         // }
 
         return confirmedOrder;

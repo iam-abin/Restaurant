@@ -13,7 +13,7 @@ import Filter from '../../components/Filter';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
 import usePagination from '../../hooks/usePagination';
 
-const SearchResult = () => {
+const SearchResult: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [filtersList, setFiltersList] = useState<ICuisineResponse1[]>([]);
     const [selectedFilters, setSelectedFilters] = useState<string[]>([]);

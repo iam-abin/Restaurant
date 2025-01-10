@@ -2,16 +2,25 @@ import { FormEvent, useEffect, useState } from 'react';
 import { Button } from '@mui/material';
 
 import { RestaurantFormSchema, restaurantFromSchema } from '../../utils/schema/restaurantSchema';
-import { getMyRestaurantApi, updateRestaurantApi } from '../../api/apiMethods';
+import { updateRestaurantApi } from '../../api/apiMethods';
 import { hotToastMessage } from '../../utils/hotToast';
 import { IResponse, ICuisine, ICuisineResponse, IRestaurant, IRestaurantResponse } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
+import { useConfirmationContext } from '../../context/confirmationContext';
 
-const Restaurant = () => {
+const RestaurantProfile: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [restaurant, setRestaurant] = useState<IRestaurant | null>(null);
     const [cuisines, setCuisines] = useState<ICuisineResponse[]>([]);
     const [selectedImage, setSelectedImage] = useState<File | string | null>(null);
+    const dispatch = useAppDispatch();
+    const { showConfirmation } = useConfirmationContext();
+
+    const restaurantData: IRestaurantResponse | null = useAppSelector(
+        (state) => state.restaurantReducer.restaurantData,
+    );
 
     const [input, setInput] = useState<RestaurantFormSchema>({
         name: restaurant?.ownerId.name ?? '',
@@ -25,11 +34,7 @@ const Restaurant = () => {
 
     useEffect(() => {
         (async () => {
-            const response: IResponse = await getMyRestaurantApi();
-            const { restaurant, cuisines } = response.data as IRestaurantResponse;
-            setRestaurant(restaurant);
-            setCuisines(cuisines);
-            setSelectedImage(restaurant.imageUrl);
+            await dispatch(fetchMyRestaurant());
         })();
     }, []);
 
@@ -45,6 +50,15 @@ const Restaurant = () => {
             }));
         }
     }, [restaurant]);
+
+    useEffect(() => {
+        if (restaurantData) {
+            const { restaurant, cuisines } = restaurantData as IRestaurantResponse;
+            setRestaurant(restaurant);
+            setCuisines(cuisines);
+            setSelectedImage(restaurant.imageUrl);
+        }
+    }, [restaurantData]);
 
     const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type } = e.target;
@@ -92,8 +106,18 @@ const Restaurant = () => {
         };
     }, [selectedImage]);
 
-    const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
+    const handleUpdateProfileButton = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        showConfirmation({
+            title: 'Do you want to update restaurant profile',
+            description: 'Are you sure?',
+            onAgree: () => submitHandler(),
+            closeText: 'No',
+            okayText: 'Yes',
+        });
+    };
+
+    const submitHandler = async () => {
         setIsLoading(true);
 
         const result = restaurantFromSchema.safeParse({
@@ -133,7 +157,7 @@ const Restaurant = () => {
         <div className="max-w-6xl mx-auto my-10">
             <div>
                 <h1 className="font-extrabold text-2xl mb-5">Update Restaurant</h1>
-                <form onSubmit={submitHandler} className="md:grid md:grid-cols-3 md:gap-6">
+                <form onSubmit={handleUpdateProfileButton} className="md:grid md:grid-cols-3 md:gap-6">
                     {/* Left Side Form Inputs */}
                     <div className="md:col-span-2 space-y-4">
                         <div className="md:grid grid-cols-2 gap-6 space-y-2 md:space-y-0">
@@ -277,4 +301,4 @@ const Restaurant = () => {
     );
 };
 
-export default Restaurant;
+export default RestaurantProfile;

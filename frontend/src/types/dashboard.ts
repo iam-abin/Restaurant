@@ -29,3 +29,10 @@ export type CountByDay = {
     date: string;
     count: number;
 };
+
+export type DashboardCardData = {
+    title: string;
+    number: number;
+    icon: JSX.Element;
+    description: string;
+};

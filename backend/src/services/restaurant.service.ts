@@ -22,9 +22,13 @@ import {
     IRestaurantCuisineDocument,
     IRestaurantDocument,
 } from '../database/model';
-import { getPaginationSkipValue, getPaginationTotalNumberOfPages, uploadImageOnCloudinary } from '../utils';
+import {
+    executeTransaction,
+    getPaginationSkipValue,
+    getPaginationTotalNumberOfPages,
+    uploadImageOnCloudinary,
+} from '../utils';
 import { NotFoundError } from '../errors';
-import mongoose from 'mongoose';
 import { RestaurantWithCuisines } from '../controllers/restaurant.controller';
 
 @autoInjectable()
@@ -101,10 +105,7 @@ export class RestaurantService {
     ): Promise<IRestaurantDocument | null> {
         const { name, city, country, deliveryTime } = restaurantData;
 
-        const session = await mongoose.startSession();
-        session.startTransaction();
-
-        try {
+        return executeTransaction(async (session) => {
             // user
             await this.userRepository.updateUser(ownerId, { name }, session);
             // address
@@ -126,16 +127,8 @@ export class RestaurantService {
                 session,
             );
 
-            // Commit the transaction
-            await session.commitTransaction();
             return restaurant;
-        } catch (error) {
-            // Rollback the transaction if something goes wrong
-            await session.abortTransaction();
-            throw error;
-        } finally {
-            session.endSession();
-        }
+        });
     }
 
     public async searchRestaurant({

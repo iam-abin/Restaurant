@@ -13,7 +13,7 @@ export interface IForgotPasswordEmail {
     email: string;
 }
 
-const ForgotPasswordEmail = () => {
+const ForgotPasswordEmail: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errors, setErrors] = useState<Partial<IForgotPasswordEmail>>({});

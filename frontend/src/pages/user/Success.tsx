@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button, Typography } from '@mui/material';
 
-const Success = () => {
+const Success: React.FC = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50px-4">
             <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 max-w-lg w-full">

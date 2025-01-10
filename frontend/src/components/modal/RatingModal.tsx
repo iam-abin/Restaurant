@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
@@ -22,7 +21,12 @@ interface IRatingModalProps {
     myRating: number;
     handleRatingChange: (event: React.SyntheticEvent<Element, Event>, value: number | null) => Promise<void>;
 }
-const RatingModal = ({ isModalOpen, closeRatingModal, myRating, handleRatingChange }: IRatingModalProps) => {
+const RatingModal: React.FC<IRatingModalProps> = ({
+    isModalOpen,
+    closeRatingModal,
+    myRating,
+    handleRatingChange,
+}) => {
     return (
         <div>
             <Modal

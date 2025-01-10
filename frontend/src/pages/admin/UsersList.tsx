@@ -5,12 +5,15 @@ import { hotToastMessage } from '../../utils/hotToast';
 import { getProfilesApi, blockUnblockUserApi } from '../../api/apiMethods';
 import SearchBar from '../../components/search/SearchBar';
 import Table from '../../components/table/Table';
+import { useConfirmationContext } from '../../context/confirmationContext';
+import { Button, Chip } from '@mui/material';
 
-function UsersList() {
+const UsersList: React.FC = () => {
     const [profilesData, setProfilesData] = useState<IProfile[]>([]);
     const [numberOfPages, setNumberOfPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchKey, setSearchKey] = useState('');
+    const { showConfirmation } = useConfirmationContext();
 
     const USERS_PER_PAGE: number = 2;
 
@@ -36,6 +39,16 @@ function UsersList() {
     useEffect(() => {
         setCurrentPage(1);
     }, [searchKey]);
+
+    const handleBlockUnblockButton = (userId: string, isBlocked: boolean) => {
+        showConfirmation({
+            title: `Do you want to ${isBlocked ? 'unblock' : 'block'} this user`,
+            description: 'Are you sure?',
+            onAgree: () => handleBlockUnblock(userId),
+            closeText: 'No',
+            okayText: `Yes ${isBlocked ? 'unblock' : 'block'}`,
+        });
+    };
 
     const handleBlockUnblock = async (userId: string) => {
         const updatedUser: IResponse | null = await blockUnblockUserApi(userId);
@@ -74,32 +87,25 @@ function UsersList() {
         {
             Header: 'Status',
             button: (row: { userId?: { isBlocked: string } }) => (
-                <div
-                    className={`badge ${
-                        row?.userId?.isBlocked
-                            ? 'badge badge-success gap-2 w-20'
-                            : 'badge badge-error gap-2 w-20'
-                    } `}
-                >
-                    {row?.userId?.isBlocked ? 'inActive' : 'active'}
-                </div>
+                <Chip
+                    label={row?.userId?.isBlocked ? 'inActive' : 'active'}
+                    color={row?.userId?.isBlocked ? 'error' : 'success'}
+                    variant="filled"
+                />
             ),
         },
         {
             Header: 'Action',
             button: (row: { userId: { _id: string; isBlocked: boolean } }) => (
-                <button
+                <Button
+                    color={row.userId.isBlocked ? 'success' : 'error'}
                     onClick={() => {
-                        handleBlockUnblock(row.userId._id);
+                        handleBlockUnblockButton(row.userId._id, row.userId.isBlocked);
                     }}
-                    className={`btn ${
-                        row.userId.isBlocked
-                            ? 'btn btn-error btn-sm w-24 bg-red-600'
-                            : 'btn-success btn-sm w-24 bg-green-600'
-                    } `}
+                    variant="contained"
                 >
                     {row.userId.isBlocked ? 'Unblock' : 'Block'}
-                </button>
+                </Button>
             ),
         },
     ];
@@ -116,17 +122,8 @@ function UsersList() {
                 numberOfPages={numberOfPages}
                 fetchData={fetchUsers}
             />
-            {/* <ConfirmationDialogue
-                    open={open}
-                    setOpen={setOpen}
-                    title={`Do you want to ${isBlocked ? "block" : "unblock"} this user?`}
-                    description="Are you sure?"
-                    onAgree={handleBlockUnblock(userId, isBlocked)}
-                    closeText='No'
-                    okayText={isBlocked ? "active" : "inActive"}
-                /> */}
         </div>
     );
-}
+};
 
 export default UsersList;

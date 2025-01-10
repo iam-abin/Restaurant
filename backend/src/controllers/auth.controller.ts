@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 import { IUserDocument } from '../database/model';
-import { isProduction, createSuccessResponse, JWT_KEYS_CONSTANTS } from '../utils';
+import { createSuccessResponse } from '../utils';
 import { OtpService, UserService } from '../services';
 import {
     IOtpToken,
@@ -11,6 +11,7 @@ import {
     IUser,
     CustomCookieOptions,
     IGoogleAuthCredential,
+    TokenType,
 } from '../types';
 import { appConfig } from '../config/app.config';
 
@@ -26,20 +27,20 @@ class AuthController {
     }
 
     public signin = async (req: Request, res: Response): Promise<void> => {
-        const { user, accessToken, refreshToken } = await userService.signIn(req.body as ISignin);
+        const { user, jwtAccessToken, jwtRefreshToken } = await userService.signIn(req.body as ISignin);
 
-        this.setTokenToCookie(res, accessToken, 'accessToken');
-        this.setTokenToCookie(res, refreshToken, 'refreshToken');
+        this.setTokenToCookie(res, jwtAccessToken, TokenType.JwtAccessToken);
+        this.setTokenToCookie(res, jwtRefreshToken, TokenType.JwtRefreshToken);
 
         res.status(200).json(createSuccessResponse('Login success', user));
     };
 
     public googleAuth = async (req: Request, res: Response): Promise<void> => {
-        const { user, accessToken, refreshToken } = await userService.googleAuth(
+        const { user, jwtAccessToken, jwtRefreshToken } = await userService.googleAuth(
             req.body as IGoogleAuthCredential,
         );
-        this.setTokenToCookie(res, accessToken, 'accessToken');
-        this.setTokenToCookie(res, refreshToken, 'refreshToken');
+        this.setTokenToCookie(res, jwtAccessToken, TokenType.JwtAccessToken);
+        this.setTokenToCookie(res, jwtRefreshToken, TokenType.JwtRefreshToken);
 
         res.status(200).json(createSuccessResponse('Login success', user));
     };
@@ -48,20 +49,21 @@ class AuthController {
         const { jwtRefreshToken } = req.cookies;
 
         try {
-            const { accessToken }: { accessToken: string } = await userService.jwtRefresh(jwtRefreshToken);
-            this.setTokenToCookie(res, accessToken, 'accessToken');
+            const { jwtAccessToken }: { jwtAccessToken: string } =
+                await userService.jwtRefresh(jwtRefreshToken);
+            this.setTokenToCookie(res, jwtAccessToken, TokenType.JwtAccessToken);
             res.status(200).json(createSuccessResponse('Token refreshed successfully'));
         } catch {
-            res.clearCookie(JWT_KEYS_CONSTANTS.JWT_ACCESS_TOKEN);
-            res.clearCookie(JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN);
+            res.clearCookie(TokenType.JwtAccessToken);
+            res.clearCookie(TokenType.JwtRefreshToken);
             res.status(400).json('Token refresh failed');
         }
     };
 
-    private setTokenToCookie(res: Response, token: string, tokenType: 'accessToken' | 'refreshToken') {
-        const isAccessToken: boolean = tokenType === 'accessToken';
+    private setTokenToCookie(res: Response, token: string, tokenType: TokenType) {
+        const isAccessToken: boolean = tokenType === TokenType.JwtAccessToken;
         res.cookie(
-            isAccessToken ? JWT_KEYS_CONSTANTS.JWT_ACCESS_TOKEN : JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN,
+            isAccessToken ? TokenType.JwtAccessToken : TokenType.JwtRefreshToken,
             token,
             this.getCookieOptions(
                 isAccessToken
@@ -75,7 +77,7 @@ class AuthController {
         // Default maxAge 30 min
         return {
             httpOnly: true,
-            secure: isProduction(),
+            secure: true,
             sameSite: 'none',
             maxAge,
         };
@@ -121,16 +123,13 @@ class AuthController {
         const { userId } = req.params;
         const user: IUserDocument | null = await userService.updateBlockStatus(userId);
         res.status(200).json(
-            createSuccessResponse(
-                `candidate ${user?.isBlocked ? 'blocked' : 'unBlocked'}  successfully`,
-                user,
-            ),
+            createSuccessResponse(`user ${user?.isBlocked ? 'blocked' : 'unBlocked'}  successfully`, user),
         );
     }
 
     public async logout(req: Request, res: Response): Promise<void> {
-        res.clearCookie(JWT_KEYS_CONSTANTS.JWT_ACCESS_TOKEN);
-        res.clearCookie(JWT_KEYS_CONSTANTS.JWT_REFRESH_TOKEN);
+        res.clearCookie(TokenType.JwtAccessToken);
+        res.clearCookie(TokenType.JwtRefreshToken);
         res.status(200).json(createSuccessResponse('Successfully logged out'));
     }
 }

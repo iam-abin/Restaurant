@@ -10,7 +10,11 @@ import { Chip } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { IRestaurantCard } from '../../types';
 
-const RestaurantCard = ({ restaurant }: { restaurant: IRestaurantCard }) => {
+interface IRestaurantCardProps {
+    restaurant: IRestaurantCard;
+}
+
+const RestaurantCard: React.FC<IRestaurantCardProps> = ({ restaurant }) => {
     return (
         <Card sx={{ width: '100%' }} className="w-full">
             <div className="relative">

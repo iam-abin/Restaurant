@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    Select,
-    MenuItem,
-    Typography,
-    Box,
-    Button,
-} from '@mui/material';
+import { useEffect, useState } from 'react';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 
 import { getRestaurantOrdersApi, updateOrderStatusApi } from '../../api/apiMethods';
 import { useAppSelector } from '../../redux/hooks';
@@ -22,12 +20,15 @@ import { hotToastMessage } from '../../utils/hotToast';
 import OrderDetailsModal from '../../components/modal/OrderDetailsModal';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
 import usePagination from '../../hooks/usePagination';
+import { useNavigate } from 'react-router-dom';
+import CustomButton from '../../components/Button/CustomButton';
 
 const OrdersListPage: React.FC = () => {
     const [orders, setOrders] = useState<IRestaurantOrder[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedOrder, setSelectedOrder] = useState<IRestaurantOrder | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
+    const navigate = useNavigate();
     const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
     const restaurant = useAppSelector((store) => store.restaurantReducer.restaurantData?.restaurant);
 
@@ -47,8 +48,10 @@ const OrdersListPage: React.FC = () => {
     }, [restaurant, currentPage]);
 
     const handleStatusChange = async (id: string, newStatus: string) => {
-        setOrders((prevOrders) =>
-            prevOrders.map((order) => (order._id === id ? { ...order, status: newStatus } : order)),
+        setOrders((prevOrders: IRestaurantOrder[]) =>
+            prevOrders.map((order: IRestaurantOrder) =>
+                order._id === id ? { ...order, status: newStatus } : order,
+            ),
         );
         const response = await updateOrderStatusApi(id, newStatus);
 
@@ -127,17 +130,13 @@ const OrdersListPage: React.FC = () => {
                     </Table>
                 </TableContainer>
             ) : (
-                <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+                <div className="flex flex-col items-center justify-center min-h-screen">
                     <h1 className="mt-4 text-2xl font-semibold text-gray-800">No Orders Yet!</h1>
                     <p className="mt-2 text-gray-600">It looks like you haven&apos;t received any orders.</p>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        className="mt-6"
-                        onClick={() => alert('Redirecting to menu...')}
-                    >
-                        Browse Menu
-                    </Button>
+
+                    <CustomButton className="mt-6" onClick={() => navigate('/')}>
+                        Go to home
+                    </CustomButton>
                 </div>
             )}
 

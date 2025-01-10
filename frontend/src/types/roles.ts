@@ -1,5 +1,5 @@
-export interface IUserRole {
-    ADMIN: string;
-    RESTAURANT: string;
-    USER: string;
+export enum UserRole {
+    ADMIN = 'admin',
+    RESTAURANT = 'restaurant',
+    USER = 'user',
 }

@@ -3,19 +3,16 @@ import { IProfile } from '../../types';
 import PaginationButtons from '../pagination/PaginationButtons';
 import usePagination from '../../hooks/usePagination';
 
-const Table = ({
-    columns,
-    data,
-    numberOfPages,
-    fetchData,
-}: {
+interface ITableProps {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     columns: any;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any[];
     numberOfPages: number;
     fetchData: (page: number) => Promise<void>;
-}) => {
+}
+
+const Table: React.FC<ITableProps> = ({ columns, data, numberOfPages, fetchData }) => {
     //  eslint-disable-next-line @typescript-eslint/no-explicit-any
     const getNestedValue = (nestedObj: any, path: string) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

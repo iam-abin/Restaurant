@@ -6,7 +6,14 @@ export interface IJwtPayload {
     role: UserRole;
 }
 
+// Enum for token types
+export enum TokenType {
+    JwtAccessToken = 'jwtAccessToken',
+    JwtRefreshToken = 'jwtRefreshToken',
+}
+
+// Type for Tokens
 export type Tokens = {
-    accessToken: string;
-    refreshToken: string;
+    [TokenType.JwtAccessToken]: string;
+    [TokenType.JwtRefreshToken]: string;
 };

@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 import { RestaurantMenu } from '@mui/icons-material'; // MUI Icon
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@mui/material';
 
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchMenus } from '../../redux/thunk/menusThunk';
 import { IMenu, IRestaurantResponse } from '../../types';
-import AddMenuModal from '../../components/modal/AddMenuModal';
+import MenuModal from '../../components/modal/MenuModal';
 import MenuCard from '../../components/cards/MenuCard';
 import usePagination from '../../hooks/usePagination';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
+import CustomButton from '../../components/Button/CustomButton';
 
-const Menu = () => {
+const Menu: React.FC = () => {
     const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
     const handleAddMenuOpen = () => setIsAddMenuOpen(true);
     const handleAddMenuClose = () => setIsAddMenuOpen(false);
@@ -44,12 +44,10 @@ const Menu = () => {
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold">Available menu</h1>
                 <div className="mt-3 flex flex-col items-end gap-5">
-                    <Button className="h-10" color="warning" variant="contained" onClick={handleAddMenuOpen}>
-                        Add menu
-                    </Button>
+                    <CustomButton onClick={handleAddMenuOpen}>Add menu</CustomButton>
                 </div>
                 {isAddMenuOpen && (
-                    <AddMenuModal
+                    <MenuModal
                         isOpen={isAddMenuOpen}
                         handleMenusDispatch={handleMenusDispatch}
                         handleClose={handleAddMenuClose}
@@ -78,12 +76,7 @@ const Menu = () => {
                         <p className="mt-2 text-gray-600">
                             Sorry, the menu you&apos;re looking for is currently unavailable.
                         </p>
-                        <button
-                            className="mt-6 px-6 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
-                            onClick={() => navigate('/')}
-                        >
-                            Back to Home
-                        </button>
+                        <CustomButton onClick={() => navigate('/')}>Back to Home</CustomButton>
                     </div>
                 </div>
             )}

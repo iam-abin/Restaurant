@@ -1,20 +1,12 @@
 import { Button, Checkbox } from '@mui/material';
 import { ICuisineResponse1 } from '../types';
 
-export type FilterOptionsState = {
-    id: string;
-    label: string;
-};
-
-const Filter = ({
-    filterArray,
-    setSelectedFilters,
-    filtersList,
-}: {
+interface IFiterProps {
     filterArray: string[];
     setSelectedFilters: React.Dispatch<React.SetStateAction<string[]>>;
     filtersList: ICuisineResponse1[];
-}) => {
+}
+const Filter: React.FC<IFiterProps> = ({ filterArray, setSelectedFilters, filtersList }) => {
     const applyFilterCheck = (item: string) => {
         setSelectedFilters((prevFilters) =>
             prevFilters.includes(item)

@@ -10,8 +10,9 @@ export const fetchMyRestaurant = createAsyncThunk<
     { rejectValue: string } // Rejected value type
 >('restaurant/fetchMyRestaurant', async (_, { rejectWithValue }) => {
     try {
-        const profile = await getMyRestaurantApi();
-        return profile.data as IRestaurantResponse;
+        const response = await getMyRestaurantApi();
+        const { restaurant, cuisines } = response.data as IRestaurantResponse;
+        return { restaurant, cuisines } as IRestaurantResponse;
     } catch (error: unknown) {
         // Use rejectWithValue to handle errors
         return rejectWithValue((error as Error).message);

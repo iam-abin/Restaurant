@@ -5,7 +5,7 @@ import { getRestaurantDashboardApi } from '../../api/apiMethods';
 import PieChartGraph from '../../components/charts/PieChartGraph';
 import DashboardCard from '../../components/cards/DashboardCard';
 
-const DashBoard = () => {
+const RestaurantDashBoard: React.FC = () => {
     const [restaurantDashboardData, setRestaurantDashboardData] = useState<IRestaurantDashboard>({
         orderStatusData: [],
         totalRevenue: null,
@@ -64,4 +64,4 @@ const DashBoard = () => {
     );
 };
 
-export default DashBoard;
+export default RestaurantDashBoard;
