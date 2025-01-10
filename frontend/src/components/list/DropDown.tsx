@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -8,7 +8,7 @@ type DropdownProps = {
 };
 
 const DropDown: React.FC<DropdownProps> = ({ statusList }) => {
-    const [status, setStatus] = React.useState('');
+    const [status, setStatus] = useState('');
 
     const handleChange = (event: SelectChangeEvent) => {
         setStatus(event.target.value);

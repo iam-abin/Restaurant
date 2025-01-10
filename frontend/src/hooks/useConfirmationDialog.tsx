@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import ConfirmationDialogue from '../components/alert/ConfirmationDialogue';
 
 interface UseConfirmationOptions {
@@ -10,8 +11,8 @@ interface UseConfirmationOptions {
 }
 
 export const useConfirmation = () => {
-    const [open, setOpen] = React.useState(false);
-    const [options, setOptions] = React.useState<UseConfirmationOptions | null>(null);
+    const [open, setOpen] = useState(false);
+    const [options, setOptions] = useState<UseConfirmationOptions | null>(null);
 
     const showConfirmation = (newOptions: UseConfirmationOptions) => {
         setOptions(newOptions);
