@@ -9,7 +9,7 @@ const xMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 
 export default function LineGraph() {
     return (
         <LineChart
-            width={800}
+            // width={800}
             height={500}
             series={[
                 { data: pData, label: 'pv' },
