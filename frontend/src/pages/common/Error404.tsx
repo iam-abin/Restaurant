@@ -1,6 +1,6 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import CustomButton from '../../components/Button/CustomButton';
 
 const Error404: React.FC = () => {
     const navigate = useNavigate();
@@ -28,14 +28,17 @@ const Error404: React.FC = () => {
             <Typography variant="body1" mb={3}>
                 It might have been moved or deleted.
             </Typography>
-            <Button
+            <CustomButton sx={{ textTransform: 'none', fontWeight: 'bold' }} onClick={handleGoHome}>
+                Back to Home
+            </CustomButton>
+            {/* <Button
                 variant="contained"
                 color="primary"
                 onClick={handleGoHome}
                 sx={{ textTransform: 'none', fontWeight: 'bold' }}
             >
                 Go Back Home
-            </Button>
+            </Button> */}
         </Box>
     );
 };

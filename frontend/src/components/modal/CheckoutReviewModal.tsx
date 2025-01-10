@@ -23,26 +23,17 @@ const style = {
     p: 4,
 };
 
-export default function CheckoutReviewModal({
-    isOpen,
-    handleClose,
-}: {
+interface ICheckoutReviewModalProps {
     isOpen: boolean;
     handleClose: () => void;
-}) {
+}
+
+const CheckoutReviewModal: React.FC<ICheckoutReviewModalProps> = ({ isOpen, handleClose }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const { authData } = useAppSelector((store) => store.authReducer);
     const { myProfile } = useAppSelector((store) => store.profileReducer);
     const { cartData } = useAppSelector((store) => store.cartReducer);
-
-    // useEffect(()=>{
-    //     (
-    //         async()=>{
-    //             const
-    //         }
-    //     )()
-    // })
 
     const paymentCheckoutHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -174,4 +165,5 @@ export default function CheckoutReviewModal({
             </Modal>
         </div>
     );
-}
+};
+export default CheckoutReviewModal;

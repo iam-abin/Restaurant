@@ -1,8 +1,14 @@
-// to format date along with time eg:- 19/03/2024 08:50 AM
+/**
+ * Formats a date string to a human-readable date format along with the time.
+ * The resulting format is: day/month/year hour:minute AM/PM (e.g., 19/03/2024 08:50 AM).
+ *
+ * @param {string} dateString - The date string to be formatted.
+ * @returns {string} The formatted date and time string in the format "day/month/year hour:minute AM/PM".
+ */
 export const formatDateWithTime = (dateString: string): string => {
-    const date = new Date(dateString);
+    const date: Date = new Date(dateString);
 
-    const formattedDateTime = date.toLocaleString('en-US', {
+    const formattedDateTime: string = date.toLocaleString('en-US', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
@@ -11,14 +17,20 @@ export const formatDateWithTime = (dateString: string): string => {
     });
 
     // Extract individual components
-    const [datePart, timePart] = formattedDateTime.split(', ');
-    const [month, day, year] = datePart.split('/');
+    const [datePart, timePart]: string[] = formattedDateTime.split(', ');
+    const [month, day, year]: string[] = datePart.split('/');
 
     // Format as day/month/year
-    const formattedDate = `${day}/${month}/${year} ${timePart}`;
+    const formattedDate: string = `${day}/${month}/${year} ${timePart}`;
     return formattedDate;
 };
 
+/**
+ * Formats a date string to a human-readable date format (e.g., 03/19/2024).
+ *
+ * @param {string} dateString - The date string to be formatted.
+ * @returns {string} The formatted date string in the default locale date format.
+ */
 export const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString();
 };

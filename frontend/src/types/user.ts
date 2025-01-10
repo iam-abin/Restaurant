@@ -1,11 +1,11 @@
-// import { IUserRole } from "./roles";
+import { UserRole } from './roles';
 
 export interface IUser {
     _id: string;
     name: string;
     email: string;
     phone: string;
-    role: string;
+    role: UserRole;
     isBlocked: boolean;
     isVerified: boolean;
 }

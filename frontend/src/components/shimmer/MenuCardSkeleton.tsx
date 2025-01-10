@@ -2,7 +2,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import { Skeleton } from '@mui/material';
 
-const MenuCardSkeleton = () => {
+const MenuCardSkeleton: React.FC = () => {
     return (
         <Card sx={{ maxWidth: 345 }}>
             <div className="relative">

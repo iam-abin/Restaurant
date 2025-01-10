@@ -9,39 +9,39 @@ import {
     removeCartItems,
     fetchCartItems,
 } from '../../redux/thunk/cartThunk';
-import { ICart } from '../../types';
+import { ICart, IUser, UserRole } from '../../types';
 import TableCart from '../../components/table/TableCart';
 import CheckoutReviewModal from '../../components/modal/CheckoutReviewModal';
-import { ROLES_CONSTANTS } from '../../utils/constants';
 import CartEmptyGif from '../../assets/cart-is-empty.jpeg';
 import usePagination from '../../hooks/usePagination';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
 import { useConfirmationContext } from '../../context/confirmationContext';
+import { checkRole } from '../../utils';
 
-const Cart = () => {
+const Cart: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { cartData } = useAppSelector((store) => store.cartReducer);
     const dispatch = useAppDispatch();
     const { restaurantId } = useParams();
     const { showConfirmation } = useConfirmationContext();
 
-    const authData = useAppSelector((state) => state.authReducer.authData);
+    const authData: IUser | null = useAppSelector((state) => state.authReducer.authData);
     const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
 
     useEffect(() => {
-        if (authData?.role === ROLES_CONSTANTS.USER) {
+        if (checkRole(UserRole.USER, authData?.role)) {
             dispatch(fetchCartItems({ restaurantId: restaurantId!, setTotalNumberOfPages }));
         }
     }, []);
 
-    const handleOpen = () => {
+    const handleOpen = (): void => {
         setIsOpen(true);
     };
-    const handleClose = () => {
+    const handleClose = (): void => {
         setIsOpen(false);
     };
 
-    const handleremoveCartItemsButton = () => {
+    const handleremoveCartItemsButton = (): void => {
         showConfirmation({
             title: 'Do you want to remove all the cart items',
             description: 'Are you sure?',
@@ -51,7 +51,7 @@ const Cart = () => {
         });
     };
 
-    const handleremoveCartItemButton = (cartItemId: string) => {
+    const handleremoveCartItemButton = (cartItemId: string): void => {
         showConfirmation({
             title: 'Do you want to remove this cart item',
             description: 'Are you sure?',
@@ -61,19 +61,19 @@ const Cart = () => {
         });
     };
 
-    const removeCartItemsHandler = () => {
+    const removeCartItemsHandler = (): void => {
         dispatch(removeCartItems());
     };
 
-    const removeCartItemHandler = (cartItemId: string) => {
+    const removeCartItemHandler = (cartItemId: string): void => {
         dispatch(removeCartItem(cartItemId));
     };
 
-    const changeQuantityHandler = (cartItemId: string, quantity: number) => {
+    const changeQuantityHandler = (cartItemId: string, quantity: number): void => {
         dispatch(changeCartItemQuantity({ cartItemId, quantity }));
     };
 
-    const findTotalAmount = (cartItems: ICart[]) => {
+    const findTotalAmount = (cartItems: ICart[]): number => {
         const totalAmount = cartItems.reduce((acc: number, currItem: ICart) => {
             acc += currItem?.itemId.price * currItem.quantity;
             return acc;

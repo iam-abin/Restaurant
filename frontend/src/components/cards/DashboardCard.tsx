@@ -1,14 +1,13 @@
-import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 import { Tooltip } from '@mui/material';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const DashboardCard: React.FC<{ title: string; number: number; icon: any; description?: string }> = ({
-    title,
-    number,
-    icon,
-    description,
-}) => {
+interface IDashboardCardProps {
+    title: string;
+    number: number;
+    icon: JSX.Element;
+    description?: string;
+}
+const DashboardCard: React.FC<IDashboardCardProps> = ({ title, number, icon, description }) => {
     return (
         <div className="bg-white shadow-lg rounded-lg  flex w-64 items-center">
             <div className="p-6 w-11/12 flex ">

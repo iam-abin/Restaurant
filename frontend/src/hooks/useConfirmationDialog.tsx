@@ -1,4 +1,3 @@
-import React from 'react';
 import ConfirmationDialogue from '../components/alert/ConfirmationDialogue';
 
 interface UseConfirmationOptions {

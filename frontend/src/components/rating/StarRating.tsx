@@ -2,15 +2,13 @@ import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
 import { SyntheticEvent } from 'react';
 
-const StarRating = ({
-    ratingValue,
-    isReadOnly = true,
-    handleRatingChange,
-}: {
+interface IStarRatingProps {
     ratingValue: number;
     isReadOnly: boolean;
     handleRatingChange?: (event: SyntheticEvent<Element, Event>, value: number | null) => void;
-}) => {
+}
+
+const StarRating: React.FC<IStarRatingProps> = ({ ratingValue, isReadOnly = true, handleRatingChange }) => {
     return (
         <Stack spacing={1}>
             <Rating

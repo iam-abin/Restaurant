@@ -123,10 +123,7 @@ class AuthController {
         const { userId } = req.params;
         const user: IUserDocument | null = await userService.updateBlockStatus(userId);
         res.status(200).json(
-            createSuccessResponse(
-                `user ${user?.isBlocked ? 'blocked' : 'unBlocked'}  successfully`,
-                user,
-            ),
+            createSuccessResponse(`user ${user?.isBlocked ? 'blocked' : 'unBlocked'}  successfully`, user),
         );
     }
 

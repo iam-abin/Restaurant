@@ -1,6 +1,6 @@
 import { Card, CardContent, Box, Grid, Skeleton } from '@mui/material';
 
-const OrderCardSkelton = () => {
+const OrderCardSkelton: React.FC = () => {
     return (
         <Grid item xs={12}>
             <Card sx={{ display: 'flex', alignItems: 'center' }}>

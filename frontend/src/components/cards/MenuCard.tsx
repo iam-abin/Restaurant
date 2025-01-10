@@ -5,23 +5,29 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import MenuModal from '../modal/MenuModal';
-import { IMenu } from '../../types';
+import { IMenu, IUser, UserRole } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { ROLES_CONSTANTS } from '../../utils/constants';
 import { addToCart } from '../../redux/thunk/cartThunk';
-import { useParams } from 'react-router-dom';
+import { Params, useParams } from 'react-router-dom';
 import { hotToastMessage } from '../../utils/hotToast';
+import { checkRole } from '../../utils/checkRole';
+import CustomButton from '../Button/CustomButton';
 
-const MenuCard = ({ menu }: { menu: IMenu }) => {
-    const authData = useAppSelector((store) => store.authReducer.authData);
-    const isUser = authData?.role === ROLES_CONSTANTS.USER;
-    const isRestaurant = authData?.role === ROLES_CONSTANTS.RESTAURANT;
+interface IMenuCardProps {
+    menu: IMenu;
+}
+
+const MenuCard: React.FC<IMenuCardProps> = ({ menu }) => {
+    const authData: IUser | null = useAppSelector((store) => store.authReducer.authData);
+
+    const isUser: boolean = checkRole(UserRole.USER, authData?.role);
+    const isRestaurant: boolean = checkRole(UserRole.RESTAURANT, authData?.role);
 
     const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
     const handleEditMenuOpen = () => setIsEditMenuOpen(true);
     const handleEditMenuClose = () => setIsEditMenuOpen(false);
     const dispatch = useAppDispatch();
-    const params = useParams();
+    const params: Readonly<Params<string>> = useParams();
 
     const addItemToCartHandler = async (menuItemId: string) => {
         const response = await dispatch(
@@ -88,14 +94,7 @@ const MenuCard = ({ menu }: { menu: IMenu }) => {
                             Add to cart
                         </Button>
                     ) : isRestaurant ? (
-                        <Button
-                            onClick={handleEditMenuOpen}
-                            className="w-full"
-                            variant="contained"
-                            size="small"
-                        >
-                            Edit
-                        </Button>
+                        <CustomButton onClick={handleEditMenuOpen}>Edit</CustomButton>
                     ) : (
                         <></>
                     )}

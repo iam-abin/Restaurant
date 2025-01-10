@@ -9,7 +9,7 @@ import {
     TableRow,
 } from '@mui/material';
 
-const OrdersTableRestaurantSkelton = () => {
+const OrdersTableRestaurantSkelton: React.FC = () => {
     return (
         <TableContainer component={Paper}>
             <Table>

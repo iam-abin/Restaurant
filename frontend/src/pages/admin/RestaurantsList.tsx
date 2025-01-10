@@ -7,9 +7,9 @@ import { hotToastMessage } from '../../utils/hotToast';
 import { blockUnblockUserApi } from '../../api/apiMethods/auth';
 import { getRestaurantsApi } from '../../api/apiMethods/restaurant';
 import { useConfirmationContext } from '../../context/confirmationContext';
-import { Chip } from '@mui/material';
+import { Button, Chip } from '@mui/material';
 
-function RestaurantsList() {
+const RestaurantsList: React.FC = () => {
     const [restaurantsData, setRestaurantsData] = useState<IRestaurant[]>([]);
     const [numberOfPages, setNumberOfPages] = useState(1);
     const { showConfirmation } = useConfirmationContext();
@@ -19,7 +19,7 @@ function RestaurantsList() {
 
     const USERS_PER_PAGE: number = 2;
 
-    const fetchUsers = async (currentPage: number) => {
+    const fetchUsers = async (currentPage: number): Promise<void> => {
         let restaurantsData: IResponse | [] = [];
         // if (!searchKey) {
         restaurantsData = await getRestaurantsApi(currentPage, USERS_PER_PAGE);
@@ -33,7 +33,7 @@ function RestaurantsList() {
         fetchUsers(1); // Fetch initial data for the first page
     }, [searchKey, currentPage]);
 
-    const handleBlockUnblockButton = (userId: string, isBlocked: boolean) => {
+    const handleBlockUnblockButton = (userId: string, isBlocked: boolean): void => {
         showConfirmation({
             title: `Do you want to ${isBlocked ? 'unblock' : 'block'} this restaurant`,
             description: 'Are you sure?',
@@ -90,18 +90,15 @@ function RestaurantsList() {
         {
             Header: 'Action',
             button: (row: { ownerId: { _id: string; isBlocked: boolean } }) => (
-                <button
+                <Button
+                    color={row.ownerId.isBlocked ? 'success' : 'error'}
                     onClick={() => {
                         handleBlockUnblockButton(row.ownerId._id, row.ownerId.isBlocked);
                     }}
-                    className={`btn ${
-                        row.ownerId.isBlocked
-                            ? 'btn-success btn-sm w-24 bg-green-600'
-                            : 'btn btn-error btn-sm w-24 bg-red-600'
-                    } `}
+                    variant="contained"
                 >
                     {row.ownerId.isBlocked ? 'Unblock' : 'Block'}
-                </button>
+                </Button>
             ),
         },
     ];
@@ -120,6 +117,6 @@ function RestaurantsList() {
             />
         </div>
     );
-}
+};
 
 export default RestaurantsList;

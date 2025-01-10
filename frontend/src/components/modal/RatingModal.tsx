@@ -22,7 +22,12 @@ interface IRatingModalProps {
     myRating: number;
     handleRatingChange: (event: React.SyntheticEvent<Element, Event>, value: number | null) => Promise<void>;
 }
-const RatingModal = ({ isModalOpen, closeRatingModal, myRating, handleRatingChange }: IRatingModalProps) => {
+const RatingModal: React.FC<IRatingModalProps> = ({
+    isModalOpen,
+    closeRatingModal,
+    myRating,
+    handleRatingChange,
+}) => {
     return (
         <div>
             <Modal

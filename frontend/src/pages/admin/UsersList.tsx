@@ -6,9 +6,9 @@ import { getProfilesApi, blockUnblockUserApi } from '../../api/apiMethods';
 import SearchBar from '../../components/search/SearchBar';
 import Table from '../../components/table/Table';
 import { useConfirmationContext } from '../../context/confirmationContext';
-import { Chip } from '@mui/material';
+import { Button, Chip } from '@mui/material';
 
-function UsersList() {
+const UsersList: React.FC = () => {
     const [profilesData, setProfilesData] = useState<IProfile[]>([]);
     const [numberOfPages, setNumberOfPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
@@ -97,18 +97,15 @@ function UsersList() {
         {
             Header: 'Action',
             button: (row: { userId: { _id: string; isBlocked: boolean } }) => (
-                <button
+                <Button
+                    color={row.userId.isBlocked ? 'success' : 'error'}
                     onClick={() => {
                         handleBlockUnblockButton(row.userId._id, row.userId.isBlocked);
                     }}
-                    className={`btn ${
-                        row.userId.isBlocked
-                            ? 'btn-success btn-sm w-24 bg-green-600'
-                            : 'btn btn-error btn-sm w-24 bg-red-600'
-                    } `}
+                    variant="contained"
                 >
                     {row.userId.isBlocked ? 'Unblock' : 'Block'}
-                </button>
+                </Button>
             ),
         },
     ];
@@ -125,17 +122,8 @@ function UsersList() {
                 numberOfPages={numberOfPages}
                 fetchData={fetchUsers}
             />
-            {/* <ConfirmationDialogue
-                    open={open}
-                    setOpen={setOpen}
-                    title={`Do you want to ${isBlocked ? "block" : "unblock"} this user?`}
-                    description="Are you sure?"
-                    onAgree={handleBlockUnblock(userId, isBlocked)}
-                    closeText='No'
-                    okayText={isBlocked ? "active" : "inActive"}
-                /> */}
         </div>
     );
-}
+};
 
 export default UsersList;

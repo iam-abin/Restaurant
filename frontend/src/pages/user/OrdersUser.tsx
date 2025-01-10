@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardMedia, Typography, Box, Button, Grid } from '@mui/material';
 
 import { getMyOrdersApi } from '../../api/apiMethods';

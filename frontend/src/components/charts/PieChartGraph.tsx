@@ -2,16 +2,25 @@ import { PieChart } from '@mui/x-charts/PieChart';
 
 import { IOrderStatusWithCounts } from '../../types';
 
-export default function PieChartGraph({ statusCounts }: { statusCounts: IOrderStatusWithCounts[] }) {
-    const radius = 50;
-    const itemNb = 5;
+type PieChartGraph = {
+    statusCounts: IOrderStatusWithCounts[];
+};
 
-    const orderStatuses = statusCounts.map((value: IOrderStatusWithCounts) => ({
+interface IOrderStatuses {
+    label: string;
+    value: number;
+}
+
+const PieChartGraph: React.FC<PieChartGraph> = ({ statusCounts }) => {
+    const radius: number = 50;
+    const itemNb: number = 5;
+
+    const orderStatuses: IOrderStatuses[] = statusCounts.map((value: IOrderStatusWithCounts) => ({
         label: value.status,
         value: value.count,
     }));
 
-    const valueFormatter = (item: { value: number }) => `${item.value}%`;
+    const valueFormatter = (item: { value: number }): string => `${item.value}%`;
 
     return (
         <div className="flex items-center h-screen">
@@ -29,4 +38,6 @@ export default function PieChartGraph({ statusCounts }: { statusCounts: IOrderSt
             />
         </div>
     );
-}
+};
+
+export default PieChartGraph;

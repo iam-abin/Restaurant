@@ -4,10 +4,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { verifyOtpApi } from '../../api/apiMethods';
 import { hotToastMessage } from '../../utils/hotToast';
-import { ROLES_CONSTANTS } from '../../utils/constants';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
+import { UserRole } from '../../types';
+import { checkRole } from '../../utils';
 
-const Otp = () => {
+const Otp: React.FC = () => {
     const inputRef = useRef<(HTMLInputElement | null)[]>([]);
     const navigate = useNavigate();
     const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
@@ -15,13 +16,13 @@ const Otp = () => {
     const location = useLocation();
     const { userId, role } = location.state;
 
-    const isUser = role === ROLES_CONSTANTS.USER;
-    const isRestaurant = role === ROLES_CONSTANTS.RESTAURANT;
+    const isUser: boolean = checkRole(UserRole.USER, role);
+    const isRestaurant: boolean = checkRole(UserRole.RESTAURANT, role);
 
     const isSignupOtpPage = location.pathname === '/signup/otp';
     const isForgotPasswordEmailOtpPage = location.pathname === '/forgot-password/otp';
 
-    const handleChange = (index: number, value: string) => {
+    const handleChange = (index: number, value: string): void => {
         if (/^[a-zA-Z0-9]$/.test(value) || value === '') {
             const otps = [...otp];
             otps[index] = value;
@@ -34,13 +35,13 @@ const Otp = () => {
     };
 
     // to handle backSpace
-    const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>): void => {
         if (e.key === 'Backspace' && !otp[index] && index > 0) {
             inputRef.current[index - 1]?.focus();
         }
     };
 
-    const handleSubmit = async (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent): Promise<void> => {
         try {
             setIsLoading(true);
             e.preventDefault();

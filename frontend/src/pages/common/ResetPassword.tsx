@@ -9,7 +9,7 @@ import { IResponse, IResetPassword, IUser } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import LockIcon from '@mui/icons-material/Lock';
 
-const ResetPassword = () => {
+const ResetPassword: React.FC = () => {
     const navigate = useNavigate();
     const { uniqueId } = useParams();
 

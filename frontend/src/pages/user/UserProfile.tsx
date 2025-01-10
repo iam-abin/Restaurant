@@ -8,7 +8,7 @@ import { IAddress } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import { useConfirmationContext } from '../../context/confirmationContext';
 
-const Profile = () => {
+const Profile: React.FC = () => {
     const [selectedProfilePicture, setSelectedProfilePicture] = useState<string>('');
     const dispatch = useAppDispatch();
     const { showConfirmation } = useConfirmationContext();
@@ -19,8 +19,9 @@ const Profile = () => {
     useEffect(() => {
         dispatch(fetchUserProfile());
     }, []);
+
     const isLoading: boolean = status === 'loading';
-    const imageRef = useRef<HTMLInputElement | null>(null);
+    const imageRef: React.MutableRefObject<HTMLInputElement | null> = useRef<HTMLInputElement | null>(null);
     const [profileData, setProfileData] = useState({
         name: authData?.name || '',
         address: (myProfile?.addressId as IAddress)?.address || '',
@@ -28,13 +29,14 @@ const Profile = () => {
         country: (myProfile?.addressId as IAddress)?.country || '',
         image: myProfile?.imageUrl || '',
     });
-    const fileChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
+
+    const fileChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
+        const file: File | undefined = e.target.files?.[0];
         if (!file) {
             return;
         }
 
-        const reader = new FileReader();
+        const reader: FileReader = new FileReader();
         reader.onloadend = () => {
             const result = reader.result as string;
             setSelectedProfilePicture(result);
@@ -46,12 +48,12 @@ const Profile = () => {
         reader.readAsDataURL(file);
     };
 
-    const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    const changeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = e.target;
         setProfileData({ ...profileData, [name]: value });
     };
 
-    const handleUpdateProfileButton = (e: FormEvent<HTMLFormElement>) => {
+    const handleUpdateProfileButton = (e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         showConfirmation({
             title: 'Do you want to update profile',
@@ -62,7 +64,7 @@ const Profile = () => {
         });
     };
 
-    const updateProfileHandler = async () => {
+    const updateProfileHandler = async (): Promise<void> => {
         dispatch(updateUserProfile({ ...profileData, image: selectedProfilePicture }));
         setSelectedProfilePicture('');
     };

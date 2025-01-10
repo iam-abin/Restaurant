@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
 import { useConfirmationContext } from '../../context/confirmationContext';
 
-const RestaurantProfile = () => {
+const RestaurantProfile: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [restaurant, setRestaurant] = useState<IRestaurant | null>(null);
     const [cuisines, setCuisines] = useState<ICuisineResponse[]>([]);

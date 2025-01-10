@@ -11,6 +11,7 @@ import { searchCuisineApi } from '../../api/apiMethods/cuisine';
 import { ICuisineResponse1, IMenu } from '../../types';
 import AsyncCreatableSelect from 'react-select/async-creatable';
 import { updateMenu } from '../../redux/thunk/menusThunk';
+import CustomButton from '../Button/CustomButton';
 
 const style = {
     position: 'absolute' as const,
@@ -31,29 +32,21 @@ export interface OptionType {
     label: string;
 }
 
-export type SearchableSelectProps = {
-    options: OptionType[];
-    onSelect: (value: string) => void;
-    onAdd: (newValue: string) => void;
-    fetchOptions: (
-        inputValue: string,
-        callback: (options: OptionType[]) => void,
-    ) => void | Promise<OptionType[]>;
-};
-
-export default function MenuModal({
-    isOpen,
-    handleClose,
-    handleMenusDispatch,
-    initialValues,
-    isEditMode,
-}: {
+export interface IMenuModalProps {
     isOpen: boolean;
     handleClose: () => void;
     handleMenusDispatch?: (restaurantId: string) => void;
     initialValues?: IMenu;
     isEditMode?: boolean;
-}) {
+}
+
+const MenuModal: React.FC<IMenuModalProps> = ({
+    isOpen,
+    handleClose,
+    handleMenusDispatch,
+    initialValues,
+    isEditMode,
+}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [input, setInput] = useState<MenuFormSchema>({
         name: '',
@@ -86,7 +79,7 @@ export default function MenuModal({
         setInput((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = (e: ChangeEvent<HTMLInputElement>): void => {
         const file = e.target.files?.[0];
         setInput((prev) => ({ ...prev, image: file }));
         if (file) {
@@ -98,7 +91,7 @@ export default function MenuModal({
         }
     };
 
-    const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
+    const submitHandler = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
         setIsLoading(true);
         setErrors({});
@@ -172,7 +165,7 @@ export default function MenuModal({
         })();
     }, []);
 
-    const fetchCuisineSearchResult = async (searchtext?: string) => {
+    const fetchCuisineSearchResult = async (searchtext?: string): Promise<void> => {
         const result: IResponse = await searchCuisineApi(searchtext);
         const mappedCuisineOptions: OptionType[] = mapCusineOptions(result.data as ICuisineResponse1[]);
         setCuisineOptions(mappedCuisineOptions);
@@ -182,12 +175,12 @@ export default function MenuModal({
         return cuisines.map((cuisine: ICuisineResponse1) => ({ value: cuisine.name, label: cuisine.name }));
     };
 
-    const handleSelectInputChange = (newValue: OptionType | null) => {
+    const handleSelectInputChange = (newValue: OptionType | null): void => {
         setInput((prev) => ({ ...prev, cuisine: newValue ? newValue.value : '' }));
         // Do something with the selected/created value
     };
 
-    const promiseOptions = (inputValue: string) =>
+    const promiseOptions = (inputValue: string): Promise<OptionType[]> =>
         new Promise<OptionType[]>((resolve) => {
             fetchCuisineSearchResult(inputValue).then(() => {
                 //   setTimeout(() => {
@@ -294,19 +287,22 @@ export default function MenuModal({
                             )}
                         </Grid>
                         <Grid item xs={12}>
-                            <Button
+                            {/* <Button
                                 type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="primary"
                                 disabled={isLoading}
                             >
                                 {isLoading ? <LoaderCircle /> : isEditMode ? 'Update' : 'Submit'}
-                            </Button>
+                            </Button> */}
+                            <CustomButton className="w-full" type="submit" disabled={isLoading}>
+                                {' '}
+                                {isLoading ? <LoaderCircle /> : isEditMode ? 'Update' : 'Submit'}
+                            </CustomButton>
                         </Grid>
                     </Grid>
                 </form>
             </Box>
         </Modal>
     );
-}
+};
+
+export default MenuModal;

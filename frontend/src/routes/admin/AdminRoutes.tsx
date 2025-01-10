@@ -1,7 +1,7 @@
 import { lazy } from 'react';
-import { ROLES_CONSTANTS } from '../../utils/constants';
 import { RoleProtectedRoute } from '../ProtectedRoute';
 import MainLayout from '../../layout/MainLayout';
+import { UserRole } from '../../types';
 
 const AdminDashboard = lazy(() => import('../../pages/admin/AdminDashboard'));
 const Users = lazy(() => import('../../pages/admin/UsersList'));
@@ -10,7 +10,7 @@ const RestaurantsList = lazy(() => import('../../pages/admin/RestaurantsList'));
 const AdminRoutes = {
     path: '/admin',
     element: (
-        <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.ADMIN]}>
+        <RoleProtectedRoute allowedRoles={[UserRole.ADMIN]}>
             <MainLayout />
         </RoleProtectedRoute>
     ),

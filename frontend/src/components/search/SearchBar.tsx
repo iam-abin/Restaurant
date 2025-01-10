@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
-interface SearchBarProps {
+interface ISearchBarProps {
     onSearch: (searchTerm: string) => void;
     placeholder: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ placeholder, onSearch }) => {
+const SearchBar: React.FC<ISearchBarProps> = ({ placeholder, onSearch }) => {
     const [searchKey, setSearchKey] = useState('');
     const [debouncedSearchKey, setDebouncedSearchKey] = useState('');
 

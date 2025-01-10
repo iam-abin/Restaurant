@@ -32,15 +32,17 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
+interface ITableCartProps {
+    cartItems: ICart[];
+    removeCartItemHandler: (cartItemId: string) => void;
+    changeQuantityHandler: (cartItemId: string, quantity: number) => void;
+}
+
 export default function TableCart({
     cartItems,
     removeCartItemHandler,
     changeQuantityHandler,
-}: {
-    cartItems: ICart[];
-    removeCartItemHandler: (cartItemId: string) => void;
-    changeQuantityHandler: (cartItemId: string, quantity: number) => void;
-}) {
+}: ITableCartProps) {
     const handleQuantityChange = (cartItem: ICartResponse, quantityChange: number) => {
         const newQuantity = cartItem.quantity + quantityChange;
         if (newQuantity < 1) return; // Ensure quantity doesn't go below 1

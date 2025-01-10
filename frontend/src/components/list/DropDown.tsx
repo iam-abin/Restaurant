@@ -3,7 +3,11 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-export default function DropDown({ statusList }: { statusList: string[] }) {
+type DropdownProps = {
+    statusList: string[];
+};
+
+const DropDown: React.FC<DropdownProps> = ({ statusList }) => {
     const [status, setStatus] = React.useState('');
 
     const handleChange = (event: SelectChangeEvent) => {
@@ -26,4 +30,6 @@ export default function DropDown({ statusList }: { statusList: string[] }) {
             </FormControl>
         </div>
     );
-}
+};
+
+export default DropDown;

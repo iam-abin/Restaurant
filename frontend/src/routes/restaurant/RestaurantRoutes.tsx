@@ -1,7 +1,7 @@
 import { lazy } from 'react';
-import { ROLES_CONSTANTS } from '../../utils/constants';
 import { RoleProtectedRoute } from '../ProtectedRoute';
 import MainLayout from '../../layout/MainLayout';
+import { UserRole } from '../../types';
 
 const RestaurantDashBoard = lazy(() => import('../../pages/restaurant/RestaurantDashBoard'));
 const RestaurantProfile = lazy(() => import('../../pages/restaurant/RestaurantProfile'));
@@ -11,7 +11,7 @@ const Orders = lazy(() => import('../../pages/restaurant/Orders'));
 const RestaurantRoutes = {
     path: '/restaurant',
     element: (
-        <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.RESTAURANT]}>
+        <RoleProtectedRoute allowedRoles={[UserRole.RESTAURANT]}>
             <MainLayout />
         </RoleProtectedRoute>
     ),

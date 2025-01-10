@@ -5,14 +5,16 @@ import CloseIcon from '@mui/icons-material/Close';
 import { formatDateWithTime } from '../../utils/date-format';
 import { IRestaurantOrder } from '../../types';
 
-const OrderDetailsModal = ({
-    modalOpen,
-    handleCloseModal,
-    selectedOrder,
-}: {
+interface IOrderDetailsModalProps {
     modalOpen: boolean;
     handleCloseModal: () => void;
     selectedOrder: IRestaurantOrder;
+}
+
+const OrderDetailsModal: React.FC<IOrderDetailsModalProps> = ({
+    modalOpen,
+    handleCloseModal,
+    selectedOrder,
 }) => {
     return (
         <Modal

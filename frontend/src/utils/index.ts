@@ -1,4 +1,6 @@
+export * from './activeLint';
 export * from './addCase';
+export * from './checkRole';
 export * from './constants';
 export * from './date-format';
 export * from './hotToast';

@@ -1,7 +1,7 @@
 import { lazy } from 'react';
-import { ROLES_CONSTANTS } from '../../utils/constants';
 import { RoleProtectedRoute } from '../ProtectedRoute';
 import MainLayout from '../../layout/MainLayout';
+import { UserRole } from '../../types';
 
 const Landing = lazy(() => import('../../pages/user/Landing'));
 const Profile = lazy(() => import('../../pages/user/UserProfile'));
@@ -14,7 +14,7 @@ const Success = lazy(() => import('../../pages/user/Success'));
 const UserRoutes = {
     path: '/',
     element: (
-        <RoleProtectedRoute allowedRoles={[ROLES_CONSTANTS.USER]}>
+        <RoleProtectedRoute allowedRoles={[UserRole.USER]}>
             <MainLayout />
         </RoleProtectedRoute>
     ),

@@ -11,7 +11,7 @@ import MenuCard from '../../components/cards/MenuCard';
 import StarRating from '../../components/rating/StarRating';
 import RatingModal from '../../components/modal/RatingModal';
 
-const RestaurantDetails = () => {
+const RestaurantDetails: React.FC = () => {
     const params = useParams();
     const [restaurant, setRestaurant] = useState<IRestaurantResponse2 | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);

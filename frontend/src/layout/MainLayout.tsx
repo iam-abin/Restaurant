@@ -1,18 +1,19 @@
 import NavBar from '../components/navbar/NavBar';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { NavigateFunction, Outlet, useNavigate } from 'react-router-dom';
 import Footer from '../components/footer/Footer';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { RootState } from '../redux/store';
 import { logoutUser } from '../redux/thunk/authThunk';
 import { clearRestaurant } from '../redux/slice/restaurantSlice';
-import { ROLES_CONSTANTS } from '../utils/constants';
+import { IUser, UserRole } from '../types';
+import { checkRole } from '../utils';
 
 const MainLayout = () => {
-    const currentUser = useAppSelector((store: RootState) => store.authReducer.authData);
+    const currentUser: IUser | null = useAppSelector((store: RootState) => store.authReducer.authData);
+    const naivgate: NavigateFunction = useNavigate();
     const dispatch = useAppDispatch();
-    const naivgate = useNavigate();
 
-    const handleLogout = async () => {
+    const handleLogout = async (): Promise<void> => {
         const response = await dispatch(logoutUser());
         dispatch(clearRestaurant());
 
@@ -31,7 +32,7 @@ const MainLayout = () => {
 
             {/* Main body content */}
             <main
-                className={`flex-grow ${currentUser?.role === ROLES_CONSTANTS.USER ? 'bg-gray-100' : 'bg-white'}`}
+                className={`flex-grow ${checkRole(UserRole.USER, currentUser?.role) ? 'bg-gray-100' : 'bg-white'}`}
             >
                 <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <Outlet />
