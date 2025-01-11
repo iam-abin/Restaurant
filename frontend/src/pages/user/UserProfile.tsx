@@ -60,7 +60,7 @@ const Profile: React.FC = () => {
             description: 'Are you sure?',
             onAgree: () => updateProfileHandler(),
             closeText: 'No',
-            okayText: 'Yes"}',
+            okayText: 'Yes',
         });
     };
 

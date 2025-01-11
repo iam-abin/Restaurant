@@ -1,9 +1,11 @@
 import express, { Router } from 'express';
-import { profileController } from '../controllers';
+import { container } from 'tsyringe';
+import { ProfileController } from '../controllers';
 import { paginationValidator, updateProfileRequestBodyValidator } from '../utils';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
 import { UserRole } from '../types';
 
+const profileController = container.resolve(ProfileController);
 const router: Router = express.Router();
 
 router.get('/', checkCurrentUser, auth(UserRole.USER), profileController.getProfile);

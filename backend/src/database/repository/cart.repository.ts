@@ -1,7 +1,9 @@
 import { ClientSession, DeleteResult } from 'mongoose';
+import { singleton } from 'tsyringe';
 import { ICartDocument, CartModel } from '../model';
 import { ICart } from '../../types';
 
+@singleton()
 export class CartRepository {
     async create(cartItemData: Omit<ICart, 'quantity'>): Promise<ICartDocument> {
         const cartItem: ICartDocument = await CartModel.create(cartItemData);

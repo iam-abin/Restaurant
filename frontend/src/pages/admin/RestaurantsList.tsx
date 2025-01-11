@@ -43,7 +43,7 @@ const RestaurantsList: React.FC = () => {
         });
     };
 
-    const handleBlockUnblock = async (userId: string) => {
+    const handleBlockUnblock = async (userId: string): Promise<void> => {
         const updatedUser: IResponse | null = await blockUnblockUserApi(userId);
 
         if (updatedUser) {

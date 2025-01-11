@@ -1,7 +1,9 @@
 import { ClientSession } from 'mongoose';
+import { singleton } from 'tsyringe';
 import { IProfileDocument, ProfileModel } from '../model';
 import { CountByDay, IProfile } from '../../types';
 
+@singleton()
 export class ProfileRepository {
     async create(
         profileData: Pick<IProfile, 'userId' | 'imageUrl'>,
@@ -12,7 +14,7 @@ export class ProfileRepository {
     }
 
     async findByUserId(userId: string): Promise<IProfileDocument | null> {
-        return await ProfileModel.findOne({ userId }).populate('userId').populate('addressId');
+        return await ProfileModel.findOne({ userId }).populate(['userId', 'addressId']);
     }
 
     async findById(profileId: string): Promise<IProfileDocument | null> {
@@ -31,7 +33,10 @@ export class ProfileRepository {
         updateData: Partial<IProfile>,
         session?: ClientSession,
     ): Promise<IProfileDocument | null> {
-        return await ProfileModel.findOneAndUpdate({ userId }, updateData, { new: true, session });
+        return await ProfileModel.findOneAndUpdate({ userId }, updateData, { new: true, session }).populate([
+            'userId',
+            'addressId',
+        ]);
     }
 
     async countProfiles(): Promise<number> {

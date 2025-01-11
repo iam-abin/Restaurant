@@ -1,4 +1,5 @@
 import express, { Router } from 'express';
+import { container } from 'tsyringe';
 import { checkCurrentUser, auth, multerUpload, validateRequest } from '../middlewares';
 import {
     mongoIdParamsValidator,
@@ -6,9 +7,10 @@ import {
     restaurantUpdateValidator,
     searchRestaurantValidator,
 } from '../utils';
-import { restaurantController } from '../controllers';
+import { RestaurantController } from '../controllers';
 import { UserRole } from '../types';
 
+const restaurantController = container.resolve(RestaurantController);
 const router: Router = express.Router();
 
 router.get('/', checkCurrentUser, auth(UserRole.RESTAURANT), restaurantController.getMyRestaurant);

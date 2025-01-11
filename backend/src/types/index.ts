@@ -8,6 +8,7 @@ export * from './menu';
 export * from './order';
 export * from './otp';
 export * from './password';
+export * from './payment';
 export * from './profile';
 export * from './rating';
 export * from './restaurant';

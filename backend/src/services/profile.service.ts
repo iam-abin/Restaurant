@@ -1,7 +1,5 @@
 import { autoInjectable } from 'tsyringe';
-
 import { NotFoundError } from '../errors';
-
 import { AddressRepository, ProfileRepository } from '../database/repository';
 import { IAddressDocument, IProfileDocument } from '../database/model';
 import { IAddress, IProfile, IProfilesData, IUser } from '../types';

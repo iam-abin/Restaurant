@@ -18,7 +18,11 @@ const initialState: IProfileSlice = {
 const profileSlice = createSlice({
     name: 'profile-data',
     initialState,
-    reducers: {},
+    reducers: {
+        clearProfile: (state) => {
+            state.myProfile = null;
+        },
+    },
     extraReducers: (builder) => {
         addAsyncThunkCases(builder, fetchUserProfile, (state, action) => {
             state.status = 'succeeded';
@@ -30,5 +34,7 @@ const profileSlice = createSlice({
         });
     },
 });
+
+export const { clearProfile } = profileSlice.actions;
 
 export default profileSlice.reducer;

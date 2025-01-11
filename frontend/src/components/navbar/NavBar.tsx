@@ -68,7 +68,7 @@ const NavBar: React.FC<INavBarProps> = ({ currentUser, handleLogout }) => {
         },
     ].filter(Boolean) as INavItems[]; // Cast to INavItems[] after filtering out false values
 
-    const handleLogoutButton = () => {
+    const handleLogoutButton = (): void => {
         showConfirmation({
             title: 'Do you want to logout',
             description: 'Are you sure?',

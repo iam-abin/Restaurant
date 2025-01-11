@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IRestaurantDocument } from '../database/model';
+import { IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
 
 export interface IRestaurant {
     ownerId: string;
@@ -81,4 +81,11 @@ export type SearchResult = {
 
 export type SearchData = Omit<SearchResult, 'totalCount'> & {
     numberOfPages: number;
+};
+
+export type IRestaurantWithCuisines = {
+    restaurant: IRestaurantDocument | null;
+    cuisines: IRestaurantCuisineDocument[];
+    restaurantRating: number;
+    restaurantRatingsCount: number;
 };

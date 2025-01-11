@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
+import { singleton } from 'tsyringe';
 import { IOrder, IOrderStatusWithCounts } from '../../types';
 import { IOrderDocument, OrderModel } from '../model';
 
+@singleton()
 export class OrderRepository {
     async create(orderData: IOrder, session?: mongoose.ClientSession): Promise<IOrderDocument> {
         const order: IOrderDocument[] = await OrderModel.create([orderData], { session });

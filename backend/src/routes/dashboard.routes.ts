@@ -1,9 +1,10 @@
 import express, { Router } from 'express';
-
+import { container } from 'tsyringe';
 import { checkCurrentUser, auth } from '../middlewares';
-import { dashboardController } from '../controllers';
+import { DashboardController } from '../controllers';
 import { UserRole } from '../types';
 
+const dashboardController = container.resolve(DashboardController);
 const router: Router = express.Router();
 
 router.get(

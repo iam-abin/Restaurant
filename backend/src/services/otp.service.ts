@@ -1,5 +1,4 @@
 import { autoInjectable } from 'tsyringe';
-
 import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
 import {
     generateOtp,

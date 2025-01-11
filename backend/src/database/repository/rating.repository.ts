@@ -1,7 +1,9 @@
 import { IRating } from '../../types';
+import { singleton } from 'tsyringe';
 import { IRatingDocument, RatingModel } from '../model/rating.model';
 import mongoose, { DeleteResult } from 'mongoose';
 
+@singleton()
 export class RatingRepository {
     async findUserRating(restaurantId: string, userId: string): Promise<IRatingDocument | null> {
         return await RatingModel.findOne({ restaurantId, userId });

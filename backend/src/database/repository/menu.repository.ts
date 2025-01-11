@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
+import { singleton } from 'tsyringe';
 import { IMenu } from '../../types';
 import { IMenuDocument, MenuModel } from '../model';
 
+@singleton()
 export class MenuRepository {
     async create(menuData: IMenu, session?: mongoose.ClientSession): Promise<IMenuDocument> {
         const menu: IMenuDocument[] = await MenuModel.create([menuData], { session });

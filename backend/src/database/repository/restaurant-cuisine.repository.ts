@@ -1,10 +1,9 @@
 import { ClientSession } from 'mongoose';
+import { singleton } from 'tsyringe';
 import { IRestaurantCuisineDocument, RestaurantCuisineModel } from '../model';
+import { IRestaurantCuisine } from '../../types';
 
-interface IRestaurantCuisine {
-    cuisineId: string;
-    restaurantId: string;
-}
+@singleton()
 export class RestaurantCuisineRepository {
     async create(
         restaurantCuisineData: IRestaurantCuisine,

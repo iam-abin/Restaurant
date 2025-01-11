@@ -1,9 +1,11 @@
 import express, { Router } from 'express';
+import { container } from 'tsyringe';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
 import { mongoIdParamsValidator, paginationValidator, updateOrderStatusRequestBodyValidator } from '../utils';
-import { orderController } from '../controllers';
+import { OrderController } from '../controllers';
 import { UserRole } from '../types';
 
+const orderController = container.resolve(OrderController);
 const router: Router = express.Router();
 
 router.get(

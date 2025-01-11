@@ -38,13 +38,10 @@ export const googleAuthThunk = createAsyncThunk<
 // Async thunk for user logout
 export const logoutUser = createAsyncThunk<void, void, { rejectValue: string }>(
     'auth/userLogout',
-    async (_, { rejectWithValue, dispatch }) => {
+    async (_, { rejectWithValue }) => {
         try {
             const result: IResponse = await logoutApi();
             hotToastMessage(result.message, 'success');
-
-            // Dispatch an action to reset the auth state
-            dispatch({ type: 'auth/logout' });
 
             // Return void instead of null
             return;
