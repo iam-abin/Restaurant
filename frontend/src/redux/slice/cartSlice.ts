@@ -24,7 +24,11 @@ const initialState: ICartSlice = {
 const cartSlice = createSlice({
     name: 'cart-data',
     initialState,
-    reducers: {},
+    reducers: {
+        clearCart: (state) => {
+            state.cartData = [];
+        },
+    },
     extraReducers: (builder) => {
         addAsyncThunkCases(builder, fetchCartItems, (state, action) => {
             state.status = 'succeeded';
@@ -60,5 +64,7 @@ const cartSlice = createSlice({
         });
     },
 });
+
+export const { clearCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

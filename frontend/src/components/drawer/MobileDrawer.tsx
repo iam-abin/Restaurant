@@ -46,7 +46,7 @@ const MobileDrawer: React.FC<IDrawerProps> = ({
                                 className={`flex items-center gap-2 text-gray-800 ${isActiveLink(location, item.to)}`}
                                 onClick={handleCloseDrawer}
                             >
-                                {item.icon && item.icon}
+                                {item?.icon}
                                 <span>{item.value}</span>
                             </Link>
                         ))}
@@ -58,7 +58,7 @@ const MobileDrawer: React.FC<IDrawerProps> = ({
                             <Avatar
                                 src={`${myProfile?.imageUrl ? myProfile?.imageUrl : '/broken-image.jpg'}`}
                             />
-                            <span>{(myProfile?.userId as IUser).name || 'Profile'}</span>
+                            <span>{(myProfile?.userId as IUser)?.name || 'Profile'}</span>
                         </div>
                         <div
                             className="flex items-center gap-2 mt-4 cursor-pointer text-red-500"

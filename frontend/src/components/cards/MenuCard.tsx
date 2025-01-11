@@ -1,17 +1,17 @@
+import { useState } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
 import MenuModal from '../modal/MenuModal';
+import CustomButton from '../Button/CustomButton';
 import { IMenu, IUser, UserRole } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { addToCart } from '../../redux/thunk/cartThunk';
 import { Params, useParams } from 'react-router-dom';
 import { hotToastMessage } from '../../utils/hotToast';
-import { checkRole } from '../../utils/checkRole';
-import CustomButton from '../Button/CustomButton';
+import { checkRole } from '../../utils/role';
 
 interface IMenuCardProps {
     menu: IMenu;
@@ -42,7 +42,7 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu }) => {
         // <div className="flex justify-center bg-yellow-700">
         <Card sx={{ width: 11 / 12 }}>
             {/* modal start */}
-            {menu && (
+            {menu && isRestaurant && (
                 <MenuModal
                     initialValues={menu}
                     isEditMode={true}

@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Button, Input, Typography, Divider } from '@mui/material';
+import { Input, Typography, Divider } from '@mui/material';
 import { Email, Person, Lock, LocalPhone } from '@mui/icons-material';
 
 import { signInSchema, signUpSchema } from '../../utils/schema/userSchema';
@@ -24,7 +24,8 @@ import {
     GoogleLogin,
     //  useGoogleLogin
 } from '@react-oauth/google';
-import { checkRole } from '../../utils';
+import { checkRole, getRoleFromPath } from '../../utils';
+import CustomButton from '../../components/Button/CustomButton';
 
 const Auth: React.FC = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -33,8 +34,8 @@ const Auth: React.FC = () => {
     const naivgate = useNavigate();
     const location = useLocation();
 
-    const isRestaurantPage: boolean = location.pathname.includes(UserRole.RESTAURANT);
-    const isAdminPage: boolean = location.pathname.includes(UserRole.ADMIN);
+    const isRestaurantPage: boolean = getRoleFromPath(UserRole.RESTAURANT, location);
+    const isAdminPage: boolean = getRoleFromPath(UserRole.ADMIN, location);
 
     const role: UserRole = isRestaurantPage
         ? UserRole.RESTAURANT
@@ -227,12 +228,7 @@ const Auth: React.FC = () => {
                             )}
                         </div>
                     </div>
-                    <Button
-                        type="submit"
-                        disabled={isLoading}
-                        className="w-full mb-5 bg-orange-300"
-                        variant="contained"
-                    >
+                    <CustomButton type="submit" className="w-full"  disabled={isLoading}>
                         {isLoading ? (
                             <label className="flex items-center gap-4">
                                 Please wait <LoaderCircle />
@@ -242,7 +238,8 @@ const Auth: React.FC = () => {
                         ) : (
                             'Signup'
                         )}
-                    </Button>
+                    </CustomButton>
+                    
                     {!isAdminPage && (
                         <div className="flex justify-end mt-2">
                             <Link className="text-sm hover:text-blue-700" to="/forgot-password/email">

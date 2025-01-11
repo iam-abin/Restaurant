@@ -7,15 +7,35 @@ import { logoutUser } from '../redux/thunk/authThunk';
 import { clearRestaurant } from '../redux/slice/restaurantSlice';
 import { IUser, UserRole } from '../types';
 import { checkRole } from '../utils';
+import { clearAdminDashboard } from '../redux/slice/dashboardSlice';
+import { clearMenus } from '../redux/slice/menusSlice';
+import { clearProfile } from '../redux/slice/profileSlice';
+import { clearCart } from '../redux/slice/cartSlice';
 
 const MainLayout = () => {
     const currentUser: IUser | null = useAppSelector((store: RootState) => store.authReducer.authData);
     const naivgate: NavigateFunction = useNavigate();
     const dispatch = useAppDispatch();
 
+    const isAdmin: boolean = checkRole(UserRole.ADMIN, currentUser?.role);
+    const isRestaurant: boolean = checkRole(UserRole.RESTAURANT, currentUser?.role);
+    const isUser: boolean = checkRole(UserRole.USER, currentUser?.role);
+
     const handleLogout = async (): Promise<void> => {
         const response = await dispatch(logoutUser());
-        dispatch(clearRestaurant());
+        if(isUser){
+            dispatch(clearProfile());
+            dispatch(clearCart());
+        }
+
+        if(isRestaurant){
+            dispatch(clearRestaurant());
+            dispatch(clearMenus());
+        }
+
+        if(isAdmin){
+            dispatch(clearAdminDashboard());
+        }
 
         // Check if the action was rejected
         if (response.meta.requestStatus !== 'rejected') {

@@ -1,42 +1,46 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-import { getAdminDashboardApi } from '../../api/apiMethods';
-import { DashboardCardData, IAdminDashboard, IResponse } from '../../types';
+import { DashboardCardData, IAdminDashboard } from '../../types';
 import LineGraph from '../../components/charts/LineGraph';
 import DashboardCard from '../../components/cards/DashboardCard';
 import { restaurantIcon, revenueIcon, totalTurnoverIcon, userIcon } from '../../components/icons/Icons';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { fetchAdminDashboard } from '../../redux/thunk/dashboardThunk';
 
 const AdminDashboard: React.FC = () => {
-    const [dashboardData, setDashboardData] = useState<IAdminDashboard | null>(null);
+    const dispatch = useAppDispatch();
+    const { adminDashboardData }: { adminDashboardData: IAdminDashboard | null } = useAppSelector(
+        (store) => store.dashboardReducer,
+    );
+
     useEffect(() => {
         (async () => {
-            const result: IResponse = await getAdminDashboardApi();
-            setDashboardData(result.data as IAdminDashboard);
+            dispatch(fetchAdminDashboard());
         })();
     }, []);
 
     const dashboardCardData: DashboardCardData[] = [
         {
             title: 'Total Turnover',
-            number: dashboardData?.totalTurnover ?? 0,
+            number: adminDashboardData?.totalTurnover ?? 0,
             icon: totalTurnoverIcon,
             description: 'Amount earned by all restaurants',
         },
         {
             title: 'Total Users',
-            number: dashboardData?.usersCount ?? 0,
+            number: adminDashboardData?.usersCount ?? 0,
             icon: userIcon,
             description: 'Total number of users',
         },
         {
             title: 'Total Restaurants',
-            number: dashboardData?.restaurantsCount ?? 0,
+            number: adminDashboardData?.restaurantsCount ?? 0,
             icon: restaurantIcon,
             description: 'Total number of restaurants',
         },
         {
             title: 'Total Revenue',
-            number: dashboardData?.totalCommission ?? 0,
+            number: adminDashboardData?.totalCommission ?? 0,
             icon: revenueIcon,
             description: 'Total revenue of the application',
         },
