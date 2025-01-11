@@ -4,7 +4,7 @@ import { getAdminDashboardApi } from '../../api/apiMethods';
 
 // Async thunk for fetching user profile
 export const fetchAdminDashboard = createAsyncThunk<
-IAdminDashboard, // Fulfilled type
+    IAdminDashboard, // Fulfilled type
     void, // Argument type
     { rejectValue: string } // Rejected value type
 >('AdminDashboard/fetchAdminDashboard', async (_, { rejectWithValue }) => {
@@ -16,4 +16,3 @@ IAdminDashboard, // Fulfilled type
         return rejectWithValue((error as Error).message);
     }
 });
-

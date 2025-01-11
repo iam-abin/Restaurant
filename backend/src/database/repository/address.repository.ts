@@ -1,7 +1,9 @@
 import { ClientSession } from 'mongoose';
+import { singleton } from 'tsyringe';
 import { IAddressDocument, AddressModel } from '../model';
 import { IAddress } from '../../types';
 
+@singleton()
 export class AddressRepository {
     async findById(addressId: string): Promise<IAddressDocument | null> {
         return await AddressModel.findById(addressId);

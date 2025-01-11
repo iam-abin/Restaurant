@@ -1,7 +1,9 @@
 import mongoose, { ClientSession } from 'mongoose';
+import { singleton } from 'tsyringe';
 import { CountByDay, IRestaurant, IRestaurantResponse, SearchResult } from '../../types';
 import { IRestaurantDocument, RestaurantModel } from '../model';
 
+@singleton()
 export class RestaurantRepository {
     async create(
         restaurantData: Pick<IRestaurant, 'ownerId' | 'imageUrl'>,

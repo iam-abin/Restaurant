@@ -1,7 +1,9 @@
 import { ClientSession } from 'mongoose';
+import { singleton } from 'tsyringe';
 import { IOtpTokenDocument, OtpTokenModel } from '../model';
 import { IOtpToken } from '../../types';
 
+@singleton()
 export class OtpTokenRepository {
     async create(otpData: Partial<IOtpToken>, session?: ClientSession): Promise<IOtpTokenDocument> {
         // Here we are performing upsert

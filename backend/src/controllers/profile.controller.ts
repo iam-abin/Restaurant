@@ -1,23 +1,24 @@
 import { Request, Response } from 'express';
-import { container } from 'tsyringe';
+import { autoInjectable } from 'tsyringe';
 import { IProfileDocument } from '../database/model';
 import { createSuccessResponse } from '../utils';
 import { ProfileService } from '../services';
 import { IProfilesData, ProfileUpdate } from '../types';
 
-const profileService = container.resolve(ProfileService);
+@autoInjectable()
+export class ProfileController {
+    constructor(private readonly profileService: ProfileService) {}
 
-class ProfileController {
     public async getProfile(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
 
-        const user: IProfileDocument | null = await profileService.getProfile(userId);
+        const user: IProfileDocument | null = await this.profileService.getProfile(userId);
         res.status(200).json(createSuccessResponse('User Profile', user));
     }
 
     public async getProfiles(req: Request, res: Response): Promise<void> {
         const { page = 1, limit = 10 } = req.query;
-        const profilesData: IProfilesData = await profileService.getUserProfiles(
+        const profilesData: IProfilesData = await this.profileService.getUserProfiles(
             page as number,
             limit as number,
         );
@@ -26,12 +27,10 @@ class ProfileController {
 
     public async editProfile(req: Request, res: Response): Promise<void> {
         const { userId } = req.currentUser!;
-        const user: IProfileDocument | null = await profileService.updateProfile(
+        const user: IProfileDocument | null = await this.profileService.updateProfile(
             userId,
             req.body as ProfileUpdate,
         );
         res.status(200).json(createSuccessResponse('Profile updated successfully', user));
     }
 }
-
-export const profileController = new ProfileController();

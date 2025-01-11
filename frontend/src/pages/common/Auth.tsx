@@ -228,7 +228,7 @@ const Auth: React.FC = () => {
                             )}
                         </div>
                     </div>
-                    <CustomButton type="submit" className="w-full"  disabled={isLoading}>
+                    <CustomButton type="submit" className="w-full" disabled={isLoading}>
                         {isLoading ? (
                             <label className="flex items-center gap-4">
                                 Please wait <LoaderCircle />
@@ -239,7 +239,7 @@ const Auth: React.FC = () => {
                             'Signup'
                         )}
                     </CustomButton>
-                    
+
                     {!isAdminPage && (
                         <div className="flex justify-end mt-2">
                             <Link className="text-sm hover:text-blue-700" to="/forgot-password/email">

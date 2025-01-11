@@ -14,7 +14,7 @@ export const checkRole = (requiredRole: UserRole, userRole?: UserRole): boolean 
 
 /**
  * Determines if a given role is present in the specified pathname.
- * 
+ *
  * @param requiredRole - The role to check for in the pathname.
  * @param location - Current location object of the component.
  * @returns A boolean value indicating whether the `requiredRole` is included in the `pathname`.

@@ -42,7 +42,7 @@ export const logoutUser = createAsyncThunk<void, void, { rejectValue: string }>(
         try {
             const result: IResponse = await logoutApi();
             hotToastMessage(result.message, 'success');
-            
+
             // Return void instead of null
             return;
         } catch (error: unknown) {

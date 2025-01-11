@@ -1,7 +1,9 @@
 import { ClientSession } from 'mongoose';
+import { singleton } from 'tsyringe';
 import { IUserDocument, UserModel } from '../model';
 import { IUser } from '../../types';
 
+@singleton()
 export class UserRepository {
     async createUser(userData: Partial<IUser>, session?: ClientSession): Promise<IUserDocument> {
         const user: IUserDocument[] = await UserModel.create([userData], { session });

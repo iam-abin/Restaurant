@@ -1,5 +1,6 @@
 import express, { Router } from 'express';
-import { authController } from '../controllers';
+import { container } from 'tsyringe';
+import { AuthController } from '../controllers';
 import {
     resendOtpRequestBodyValidator,
     signinRequestBodyValidator,
@@ -13,6 +14,7 @@ import {
 } from '../utils';
 import { validateRequest } from '../middlewares';
 
+const authController = container.resolve(AuthController);
 const router: Router = express.Router();
 
 router.post('/signin', signinRequestBodyValidator, validateRequest, authController.signin);

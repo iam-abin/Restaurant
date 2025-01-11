@@ -1,6 +1,8 @@
 import { ClientSession } from 'mongoose';
+import { singleton } from 'tsyringe';
 import { ICuisineDocument, CuisineModel } from '../model';
 
+@singleton()
 export class CuisineRepository {
     async createCuisine(cuisineData: { name: string }, session?: ClientSession): Promise<ICuisineDocument> {
         const cuisine: ICuisineDocument[] = await CuisineModel.create([cuisineData], { session });

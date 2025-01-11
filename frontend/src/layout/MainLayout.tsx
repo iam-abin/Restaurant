@@ -23,17 +23,17 @@ const MainLayout = () => {
 
     const handleLogout = async (): Promise<void> => {
         const response = await dispatch(logoutUser());
-        if(isUser){
+        if (isUser) {
             dispatch(clearProfile());
             dispatch(clearCart());
         }
 
-        if(isRestaurant){
+        if (isRestaurant) {
             dispatch(clearRestaurant());
             dispatch(clearMenus());
         }
 
-        if(isAdmin){
+        if (isAdmin) {
             dispatch(clearAdminDashboard());
         }
 

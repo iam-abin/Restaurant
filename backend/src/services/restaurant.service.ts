@@ -4,6 +4,7 @@ import {
     IRestaurantResult,
     IRestaurantsData,
     IRestaurantUpdate,
+    IRestaurantWithCuisines,
     SearchData,
     SearchRestaurant,
     SearchResult,
@@ -29,7 +30,6 @@ import {
     uploadImageOnCloudinary,
 } from '../utils';
 import { NotFoundError } from '../errors';
-import { RestaurantWithCuisines } from '../controllers/restaurant.controller';
 
 @autoInjectable()
 export class RestaurantService {
@@ -68,7 +68,7 @@ export class RestaurantService {
         };
     }
 
-    public async getMyRestaurant(userId: string): Promise<RestaurantWithCuisines> {
+    public async getMyRestaurant(userId: string): Promise<IRestaurantWithCuisines> {
         const restaurant: IRestaurantDocument | null =
             await this.restaurantRepository.findMyRestaurant(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');

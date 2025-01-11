@@ -1,4 +1,5 @@
 import express, { Router } from 'express';
+import { container } from 'tsyringe';
 import { checkCurrentUser, auth, multerUpload, validateRequest } from '../middlewares';
 import {
     addMenuRequestBodyValidator,
@@ -6,9 +7,10 @@ import {
     mongoIdParamsValidator,
     paginationValidator,
 } from '../utils';
-import { menuController } from '../controllers';
+import { MenuController } from '../controllers';
 import { UserRole } from '../types';
 
+const menuController = container.resolve(MenuController);
 const router: Router = express.Router();
 
 router.post(

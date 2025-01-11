@@ -1,4 +1,5 @@
 import express, { Router } from 'express';
+import { container } from 'tsyringe';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
 import {
     addToCartRequestBodyValidator,
@@ -6,9 +7,10 @@ import {
     paginationValidator,
     updateCartRequestBodyValidator,
 } from '../utils';
-import { cartController } from '../controllers';
+import { CartController } from '../controllers';
 import { UserRole } from '../types';
 
+const cartController = container.resolve(CartController);
 const router: Router = express.Router();
 
 router.post(
