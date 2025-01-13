@@ -10,9 +10,13 @@ import MenuCardSkeleton from '../../components/shimmer/MenuCardSkeleton';
 import MenuCard from '../../components/cards/MenuCard';
 import StarRating from '../../components/rating/StarRating';
 import RatingModal from '../../components/modal/RatingModal';
+import { useAppDispatch } from '../../redux/hooks';
+import { addToCart } from '../../redux/thunk/cartThunk';
+import { hotToastMessage } from '../../utils';
 
 const RestaurantDetails: React.FC = () => {
     const params = useParams();
+    const dispatch = useAppDispatch();
     const [restaurant, setRestaurant] = useState<IRestaurantResponse2 | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -23,9 +27,9 @@ const RestaurantDetails: React.FC = () => {
     const [restaurantRatingCount, setRestaurantRatingCount] = useState<number>(0);
 
     const [isRatingModalOpen, setIsRatingModalOpen] = useState<boolean>(false);
-    const handleOpenModal = () => setIsRatingModalOpen(true);
+    const handleOpenModal = (): void => setIsRatingModalOpen(true);
 
-    const handleCloseModal = () => setIsRatingModalOpen(false);
+    const handleCloseModal = (): void => setIsRatingModalOpen(false);
 
     const handleRatingChange = async (
         _event: React.SyntheticEvent<Element, Event>,
@@ -35,6 +39,17 @@ const RestaurantDetails: React.FC = () => {
         if (restaurant) {
             await changeRatingApi({ restaurantId: restaurant._id!, rating: value ?? 0 });
         }
+    };
+
+    const addItemToCartHandler = async (menuItemId: string): Promise<void> => {
+        const response = await dispatch(
+            addToCart({ itemId: menuItemId, restaurantId: params.restaurantId! }),
+        );
+        if (response.meta.requestStatus === 'rejected') {
+            hotToastMessage(response.payload as string, 'error');
+            return;
+        }
+        setCartItemsCount((cartItemCount: number) => cartItemCount + 1);
     };
 
     useEffect(() => {
@@ -124,7 +139,13 @@ const RestaurantDetails: React.FC = () => {
                                         'price' in menu &&
                                         'description' in menu,
                                 )
-                                .map((menu) => <MenuCard key={menu._id} menu={menu} />)
+                                .map((menu) => (
+                                    <MenuCard
+                                        key={menu._id}
+                                        menu={menu}
+                                        addItemToCartHandler={addItemToCartHandler}
+                                    />
+                                ))
                         ) : (
                             'No menus available'
                         )}

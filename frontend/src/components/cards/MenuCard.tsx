@@ -7,17 +7,15 @@ import Typography from '@mui/material/Typography';
 import MenuModal from '../modal/MenuModal';
 import CustomButton from '../Button/CustomButton';
 import { IMenu, IUser, UserRole } from '../../types';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { addToCart } from '../../redux/thunk/cartThunk';
-import { Params, useParams } from 'react-router-dom';
-import { hotToastMessage } from '../../utils/hotToast';
+import { useAppSelector } from '../../redux/hooks';
 import { checkRole } from '../../utils/role';
 
 interface IMenuCardProps {
     menu: IMenu;
+    addItemToCartHandler?: (menuItemId: string)=> Promise<void>;
 }
 
-const MenuCard: React.FC<IMenuCardProps> = ({ menu }) => {
+const MenuCard: React.FC<IMenuCardProps> = ({ menu, addItemToCartHandler }) => {
     const authData: IUser | null = useAppSelector((store) => store.authReducer.authData);
 
     const isUser: boolean = checkRole(UserRole.USER, authData?.role);
@@ -26,17 +24,16 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu }) => {
     const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
     const handleEditMenuOpen = () => setIsEditMenuOpen(true);
     const handleEditMenuClose = () => setIsEditMenuOpen(false);
-    const dispatch = useAppDispatch();
-    const params: Readonly<Params<string>> = useParams();
+   
 
-    const addItemToCartHandler = async (menuItemId: string) => {
-        const response = await dispatch(
-            addToCart({ itemId: menuItemId, restaurantId: params.restaurantId! }),
-        );
-        if (response.meta.requestStatus === 'rejected') {
-            hotToastMessage(response.payload as string, 'error');
+    const handleAddToCart = async (): Promise<void> => {
+        if (!addItemToCartHandler) {
+            return;
         }
+
+        await addItemToCartHandler(menu._id);
     };
+
 
     return (
         // <div className="flex justify-center bg-yellow-700">
@@ -86,7 +83,7 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu }) => {
                 <div className="flex items-center justify-center px-4 py-2">
                     {isUser ? (
                         <Button
-                            onClick={() => addItemToCartHandler(menu._id)}
+                            onClick={handleAddToCart}
                             className="w-full"
                             variant="contained"
                             size="small"

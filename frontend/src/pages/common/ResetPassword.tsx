@@ -34,7 +34,7 @@ const ResetPassword: React.FC = () => {
     }, []);
 
     // Handle input changes
-    const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    const changeEventHandler = (e: ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = e.target;
 
         setPassword((prev) => ({
