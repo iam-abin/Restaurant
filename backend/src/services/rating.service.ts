@@ -11,10 +11,10 @@ export class RatingService {
         private readonly RatingRepository: RatingRepository,
     ) {}
 
-    public async addRating(
+    public addRating = async (
         userId: string,
         ratingData: Omit<IRating, 'userId'>,
-    ): Promise<IRatingDocument | null> {
+    ): Promise<IRatingDocument | null> => {
         const { restaurantId, rating } = ratingData;
         const restaurant: IRestaurantResponse | null =
             await this.restaurantRepository.findRestaurant(restaurantId);
@@ -30,5 +30,5 @@ export class RatingService {
             });
             return ratingResponse;
         }
-    }
+    };
 }

@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { appConfig } from './app.config';
 import { DatabaseConnectionError } from '../errors';
 
-const connectDb = async () => {
+const connectDb = async (): Promise<void> => {
     try {
         await mongoose.connect(`${appConfig.MONGO_URI}/${appConfig.DB_NAME}`);
         // eslint-disable-next-line no-console

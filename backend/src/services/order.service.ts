@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 import { autoInjectable } from 'tsyringe';
-import { GetRestaurantOrders, IOrder, IRestaurantResponse, Orders } from '../types';
+import { GetRestaurantOrders, IOrder, IRestaurantResponse, Orders, OrderStatus } from '../types';
 import {
     OrderRepository,
     RestaurantRepository,
@@ -24,10 +24,10 @@ export class OrderService {
         private readonly addressRepository: AddressRepository,
     ) {}
 
-    public async createOrder(
+    public createOrder = async (
         userId: string,
         orderData: Pick<IOrder, 'restaurantId'>,
-    ): Promise<{ stripePaymentUrl: string }> {
+    ): Promise<{ stripePaymentUrl: string }> => {
         const { restaurantId } = orderData;
         return executeTransaction(async (session) => {
             const restaurant: IRestaurantResponse | null =
@@ -97,9 +97,9 @@ export class OrderService {
 
             return { stripePaymentUrl: checkoutSession.url };
         });
-    }
+    };
 
-    private findtotalAmount(cartItems: ICartDocument[]) {
+    private findtotalAmount = (cartItems: ICartDocument[]) => {
         if (cartItems.length === 0) throw new Error('Cart is empty');
 
         // Check if all items in the cart have the same restaurantId
@@ -110,9 +110,9 @@ export class OrderService {
 
         // Return the restaurantId if all are the same
         return totalAmount;
-    }
+    };
 
-    private createLineItems(cartItems: ICartDocument[]) {
+    private createLineItems = (cartItems: ICartDocument[]) => {
         // create line items (line items will display in the stripe payment interface as list)
         const lineItems = cartItems.map((cartItem: ICartDocument) => {
             const menuItem = cartItem.itemId as IMenuDocument;
@@ -131,14 +131,14 @@ export class OrderService {
 
         // return line items
         return lineItems;
-    }
+    };
 
-    public async getRestaurantOrders({
+    public getRestaurantOrders = async ({
         restaurantId,
         ownerId,
         page,
         limit,
-    }: GetRestaurantOrders): Promise<Orders> {
+    }: GetRestaurantOrders): Promise<Orders> => {
         const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         if ('_id' in restaurant.owner! && restaurant.owner._id.toString() !== ownerId)
@@ -153,9 +153,9 @@ export class OrderService {
 
         const numberOfPages: number = getPaginationTotalNumberOfPages(myOrdersCount, limit);
         return { orders, numberOfPages };
-    }
+    };
 
-    public async getMyOrders(userId: string, page: number, limit: number): Promise<Orders> {
+    public getMyOrders = async (userId: string, page: number, limit: number): Promise<Orders> => {
         const skip: number = getPaginationSkipValue(page, limit);
 
         const [orders, myOrdersCount]: [IOrderDocument[], number] = await Promise.all([
@@ -165,13 +165,13 @@ export class OrderService {
 
         const numberOfPages: number = getPaginationTotalNumberOfPages(myOrdersCount, limit);
         return { orders, numberOfPages };
-    }
+    };
 
-    public async confirmOrder(
+    public confirmOrder = async (
         status: string,
         requestBody: string | Buffer,
         signature: string | Buffer | Array<string>,
-    ): Promise<IOrderDocument | null> {
+    ): Promise<IOrderDocument | null> => {
         const webhookEndPointSecret: string = appConfig.STRIPE_WEBHOOK_ENDPOINT_SECRET;
 
         const event: Stripe.Event = stripeInstance.webhooks.constructEvent(
@@ -201,18 +201,18 @@ export class OrderService {
         // }
 
         return confirmedOrder;
-    }
+    };
 
-    public async updateOrderStatus(
+    public updateOrderStatus = async (
         orderId: string,
-        status: string,
+        status: OrderStatus,
         ownerId: string,
-    ): Promise<IOrderDocument | null> {
+    ): Promise<IOrderDocument | null> => {
         const order: IOrderDocument | null = await this.orderRepository.findOrder(orderId);
         if (!order) throw new NotFoundError('Order not found');
         if ('ownerId' in order.restaurantId && order.restaurantId.ownerId.toString() !== ownerId)
             throw new ForbiddenError('You cannot update other restaurants order status');
         const updatedOrder: IOrderDocument | null = await this.orderRepository.updateStatus(orderId, status);
         return updatedOrder;
-    }
+    };
 }

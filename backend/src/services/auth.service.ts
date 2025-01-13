@@ -40,7 +40,7 @@ export class UserService {
         private readonly restaurantRepository: RestaurantRepository,
     ) {}
 
-    public async signUp(userRegisterDto: ISignup): Promise<IUserDocument | null> {
+    public signUp = async (userRegisterDto: ISignup): Promise<IUserDocument | null> => {
         return executeTransaction(async (session) => {
             const { name, email } = userRegisterDto;
             const existingUser: IUserDocument | null = await this.userRepository.findUserByEmail(email);
@@ -86,13 +86,12 @@ export class UserService {
 
             return user;
         });
-    }
+    };
 
-    public async signIn(
+    public signIn = async (
         userSignInDto: ISignin,
-    ): Promise<{ user: IUserDocument; jwtAccessToken: string; jwtRefreshToken: string }> {
+    ): Promise<{ user: IUserDocument; jwtAccessToken: string; jwtRefreshToken: string }> => {
         const { email, password, role } = userSignInDto;
-
         const existingUser: IUserDocument | null = await this.userRepository.findUserByEmail(email);
         if (!existingUser) throw new BadRequestError('Invalid email or password');
 
@@ -118,11 +117,11 @@ export class UserService {
 
         const { jwtAccessToken, jwtRefreshToken }: Tokens = await this.generateTokens(existingUser);
         return { user: existingUser, jwtAccessToken, jwtRefreshToken };
-    }
+    };
 
-    public async googleAuth(
+    public googleAuth = async (
         authCredential: IGoogleAuthCredential,
-    ): Promise<{ user: IUserDocument; jwtAccessToken: string; jwtRefreshToken: string }> {
+    ): Promise<{ user: IUserDocument; jwtAccessToken: string; jwtRefreshToken: string }> => {
         const { credential, role } = authCredential;
         return executeTransaction(async (session) => {
             const { name, email, picture, email_verified, sub }: DecodedGoogleToken =
@@ -185,9 +184,9 @@ export class UserService {
 
             return { user: existingUser, jwtAccessToken, jwtRefreshToken };
         });
-    }
+    };
 
-    public async jwtRefresh(jwtRefreshToken: string | undefined): Promise<{ jwtAccessToken: string }> {
+    public jwtRefresh = async (jwtRefreshToken: string | undefined): Promise<{ jwtAccessToken: string }> => {
         if (!jwtRefreshToken) throw new NotFoundError('RefreshToken not found');
         const { userId }: IJwtPayload = verifyJwtRefreshToken(jwtRefreshToken);
         const user = await this.userRepository.findUserById(userId);
@@ -196,9 +195,9 @@ export class UserService {
         // Generate JWT
         const { jwtAccessToken }: Tokens = await this.generateTokens(user);
         return { jwtAccessToken };
-    }
+    };
 
-    public async updateBlockStatus(userId: string): Promise<IUserDocument | null> {
+    public updateBlockStatus = async (userId: string): Promise<IUserDocument | null> => {
         const user: IUserDocument | null = await this.userRepository.findUserById(userId);
         if (!user) throw new NotFoundError('This user does not exist');
 
@@ -209,9 +208,9 @@ export class UserService {
             },
         );
         return userWithUpdatedBlockStatus;
-    }
+    };
 
-    private async generateTokens(user: IUserDocument): Promise<Tokens> {
+    private generateTokens = async (user: IUserDocument): Promise<Tokens> => {
         // Generate JWT tokens
         const userPayload: IJwtPayload = {
             userId: user._id.toString(),
@@ -221,10 +220,10 @@ export class UserService {
         const jwtAccessToken: string = createJwtAccessToken(userPayload);
         const jwtRefreshToken: string = createJwtRefreshToken(userPayload);
         return { jwtAccessToken: jwtAccessToken, jwtRefreshToken: jwtRefreshToken };
-    }
+    };
 
-    private async sendVerificationEmail(name: string, email: string, otp: string): Promise<void> {
+    private sendVerificationEmail = async (name: string, email: string, otp: string): Promise<void> => {
         const emailTemplate: IEmailTemplate = getEmailVerificationTemplate(name, otp);
         await sendEmail(email, emailTemplate);
-    }
+    };
 }

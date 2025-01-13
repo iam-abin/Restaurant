@@ -42,7 +42,10 @@ export class RestaurantService {
         private readonly cartRepository: CartRepository,
     ) {}
 
-    public async getARestaurant(restaurantId: string, userId: string): Promise<IRestaurantResult | null> {
+    public getARestaurant = async (
+        restaurantId: string,
+        userId: string,
+    ): Promise<IRestaurantResult | null> => {
         const restaurant: IRestaurantResponse | null =
             await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
@@ -66,9 +69,9 @@ export class RestaurantService {
             myRating: myRating ? myRating.rating : 0,
             cartItemsCount,
         };
-    }
+    };
 
-    public async getMyRestaurant(userId: string): Promise<IRestaurantWithCuisines> {
+    public getMyRestaurant = async (userId: string): Promise<IRestaurantWithCuisines> => {
         const restaurant: IRestaurantDocument | null =
             await this.restaurantRepository.findMyRestaurant(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
@@ -83,9 +86,9 @@ export class RestaurantService {
             this.ratingRepository.countRestaurantRatings(restaurant._id.toString()),
         ]);
         return { restaurant, cuisines, restaurantRating, restaurantRatingsCount };
-    }
+    };
 
-    public async getRestaurants(page: number, limit: number): Promise<IRestaurantsData> {
+    public getRestaurants = async (page: number, limit: number): Promise<IRestaurantsData> => {
         const skip: number = getPaginationSkipValue(page, limit);
 
         const [restaurants, restaurantsCount]: [IRestaurantDocument[], number] = await Promise.all([
@@ -96,13 +99,13 @@ export class RestaurantService {
         const numberOfPages: number = getPaginationTotalNumberOfPages(restaurantsCount, limit);
 
         return { restaurants, numberOfPages };
-    }
+    };
 
-    public async updateRestaurant(
+    public updateRestaurant = async (
         ownerId: string,
         restaurantData: IRestaurantUpdate,
         file?: Express.Multer.File,
-    ): Promise<IRestaurantDocument | null> {
+    ): Promise<IRestaurantDocument | null> => {
         const { name, city, country, deliveryTime } = restaurantData;
 
         return executeTransaction(async (session) => {
@@ -129,15 +132,15 @@ export class RestaurantService {
 
             return restaurant;
         });
-    }
+    };
 
-    public async searchRestaurant({
+    public searchRestaurant = async ({
         searchText,
         searchQuery,
         selectedCuisines,
         page,
         limit,
-    }: SearchRestaurant): Promise<SearchData> {
+    }: SearchRestaurant): Promise<SearchData> => {
         const skip: number = getPaginationSkipValue(page, limit);
 
         let cuisinesArray: string[] = selectedCuisines.split(',');
@@ -158,5 +161,5 @@ export class RestaurantService {
             limit,
         );
         return { restaurants: restaurantSearchResult.restaurants, numberOfPages };
-    }
+    };
 }

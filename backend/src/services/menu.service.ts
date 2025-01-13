@@ -27,11 +27,11 @@ export class MenuService {
         private readonly addressRepository: AddressRepository,
     ) {}
 
-    public async createMenu(
+    public createMenu = async (
         userId: string,
         menuData: Omit<IMenu, 'imageUrl' | 'restaurantId' | 'cuisineId'>,
         file: Express.Multer.File,
-    ): Promise<IMenuDocument> {
+    ): Promise<IMenuDocument> => {
         return executeTransaction(async (session) => {
             const restaurant: IRestaurantDocument = await this.validateRestaurantOwnership(userId);
             const { cuisine } = menuData;
@@ -59,9 +59,9 @@ export class MenuService {
             );
             return menu;
         });
-    }
+    };
 
-    public async getMenus(restaurantId: string, page: number, limit: number): Promise<Menus> {
+    public getMenus = async (restaurantId: string, page: number, limit: number): Promise<Menus> => {
         const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         const skip: number = getPaginationSkipValue(page, limit);
@@ -73,20 +73,20 @@ export class MenuService {
 
         const numberOfPages: number = getPaginationTotalNumberOfPages(myOrdersCount, limit);
         return { menus, numberOfPages };
-    }
+    };
 
-    public async getMenu(menuId: string): Promise<IMenuDocument> {
+    public getMenu = async (menuId: string): Promise<IMenuDocument> => {
         const menu: IMenuDocument | null = await this.menuRepository.findMenu(menuId);
         if (!menu) throw new NotFoundError('Menu not found');
         return menu;
-    }
+    };
 
-    public async updateMenu(
+    public updateMenu = async (
         userId: string,
         menuId: string,
         updateData: Partial<IMenu>,
         file: Express.Multer.File,
-    ): Promise<IMenuDocument | null> {
+    ): Promise<IMenuDocument | null> => {
         return executeTransaction(async (session) => {
             const restaurant: IRestaurantDocument = await this.validateRestaurantOwnership(userId);
 
@@ -120,20 +120,20 @@ export class MenuService {
             });
             return updatedMenu;
         });
-    }
+    };
 
-    private async validateRestaurantOwnership(userId: string): Promise<IRestaurantDocument> {
+    private validateRestaurantOwnership = async (userId: string): Promise<IRestaurantDocument> => {
         const restaurant: IRestaurantDocument | null =
             await this.restaurantRepository.findMyRestaurant(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         return restaurant;
-    }
+    };
 
-    private async handleCuisine(
+    private handleCuisine = async (
         cuisineName: string,
         restaurantId: string,
         session: mongoose.ClientSession,
-    ): Promise<ICuisineDocument> {
+    ): Promise<ICuisineDocument> => {
         let cuisine = await this.cuisineRepository.findCuisineByName(cuisineName);
         if (!cuisine) {
             cuisine = await this.cuisineRepository.createCuisine({ name: cuisineName }, session);
@@ -151,5 +151,5 @@ export class MenuService {
         }
 
         return cuisine;
-    }
+    };
 }

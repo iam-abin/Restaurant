@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
+import { ICuisineDocument, IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
 
 export interface IRestaurant {
     ownerId: string;
@@ -38,7 +38,7 @@ export interface IRestaurantResult {
 }
 
 export interface IRestaurantResponse {
-    _id: string; // Restaurant ID (MongoDB ObjectId as string)
+    _id: string; // Restaurant ID
     name: string; // Restaurant name
     owner: {
         _id: string; // Owner/User ID
@@ -58,10 +58,7 @@ export interface IRestaurantResponse {
         price: number; // Menu item price
         description: string; // Menu item description
     }>; // List of menu items
-    cuisines: Array<{
-        _id: string; // Cuisine ID
-        name: string; // Cuisine name
-    }>; // List of cuisines
+    cuisines: ICuisineDocument[];
     deliveryTime: number; // Delivery time in minutes (or other unit)
     imageUrl: string; // Image URL for the restaurant
 }
@@ -83,9 +80,13 @@ export type SearchData = Omit<SearchResult, 'totalCount'> & {
     numberOfPages: number;
 };
 
-export type IRestaurantWithCuisines = {
+export interface IRestaurantWithCuisines {
     restaurant: IRestaurantDocument | null;
     cuisines: IRestaurantCuisineDocument[];
     restaurantRating: number;
     restaurantRatingsCount: number;
+}
+
+export type RestaurantIdParam = {
+    restaurantId: string;
 };

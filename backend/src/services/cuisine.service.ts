@@ -6,15 +6,15 @@ import { ICuisineDocument } from '../database/model';
 export class CuisineService {
     constructor(private readonly cuisineRepository: CuisineRepository) {}
 
-    public async searchCuisines(searchText: string): Promise<ICuisineDocument[]> {
+    public searchCuisines = async (searchText: string): Promise<ICuisineDocument[]> => {
         const limit: number = 5;
         if (!searchText) {
             return await this.cuisineRepository.findCuisines(limit);
         }
         return await this.cuisineRepository.searchCuisinesByName(searchText, limit);
-    }
+    };
 
-    public async getCuisines(): Promise<ICuisineDocument[]> {
+    public getCuisines = async (): Promise<ICuisineDocument[]> => {
         return await this.cuisineRepository.findCuisines();
-    }
+    };
 }

@@ -5,44 +5,44 @@ import { ICart } from '../../types';
 
 @singleton()
 export class CartRepository {
-    async create(cartItemData: Omit<ICart, 'quantity'>): Promise<ICartDocument> {
+     create= async (cartItemData: Omit<ICart, 'quantity'>): Promise<ICartDocument> =>{
         const cartItem: ICartDocument = await CartModel.create(cartItemData);
         return cartItem;
     }
 
-    async findCartItem(userId: string, restaurantId: string, itemId: string): Promise<ICartDocument | null> {
+     findCartItem= async (userId: string, restaurantId: string, itemId: string): Promise<ICartDocument | null> =>{
         return await CartModel.findOne({ userId, restaurantId, itemId });
     }
 
-    async findById(cartItemId: string): Promise<ICartDocument | null> {
+     findById= async (cartItemId: string): Promise<ICartDocument | null> =>{
         return await CartModel.findById(cartItemId).populate('userId').populate('itemId');
     }
 
-    async getCartItemsByRestaurant(
+     getCartItemsByRestaurant= async (
         userId: string,
         restaurantId: string,
         skip?: number,
         limit?: number,
-    ): Promise<ICartDocument[]> {
+    ): Promise<ICartDocument[]> =>{
         return await CartModel.find({ userId, restaurantId })
             .skip(skip ?? 0) // If skip is undefined or null, it defaults to 0, ensuring no skipping of documents
             .limit(limit ?? 0) // If limit is undefined or null, it defaults to 0, which means no limit is applied
             .populate('itemId');
     }
 
-    async update(cartItemId: string, quantity: number): Promise<ICartDocument | null> {
+     update= async (cartItemId: string, quantity: number): Promise<ICartDocument | null> =>{
         return await CartModel.findByIdAndUpdate(cartItemId, { quantity }, { new: true });
     }
 
-    async deleteById(cartItemId: string, session?: ClientSession): Promise<DeleteResult | null> {
+     deleteById= async (cartItemId: string, session?: ClientSession): Promise<DeleteResult | null> =>{
         return await CartModel.findByIdAndDelete(cartItemId, { new: true, session });
     }
 
-    async deleteAllItems(userId: string, session?: ClientSession): Promise<DeleteResult> {
+     deleteAllItems= async (userId: string, session?: ClientSession): Promise<DeleteResult> =>{
         return await CartModel.deleteMany({ userId }, { session });
     }
 
-    async countCartItems(restaurantId: string, userId: string): Promise<number> {
+     countCartItems= async (restaurantId: string, userId: string): Promise<number> =>{
         return CartModel.countDocuments({ restaurantId, userId });
     }
 }

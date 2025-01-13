@@ -5,7 +5,7 @@ import { IOtpToken } from '../../types';
 
 @singleton()
 export class OtpTokenRepository {
-    async create(otpData: Partial<IOtpToken>, session?: ClientSession): Promise<IOtpTokenDocument> {
+    create= async (otpData: Partial<IOtpToken>, session?: ClientSession): Promise<IOtpTokenDocument> =>{
         // Here we are performing upsert
         return await OtpTokenModel.findOneAndUpdate(
             { userId: otpData.userId },
@@ -18,15 +18,15 @@ export class OtpTokenRepository {
         );
     }
 
-    async findByUserId(userId: string): Promise<IOtpTokenDocument | null> {
+    findByUserId= async (userId: string): Promise<IOtpTokenDocument | null> =>{
         return await OtpTokenModel.findOne({ userId });
     }
 
-    async findByResetToken(resetToken: string): Promise<IOtpTokenDocument | null> {
+    findByResetToken= async (resetToken: string): Promise<IOtpTokenDocument | null> =>{
         return await OtpTokenModel.findOne({ resetToken });
     }
 
-    async delete(id: string, session?: ClientSession): Promise<IOtpTokenDocument | null> {
+    delete= async (id: string, session?: ClientSession): Promise<IOtpTokenDocument | null> =>{
         return await OtpTokenModel.findByIdAndDelete(id, { returnDocument: 'before', session });
     }
 }

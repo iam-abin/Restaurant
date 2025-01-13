@@ -7,6 +7,7 @@ export * from './jwt';
 export * from './menu';
 export * from './order';
 export * from './otp';
+export * from './pagination';
 export * from './password';
 export * from './payment';
 export * from './profile';

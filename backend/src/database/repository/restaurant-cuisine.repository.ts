@@ -5,10 +5,10 @@ import { IRestaurantCuisine } from '../../types';
 
 @singleton()
 export class RestaurantCuisineRepository {
-    async create(
+    create= async (
         restaurantCuisineData: IRestaurantCuisine,
         session?: ClientSession,
-    ): Promise<IRestaurantCuisineDocument> {
+    ): Promise<IRestaurantCuisineDocument> =>{
         const restaurantCuisine: IRestaurantCuisineDocument[] = await RestaurantCuisineModel.create(
             [restaurantCuisineData],
             { session },
@@ -16,18 +16,18 @@ export class RestaurantCuisineRepository {
         return restaurantCuisine[0];
     }
 
-    async findRestaurantCuisines(restaurantId: string): Promise<IRestaurantCuisineDocument[]> {
+    findRestaurantCuisines= async (restaurantId: string): Promise<IRestaurantCuisineDocument[]> =>{
         return await RestaurantCuisineModel.find({ restaurantId }).populate('cuisineId');
     }
 
-    async findRestaurantCuisine(
+    findRestaurantCuisine= async (
         restaurantId: string,
         cuisineId: string,
-    ): Promise<IRestaurantCuisineDocument | null> {
+    ): Promise<IRestaurantCuisineDocument | null> =>{
         return await RestaurantCuisineModel.findOne({ restaurantId, cuisineId }).populate('cuisineId');
     }
 
-    async countRestaurantCuisines(restaurantId: string): Promise<number> {
+    countRestaurantCuisines= async (restaurantId: string): Promise<number> =>{
         return await RestaurantCuisineModel.countDocuments({ restaurantId });
     }
 }

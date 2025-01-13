@@ -5,11 +5,11 @@ import mongoose, { DeleteResult } from 'mongoose';
 
 @singleton()
 export class RatingRepository {
-    async findUserRating(restaurantId: string, userId: string): Promise<IRatingDocument | null> {
+    findUserRating= async (restaurantId: string, userId: string): Promise<IRatingDocument | null> =>{
         return await RatingModel.findOne({ restaurantId, userId });
     }
 
-    async findRestaurantRating(restaurantId: string): Promise<number> {
+    findRestaurantRating= async (restaurantId: string): Promise<number> =>{
         const result = await RatingModel.aggregate([
             {
                 $match: { restaurantId: new mongoose.Types.ObjectId(restaurantId) },
@@ -25,7 +25,7 @@ export class RatingRepository {
         return result.length > 0 ? result[0].averageRating : 0;
     }
 
-    async updateRating({ userId, restaurantId, rating }: IRating): Promise<IRatingDocument | null> {
+    updateRating= async ({ userId, restaurantId, rating }: IRating): Promise<IRatingDocument | null> =>{
         return await RatingModel.findOneAndUpdate(
             { userId, restaurantId },
             { rating },
@@ -33,11 +33,11 @@ export class RatingRepository {
         );
     }
 
-    async countRestaurantRatings(restaurantId: string): Promise<number> {
+    countRestaurantRatings= async (restaurantId: string): Promise<number> =>{
         return await RatingModel.countDocuments({ restaurantId });
     }
 
-    async deleteRating(userId: string, restaurantId: string): Promise<DeleteResult> {
+    deleteRating= async (userId: string, restaurantId: string): Promise<DeleteResult> =>{
         return await RatingModel.deleteOne({ userId, restaurantId });
     }
 }

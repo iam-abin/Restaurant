@@ -15,3 +15,7 @@ export type Menus = {
     menus: IMenuDocument[];
     numberOfPages: number;
 };
+
+export type MenuIdParam = {
+    menuId: string;
+};

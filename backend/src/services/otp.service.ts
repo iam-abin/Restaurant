@@ -28,7 +28,7 @@ export class OtpService {
         private readonly restaurantRepository: RestaurantRepository,
     ) {}
 
-    public async verifyOtp(userId: string, otp: string): Promise<IUserDocument | null> {
+    public verifyOtp = async (userId: string, otp: string): Promise<IUserDocument | null> => {
         return executeTransaction(async (session) => {
             const user: IUserDocument = await this.validateUserExistence(userId);
 
@@ -56,9 +56,9 @@ export class OtpService {
 
             return updatedUser;
         });
-    }
+    };
 
-    public async resendOtp(userId: string): Promise<IUserDocument> {
+    public resendOtp = async (userId: string): Promise<IUserDocument> => {
         const user: IUserDocument = await this.validateUserExistence(userId);
 
         if (user.isVerified) throw new BadRequestError('You are already verified. Please signin');
@@ -79,9 +79,9 @@ export class OtpService {
         const emailTemplate: IEmailTemplate = getEmailVerificationTemplate(user.name, otp);
         await sendEmail(user.email, emailTemplate);
         return user;
-    }
+    };
 
-    public async forgotPassword(email: string): Promise<IUserDocument> {
+    public forgotPassword = async (email: string): Promise<IUserDocument> => {
         const user: IUserDocument | null = await this.userRepository.findUserByEmail(email);
         if (!user) throw new NotFoundError('This user does not exist');
         if (!user.isVerified)
@@ -110,9 +110,9 @@ export class OtpService {
         const emailTemplate: IEmailTemplate = getForgotPasswordEmailTemplate(resetURL);
         await sendEmail(email, emailTemplate);
         return user;
-    }
+    };
 
-    public async verifyResetToken(resetToken: string): Promise<IUserDocument | null> {
+    public verifyResetToken = async (resetToken: string): Promise<IUserDocument | null> => {
         const resetTokenData: IOtpTokenDocument | null =
             await this.otpTokenRepository.findByResetToken(resetToken);
         if (!resetTokenData) throw new NotFoundError('Reset token has expired');
@@ -122,9 +122,9 @@ export class OtpService {
         await this.otpTokenRepository.delete(resetTokenData._id.toString());
 
         return user;
-    }
+    };
 
-    public async resetPassword(userId: string, password: string): Promise<IUserDocument | null> {
+    public resetPassword = async (userId: string, password: string): Promise<IUserDocument | null> => {
         const user: IUserDocument = await this.validateUserExistence(userId);
 
         // Update the user's verification status
@@ -132,11 +132,11 @@ export class OtpService {
             password,
         });
         return updatedUser;
-    }
+    };
 
-    private async validateUserExistence(userId: string): Promise<IUserDocument> {
+    private validateUserExistence = async (userId: string): Promise<IUserDocument> => {
         const user: IUserDocument | null = await this.userRepository.findUserById(userId);
         if (!user) throw new NotFoundError('This user does not exist.');
         return user;
-    }
+    };
 }

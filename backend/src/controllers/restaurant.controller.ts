@@ -4,10 +4,13 @@ import { createSuccessResponse } from '../utils';
 import { IRestaurantDocument } from '../database/model';
 import { RestaurantService } from '../services';
 import {
+    IJwtPayload,
     IRestaurantResult,
     IRestaurantsData,
     IRestaurantUpdate,
     IRestaurantWithCuisines,
+    Pagination,
+    RestaurantIdParam,
     SearchData,
 } from '../types';
 
@@ -15,8 +18,8 @@ import {
 export class RestaurantController {
     constructor(private readonly restaurantService: RestaurantService) {}
 
-    public async editRestaurant(req: Request, res: Response): Promise<void> {
-        const { userId } = req.currentUser!;
+    public editRestaurant = async (req: Request, res: Response): Promise<void> => {
+        const { userId } = req.currentUser as IJwtPayload;
         const file: Express.Multer.File = req.file!;
         const restaurants: IRestaurantDocument | null = await this.restaurantService.updateRestaurant(
             userId,
@@ -24,37 +27,37 @@ export class RestaurantController {
             file,
         );
         res.status(200).json(createSuccessResponse('Restaurant updated successfully', restaurants));
-    }
+    };
 
-    public async getMyRestaurant(req: Request, res: Response): Promise<void> {
-        const { userId } = req.currentUser!;
+    public getMyRestaurant = async (req: Request, res: Response): Promise<void> => {
+        const { userId } = req.currentUser as IJwtPayload;
         const restaurant: IRestaurantWithCuisines = await this.restaurantService.getMyRestaurant(userId);
         res.status(200).json(createSuccessResponse('Your restaurant fetched successfully', restaurant));
-    }
+    };
 
-    public async getARestaurant(req: Request, res: Response): Promise<void> {
-        const { restaurantId } = req.params;
-        const { userId } = req.currentUser!;
+    public getARestaurant = async (req: Request, res: Response): Promise<void> => {
+        const { restaurantId } = req.params as RestaurantIdParam;
+        const { userId } = req.currentUser as IJwtPayload;
         const restaurant: IRestaurantResult | null = await this.restaurantService.getARestaurant(
             restaurantId,
             userId,
         );
         res.status(200).json(createSuccessResponse('Restaurant fetched successfully', restaurant));
-    }
+    };
 
-    public async getRestaurants(req: Request, res: Response): Promise<void> {
-        const { page = 1, limit = 10 } = req.query;
+    public getRestaurants = async (req: Request, res: Response): Promise<void> => {
+        const { page = 1, limit = 10 } = req.query as Pagination;
         const restaurantsData: IRestaurantsData = await this.restaurantService.getRestaurants(
             page as number,
             limit as number,
         );
         res.status(200).json(createSuccessResponse('Restaurants fetched successfully', restaurantsData));
-    }
+    };
 
-    public async searchRestaurant(req: Request, res: Response): Promise<void> {
+    public searchRestaurant = async (req: Request, res: Response): Promise<void> => {
         const searchText: string = req.params.searchText || ''; // From home page search bar
         const searchQuery: string = (req.query.searchQuery as string) || ''; // From search page search bar
-        const { page = 1, limit = 10 } = req.query;
+        const { page = 1, limit = 10 } = req.query as Pagination;
         const selectedCuisines: string = (req.query.selectedCuisines as string) || ''; // From filter area
         const restaurant: SearchData = await this.restaurantService.searchRestaurant({
             searchText,
@@ -64,5 +67,5 @@ export class RestaurantController {
             limit: limit as number,
         });
         res.status(200).json(createSuccessResponse('Searched restaurants fetched successfully', restaurant));
-    }
+    };
 }

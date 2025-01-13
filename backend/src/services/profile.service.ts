@@ -17,13 +17,13 @@ export class ProfileService {
         private readonly addressRepository: AddressRepository,
     ) {}
 
-    public async getProfile(userId: string): Promise<IProfileDocument | null> {
+    public getProfile = async (userId: string): Promise<IProfileDocument | null> => {
         const profile: IProfileDocument | null = await this.profileRepository.findByUserId(userId);
         if (!profile) throw new NotFoundError('This profile does not exist');
         return profile;
-    }
+    };
 
-    public async getUserProfiles(page: number, limit: number): Promise<IProfilesData> {
+    public getUserProfiles = async (page: number, limit: number): Promise<IProfilesData> => {
         const skip: number = getPaginationSkipValue(page, limit);
 
         const [profiles, profilesCount]: [IProfileDocument[], number] = await Promise.all([
@@ -33,12 +33,12 @@ export class ProfileService {
 
         const numberOfPages: number = getPaginationTotalNumberOfPages(profilesCount, limit);
         return { profiles, numberOfPages };
-    }
+    };
 
-    public async updateProfile(
+    public updateProfile = async (
         userId: string,
         updateData: Partial<IProfile & IUser & IAddress>,
-    ): Promise<IProfileDocument | null> {
+    ): Promise<IProfileDocument | null> => {
         const { city, country, address, image } = updateData;
 
         return executeTransaction(async (session) => {
@@ -65,5 +65,5 @@ export class ProfileService {
 
             return profile;
         });
-    }
+    };
 }

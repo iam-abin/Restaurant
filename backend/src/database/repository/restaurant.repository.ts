@@ -5,22 +5,22 @@ import { IRestaurantDocument, RestaurantModel } from '../model';
 
 @singleton()
 export class RestaurantRepository {
-    async create(
+    create= async (
         restaurantData: Pick<IRestaurant, 'ownerId' | 'imageUrl'>,
         session?: ClientSession,
-    ): Promise<IRestaurantDocument> {
+    ): Promise<IRestaurantDocument> =>{
         const restaurant: IRestaurantDocument[] = await RestaurantModel.create([restaurantData], { session });
         return restaurant[0];
     }
 
-    async findRestaurants(skip: number, limit: number): Promise<IRestaurantDocument[]> {
+    findRestaurants= async (skip: number, limit: number): Promise<IRestaurantDocument[]> =>{
         return await RestaurantModel.find()
             .skip(skip ?? 0)
             .limit(limit ?? 0)
             .populate('ownerId');
     }
 
-    async findRestaurant(restaurantId: string): Promise<IRestaurantResponse | null> {
+    findRestaurant= async (restaurantId: string): Promise<IRestaurantResponse | null> =>{
         const restaurant = await RestaurantModel.aggregate([
             // Match the restaurant by ID
             {
@@ -103,15 +103,15 @@ export class RestaurantRepository {
         return restaurant[0];
     }
 
-    async findMyRestaurant(ownerId: string): Promise<IRestaurantDocument | null> {
+    findMyRestaurant= async (ownerId: string): Promise<IRestaurantDocument | null> =>{
         return await RestaurantModel.findOne({ ownerId }).populate(['ownerId', 'addressId']);
     }
 
-    async update(
+    update= async (
         ownerId: string,
         updatedData: Partial<Pick<IRestaurant, 'addressId' | 'deliveryTime' | 'imageUrl'>>,
         session?: ClientSession,
-    ): Promise<IRestaurantDocument | null> {
+    ): Promise<IRestaurantDocument | null> =>{
         const restaurant: IRestaurantDocument | null = await RestaurantModel.findOneAndUpdate(
             { ownerId },
             updatedData,
@@ -123,13 +123,13 @@ export class RestaurantRepository {
         return restaurant;
     }
 
-    async searchRestaurants(
+    searchRestaurants= async (
         searchText: string,
         searchQuery: string,
         selectedCuisines: string[],
         skip: number,
         limit: number,
-    ): Promise<SearchResult> {
+    ): Promise<SearchResult> =>{
         const pipeline = [
             // Lookup address details
             {
@@ -246,11 +246,11 @@ export class RestaurantRepository {
         return { restaurants, totalCount };
     }
 
-    async countRestaurants(): Promise<number> {
+    countRestaurants= async (): Promise<number> =>{
         return RestaurantModel.countDocuments();
     }
 
-    async countLast7DaysCreatedRestaurants(startDate: Date): Promise<CountByDay[]> {
+    countLast7DaysCreatedRestaurants= async (startDate: Date): Promise<CountByDay[]> =>{
         const counts: CountByDay[] = await RestaurantModel.aggregate([
             {
                 $match: {
