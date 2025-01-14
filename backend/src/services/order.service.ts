@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 import { autoInjectable } from 'tsyringe';
-import { GetRestaurantOrders, IOrder, IRestaurantResponse, Orders, OrderStatus } from '../types';
+import { GetRestaurantOrders, IOrder, Orders, OrderStatus } from '../types';
 import {
     OrderRepository,
     RestaurantRepository,
@@ -8,7 +8,13 @@ import {
     CartRepository,
     AddressRepository,
 } from '../database/repository';
-import { IAddressDocument, ICartDocument, IMenuDocument, IOrderDocument } from '../database/model';
+import {
+    IAddressDocument,
+    ICartDocument,
+    IMenuDocument,
+    IOrderDocument,
+    IRestaurantDocument,
+} from '../database/model';
 import { ForbiddenError, NotFoundError } from '../errors';
 import { stripeInstance } from '../config/stripe';
 import { appConfig } from '../config/app.config';
@@ -30,7 +36,7 @@ export class OrderService {
     ): Promise<{ stripePaymentUrl: string }> => {
         const { restaurantId } = orderData;
         return executeTransaction(async (session) => {
-            const restaurant: IRestaurantResponse | null =
+            const restaurant: IRestaurantDocument | null =
                 await this.restaurantRepository.findRestaurant(restaurantId);
             if (!restaurant) throw new NotFoundError('Restaurant not found');
 
@@ -139,9 +145,10 @@ export class OrderService {
         page,
         limit,
     }: GetRestaurantOrders): Promise<Orders> => {
-        const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
+        const restaurant: IRestaurantDocument | null =
+            await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
-        if ('_id' in restaurant.owner! && restaurant.owner._id.toString() !== ownerId)
+        if ('_id' in restaurant.ownerId! && restaurant.ownerId._id.toString() !== ownerId)
             throw new ForbiddenError('You cannot access other restaurant orders');
 
         const skip: number = getPaginationSkipValue(page, limit);

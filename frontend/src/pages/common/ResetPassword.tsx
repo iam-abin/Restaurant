@@ -56,7 +56,7 @@ const ResetPassword: React.FC = () => {
         }
     };
 
-    const handleSubmit = async (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent):Promise<void> => {
         e.preventDefault();
 
         if (!user) {

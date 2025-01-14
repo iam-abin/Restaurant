@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { ICuisineDocument, IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
+import { IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
 
 export interface IRestaurant {
     ownerId: string;
@@ -30,7 +30,8 @@ export interface ISearchRestaurantResult {
 }
 
 export interface IRestaurantResult {
-    restaurant: IRestaurantResponse;
+    restaurant: IRestaurantDocument;
+    restaurantCuisines: IRestaurantCuisineDocument[];
     restaurantRating: number;
     restaurantRatingsCount: number;
     myRating: number;
@@ -52,13 +53,6 @@ export interface IRestaurantResponse {
         state: string;
         country: string;
     } | null; // Address details (nullable because of `preserveNullAndEmptyArrays`)
-    menus: Array<{
-        _id: string; // Menu item ID
-        name: string; // Menu item name
-        price: number; // Menu item price
-        description: string; // Menu item description
-    }>; // List of menu items
-    cuisines: ICuisineDocument[];
     deliveryTime: number; // Delivery time in minutes (or other unit)
     imageUrl: string; // Image URL for the restaurant
 }

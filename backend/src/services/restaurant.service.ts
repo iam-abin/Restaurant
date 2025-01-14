@@ -1,6 +1,5 @@
 import { autoInjectable } from 'tsyringe';
 import {
-    IRestaurantResponse,
     IRestaurantResult,
     IRestaurantsData,
     IRestaurantUpdate,
@@ -46,16 +45,18 @@ export class RestaurantService {
         restaurantId: string,
         userId: string,
     ): Promise<IRestaurantResult | null> => {
-        const restaurant: IRestaurantResponse | null =
+        const restaurant: IRestaurantDocument | null =
             await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
 
-        const [restaurantRating, restaurantRatingsCount, myRating, cartItemsCount]: [
+        const [restaurantCuisines, restaurantRating, restaurantRatingsCount, myRating, cartItemsCount]: [
+            IRestaurantCuisineDocument[],
             number,
             number,
             IRatingDocument | null,
             number,
         ] = await Promise.all([
+            this.restaurantCuisineRepository.findRestaurantCuisines(restaurantId),
             this.ratingRepository.findRestaurantRating(restaurantId),
             this.ratingRepository.countRestaurantRatings(restaurant._id.toString()),
             this.ratingRepository.findUserRating(restaurant._id.toString(), userId),
@@ -64,6 +65,7 @@ export class RestaurantService {
 
         return {
             restaurant,
+            restaurantCuisines,
             restaurantRating,
             restaurantRatingsCount,
             myRating: myRating ? myRating.rating : 0,

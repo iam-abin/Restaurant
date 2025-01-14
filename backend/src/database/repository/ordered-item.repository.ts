@@ -5,13 +5,13 @@ import { OrderedItemModel, IOrderedItemDocument } from '../model';
 
 @singleton()
 export class OrderedItemRepository {
-        create= async (
+    create = async (
         orderedItemData: IOrderedItem[],
         session?: mongoose.ClientSession,
-    ): Promise<IOrderedItemDocument[]> =>{
+    ): Promise<IOrderedItemDocument[]> => {
         const orderedItems: IOrderedItemDocument[] = await OrderedItemModel.insertMany(orderedItemData, {
             session,
         });
         return orderedItems;
-    }
+    };
 }
