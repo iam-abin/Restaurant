@@ -6,30 +6,25 @@ import { getProfilesApi, blockUnblockUserApi } from '../../api/apiMethods';
 import SearchBar from '../../components/search/SearchBar';
 import Table from '../../components/table/Table';
 import { useConfirmationContext } from '../../context/confirmationContext';
-import { Button, Chip } from '@mui/material';
+import { Chip } from '@mui/material';
+import CustomButton from '../../components/Button/CustomButton';
 
 const UsersList: React.FC = () => {
     const [profilesData, setProfilesData] = useState<IProfile[]>([]);
-    const [numberOfPages, setNumberOfPages] = useState(1);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [searchKey, setSearchKey] = useState('');
+    const [numberOfPages, setNumberOfPages] = useState<number>(1);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [searchKey, setSearchKey] = useState<string>('');
     const { showConfirmation } = useConfirmationContext();
 
     const USERS_PER_PAGE: number = 2;
 
-    const fetchUsers = async (currentPage: number) => {
+    const fetchUsers = async (currentPage: number): Promise<void> => {
         let profilesData: IResponse | [] = [];
         // if (!searchKey) {
         profilesData = await getProfilesApi(currentPage, USERS_PER_PAGE);
         const data = profilesData?.data as IProfilesResponse;
-        // currentPage,
-        // USERS_PER_PAGE
         setProfilesData(data.profiles as IProfile[]);
-
-        // if (profilesData) {
-        //     setNumberOfPages(profilesData.data.numberOfPages as number);
         setNumberOfPages(data.numberOfPages);
-        // }
     };
 
     useEffect(() => {
@@ -50,7 +45,7 @@ const UsersList: React.FC = () => {
         });
     };
 
-    const handleBlockUnblock = async (userId: string) => {
+    const handleBlockUnblock = async (userId: string): Promise<void> => {
         const updatedUser: IResponse | null = await blockUnblockUserApi(userId);
 
         if (updatedUser) {
@@ -97,15 +92,21 @@ const UsersList: React.FC = () => {
         {
             Header: 'Action',
             button: (row: { userId: { _id: string; isBlocked: boolean } }) => (
-                <Button
-                    color={row.userId.isBlocked ? 'success' : 'error'}
+                <CustomButton
+                    sx={{
+                        backgroundColor: row.userId.isBlocked ? '#3B9212' : '#D10000',
+                        '&:hover': {
+                            backgroundColor: row.userId.isBlocked ? '#2B690D' : '#A30000',
+                        },
+                        fontWeight: 'bold',
+                    }}
                     onClick={() => {
                         handleBlockUnblockButton(row.userId._id, row.userId.isBlocked);
                     }}
                     variant="contained"
                 >
                     {row.userId.isBlocked ? 'Unblock' : 'Block'}
-                </Button>
+                </CustomButton>
             ),
         },
     ];

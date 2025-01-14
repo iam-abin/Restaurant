@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { Box, Modal, IconButton, Typography, TextField, Button, Grid } from '@mui/material';
+import { Box, Modal, IconButton, Typography, TextField, Grid } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import LoaderCircle from '../Loader/LoaderCircle';
 import { MenuFormSchema, menuSchema } from '../../utils/schema/menuSchema';
@@ -127,9 +127,13 @@ const MenuModal: React.FC<IMenuModalProps> = ({
 
             if (isEditMode && initialValues) {
                 // Call the API to update the menu
-                await dispatch(
+                const result = await dispatch(
                     updateMenu({ menuId: initialValues._id, updateData: formData as Partial<IMenu> }),
                 );
+                if (result.meta.requestStatus === 'rejected') {
+                    hotToastMessage(result.payload as string, 'error');
+                    return;
+                }
             } else {
                 // Call the API to add a new menu
                 const response: IResponse = await addMenuApi(formData as unknown as IMenu);
@@ -267,10 +271,14 @@ const MenuModal: React.FC<IMenuModalProps> = ({
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <Button variant="contained" component="label" fullWidth>
+                            <CustomButton
+                                variant="contained"
+                                className="w-full"
+                                sx={{ background: '#059dc0' }}
+                            >
                                 Upload Image
                                 <input type="file" hidden accept="image/*" onChange={handleImageChange} />
-                            </Button>
+                            </CustomButton>
                             {previewImage && (
                                 <Box mt={2} textAlign="center">
                                     <img
@@ -287,12 +295,6 @@ const MenuModal: React.FC<IMenuModalProps> = ({
                             )}
                         </Grid>
                         <Grid item xs={12}>
-                            {/* <Button
-                                type="submit"
-                                disabled={isLoading}
-                            >
-                                {isLoading ? <LoaderCircle /> : isEditMode ? 'Update' : 'Submit'}
-                            </Button> */}
                             <CustomButton className="w-full" type="submit" disabled={isLoading}>
                                 {' '}
                                 {isLoading ? <LoaderCircle /> : isEditMode ? 'Update' : 'Submit'}

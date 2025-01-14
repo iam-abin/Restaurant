@@ -10,7 +10,6 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 
 import { getRestaurantOrdersApi, updateOrderStatusApi } from '../../api/apiMethods';
 import { useAppSelector } from '../../redux/hooks';
@@ -47,7 +46,7 @@ const OrdersListPage: React.FC = () => {
         })();
     }, [restaurant, currentPage]);
 
-    const handleStatusChange = async (id: string, newStatus: string) => {
+    const handleStatusChange = async (id: string, newStatus: string): Promise<void> => {
         setOrders((prevOrders: IRestaurantOrder[]) =>
             prevOrders.map((order: IRestaurantOrder) =>
                 order._id === id ? { ...order, status: newStatus } : order,
@@ -58,15 +57,15 @@ const OrdersListPage: React.FC = () => {
         hotToastMessage(response.message, 'success');
     };
 
-    const handleViewDetails = (order: IRestaurantOrder) => {
+    const handleViewDetails = (order: IRestaurantOrder): void => {
         setSelectedOrder(order);
         setModalOpen(true);
     };
 
-    const statuses = ['preparing', 'outfordelivery', 'delivered'];
-    const tableColumns = ['Image', 'OrderId', 'Customer', 'Total', 'Status', 'Actions'];
+    const statuses: string[] = ['preparing', 'outfordelivery', 'delivered'];
+    const tableColumns: string[] = ['Image', 'OrderId', 'Customer', 'Total', 'Status', 'Actions'];
 
-    const handleCloseModal = () => {
+    const handleCloseModal = (): void => {
         setModalOpen(false);
         setSelectedOrder(null);
     };
@@ -115,14 +114,9 @@ const OrdersListPage: React.FC = () => {
                                         </Select>
                                     </TableCell>
                                     <TableCell>
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => handleViewDetails(order)}
-                                        >
+                                        <CustomButton onClick={() => handleViewDetails(order)}>
                                             View Details
-                                        </Button>
+                                        </CustomButton>
                                     </TableCell>
                                 </TableRow>
                             ))}

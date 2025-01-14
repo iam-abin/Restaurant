@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Chip } from '@mui/material';
+import { Chip } from '@mui/material';
 import { Search } from '@mui/icons-material';
 
 import { getCuisinesApi, searchRestaurantApi } from '../../api/apiMethods';
@@ -12,6 +12,7 @@ import RestaurantCardSkeleton from '../../components/shimmer/RestaurantCardSkele
 import Filter from '../../components/Filter';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
 import usePagination from '../../hooks/usePagination';
+import CustomButton from '../../components/Button/CustomButton';
 
 const SearchResult: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -41,7 +42,7 @@ const SearchResult: React.FC = () => {
         }
     };
 
-    const fetchFilters = async () => {
+    const fetchFilters = async (): Promise<void> => {
         const filtersLis: IResponse = await getCuisinesApi();
         setFiltersList(filtersLis.data as ICuisineResponse1[]);
     };
@@ -90,14 +91,9 @@ const SearchResult: React.FC = () => {
                             className="border-2 pl-10 h-11 w-full border-black shadow-lg rounded-lg"
                         />
                     </div>
-                    <Button
-                        onClick={handleSearch}
-                        variant="contained"
-                        disabled={isLoading}
-                        className="bg-orange-500 w-32"
-                    >
+                    <CustomButton onClick={handleSearch} variant="contained" disabled={isLoading}>
                         {isLoading ? <LoaderCircle /> : 'Search'}
-                    </Button>
+                    </CustomButton>
                 </div>
 
                 <div className="flex gap-2 my-3">

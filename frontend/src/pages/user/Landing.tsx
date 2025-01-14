@@ -1,15 +1,15 @@
 import { ChangeEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from '@mui/icons-material';
-import { Button } from '@mui/material';
 
 import PizzaImage from '../../assets/hero_pizza.png';
+import CustomButton from '../../components/Button/CustomButton';
 
 const Landing: React.FC = () => {
     const [searchText, setSearchText] = useState<string>('');
     const navigate = useNavigate();
 
-    const handleSearchClick = () => {
+    const handleSearchClick = (): void => {
         if (!searchText) return;
 
         navigate(`/search/${searchText}`);
@@ -36,9 +36,7 @@ const Landing: React.FC = () => {
                             className="border-2 pl-10 h-11 w-full text-sm border-black shadow-lg rounded-lg"
                         />
                     </div>
-                    <Button onClick={handleSearchClick} variant="contained" className="bg-orange-500 ">
-                        Search
-                    </Button>
+                    <CustomButton onClick={handleSearchClick}>Search</CustomButton>
                 </div>
             </div>
             <div>

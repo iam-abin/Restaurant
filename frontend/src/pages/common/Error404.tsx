@@ -5,7 +5,7 @@ import CustomButton from '../../components/Button/CustomButton';
 const Error404: React.FC = () => {
     const navigate = useNavigate();
 
-    const handleGoHome = () => {
+    const handleGoHome = (): void => {
         navigate('/'); // Redirects to the home page
     };
 
@@ -31,14 +31,6 @@ const Error404: React.FC = () => {
             <CustomButton sx={{ textTransform: 'none', fontWeight: 'bold' }} onClick={handleGoHome}>
                 Back to Home
             </CustomButton>
-            {/* <Button
-                variant="contained"
-                color="primary"
-                onClick={handleGoHome}
-                sx={{ textTransform: 'none', fontWeight: 'bold' }}
-            >
-                Go Back Home
-            </Button> */}
         </Box>
     );
 };

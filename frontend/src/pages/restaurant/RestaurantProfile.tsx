@@ -1,5 +1,4 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { Button } from '@mui/material';
 
 import { RestaurantFormSchema, restaurantFromSchema } from '../../utils/schema/restaurantSchema';
 import { updateRestaurantApi } from '../../api/apiMethods';
@@ -9,6 +8,7 @@ import LoaderCircle from '../../components/Loader/LoaderCircle';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
 import { useConfirmationContext } from '../../context/confirmationContext';
+import CustomButton from '../../components/Button/CustomButton';
 
 const RestaurantProfile: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -60,7 +60,7 @@ const RestaurantProfile: React.FC = () => {
         }
     }, [restaurantData]);
 
-    const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const { name, value, type } = e.target;
         setInput({
             ...input,
@@ -68,7 +68,7 @@ const RestaurantProfile: React.FC = () => {
         });
     };
 
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const files = event.target.files;
         if (files?.length) {
             const file = files[0];
@@ -117,7 +117,7 @@ const RestaurantProfile: React.FC = () => {
         });
     };
 
-    const submitHandler = async () => {
+    const submitHandler = async (): Promise<void> => {
         setIsLoading(true);
 
         const result = restaurantFromSchema.safeParse({
@@ -266,12 +266,7 @@ const RestaurantProfile: React.FC = () => {
                         </div>
 
                         <div className="my-5 w-fit">
-                            <Button
-                                type="submit"
-                                disabled={isLoading}
-                                className="w-full mb-5 bg-orange-300"
-                                variant="contained"
-                            >
+                            <CustomButton type="submit" disabled={isLoading}>
                                 {isLoading ? (
                                     <label className="flex items-center gap-4">
                                         Please wait <LoaderCircle />
@@ -279,7 +274,7 @@ const RestaurantProfile: React.FC = () => {
                                 ) : (
                                     'Update Restaurant'
                                 )}
-                            </Button>
+                            </CustomButton>
                         </div>
                     </div>
 

@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
-import { Avatar, Box, Button, Tooltip } from '@mui/material';
+import { Avatar, Box, Tooltip } from '@mui/material';
 import { Add, Email, Flag, LocationOn, LocationSearching } from '@mui/icons-material';
 
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
@@ -7,6 +7,7 @@ import { fetchUserProfile, updateUserProfile } from '../../redux/thunk/profileTh
 import { IAddress } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import { useConfirmationContext } from '../../context/confirmationContext';
+import CustomButton from '../../components/Button/CustomButton';
 
 const Profile: React.FC = () => {
     const [selectedProfilePicture, setSelectedProfilePicture] = useState<string>('');
@@ -186,20 +187,15 @@ const Profile: React.FC = () => {
             </div>
 
             <div className="text-center">
-                <Button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-2/6 mb-5 bg-orange-300"
-                    variant="contained"
-                >
+                <CustomButton type="submit" disabled={isLoading} className="w-2/6">
                     {isLoading ? (
                         <label className="flex items-center gap-4">
-                            Please wait <LoaderCircle />
+                            updating... <LoaderCircle />
                         </label>
                     ) : (
                         'Update'
                     )}
-                </Button>
+                </CustomButton>
             </div>
         </form>
     );

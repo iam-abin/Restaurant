@@ -2,22 +2,19 @@ import { useState } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import MenuModal from '../modal/MenuModal';
 import CustomButton from '../Button/CustomButton';
 import { IMenu, IUser, UserRole } from '../../types';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { addToCart } from '../../redux/thunk/cartThunk';
-import { Params, useParams } from 'react-router-dom';
-import { hotToastMessage } from '../../utils/hotToast';
+import { useAppSelector } from '../../redux/hooks';
 import { checkRole } from '../../utils/role';
 
 interface IMenuCardProps {
     menu: IMenu;
+    addItemToCartHandler?: (menuItemId: string) => Promise<void>;
 }
 
-const MenuCard: React.FC<IMenuCardProps> = ({ menu }) => {
+const MenuCard: React.FC<IMenuCardProps> = ({ menu, addItemToCartHandler }) => {
     const authData: IUser | null = useAppSelector((store) => store.authReducer.authData);
 
     const isUser: boolean = checkRole(UserRole.USER, authData?.role);
@@ -26,21 +23,26 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu }) => {
     const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
     const handleEditMenuOpen = () => setIsEditMenuOpen(true);
     const handleEditMenuClose = () => setIsEditMenuOpen(false);
-    const dispatch = useAppDispatch();
-    const params: Readonly<Params<string>> = useParams();
 
-    const addItemToCartHandler = async (menuItemId: string) => {
-        const response = await dispatch(
-            addToCart({ itemId: menuItemId, restaurantId: params.restaurantId! }),
-        );
-        if (response.meta.requestStatus === 'rejected') {
-            hotToastMessage(response.payload as string, 'error');
+    const handleAddToCart = async (): Promise<void> => {
+        if (!addItemToCartHandler) {
+            return;
         }
+
+        await addItemToCartHandler(menu._id);
     };
 
     return (
         // <div className="flex justify-center bg-yellow-700">
-        <Card sx={{ width: 11 / 12 }}>
+        <Card
+            sx={{
+                width: {
+                    sm: 12 / 12,
+                    md: 11 / 12,
+                    lg: 10 / 12,
+                },
+            }}
+        >
             {/* modal start */}
             {menu && isRestaurant && (
                 <MenuModal
@@ -57,7 +59,15 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu }) => {
                     <CardMedia
                         component="img"
                         alt="green iguana"
-                        className="h-5/5 md:h-60 object-cover"
+                        // className="h-5/5 md:h-60 object-cover"
+                        sx={{
+                            height: 200, // Fixed height
+                            width: {
+                                sm: 300,
+                                md: 200,
+                            }, // Width relative to the container
+                            objectFit: 'fill', // Maintains aspect ratio
+                        }}
                         image={menu.imageUrl}
                     />
                 </div>
@@ -65,8 +75,25 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu }) => {
                     <Typography gutterBottom variant="h5" component="div">
                         <h1 className="text-2xl font-bold text-gray-900">{menu?.name}</h1>
                     </Typography>
-
-                    <p>{menu.description}</p>
+                    <Typography
+                        component="p"
+                        sx={{
+                            display: '-webkit-box',
+                            WebkitLineClamp: 3, // Limit to 3 lines
+                            WebkitBoxOrient: 'vertical',
+                            width: {
+                                xs: 100, // Full width on extra-small screens
+                                sm: 100,
+                                md: 450, // Fixed width on medium and larger screens
+                            },
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            wordWrap: 'break-word',
+                            whiteSpace: 'normal',
+                        }}
+                    >
+                        {menu.description}
+                    </Typography>
                     <div className="flex">
                         <h2 className="text-lg font-semibold mt-4 flex items-center gap-3">
                             <Typography component="span"> Price: </Typography>
@@ -85,14 +112,7 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu }) => {
 
                 <div className="flex items-center justify-center px-4 py-2">
                     {isUser ? (
-                        <Button
-                            onClick={() => addItemToCartHandler(menu._id)}
-                            className="w-full"
-                            variant="contained"
-                            size="small"
-                        >
-                            Add to cart
-                        </Button>
+                        <CustomButton onClick={handleAddToCart}>Add to cart</CustomButton>
                     ) : isRestaurant ? (
                         <CustomButton onClick={handleEditMenuOpen}>Edit</CustomButton>
                     ) : (

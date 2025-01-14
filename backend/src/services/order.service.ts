@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 import { autoInjectable } from 'tsyringe';
-import { GetRestaurantOrders, IOrder, IRestaurantResponse, Orders } from '../types';
+import { GetRestaurantOrders, IOrder, Orders, OrderStatus } from '../types';
 import {
     OrderRepository,
     RestaurantRepository,
@@ -8,7 +8,13 @@ import {
     CartRepository,
     AddressRepository,
 } from '../database/repository';
-import { IAddressDocument, ICartDocument, IMenuDocument, IOrderDocument } from '../database/model';
+import {
+    IAddressDocument,
+    ICartDocument,
+    IMenuDocument,
+    IOrderDocument,
+    IRestaurantDocument,
+} from '../database/model';
 import { ForbiddenError, NotFoundError } from '../errors';
 import { stripeInstance } from '../config/stripe';
 import { appConfig } from '../config/app.config';
@@ -24,19 +30,19 @@ export class OrderService {
         private readonly addressRepository: AddressRepository,
     ) {}
 
-    public async createOrder(
+    public createOrder = async (
         userId: string,
         orderData: Pick<IOrder, 'restaurantId'>,
-    ): Promise<{ stripePaymentUrl: string }> {
+    ): Promise<{ stripePaymentUrl: string }> => {
         const { restaurantId } = orderData;
         return executeTransaction(async (session) => {
-            const restaurant: IRestaurantResponse | null =
+            const restaurant: IRestaurantDocument | null =
                 await this.restaurantRepository.findRestaurant(restaurantId);
             if (!restaurant) throw new NotFoundError('Restaurant not found');
 
             const [cartItems, address]: [ICartDocument[], IAddressDocument | null] = await Promise.all([
-                this.cartRepository.getCartItemsByRestaurant(userId, restaurantId),
-                this.addressRepository.findByUserId(userId),
+                this.cartRepository.findCartItemsByRestaurant(userId, restaurantId),
+                this.addressRepository.findAddressByUserId(userId),
             ]);
 
             if (cartItems.length === 0) throw new NotFoundError('Must contain cart items to place order');
@@ -47,7 +53,7 @@ export class OrderService {
             //     throw new ForbiddenError('You cannot use others address');
 
             // Create the order
-            const order: IOrderDocument | null = await this.orderRepository.create(
+            const order: IOrderDocument | null = await this.orderRepository.createOrder(
                 {
                     userId,
                     restaurantId,
@@ -81,7 +87,7 @@ export class OrderService {
             }
 
             // Delete cart items in bulk
-            await this.cartRepository.deleteAllItems(userId, session);
+            await this.cartRepository.deleteAllCartItems(userId, session);
 
             const orderedItems = cartItems.map((item) => ({
                 userId,
@@ -93,13 +99,13 @@ export class OrderService {
             }));
 
             // Adding ordered items to OrderedItems collection
-            await this.orderedItemRepository.create(orderedItems, session);
+            await this.orderedItemRepository.createOrderedItem(orderedItems, session);
 
             return { stripePaymentUrl: checkoutSession.url };
         });
-    }
+    };
 
-    private findtotalAmount(cartItems: ICartDocument[]) {
+    private findtotalAmount = (cartItems: ICartDocument[]) => {
         if (cartItems.length === 0) throw new Error('Cart is empty');
 
         // Check if all items in the cart have the same restaurantId
@@ -110,9 +116,9 @@ export class OrderService {
 
         // Return the restaurantId if all are the same
         return totalAmount;
-    }
+    };
 
-    private createLineItems(cartItems: ICartDocument[]) {
+    private createLineItems = (cartItems: ICartDocument[]) => {
         // create line items (line items will display in the stripe payment interface as list)
         const lineItems = cartItems.map((cartItem: ICartDocument) => {
             const menuItem = cartItem.itemId as IMenuDocument;
@@ -131,17 +137,18 @@ export class OrderService {
 
         // return line items
         return lineItems;
-    }
+    };
 
-    public async getRestaurantOrders({
+    public getRestaurantOrders = async ({
         restaurantId,
         ownerId,
         page,
         limit,
-    }: GetRestaurantOrders): Promise<Orders> {
-        const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
+    }: GetRestaurantOrders): Promise<Orders> => {
+        const restaurant: IRestaurantDocument | null =
+            await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
-        if ('_id' in restaurant.owner! && restaurant.owner._id.toString() !== ownerId)
+        if ('_id' in restaurant.ownerId! && restaurant.ownerId._id.toString() !== ownerId)
             throw new ForbiddenError('You cannot access other restaurant orders');
 
         const skip: number = getPaginationSkipValue(page, limit);
@@ -153,9 +160,9 @@ export class OrderService {
 
         const numberOfPages: number = getPaginationTotalNumberOfPages(myOrdersCount, limit);
         return { orders, numberOfPages };
-    }
+    };
 
-    public async getMyOrders(userId: string, page: number, limit: number): Promise<Orders> {
+    public getMyOrders = async (userId: string, page: number, limit: number): Promise<Orders> => {
         const skip: number = getPaginationSkipValue(page, limit);
 
         const [orders, myOrdersCount]: [IOrderDocument[], number] = await Promise.all([
@@ -165,13 +172,13 @@ export class OrderService {
 
         const numberOfPages: number = getPaginationTotalNumberOfPages(myOrdersCount, limit);
         return { orders, numberOfPages };
-    }
+    };
 
-    public async confirmOrder(
+    public confirmOrder = async (
         status: string,
         requestBody: string | Buffer,
         signature: string | Buffer | Array<string>,
-    ): Promise<IOrderDocument | null> {
+    ): Promise<IOrderDocument | null> => {
         const webhookEndPointSecret: string = appConfig.STRIPE_WEBHOOK_ENDPOINT_SECRET;
 
         const event: Stripe.Event = stripeInstance.webhooks.constructEvent(
@@ -194,25 +201,28 @@ export class OrderService {
 
         if (!order) throw new NotFoundError('Order not found');
 
-        const confirmedOrder = this.orderRepository.updateStatus(order._id.toString(), status);
+        const confirmedOrder = this.orderRepository.updateOrderStatus(order._id.toString(), status);
         // Update the order with the amount and status
         // if (checkoutSession.amount_total) {
         //     order.totalAmount = checkoutSession.amount_total;
         // }
 
         return confirmedOrder;
-    }
+    };
 
-    public async updateOrderStatus(
+    public updateOrderStatus = async (
         orderId: string,
-        status: string,
+        status: OrderStatus,
         ownerId: string,
-    ): Promise<IOrderDocument | null> {
+    ): Promise<IOrderDocument | null> => {
         const order: IOrderDocument | null = await this.orderRepository.findOrder(orderId);
         if (!order) throw new NotFoundError('Order not found');
         if ('ownerId' in order.restaurantId && order.restaurantId.ownerId.toString() !== ownerId)
             throw new ForbiddenError('You cannot update other restaurants order status');
-        const updatedOrder: IOrderDocument | null = await this.orderRepository.updateStatus(orderId, status);
+        const updatedOrder: IOrderDocument | null = await this.orderRepository.updateOrderStatus(
+            orderId,
+            status,
+        );
         return updatedOrder;
-    }
+    };
 }

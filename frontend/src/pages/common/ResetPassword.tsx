@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Button, Input, Typography } from '@mui/material';
+import { Input, Typography } from '@mui/material';
 
 import { resetPasswordSchema } from '../../utils/schema/userSchema';
 import { hotToastMessage } from '../../utils/hotToast';
@@ -8,6 +8,7 @@ import { resetPasswordApi, verifyResetTokenApi } from '../../api/apiMethods';
 import { IResponse, IResetPassword, IUser } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import LockIcon from '@mui/icons-material/Lock';
+import CustomButton from '../../components/Button/CustomButton';
 
 const ResetPassword: React.FC = () => {
     const navigate = useNavigate();
@@ -34,7 +35,7 @@ const ResetPassword: React.FC = () => {
     }, []);
 
     // Handle input changes
-    const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    const changeEventHandler = (e: ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = e.target;
 
         setPassword((prev) => ({
@@ -56,7 +57,7 @@ const ResetPassword: React.FC = () => {
         }
     };
 
-    const handleSubmit = async (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent): Promise<void> => {
         e.preventDefault();
 
         if (!user) {
@@ -116,27 +117,17 @@ const ResetPassword: React.FC = () => {
                         <Typography className="text-sm text-red-500">{errors.confirmPassword}</Typography>
                     )}
                 </div>
-                <Button
-                    type="submit"
-                    disabled={isLoading}
-                    sx={{
-                        width: '100%',
-                        mt: 2,
-                        backgroundColor: isLoading ? 'orange' : '#FF8C00',
-                        '&:hover': {
-                            backgroundColor: isLoading ? 'orange' : '#FF8C00',
-                        },
-                    }}
-                    variant="contained"
-                >
-                    {isLoading ? (
-                        <label className="flex items-center gap-4">
-                            Sending <LoaderCircle />
-                        </label>
-                    ) : (
-                        <>Reset</>
-                    )}
-                </Button>
+                <div className="py-5">
+                    <CustomButton type="submit" className="w-full" disabled={isLoading}>
+                        {isLoading ? (
+                            <label className="flex items-center gap-4">
+                                Sending <LoaderCircle />
+                            </label>
+                        ) : (
+                            <>Reset</>
+                        )}
+                    </CustomButton>
+                </div>
                 <Typography className="mt-5 text-center">
                     Back to{' '}
                     <Link to="/auth" className="ml-1 text-blue-500 hover:text-blue-800">

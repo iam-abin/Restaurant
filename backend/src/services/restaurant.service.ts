@@ -1,6 +1,5 @@
 import { autoInjectable } from 'tsyringe';
 import {
-    IRestaurantResponse,
     IRestaurantResult,
     IRestaurantsData,
     IRestaurantUpdate,
@@ -42,17 +41,22 @@ export class RestaurantService {
         private readonly cartRepository: CartRepository,
     ) {}
 
-    public async getARestaurant(restaurantId: string, userId: string): Promise<IRestaurantResult | null> {
-        const restaurant: IRestaurantResponse | null =
+    public getARestaurant = async (
+        restaurantId: string,
+        userId: string,
+    ): Promise<IRestaurantResult | null> => {
+        const restaurant: IRestaurantDocument | null =
             await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
 
-        const [restaurantRating, restaurantRatingsCount, myRating, cartItemsCount]: [
+        const [restaurantCuisines, restaurantRating, restaurantRatingsCount, myRating, cartItemsCount]: [
+            IRestaurantCuisineDocument[],
             number,
             number,
             IRatingDocument | null,
             number,
         ] = await Promise.all([
+            this.restaurantCuisineRepository.findRestaurantCuisines(restaurantId),
             this.ratingRepository.findRestaurantRating(restaurantId),
             this.ratingRepository.countRestaurantRatings(restaurant._id.toString()),
             this.ratingRepository.findUserRating(restaurant._id.toString(), userId),
@@ -61,14 +65,15 @@ export class RestaurantService {
 
         return {
             restaurant,
+            restaurantCuisines,
             restaurantRating,
             restaurantRatingsCount,
             myRating: myRating ? myRating.rating : 0,
             cartItemsCount,
         };
-    }
+    };
 
-    public async getMyRestaurant(userId: string): Promise<IRestaurantWithCuisines> {
+    public getMyRestaurant = async (userId: string): Promise<IRestaurantWithCuisines> => {
         const restaurant: IRestaurantDocument | null =
             await this.restaurantRepository.findMyRestaurant(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
@@ -83,9 +88,9 @@ export class RestaurantService {
             this.ratingRepository.countRestaurantRatings(restaurant._id.toString()),
         ]);
         return { restaurant, cuisines, restaurantRating, restaurantRatingsCount };
-    }
+    };
 
-    public async getRestaurants(page: number, limit: number): Promise<IRestaurantsData> {
+    public getRestaurants = async (page: number, limit: number): Promise<IRestaurantsData> => {
         const skip: number = getPaginationSkipValue(page, limit);
 
         const [restaurants, restaurantsCount]: [IRestaurantDocument[], number] = await Promise.all([
@@ -96,20 +101,20 @@ export class RestaurantService {
         const numberOfPages: number = getPaginationTotalNumberOfPages(restaurantsCount, limit);
 
         return { restaurants, numberOfPages };
-    }
+    };
 
-    public async updateRestaurant(
+    public updateRestaurant = async (
         ownerId: string,
         restaurantData: IRestaurantUpdate,
         file?: Express.Multer.File,
-    ): Promise<IRestaurantDocument | null> {
+    ): Promise<IRestaurantDocument | null> => {
         const { name, city, country, deliveryTime } = restaurantData;
 
         return executeTransaction(async (session) => {
             // user
             await this.userRepository.updateUser(ownerId, { name }, session);
             // address
-            const addressData: IAddressDocument | null = await this.addressRepository.update(
+            const addressData: IAddressDocument | null = await this.addressRepository.updateAddress(
                 ownerId,
                 { userId: ownerId, city, country },
                 session,
@@ -121,7 +126,7 @@ export class RestaurantService {
                 imageUrl = await uploadImageOnCloudinary(file);
             }
 
-            const restaurant: IRestaurantDocument | null = await this.restaurantRepository.update(
+            const restaurant: IRestaurantDocument | null = await this.restaurantRepository.updateRestaurant(
                 ownerId,
                 { addressId: addressData?._id.toString(), deliveryTime, imageUrl },
                 session,
@@ -129,15 +134,15 @@ export class RestaurantService {
 
             return restaurant;
         });
-    }
+    };
 
-    public async searchRestaurant({
+    public searchRestaurant = async ({
         searchText,
         searchQuery,
         selectedCuisines,
         page,
         limit,
-    }: SearchRestaurant): Promise<SearchData> {
+    }: SearchRestaurant): Promise<SearchData> => {
         const skip: number = getPaginationSkipValue(page, limit);
 
         let cuisinesArray: string[] = selectedCuisines.split(',');
@@ -158,5 +163,5 @@ export class RestaurantService {
             limit,
         );
         return { restaurants: restaurantSearchResult.restaurants, numberOfPages };
-    }
+    };
 }

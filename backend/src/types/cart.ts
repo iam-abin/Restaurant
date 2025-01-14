@@ -7,7 +7,7 @@ export interface ICart {
     quantity: number;
 }
 
-export type GetCartItemsByRestaurantParams = {
+export type GetCartItemsByRestaurantIdParams = {
     userId: string;
     restaurantId: string;
     page: number;

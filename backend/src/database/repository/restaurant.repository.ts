@@ -1,117 +1,49 @@
-import mongoose, { ClientSession } from 'mongoose';
+import { ClientSession } from 'mongoose';
 import { singleton } from 'tsyringe';
-import { CountByDay, IRestaurant, IRestaurantResponse, SearchResult } from '../../types';
+import { CountByDay, IRestaurant, SearchResult } from '../../types';
 import { IRestaurantDocument, RestaurantModel } from '../model';
 
 @singleton()
 export class RestaurantRepository {
-    async create(
+    createRestaurant = async (
         restaurantData: Pick<IRestaurant, 'ownerId' | 'imageUrl'>,
         session?: ClientSession,
-    ): Promise<IRestaurantDocument> {
+    ): Promise<IRestaurantDocument> => {
         const restaurant: IRestaurantDocument[] = await RestaurantModel.create([restaurantData], { session });
         return restaurant[0];
-    }
+    };
 
-    async findRestaurants(skip: number, limit: number): Promise<IRestaurantDocument[]> {
+    findRestaurants = async (skip: number, limit: number): Promise<IRestaurantDocument[]> => {
         return await RestaurantModel.find()
             .skip(skip ?? 0)
             .limit(limit ?? 0)
             .populate('ownerId');
-    }
+    };
 
-    async findRestaurant(restaurantId: string): Promise<IRestaurantResponse | null> {
-        const restaurant = await RestaurantModel.aggregate([
-            // Match the restaurant by ID
-            {
-                $match: { _id: new mongoose.Types.ObjectId(restaurantId) },
-            },
-            // Lookup to join with the Address collection
-            {
-                $lookup: {
-                    from: 'addresses', // Address collection
-                    localField: 'addressId',
-                    foreignField: '_id',
-                    as: 'address',
+    findRestaurant = async (restaurantId: string): Promise<IRestaurantDocument | null> => {
+        return await RestaurantModel.findById(restaurantId)
+            .populate([
+                {
+                    path: 'ownerId',
+                    select: 'name email phone', // Exclude fields from ownerId
                 },
-            },
-            {
-                $unwind: {
-                    path: '$address',
-                    preserveNullAndEmptyArrays: true, // Optional, if some restaurants may not have an address
+                {
+                    path: 'addressId',
+                    select: '-createdAt -updatedAt', // Exclude fields from addressId
                 },
-            },
-            // Lookup to join with the Menu collection
-            {
-                $lookup: {
-                    from: 'menus',
-                    localField: '_id',
-                    foreignField: 'restaurantId',
-                    as: 'menus',
-                },
-            },
-            // Lookup to join with the RestaurantCuisine collection
-            {
-                $lookup: {
-                    from: 'restaurantcuisines',
-                    localField: '_id',
-                    foreignField: 'restaurantId',
-                    as: 'restaurantCuisines',
-                },
-            },
-            // Lookup to join with the Cuisine collection
-            {
-                $lookup: {
-                    from: 'cuisines',
-                    localField: 'restaurantCuisines.cuisineId',
-                    foreignField: '_id',
-                    as: 'cuisines',
-                },
-            },
-            // Lookup to join with the users collection
-            {
-                $lookup: {
-                    from: 'users', // User collection (owners are stored here)
-                    localField: 'ownerId',
-                    foreignField: '_id',
-                    as: 'owner',
-                },
-            },
-            {
-                $unwind: {
-                    path: '$owner',
-                    preserveNullAndEmptyArrays: true,
-                },
-            },
-            {
-                $project: {
-                    _id: 1,
-                    name: 1,
-                    owner: {
-                        _id: 1,
-                        name: 1,
-                        email: 1,
-                    },
-                    address: 1,
-                    menus: 1,
-                    cuisines: 1,
-                    deliveryTime: 1,
-                    imageUrl: 1,
-                },
-            },
-        ]);
-        return restaurant[0];
-    }
+            ])
+            .select('-createdAt -updatedAt'); // Exclude fields from the main restaurant document
+    };
 
-    async findMyRestaurant(ownerId: string): Promise<IRestaurantDocument | null> {
+    findMyRestaurant = async (ownerId: string): Promise<IRestaurantDocument | null> => {
         return await RestaurantModel.findOne({ ownerId }).populate(['ownerId', 'addressId']);
-    }
+    };
 
-    async update(
+    updateRestaurant = async (
         ownerId: string,
         updatedData: Partial<Pick<IRestaurant, 'addressId' | 'deliveryTime' | 'imageUrl'>>,
         session?: ClientSession,
-    ): Promise<IRestaurantDocument | null> {
+    ): Promise<IRestaurantDocument | null> => {
         const restaurant: IRestaurantDocument | null = await RestaurantModel.findOneAndUpdate(
             { ownerId },
             updatedData,
@@ -121,15 +53,15 @@ export class RestaurantRepository {
             },
         );
         return restaurant;
-    }
+    };
 
-    async searchRestaurants(
+    searchRestaurants = async (
         searchText: string,
         searchQuery: string,
         selectedCuisines: string[],
         skip: number,
         limit: number,
-    ): Promise<SearchResult> {
+    ): Promise<SearchResult> => {
         const pipeline = [
             // Lookup address details
             {
@@ -244,13 +176,13 @@ export class RestaurantRepository {
         const totalCount = result[0]?.totalCount?.[0]?.count || 0;
 
         return { restaurants, totalCount };
-    }
+    };
 
-    async countRestaurants(): Promise<number> {
+    countRestaurants = async (): Promise<number> => {
         return RestaurantModel.countDocuments();
-    }
+    };
 
-    async countLast7DaysCreatedRestaurants(startDate: Date): Promise<CountByDay[]> {
+    countLast7DaysCreatedRestaurants = async (startDate: Date): Promise<CountByDay[]> => {
         const counts: CountByDay[] = await RestaurantModel.aggregate([
             {
                 $match: {
@@ -281,5 +213,5 @@ export class RestaurantRepository {
             },
         ]);
         return counts;
-    }
+    };
 }

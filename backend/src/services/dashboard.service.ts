@@ -20,7 +20,7 @@ export class DashboardService {
         private readonly menuRepository: MenuRepository,
     ) {}
 
-    public async getRestaurantDashboardData(userId: string): Promise<IRestaurantDashboard> {
+    public getRestaurantDashboardData = async (userId: string): Promise<IRestaurantDashboard> => {
         const restaurant: IRestaurantDocument | null =
             await this.restaurantRepository.findMyRestaurant(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
@@ -34,7 +34,7 @@ export class DashboardService {
             number,
             number,
         ] = await Promise.all([
-            this.orderRepository.countStatuses(restaurantId),
+            this.orderRepository.countOrderStatuses(restaurantId),
             this.orderRepository.findRestaurantTotalOrdersPrice(restaurantId),
             this.menuRepository.countRestaurantMenus(restaurantId),
             this.restaurantCuisineRepository.countRestaurantCuisines(restaurantId),
@@ -48,9 +48,9 @@ export class DashboardService {
         // lastSevenDaysUsers,
         // lastSevenDaysRestaurants,
         return { orderStatusData: transformedStatusesWithCounts, totalRevenue, menusCount, cuisinesCount };
-    }
+    };
 
-    public async getAdminDashboardData(): Promise<IAdminDashboard> {
+    public getAdminDashboardData = async (): Promise<IAdminDashboard> => {
         const PERCENTAGE: number = 0.5; // Commission percentage
         const percentageDecimal: number = PERCENTAGE / 100; // Calculate commission percentage in decimal
 
@@ -63,7 +63,7 @@ export class DashboardService {
         ] = await Promise.all([
             this.restaurantRepository.countRestaurants(),
             this.profileRepository.countProfiles(),
-            this.orderRepository.countStatuses(),
+            this.orderRepository.countOrderStatuses(),
             this.orderRepository.findTotalOrderedPrice(),
             this.orderRepository.findPercentageCommitionAmount(percentageDecimal),
         ]);
@@ -90,11 +90,11 @@ export class DashboardService {
             lastSevenDaysUsers,
             lastSevenDaysRestaurants,
         };
-    }
+    };
 
-    private mapOrderStatusesWithCounts(
+    private mapOrderStatusesWithCounts = (
         orderStatusesWithCounts: IOrderStatusWithCounts[],
-    ): IOrderStatusWithCounts[] {
+    ): IOrderStatusWithCounts[] => {
         const allStatuses: string[] = ['pending', 'confirmed', 'preparing', 'outfordelivery', 'delivered'];
 
         const countsMap: Map<string, number> = new Map(
@@ -107,5 +107,5 @@ export class DashboardService {
         }));
 
         return mappedStatuses;
-    }
+    };
 }

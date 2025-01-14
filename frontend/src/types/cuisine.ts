@@ -3,9 +3,10 @@ export interface ICuisine {
     // description: string
 }
 
-export interface ICuisineResponse1 {
+export interface ICuisineResponse1 extends ICuisine {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    cuisineId: any;
     _id: string;
-    name: string;
 }
 
 export interface ICuisineResponse {

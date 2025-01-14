@@ -1,6 +1,6 @@
 import { IOrderDocument } from '../database/model';
 
-type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'outfordelivery' | 'delivered';
+export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'outfordelivery' | 'delivered';
 
 export interface IOrder {
     userId: string;

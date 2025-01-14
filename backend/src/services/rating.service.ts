@@ -1,7 +1,7 @@
 import { autoInjectable } from 'tsyringe';
-import { IRating, IRestaurantResponse } from '../types';
+import { IRating } from '../types';
 import { RatingRepository, RestaurantRepository } from '../database/repository';
-import { IRatingDocument } from '../database/model';
+import { IRatingDocument, IRestaurantDocument } from '../database/model';
 import { NotFoundError } from '../errors';
 
 @autoInjectable()
@@ -11,12 +11,12 @@ export class RatingService {
         private readonly RatingRepository: RatingRepository,
     ) {}
 
-    public async addRating(
+    public addRating = async (
         userId: string,
         ratingData: Omit<IRating, 'userId'>,
-    ): Promise<IRatingDocument | null> {
+    ): Promise<IRatingDocument | null> => {
         const { restaurantId, rating } = ratingData;
-        const restaurant: IRestaurantResponse | null =
+        const restaurant: IRestaurantDocument | null =
             await this.restaurantRepository.findRestaurant(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
 
@@ -30,5 +30,5 @@ export class RatingService {
             });
             return ratingResponse;
         }
-    }
+    };
 }

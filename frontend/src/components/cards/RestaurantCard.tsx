@@ -1,14 +1,14 @@
+import { Link } from 'react-router-dom';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import PublicIcon from '@mui/icons-material/Public';
 import { Chip } from '@mui/material';
-import { Link } from 'react-router-dom';
 import { IRestaurantCard } from '../../types';
+import CustomButton from '../Button/CustomButton';
 
 interface IRestaurantCardProps {
     restaurant: IRestaurantCard;
@@ -54,9 +54,7 @@ const RestaurantCard: React.FC<IRestaurantCardProps> = ({ restaurant }) => {
             </CardContent>
             <CardActions className="flex justify-end">
                 <Link to={`/user/restaurant/${restaurant._id}`}>
-                    <Button variant="contained" size="small">
-                        View Menus
-                    </Button>
+                    <CustomButton>View Menus</CustomButton>
                 </Link>
             </CardActions>
         </Card>

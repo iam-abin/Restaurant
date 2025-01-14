@@ -1,5 +1,6 @@
-import { Button, Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import CustomButton from './Button/CustomButton';
 
 interface INoResultFoundProps {
     searchText: string;
@@ -30,9 +31,7 @@ export const NoResultFound: React.FC<INoResultFoundProps> = ({
                     Try searching with a different term.
                 </Typography>
                 <Link to="/" className="text-decoration-none">
-                    <Button variant="contained" className="mt-4 bg-orange hover:bg-orangeHover">
-                        Go Back to Home
-                    </Button>
+                    <CustomButton>Go Back to Home</CustomButton>
                 </Link>
             </CardContent>
         </Card>

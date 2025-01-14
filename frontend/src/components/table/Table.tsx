@@ -21,17 +21,7 @@ const Table: React.FC<ITableProps> = ({ columns, data, numberOfPages, fetchData 
 
     const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
 
-    // const handlePageChange = async (pageNumber: number) => {
-    //     setCurrentPage(pageNumber);
-    //     await fetchData(pageNumber); // Fetch data for the new page
-    // };
-
-    // useEffect(() => {
-    //     setCurrentPage(currentPage);
-    // }, [data]);
-
     useEffect(() => {
-        // setCurrentPage(currentPage);
         (async () => {
             await fetchData(currentPage);
             setTotalNumberOfPages(numberOfPages);

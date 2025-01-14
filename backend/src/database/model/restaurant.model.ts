@@ -6,7 +6,7 @@ import { IAddressDocument } from './address.model';
 
 export interface IRestaurantDocument extends Document, Omit<IRestaurant, 'ownerId' | 'addressId'> {
     _id: Types.ObjectId;
-    ownerId: Types.ObjectId | IUserDocument;
+    ownerId: Types.ObjectId | Pick<IUserDocument, 'name' | 'email' | 'phone'>;
     addressId: Types.ObjectId | IAddressDocument;
     isBlocked: boolean;
 }

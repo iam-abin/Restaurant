@@ -5,12 +5,12 @@ import { IOrderDocument, OrderModel } from '../model';
 
 @singleton()
 export class OrderRepository {
-    async create(orderData: IOrder, session?: mongoose.ClientSession): Promise<IOrderDocument> {
+    createOrder = async (orderData: IOrder, session?: mongoose.ClientSession): Promise<IOrderDocument> => {
         const order: IOrderDocument[] = await OrderModel.create([orderData], { session });
         return order[0];
-    }
+    };
 
-    async findMyOrders(userId: string, skip: number, limit: number): Promise<IOrderDocument[]> {
+    findMyOrders = async (userId: string, skip: number, limit: number): Promise<IOrderDocument[]> => {
         const userOrders = await OrderModel.aggregate([
             // Match orders for the specific user
             { $match: { userId: new mongoose.Types.ObjectId(userId) } },
@@ -120,9 +120,9 @@ export class OrderRepository {
         ]);
 
         return userOrders;
-    }
+    };
 
-    async findOrders(restaurantId: string, skip: number, limit?: number): Promise<IOrderDocument[]> {
+    findOrders = async (restaurantId: string, skip: number, limit?: number): Promise<IOrderDocument[]> => {
         const restaurantOrders = await OrderModel.aggregate([
             // Match orders by restaurantId
             { $match: { restaurantId: new mongoose.Types.ObjectId(restaurantId) } },
@@ -213,13 +213,13 @@ export class OrderRepository {
             ...(limit ? [{ $limit: limit }] : []), // Limit documents if limit is provided
         ]);
         return restaurantOrders;
-    }
+    };
 
-    async findOrder(orderId: string): Promise<IOrderDocument | null> {
+    findOrder = async (orderId: string): Promise<IOrderDocument | null> => {
         return await OrderModel.findById(orderId).populate('userId');
-    }
+    };
 
-    async updateStatus(orderId: string, status: string): Promise<IOrderDocument | null> {
+    updateOrderStatus = async (orderId: string, status: string): Promise<IOrderDocument | null> => {
         const order: IOrderDocument | null = await OrderModel.findByIdAndUpdate(
             orderId,
             { status },
@@ -228,9 +228,9 @@ export class OrderRepository {
             },
         );
         return order;
-    }
+    };
 
-    async countStatuses(restaurantId?: string): Promise<IOrderStatusWithCounts[]> {
+    countOrderStatuses = async (restaurantId?: string): Promise<IOrderStatusWithCounts[]> => {
         const statsCounts: IOrderStatusWithCounts[] = await OrderModel.aggregate([
             // It will perform $match only if the restaurantId is present
             ...(restaurantId
@@ -255,11 +255,11 @@ export class OrderRepository {
             },
         ]);
         return statsCounts;
-    }
+    };
 
     // menuItemPrice
 
-    async findTotalOrderedPrice(): Promise<number> {
+    findTotalOrderedPrice = async (): Promise<number> => {
         const total = await OrderModel.aggregate([
             {
                 $group: {
@@ -271,9 +271,9 @@ export class OrderRepository {
             },
         ]);
         return total.length ? total[0].totalSellPrice : 0;
-    }
+    };
 
-    async findRestaurantTotalOrdersPrice(restaurantId: string): Promise<number> {
+    findRestaurantTotalOrdersPrice = async (restaurantId: string): Promise<number> => {
         const total = await OrderModel.aggregate([
             {
                 $match: {
@@ -291,9 +291,12 @@ export class OrderRepository {
             },
         ]);
         return total.length ? total[0].totalSellPrice : 0;
-    }
+    };
 
-    async findPercentageCommitionAmount(percentageDecimal: number, precision: number = 2): Promise<number> {
+    findPercentageCommitionAmount = async (
+        percentageDecimal: number,
+        precision: number = 2,
+    ): Promise<number> => {
         const result = await OrderModel.aggregate([
             {
                 $project: {
@@ -313,13 +316,13 @@ export class OrderRepository {
 
         // Round the result to the desired precision
         return parseFloat(totalSum.toFixed(precision));
-    }
+    };
 
-    async countUserOrders({ userId }: { userId: string }): Promise<number> {
+    countUserOrders = async ({ userId }: { userId: string }): Promise<number> => {
         return await OrderModel.countDocuments({ userId });
-    }
+    };
 
-    async countRestaurantOrders({ restaurantId }: { restaurantId: string }): Promise<number> {
+    countRestaurantOrders = async ({ restaurantId }: { restaurantId: string }): Promise<number> => {
         return await OrderModel.countDocuments({ restaurantId });
-    }
+    };
 }

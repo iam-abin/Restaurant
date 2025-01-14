@@ -30,7 +30,8 @@ export interface ISearchRestaurantResult {
 }
 
 export interface IRestaurantResult {
-    restaurant: IRestaurantResponse;
+    restaurant: IRestaurantDocument;
+    restaurantCuisines: IRestaurantCuisineDocument[];
     restaurantRating: number;
     restaurantRatingsCount: number;
     myRating: number;
@@ -38,7 +39,7 @@ export interface IRestaurantResult {
 }
 
 export interface IRestaurantResponse {
-    _id: string; // Restaurant ID (MongoDB ObjectId as string)
+    _id: string; // Restaurant ID
     name: string; // Restaurant name
     owner: {
         _id: string; // Owner/User ID
@@ -52,16 +53,6 @@ export interface IRestaurantResponse {
         state: string;
         country: string;
     } | null; // Address details (nullable because of `preserveNullAndEmptyArrays`)
-    menus: Array<{
-        _id: string; // Menu item ID
-        name: string; // Menu item name
-        price: number; // Menu item price
-        description: string; // Menu item description
-    }>; // List of menu items
-    cuisines: Array<{
-        _id: string; // Cuisine ID
-        name: string; // Cuisine name
-    }>; // List of cuisines
     deliveryTime: number; // Delivery time in minutes (or other unit)
     imageUrl: string; // Image URL for the restaurant
 }
@@ -83,9 +74,13 @@ export type SearchData = Omit<SearchResult, 'totalCount'> & {
     numberOfPages: number;
 };
 
-export type IRestaurantWithCuisines = {
+export interface IRestaurantWithCuisines {
     restaurant: IRestaurantDocument | null;
     cuisines: IRestaurantCuisineDocument[];
     restaurantRating: number;
     restaurantRatingsCount: number;
+}
+
+export type RestaurantIdParam = {
+    restaurantId: string;
 };

@@ -1,4 +1,3 @@
-import { Button } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
@@ -17,6 +16,7 @@ import usePagination from '../../hooks/usePagination';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
 import { useConfirmationContext } from '../../context/confirmationContext';
 import { checkRole } from '../../utils';
+import CustomButton from '../../components/Button/CustomButton';
 
 const Cart: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -74,7 +74,7 @@ const Cart: React.FC = () => {
     };
 
     const findTotalAmount = (cartItems: ICart[]): number => {
-        const totalAmount = cartItems.reduce((acc: number, currItem: ICart) => {
+        const totalAmount = cartItems.reduce((acc: number, currItem: ICart): number => {
             acc += currItem?.itemId.price * currItem.quantity;
             return acc;
         }, 0);
@@ -86,9 +86,9 @@ const Cart: React.FC = () => {
             {cartData.length > 0 ? (
                 <div className="flex flex-col max-w-7xl mx-auto my-10">
                     <div className="flex justify-end">
-                        <Button onClick={handleremoveCartItemsButton} variant="text">
+                        <CustomButton onClick={handleremoveCartItemsButton} variant="text">
                             Clear all
-                        </Button>
+                        </CustomButton>
                     </div>
                     <TableCart
                         cartItems={cartData}
@@ -101,9 +101,9 @@ const Cart: React.FC = () => {
                                 <span className="font-extrabold text-xl">Total: </span>{' '}
                                 <span className="text-xl">₹{findTotalAmount(cartData)}</span>
                             </div>
-                            <Button className="h-10" color="warning" variant="contained" onClick={handleOpen}>
+                            <CustomButton className="h-10" onClick={handleOpen}>
                                 Proceed to checkout
-                            </Button>
+                            </CustomButton>
                         </div>
                         {isOpen && <CheckoutReviewModal isOpen={isOpen} handleClose={handleClose} />}
                     </div>
