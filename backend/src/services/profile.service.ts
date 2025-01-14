@@ -18,7 +18,7 @@ export class ProfileService {
     ) {}
 
     public getProfile = async (userId: string): Promise<IProfileDocument | null> => {
-        const profile: IProfileDocument | null = await this.profileRepository.findByUserId(userId);
+        const profile: IProfileDocument | null = await this.profileRepository.findProfileByUserId(userId);
         if (!profile) throw new NotFoundError('This profile does not exist');
         return profile;
     };
@@ -47,13 +47,13 @@ export class ProfileService {
                 imageUrl = await uploadImageOnCloudinary(image);
             }
 
-            const addressData: IAddressDocument | null = await this.addressRepository.update(
+            const addressData: IAddressDocument | null = await this.addressRepository.updateAddress(
                 userId,
                 { userId, city, country, address },
                 session,
             );
 
-            const profile: IProfileDocument | null = await this.profileRepository.update(
+            const profile: IProfileDocument | null = await this.profileRepository.updateProfile(
                 userId,
                 {
                     ...updateData,

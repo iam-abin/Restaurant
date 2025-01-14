@@ -5,7 +5,7 @@ import { IRestaurantCuisine } from '../../types';
 
 @singleton()
 export class RestaurantCuisineRepository {
-    create = async (
+    createRestaurant = async (
         restaurantCuisineData: IRestaurantCuisine,
         session?: ClientSession,
     ): Promise<IRestaurantCuisineDocument> => {

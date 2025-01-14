@@ -1,15 +1,16 @@
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
-import { Button } from '@mui/material';
 import LoaderCircle from '../Loader/LoaderCircle';
 import { useAppSelector } from '../../redux/hooks';
 import { checkoutOrderApi } from '../../api/apiMethods/order';
 import { IAddress, ICart, ICheckoutResponse } from '../../types';
 import { hotToastMessage } from '../../utils/hotToast';
+import CustomButton from '../Button/CustomButton';
+import { Link } from 'react-router-dom';
 
 const style = {
     position: 'absolute',
@@ -18,7 +19,8 @@ const style = {
     transform: 'translate(-50%, -50%)',
     width: '45%',
     bgcolor: 'background.paper',
-    border: '2px solid #000',
+    border: 'none',
+    borderRadius: '12px',
     boxShadow: 24,
     p: 4,
 };
@@ -35,14 +37,11 @@ const CheckoutReviewModal: React.FC<ICheckoutReviewModalProps> = ({ isOpen, hand
     const { myProfile } = useAppSelector((store) => store.profileReducer);
     const { cartData } = useAppSelector((store) => store.cartReducer);
 
-    const paymentCheckoutHandler = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const paymentCheckoutHandler = async (): Promise<void> => {
         if (!cartData) return;
 
         const cartItem: ICart = cartData[0];
-
-        const restaurantId = cartItem.restaurantId;
-
+        const restaurantId: string = cartItem.restaurantId;
         setIsLoading(true);
 
         try {
@@ -54,116 +53,83 @@ const CheckoutReviewModal: React.FC<ICheckoutReviewModalProps> = ({ isOpen, hand
             setIsLoading(false);
         }
     };
+
     return (
-        <div>
-            <Modal
-                keepMounted
-                open={isOpen}
-                onClose={handleClose}
-                aria-labelledby="keep-mounted-modal-title"
-                aria-describedby="keep-mounted-modal-description"
-            >
-                <Box sx={style}>
-                    {/* Close button at the top-right corner */}
-                    <IconButton
-                        sx={{
-                            position: 'absolute',
-                            top: 8,
-                            right: 8,
-                        }}
-                        onClick={handleClose}
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                    <div className="flex justify-center">
-                        <Typography id="keep-mounted-modal-title" variant="h6" component="h2">
-                            Review your order
-                        </Typography>
-                    </div>
-                    <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
-                        Double-check your delivery details and ensure everything is in order. When you are
-                        ready, hit confirm button to finalize your order
+        <Modal
+            keepMounted
+            open={isOpen}
+            onClose={handleClose}
+            aria-labelledby="checkout-review-modal-title"
+            aria-describedby="checkout-review-modal-description"
+        >
+            <Box sx={style}>
+                {/* Close button */}
+                <IconButton
+                    sx={{
+                        position: 'absolute',
+                        top: 8,
+                        right: 8,
+                    }}
+                    onClick={handleClose}
+                >
+                    <CloseIcon />
+                </IconButton>
+
+                {/* Header */}
+                <Typography id="checkout-review-modal-title" variant="h6" component="h2" align="center">
+                    Review your order
+                </Typography>
+
+                {/* Description */}
+                <Typography id="checkout-review-modal-description" sx={{ mt: 2 }} align="center">
+                    Double-check your delivery details and ensure everything is in order. When you are ready,
+                    hit confirm to finalize your order.
+                </Typography>
+
+                {/* Information Display */}
+                <div className="mt-4 space-y-3">
+                    <Typography variant="body1">
+                        <strong>Fullname:</strong> <span>{authData?.name || 'N/A'}</span>
                     </Typography>
-                    {/* Form */}
-                    <form
-                        onSubmit={paymentCheckoutHandler}
-                        className="mt-4 md:grid grid-cols-2 gap-2 space-y-1 md:space-y-0"
-                    >
-                        <div>
-                            <label className="text-sm">Fullname</label>
-                            <input
-                                className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
-                                type="text"
-                                name="name"
-                                value={authData?.name || ''}
-                                // onChange={changeEventHandler}
-                            />
-                        </div>
-                        <div>
-                            <label className="text-sm">Email</label>
-                            <input
-                                className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
-                                disabled
-                                type="email"
-                                name="email"
-                                value={authData?.email || ''}
-                                // onChange={changeEventHandler}
-                            />
-                        </div>
-                        <div>
-                            <label className="text-sm">Contact</label>
-                            <input
-                                className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
-                                type="text"
-                                name="contact"
-                                value={authData?.phone ? authData.phone.toString() : '73054654351'}
-                                // onChange={changeEventHandler}
-                            />
-                        </div>
-                        <div>
-                            <label className="text-sm">Address</label>
-                            <input
-                                className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
-                                type="text"
-                                name="address"
-                                value={(myProfile?.addressId as IAddress)?.address || ''}
-                                // onChange={changeEventHandler}
-                            />
-                        </div>
-                        <div>
-                            <label className="text-sm">City</label>
-                            <input
-                                className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
-                                type="text"
-                                name="city"
-                                value={(myProfile?.addressId as IAddress)?.city || ''}
-                                // onChange={changeEventHandler}
-                            />
-                        </div>
-                        <div>
-                            <label className="text-sm">Country</label>
-                            <input
-                                className="h-8 w-full bg-yellow-300 rounded-lg px-3 py-2"
-                                type="text"
-                                name="country"
-                                value={(myProfile?.addressId as IAddress)?.country || ''}
-                                // onChange={changeEventHandler}
-                            />
-                        </div>
-                        <Button type="submit" variant="contained" className=" h-10 col-Typography-2 pt-5">
-                            {isLoading ? (
-                                <>
-                                    Please wait
-                                    <LoaderCircle />
-                                </>
-                            ) : (
-                                <>Continue To Payment</>
-                            )}
-                        </Button>
-                    </form>
-                </Box>
-            </Modal>
-        </div>
+                    <Typography variant="body1">
+                        <strong>Email:</strong> <span>{authData?.email || 'N/A'}</span>
+                    </Typography>
+                    <Typography variant="body1">
+                        <strong>Contact:</strong> <span>{authData?.phone || '73054654351'}</span>
+                    </Typography>
+                    <Typography variant="body1">
+                        <strong>Address:</strong>{' '}
+                        <span>{(myProfile?.addressId as IAddress)?.address || 'N/A'}</span>
+                    </Typography>
+                    <Typography variant="body1">
+                        <strong>City:</strong>{' '}
+                        <span>{(myProfile?.addressId as IAddress)?.city || 'N/A'}</span>
+                    </Typography>
+                    <Typography variant="body1">
+                        <strong>Country:</strong>{' '}
+                        <span>{(myProfile?.addressId as IAddress)?.country || 'N/A'}</span>
+                    </Typography>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex justify-end mt-5 space-x-3">
+                    <Link to={'/profile'}>
+                        <CustomButton variant="outlined">Update Details</CustomButton>
+                    </Link>
+                    <CustomButton onClick={paymentCheckoutHandler}>
+                        {isLoading ? (
+                            <>
+                                Please wait
+                                <LoaderCircle />
+                            </>
+                        ) : (
+                            <>Continue To Payment</>
+                        )}
+                    </CustomButton>
+                </div>
+            </Box>
+        </Modal>
     );
 };
+
 export default CheckoutReviewModal;

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Button, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
+import CustomButton from '../../components/Button/CustomButton';
 
 const Success: React.FC = () => {
     return (
@@ -17,9 +18,7 @@ const Success: React.FC = () => {
                     </h2>
                 </div>
                 <Link to="/">
-                    <Button className="bg-orange hover:bg-hoverOrange w-full py-3 rounded-md shadow-lg">
-                        Continue Shopping
-                    </Button>
+                    <CustomButton>Continue Shopping</CustomButton>
                 </Link>
             </div>
         </div>

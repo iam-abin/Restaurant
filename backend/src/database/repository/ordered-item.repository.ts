@@ -5,7 +5,7 @@ import { OrderedItemModel, IOrderedItemDocument } from '../model';
 
 @singleton()
 export class OrderedItemRepository {
-    create = async (
+    createOrderedItem = async (
         orderedItemData: IOrderedItem[],
         session?: mongoose.ClientSession,
     ): Promise<IOrderedItemDocument[]> => {

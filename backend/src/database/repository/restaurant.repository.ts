@@ -5,7 +5,7 @@ import { IRestaurantDocument, RestaurantModel } from '../model';
 
 @singleton()
 export class RestaurantRepository {
-    create = async (
+    createRestaurant = async (
         restaurantData: Pick<IRestaurant, 'ownerId' | 'imageUrl'>,
         session?: ClientSession,
     ): Promise<IRestaurantDocument> => {
@@ -39,7 +39,7 @@ export class RestaurantRepository {
         return await RestaurantModel.findOne({ ownerId }).populate(['ownerId', 'addressId']);
     };
 
-    update = async (
+    updateRestaurant = async (
         ownerId: string,
         updatedData: Partial<Pick<IRestaurant, 'addressId' | 'deliveryTime' | 'imageUrl'>>,
         session?: ClientSession,

@@ -30,7 +30,7 @@ export interface IOrdersResponse extends Omit<IOrder, 'userId' | 'restaurantId' 
 }
 
 // ==========================
-interface OrderItem {
+export interface OrderItem {
     name: string;
     price: number;
     quantity: number;

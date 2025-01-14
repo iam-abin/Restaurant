@@ -26,7 +26,7 @@ export class OtpTokenRepository {
         return await OtpTokenModel.findOne({ resetToken });
     };
 
-    delete = async (id: string, session?: ClientSession): Promise<IOtpTokenDocument | null> => {
+    deleteById = async (id: string, session?: ClientSession): Promise<IOtpTokenDocument | null> => {
         return await OtpTokenModel.findByIdAndDelete(id, { returnDocument: 'before', session });
     };
 }

@@ -47,12 +47,12 @@ export class OtpService {
                 session,
             );
             if (user.role === UserRole.USER) {
-                await this.profileRepository.create({ userId }, session);
+                await this.profileRepository.createProfile({ userId }, session);
             } else if (user.role === UserRole.RESTAURANT) {
-                await this.restaurantRepository.create({ ownerId: userId }, session);
+                await this.restaurantRepository.createRestaurant({ ownerId: userId }, session);
             }
 
-            await this.otpTokenRepository.delete(otpData._id.toString(), session);
+            await this.otpTokenRepository.deleteById(otpData._id.toString(), session);
 
             return updatedUser;
         });
@@ -119,7 +119,7 @@ export class OtpService {
         if (resetToken !== resetTokenData.resetToken) throw new BadRequestError('Invalid reset Token');
 
         const user: IUserDocument = await this.validateUserExistence(resetTokenData.userId.toString());
-        await this.otpTokenRepository.delete(resetTokenData._id.toString());
+        await this.otpTokenRepository.deleteById(resetTokenData._id.toString());
 
         return user;
     };

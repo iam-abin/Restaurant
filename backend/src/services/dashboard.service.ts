@@ -34,7 +34,7 @@ export class DashboardService {
             number,
             number,
         ] = await Promise.all([
-            this.orderRepository.countStatuses(restaurantId),
+            this.orderRepository.countOrderStatuses(restaurantId),
             this.orderRepository.findRestaurantTotalOrdersPrice(restaurantId),
             this.menuRepository.countRestaurantMenus(restaurantId),
             this.restaurantCuisineRepository.countRestaurantCuisines(restaurantId),
@@ -63,7 +63,7 @@ export class DashboardService {
         ] = await Promise.all([
             this.restaurantRepository.countRestaurants(),
             this.profileRepository.countProfiles(),
-            this.orderRepository.countStatuses(),
+            this.orderRepository.countOrderStatuses(),
             this.orderRepository.findTotalOrderedPrice(),
             this.orderRepository.findPercentageCommitionAmount(percentageDecimal),
         ]);

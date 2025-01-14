@@ -148,9 +148,12 @@ export class UserService {
 
                 const userId: string = user._id.toString();
                 if (user.role === UserRole.USER) {
-                    await this.profileRepository.create({ userId, imageUrl: picture }, session);
+                    await this.profileRepository.createProfile({ userId, imageUrl: picture }, session);
                 } else if (user.role === UserRole.RESTAURANT) {
-                    await this.restaurantRepository.create({ ownerId: userId, imageUrl: picture }, session);
+                    await this.restaurantRepository.createRestaurant(
+                        { ownerId: userId, imageUrl: picture },
+                        session,
+                    );
                 }
 
                 const { jwtAccessToken, jwtRefreshToken }: Tokens = await this.generateTokens(user);
@@ -167,16 +170,18 @@ export class UserService {
                 const restaurant: IRestaurantDocument | null =
                     await this.restaurantRepository.findMyRestaurant(existingUser._id.toString());
                 if (restaurant?.imageUrl !== picture) {
-                    await this.restaurantRepository.update(existingUser._id.toString(), {
+                    await this.restaurantRepository.updateRestaurant(existingUser._id.toString(), {
                         imageUrl: picture,
                     });
                 }
             } else if (role === UserRole.USER) {
-                const profile: IProfileDocument | null = await this.profileRepository.findByUserId(
+                const profile: IProfileDocument | null = await this.profileRepository.findProfileByUserId(
                     existingUser._id.toString(),
                 );
                 if (profile?.imageUrl !== picture) {
-                    await this.profileRepository.update(existingUser._id.toString(), { imageUrl: picture });
+                    await this.profileRepository.updateProfile(existingUser._id.toString(), {
+                        imageUrl: picture,
+                    });
                 }
             }
 

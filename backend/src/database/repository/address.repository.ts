@@ -5,15 +5,15 @@ import { IAddress } from '../../types';
 
 @singleton()
 export class AddressRepository {
-    findById = async (addressId: string): Promise<IAddressDocument | null> => {
+    findAddressById = async (addressId: string): Promise<IAddressDocument | null> => {
         return await AddressModel.findById(addressId);
     };
 
-    findByUserId = async (userId: string): Promise<IAddressDocument | null> => {
+    findAddressByUserId = async (userId: string): Promise<IAddressDocument | null> => {
         return await AddressModel.findOne({ userId });
     };
 
-    update = async (
+    updateAddress = async (
         userId: string,
         updateData: Partial<IAddress>,
         session?: ClientSession,

@@ -5,7 +5,7 @@ import { ICart } from '../../types';
 
 @singleton()
 export class CartRepository {
-    create = async (cartItemData: Omit<ICart, 'quantity'>): Promise<ICartDocument> => {
+    createCartItem = async (cartItemData: Omit<ICart, 'quantity'>): Promise<ICartDocument> => {
         const cartItem: ICartDocument = await CartModel.create(cartItemData);
         return cartItem;
     };
@@ -18,11 +18,11 @@ export class CartRepository {
         return await CartModel.findOne({ userId, restaurantId, itemId });
     };
 
-    findById = async (cartItemId: string): Promise<ICartDocument | null> => {
+    findCartItemById = async (cartItemId: string): Promise<ICartDocument | null> => {
         return await CartModel.findById(cartItemId).populate('userId').populate('itemId');
     };
 
-    getCartItemsByRestaurant = async (
+    findCartItemsByRestaurant = async (
         userId: string,
         restaurantId: string,
         skip?: number,
@@ -34,15 +34,18 @@ export class CartRepository {
             .populate('itemId');
     };
 
-    update = async (cartItemId: string, quantity: number): Promise<ICartDocument | null> => {
+    updateCartItem = async (cartItemId: string, quantity: number): Promise<ICartDocument | null> => {
         return await CartModel.findByIdAndUpdate(cartItemId, { quantity }, { new: true });
     };
 
-    deleteById = async (cartItemId: string, session?: ClientSession): Promise<DeleteResult | null> => {
+    deleteCartItemById = async (
+        cartItemId: string,
+        session?: ClientSession,
+    ): Promise<DeleteResult | null> => {
         return await CartModel.findByIdAndDelete(cartItemId, { new: true, session });
     };
 
-    deleteAllItems = async (userId: string, session?: ClientSession): Promise<DeleteResult> => {
+    deleteAllCartItems = async (userId: string, session?: ClientSession): Promise<DeleteResult> => {
         return await CartModel.deleteMany({ userId }, { session });
     };
 

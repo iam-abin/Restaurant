@@ -1,5 +1,6 @@
-import { Button, Checkbox } from '@mui/material';
+import { Checkbox } from '@mui/material';
 import { ICuisineResponse1 } from '../types';
+import CustomButton from './Button/CustomButton';
 
 interface IFiterProps {
     filterArray: string[];
@@ -15,7 +16,7 @@ const Filter: React.FC<IFiterProps> = ({ filterArray, setSelectedFilters, filter
         );
     };
 
-    const resetFilters = () => {
+    const resetFilters = (): void => {
         setSelectedFilters([]);
     };
 
@@ -23,7 +24,9 @@ const Filter: React.FC<IFiterProps> = ({ filterArray, setSelectedFilters, filter
         <div className="sm:w-52 md:w-64">
             <div className="flex items-center justify-between">
                 <h1 className="font-medium text-lg">Filter by cuisines</h1>
-                <Button onClick={resetFilters}>Reset</Button>
+                <CustomButton onClick={resetFilters} variant="text">
+                    Reset
+                </CustomButton>
             </div>
             {filtersList.map((option) => (
                 <div key={option._id} className="flex items-center space-x-2 my-5">

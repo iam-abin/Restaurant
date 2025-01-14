@@ -7,6 +7,7 @@ interface IDashboardCardProps {
     icon: JSX.Element;
     description?: string;
 }
+
 const DashboardCard: React.FC<IDashboardCardProps> = ({ title, number, icon, description }) => {
     return (
         <div className="bg-white shadow-lg rounded-lg  flex w-64 items-center">

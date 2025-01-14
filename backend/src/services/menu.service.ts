@@ -36,7 +36,8 @@ export class MenuService {
             const restaurant: IRestaurantDocument = await this.validateRestaurantOwnership(userId);
             const { cuisine } = menuData;
 
-            const addressData: IAddressDocument | null = await this.addressRepository.findByUserId(userId);
+            const addressData: IAddressDocument | null =
+                await this.addressRepository.findAddressByUserId(userId);
             if (!addressData) throw new BadRequestError('Must have address to create menu');
             if (!addressData.city && !addressData.country)
                 throw new BadRequestError('Must have city and country to create menu');
@@ -48,7 +49,7 @@ export class MenuService {
             );
 
             const imageUrl: string = await uploadImageOnCloudinary(file);
-            const menu: IMenuDocument | null = await this.menuRepository.create(
+            const menu: IMenuDocument | null = await this.menuRepository.createMenu(
                 {
                     ...menuData,
                     restaurantId: restaurant._id.toString(),
@@ -113,7 +114,7 @@ export class MenuService {
                 imageUrl = await uploadImageOnCloudinary(file);
             }
 
-            const updatedMenu: IMenuDocument | null = await this.menuRepository.update(menuId, {
+            const updatedMenu: IMenuDocument | null = await this.menuRepository.updateMenu(menuId, {
                 ...updateData,
                 cuisineId: cuisineData._id.toString(),
                 imageUrl,
@@ -144,7 +145,7 @@ export class MenuService {
             cuisine._id.toString(),
         );
         if (!restaurantCuisine) {
-            await this.restaurantCuisineRepository.create(
+            await this.restaurantCuisineRepository.createRestaurant(
                 { cuisineId: cuisine._id.toString(), restaurantId },
                 session,
             );

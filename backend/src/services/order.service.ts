@@ -41,8 +41,8 @@ export class OrderService {
             if (!restaurant) throw new NotFoundError('Restaurant not found');
 
             const [cartItems, address]: [ICartDocument[], IAddressDocument | null] = await Promise.all([
-                this.cartRepository.getCartItemsByRestaurant(userId, restaurantId),
-                this.addressRepository.findByUserId(userId),
+                this.cartRepository.findCartItemsByRestaurant(userId, restaurantId),
+                this.addressRepository.findAddressByUserId(userId),
             ]);
 
             if (cartItems.length === 0) throw new NotFoundError('Must contain cart items to place order');
@@ -53,7 +53,7 @@ export class OrderService {
             //     throw new ForbiddenError('You cannot use others address');
 
             // Create the order
-            const order: IOrderDocument | null = await this.orderRepository.create(
+            const order: IOrderDocument | null = await this.orderRepository.createOrder(
                 {
                     userId,
                     restaurantId,
@@ -87,7 +87,7 @@ export class OrderService {
             }
 
             // Delete cart items in bulk
-            await this.cartRepository.deleteAllItems(userId, session);
+            await this.cartRepository.deleteAllCartItems(userId, session);
 
             const orderedItems = cartItems.map((item) => ({
                 userId,
@@ -99,7 +99,7 @@ export class OrderService {
             }));
 
             // Adding ordered items to OrderedItems collection
-            await this.orderedItemRepository.create(orderedItems, session);
+            await this.orderedItemRepository.createOrderedItem(orderedItems, session);
 
             return { stripePaymentUrl: checkoutSession.url };
         });
@@ -201,7 +201,7 @@ export class OrderService {
 
         if (!order) throw new NotFoundError('Order not found');
 
-        const confirmedOrder = this.orderRepository.updateStatus(order._id.toString(), status);
+        const confirmedOrder = this.orderRepository.updateOrderStatus(order._id.toString(), status);
         // Update the order with the amount and status
         // if (checkoutSession.amount_total) {
         //     order.totalAmount = checkoutSession.amount_total;
@@ -219,7 +219,10 @@ export class OrderService {
         if (!order) throw new NotFoundError('Order not found');
         if ('ownerId' in order.restaurantId && order.restaurantId.ownerId.toString() !== ownerId)
             throw new ForbiddenError('You cannot update other restaurants order status');
-        const updatedOrder: IOrderDocument | null = await this.orderRepository.updateStatus(orderId, status);
+        const updatedOrder: IOrderDocument | null = await this.orderRepository.updateOrderStatus(
+            orderId,
+            status,
+        );
         return updatedOrder;
     };
 }

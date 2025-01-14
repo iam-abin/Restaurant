@@ -45,7 +45,7 @@ export interface ISearchResult {
 
 export interface IRestaurantResult {
     restaurant: IRestaurantResponse2;
-    restaurantCuisines: {cuisineId: ICuisineResponse1}[];
+    restaurantCuisines: { cuisineId: ICuisineResponse1 }[];
     restaurantRating: number;
     restaurantRatingsCount: number;
     myRating: number;

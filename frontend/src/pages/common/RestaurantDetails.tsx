@@ -30,9 +30,11 @@ const RestaurantDetails: React.FC = () => {
     const [cartItemsCount, setCartItemsCount] = useState<number>(0);
     const [restaurantRatingValue, setRestaurantRatingValue] = useState<number>(0);
     const [restaurantRatingCount, setRestaurantRatingCount] = useState<number>(0);
-    const [cuisines, setCuisines] = useState< {
-        cuisineId: ICuisineResponse1;
-    }[]>([]);
+    const [cuisines, setCuisines] = useState<
+        {
+            cuisineId: ICuisineResponse1;
+        }[]
+    >([]);
 
     const [isRatingModalOpen, setIsRatingModalOpen] = useState<boolean>(false);
     const handleOpenModal = (): void => setIsRatingModalOpen(true);
@@ -65,7 +67,7 @@ const RestaurantDetails: React.FC = () => {
             setIsLoading(true);
             const response = await getARestaurantApi(restaurantId!);
             setRestaurant((response.data as IRestaurantResult).restaurant as IRestaurantResponse2);
-            setCuisines(((response.data as IRestaurantResult).restaurantCuisines));
+            setCuisines((response.data as IRestaurantResult).restaurantCuisines);
             setRestaurantRatingValue((response.data as IRestaurantResult).restaurantRating);
             setRestaurantRatingCount((response.data as IRestaurantResult).restaurantRatingsCount);
             setMyRatingValue((response.data as IRestaurantResult).myRating);
@@ -74,22 +76,21 @@ const RestaurantDetails: React.FC = () => {
         })();
     }, [myRatingValue]);
 
-    
-        useEffect(() => {
-            if (restaurantId) {
-                handleMenusDispatch(restaurantId);
-            }
-        }, [dispatch, restaurant, currentPage]);
-    
-        const handleMenusDispatch = (restaurantId: string): void => {
-            dispatch(
-                fetchMenus({
-                    restaurantId,
-                    setTotalNumberOfPages,
-                    currentPage,
-                }),
-            );
-        };
+    useEffect(() => {
+        if (restaurantId) {
+            handleMenusDispatch(restaurantId);
+        }
+    }, [dispatch, restaurant, currentPage]);
+
+    const handleMenusDispatch = (restaurantId: string): void => {
+        dispatch(
+            fetchMenus({
+                restaurantId,
+                setTotalNumberOfPages,
+                currentPage,
+            }),
+        );
+    };
 
     return (
         <div className="max-w-6xl mx-auto my-10">
@@ -106,8 +107,7 @@ const RestaurantDetails: React.FC = () => {
                         <span className="font-extrabold text-2xl">{restaurant?.ownerId?.name}</span>
                         <div className="flex my-2 items-center justify-between">
                             <div className="flex flex-row gap-1 max-w-full">
-                                {cuisines?.map((cuisine: {cuisineId: ICuisineResponse1}, index: number) => {
-                                    
+                                {cuisines?.map((cuisine: { cuisineId: ICuisineResponse1 }, index: number) => {
                                     return (
                                         <div key={index}>
                                             <Chip label={cuisine.cuisineId.name} variant="filled" />

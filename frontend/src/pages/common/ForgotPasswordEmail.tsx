@@ -1,4 +1,4 @@
-import { Button, Input, Typography } from '@mui/material';
+import { Input, Typography } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { emailSchema } from '../../utils/schema/userSchema';
@@ -8,6 +8,7 @@ import { ForgotPasswordEmailApi } from '../../api/apiMethods';
 import { IResponse } from '../../types/api';
 import { hotToastMessage } from '../../utils/hotToast';
 import { IUser } from '../../types';
+import CustomButton from '../../components/Button/CustomButton';
 
 export interface IForgotPasswordEmail {
     email: string;
@@ -19,7 +20,7 @@ const ForgotPasswordEmail: React.FC = () => {
     const [errors, setErrors] = useState<Partial<IForgotPasswordEmail>>({});
     const navigate = useNavigate();
 
-    const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    const changeEventHandler = (e: ChangeEvent<HTMLInputElement>): void => {
         setEmail(e.target.value);
         const result = emailSchema.safeParse(email);
         if (!result.success) {
@@ -29,7 +30,7 @@ const ForgotPasswordEmail: React.FC = () => {
         }
     };
 
-    const handleSubmit = async (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent): Promise<void> => {
         e.preventDefault();
 
         setErrors({});
@@ -82,29 +83,17 @@ const ForgotPasswordEmail: React.FC = () => {
                     />
                     {errors && <Typography className="text-sm text-red-500">{errors.email}</Typography>}
                 </div>
-                <Button
-                    type="submit"
-                    disabled={isLoading}
-                    // className="w-full mb-5"
-                    sx={{
-                        width: '100%',
-                        mt: 2,
-                        backgroundColor: isLoading ? 'orange' : '#FF8C00',
-                        '&:hover': {
-                            backgroundColor: isLoading ? 'orange' : '#FF8C00',
-                        },
-                    }}
-                    variant="contained"
-                >
-                    {isLoading ? (
-                        <label className="flex items-center gap-4">
-                            Sending <LoaderCircle />
-                        </label>
-                    ) : (
-                        <>Send otp</>
-                    )}
-                </Button>
-
+                <div className="py-5">
+                    <CustomButton type="submit" className="w-full" disabled={isLoading}>
+                        {isLoading ? (
+                            <label className="flex items-center gap-4">
+                                Sending <LoaderCircle />
+                            </label>
+                        ) : (
+                            <>Send otp</>
+                        )}
+                    </CustomButton>
+                </div>
                 <Typography className="mt-5 text-center">
                     Back to
                     <Link to="/auth" className="ml-1 text-blue-500 hover:text-blue-800">

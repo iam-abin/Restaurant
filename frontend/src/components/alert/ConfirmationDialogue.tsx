@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -7,6 +6,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
+import CustomButton from '../Button/CustomButton';
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -91,33 +91,35 @@ const ConfirmationDialogue: React.FC<IConfirmationDialogueProps> = ({
                     padding: '16px',
                 }}
             >
-                <Button
+                <CustomButton
                     onClick={() => {
                         onDisagree?.();
                         handleClose();
                     }}
                     sx={{
-                        color: '#888',
+                        backgroundColor: '#D10000',
+                        '&:hover': {
+                            backgroundColor: '#A30000',
+                        },
                         fontWeight: 'bold',
                     }}
                 >
                     {closeText}
-                </Button>
-                <Button
+                </CustomButton>
+                <CustomButton
                     onClick={() => {
                         onAgree();
                         handleClose();
                     }}
                     sx={{
-                        backgroundColor: '#1976d2',
-                        color: '#fff',
+                        backgroundColor: '#3B9212',
                         '&:hover': {
-                            backgroundColor: '#155a9f',
+                            backgroundColor: '#2B690D',
                         },
                     }}
                 >
                     {okayText}
-                </Button>
+                </CustomButton>
             </DialogActions>
         </Dialog>
     );

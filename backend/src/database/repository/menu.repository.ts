@@ -5,7 +5,7 @@ import { IMenuDocument, MenuModel } from '../model';
 
 @singleton()
 export class MenuRepository {
-    create = async (menuData: IMenu, session?: mongoose.ClientSession): Promise<IMenuDocument> => {
+    createMenu = async (menuData: IMenu, session?: mongoose.ClientSession): Promise<IMenuDocument> => {
         const menu: IMenuDocument[] = await MenuModel.create([menuData], { session });
         return menu[0];
     };
@@ -22,7 +22,7 @@ export class MenuRepository {
             .limit(limit ?? 0);
     };
 
-    update = async (menuId: string, updatedData: Partial<IMenu>): Promise<IMenuDocument | null> => {
+    updateMenu = async (menuId: string, updatedData: Partial<IMenu>): Promise<IMenuDocument | null> => {
         const menu: IMenuDocument | null = await MenuModel.findByIdAndUpdate(menuId, updatedData, {
             new: true,
         }).populate('cuisineId', ['-_id', 'name']);

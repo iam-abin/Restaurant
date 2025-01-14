@@ -1,4 +1,3 @@
-import { Button } from '@mui/material';
 import { FormEvent, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -6,7 +5,8 @@ import { verifyOtpApi } from '../../api/apiMethods';
 import { hotToastMessage } from '../../utils/hotToast';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import { UserRole } from '../../types';
-import { checkRole } from '../../utils';
+import { checkPathIsSame, checkRole } from '../../utils';
+import CustomButton from '../../components/Button/CustomButton';
 
 const Otp: React.FC = () => {
     const inputRef = useRef<(HTMLInputElement | null)[]>([]);
@@ -19,8 +19,8 @@ const Otp: React.FC = () => {
     const isUser: boolean = checkRole(UserRole.USER, role);
     const isRestaurant: boolean = checkRole(UserRole.RESTAURANT, role);
 
-    const isSignupOtpPage = location.pathname === '/signup/otp';
-    const isForgotPasswordEmailOtpPage = location.pathname === '/forgot-password/otp';
+    const isSignupOtpPage: boolean = checkPathIsSame(location, '/signup/otp');
+    const isForgotPasswordEmailOtpPage: boolean = checkPathIsSame(location, '/forgot-password/otp');
 
     const handleChange = (index: number, value: string): void => {
         if (/^[a-zA-Z0-9]$/.test(value) || value === '') {
@@ -101,27 +101,17 @@ const Otp: React.FC = () => {
                                 />
                             ))}
                     </div>
-                    <Button
-                        type="submit"
-                        disabled={isLoading}
-                        sx={{
-                            width: '100%',
-                            mt: 2,
-                            backgroundColor: isLoading ? 'orange' : '#FF8C00',
-                            '&:hover': {
-                                backgroundColor: isLoading ? 'orange' : '#FF8C00',
-                            },
-                        }}
-                        variant="contained"
-                    >
-                        {isLoading ? (
-                            <label className="flex items-center gap-4">
-                                Verifying <LoaderCircle />
-                            </label>
-                        ) : (
-                            <>Verify</>
-                        )}
-                    </Button>
+                    <div className="py-5">
+                        <CustomButton type="submit" disabled={isLoading} className="w-full">
+                            {isLoading ? (
+                                <label className="flex items-center gap-4">
+                                    Verifying... <LoaderCircle />
+                                </label>
+                            ) : (
+                                <>Verify</>
+                            )}
+                        </CustomButton>
+                    </div>
                 </form>
             </div>
         </div>

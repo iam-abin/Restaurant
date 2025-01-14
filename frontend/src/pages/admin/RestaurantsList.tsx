@@ -7,7 +7,8 @@ import { hotToastMessage } from '../../utils/hotToast';
 import { blockUnblockUserApi } from '../../api/apiMethods/auth';
 import { getRestaurantsApi } from '../../api/apiMethods/restaurant';
 import { useConfirmationContext } from '../../context/confirmationContext';
-import { Button, Chip } from '@mui/material';
+import { Chip } from '@mui/material';
+import CustomButton from '../../components/Button/CustomButton';
 
 const RestaurantsList: React.FC = () => {
     const [restaurantsData, setRestaurantsData] = useState<IRestaurant[]>([]);
@@ -90,15 +91,22 @@ const RestaurantsList: React.FC = () => {
         {
             Header: 'Action',
             button: (row: { ownerId: { _id: string; isBlocked: boolean } }) => (
-                <Button
-                    color={row.ownerId.isBlocked ? 'success' : 'error'}
+                <CustomButton
+                    sx={{
+                        backgroundColor: row.ownerId.isBlocked ? '#3B9212' : '#D10000',
+                        '&:hover': {
+                            backgroundColor: row.ownerId.isBlocked ? '#2B690D' : '#A30000',
+                        },
+                        fontWeight: 'bold',
+                    }}
+                    // color={row.ownerId.isBlocked ? 'success' : 'error'}
                     onClick={() => {
                         handleBlockUnblockButton(row.ownerId._id, row.ownerId.isBlocked);
                     }}
                     variant="contained"
                 >
                     {row.ownerId.isBlocked ? 'Unblock' : 'Block'}
-                </Button>
+                </CustomButton>
             ),
         },
     ];

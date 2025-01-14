@@ -114,7 +114,7 @@ export class RestaurantService {
             // user
             await this.userRepository.updateUser(ownerId, { name }, session);
             // address
-            const addressData: IAddressDocument | null = await this.addressRepository.update(
+            const addressData: IAddressDocument | null = await this.addressRepository.updateAddress(
                 ownerId,
                 { userId: ownerId, city, country },
                 session,
@@ -126,7 +126,7 @@ export class RestaurantService {
                 imageUrl = await uploadImageOnCloudinary(file);
             }
 
-            const restaurant: IRestaurantDocument | null = await this.restaurantRepository.update(
+            const restaurant: IRestaurantDocument | null = await this.restaurantRepository.updateRestaurant(
                 ownerId,
                 { addressId: addressData?._id.toString(), deliveryTime, imageUrl },
                 session,

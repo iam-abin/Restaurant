@@ -4,6 +4,7 @@ export interface ICuisine {
 }
 
 export interface ICuisineResponse1 extends ICuisine {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cuisineId: any;
     _id: string;
 }

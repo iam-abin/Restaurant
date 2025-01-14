@@ -5,7 +5,7 @@ import { CountByDay, IProfile } from '../../types';
 
 @singleton()
 export class ProfileRepository {
-    create = async (
+    createProfile = async (
         profileData: Pick<IProfile, 'userId' | 'imageUrl'>,
         session?: ClientSession,
     ): Promise<IProfileDocument> => {
@@ -13,11 +13,11 @@ export class ProfileRepository {
         return user[0];
     };
 
-    findByUserId = async (userId: string): Promise<IProfileDocument | null> => {
+    findProfileByUserId = async (userId: string): Promise<IProfileDocument | null> => {
         return await ProfileModel.findOne({ userId }).populate(['userId', 'addressId']);
     };
 
-    findById = async (profileId: string): Promise<IProfileDocument | null> => {
+    findProfileById = async (profileId: string): Promise<IProfileDocument | null> => {
         return await ProfileModel.findById(profileId).populate('userId');
     };
 
@@ -28,7 +28,7 @@ export class ProfileRepository {
             .populate('userId');
     };
 
-    update = async (
+    updateProfile = async (
         userId: string,
         updateData: Partial<IProfile>,
         session?: ClientSession,

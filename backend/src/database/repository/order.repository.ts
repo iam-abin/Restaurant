@@ -5,7 +5,7 @@ import { IOrderDocument, OrderModel } from '../model';
 
 @singleton()
 export class OrderRepository {
-    create = async (orderData: IOrder, session?: mongoose.ClientSession): Promise<IOrderDocument> => {
+    createOrder = async (orderData: IOrder, session?: mongoose.ClientSession): Promise<IOrderDocument> => {
         const order: IOrderDocument[] = await OrderModel.create([orderData], { session });
         return order[0];
     };
@@ -219,7 +219,7 @@ export class OrderRepository {
         return await OrderModel.findById(orderId).populate('userId');
     };
 
-    updateStatus = async (orderId: string, status: string): Promise<IOrderDocument | null> => {
+    updateOrderStatus = async (orderId: string, status: string): Promise<IOrderDocument | null> => {
         const order: IOrderDocument | null = await OrderModel.findByIdAndUpdate(
             orderId,
             { status },
@@ -230,7 +230,7 @@ export class OrderRepository {
         return order;
     };
 
-    countStatuses = async (restaurantId?: string): Promise<IOrderStatusWithCounts[]> => {
+    countOrderStatuses = async (restaurantId?: string): Promise<IOrderStatusWithCounts[]> => {
         const statsCounts: IOrderStatusWithCounts[] = await OrderModel.aggregate([
             // It will perform $match only if the restaurantId is present
             ...(restaurantId
