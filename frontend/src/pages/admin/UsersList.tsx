@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { IResponse, IProfile, IProfilesResponse, IUser } from '../../types';
 import { hotToastMessage } from '../../utils/hotToast';
-import { getProfilesApi, blockUnblockUserApi } from '../../api/apiMethods';
+import { getProfilesApi, blockUnblockUserApi, searchProfileApi } from '../../api/apiMethods';
 import SearchBar from '../../components/search/SearchBar';
 import Table from '../../components/table/Table';
 import { useConfirmationContext } from '../../context/confirmationContext';
@@ -20,8 +20,12 @@ const UsersList: React.FC = () => {
 
     const fetchUsers = async (currentPage: number): Promise<void> => {
         let profilesData: IResponse | [] = [];
-        // if (!searchKey) {
-        profilesData = await getProfilesApi(currentPage, USERS_PER_PAGE);
+        if (!searchKey) {
+            profilesData = await getProfilesApi(currentPage, USERS_PER_PAGE);
+        } else {
+            profilesData = await searchProfileApi(searchKey, currentPage, USERS_PER_PAGE);
+        }
+
         const data = profilesData?.data as IProfilesResponse;
         setProfilesData(data.profiles as IProfile[]);
         setNumberOfPages(data.numberOfPages);
@@ -94,18 +98,18 @@ const UsersList: React.FC = () => {
             button: (row: { userId: { _id: string; isBlocked: boolean } }) => (
                 <CustomButton
                     sx={{
-                        backgroundColor: row.userId.isBlocked ? '#3B9212' : '#D10000',
+                        backgroundColor: row?.userId?.isBlocked ? '#3B9212' : '#D10000',
                         '&:hover': {
-                            backgroundColor: row.userId.isBlocked ? '#2B690D' : '#A30000',
+                            backgroundColor: row?.userId?.isBlocked ? '#2B690D' : '#A30000',
                         },
                         fontWeight: 'bold',
                     }}
                     onClick={() => {
-                        handleBlockUnblockButton(row.userId._id, row.userId.isBlocked);
+                        handleBlockUnblockButton(row?.userId?._id, row?.userId?.isBlocked);
                     }}
                     variant="contained"
                 >
-                    {row.userId.isBlocked ? 'Unblock' : 'Block'}
+                    {row?.userId?.isBlocked ? 'Unblock' : 'Block'}
                 </CustomButton>
             ),
         },

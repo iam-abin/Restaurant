@@ -6,7 +6,8 @@ import {
     IRestaurantWithCuisines,
     SearchData,
     SearchRestaurant,
-    SearchResult,
+    SearchFilterResult,
+    ISearchRestaurantData,
 } from '../types';
 import {
     AddressRepository,
@@ -136,7 +137,24 @@ export class RestaurantService {
         });
     };
 
-    public searchRestaurant = async ({
+    public searchRestaurantByName = async (
+        searchText: string,
+        page: number,
+        limit: number,
+    ): Promise<ISearchRestaurantData> => {
+        const skip: number = getPaginationSkipValue(page, limit);
+
+        const { restaurants, totalCount } = await this.restaurantRepository.searchRestaurantByName(
+            searchText,
+            skip,
+            limit,
+        );
+
+        const numberOfPages: number = getPaginationTotalNumberOfPages(totalCount, limit);
+        return { restaurants, numberOfPages };
+    };
+
+    public searchFilterRestaurant = async ({
         searchText,
         searchQuery,
         selectedCuisines,
@@ -150,7 +168,7 @@ export class RestaurantService {
             cuisinesArray = cuisinesArray.filter((cuisine: string) => cuisine); // It avoid falsy values
         }
 
-        const restaurantSearchResult: SearchResult = await this.restaurantRepository.searchRestaurants(
+        const restaurantSearchResult: SearchFilterResult = await this.restaurantRepository.searchRestaurants(
             searchText,
             searchQuery,
             cuisinesArray,

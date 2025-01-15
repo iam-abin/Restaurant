@@ -15,3 +15,12 @@ export interface IProfilesData {
     profiles: IProfileDocument[];
     numberOfPages: number;
 }
+
+export interface ISearchProfileResult {
+    profiles: Pick<IProfileDocument, '_id' | 'imageUrl' | 'userId'>[];
+    totalCount: number;
+}
+
+export interface ISearchProfileData extends Omit<ISearchProfileResult, 'totalCount'> {
+    numberOfPages: number;
+}

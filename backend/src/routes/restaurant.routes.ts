@@ -5,7 +5,8 @@ import {
     mongoIdParamsValidator,
     paginationValidator,
     restaurantUpdateValidator,
-    searchRestaurantValidator,
+    searchRequestQueryValidator,
+    searchFilterRestaurantValidator,
 } from '../utils';
 import { RestaurantController } from '../controllers';
 import { UserRole } from '../types';
@@ -24,6 +25,15 @@ router.get(
     restaurantController.getRestaurants,
 );
 
+router.get('/search', searchRequestQueryValidator, validateRequest, restaurantController.searchRestaurant);
+
+router.get(
+    '/search-filter',
+    searchFilterRestaurantValidator,
+    validateRequest,
+    restaurantController.searchFilterRestaurant,
+);
+
 router.get(
     '/:restaurantId',
     checkCurrentUser,
@@ -40,14 +50,6 @@ router.patch(
     restaurantUpdateValidator,
     validateRequest,
     restaurantController.editRestaurant,
-);
-
-router.get(
-    '/search/:searchText',
-    searchRestaurantValidator,
-    paginationValidator,
-    validateRequest,
-    restaurantController.searchRestaurant,
 );
 
 export { router as restaurantRoutes };

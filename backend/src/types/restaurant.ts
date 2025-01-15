@@ -20,7 +20,7 @@ export interface IRestaurantsData {
     numberOfPages: number;
 }
 
-export interface ISearchRestaurantResult {
+export interface ISearchFilterRestaurantResult {
     imageUrl: string;
     city: string;
     country: string;
@@ -65,14 +65,25 @@ export type SearchRestaurant = {
     limit: number;
 };
 
-export type SearchResult = {
-    restaurants: ISearchRestaurantResult[];
+export type SearchFilterResult = {
+    restaurants: ISearchFilterRestaurantResult[];
     totalCount: number;
 };
 
-export type SearchData = Omit<SearchResult, 'totalCount'> & {
+export type SearchData = Omit<SearchFilterResult, 'totalCount'> & {
     numberOfPages: number;
 };
+
+// For admin
+export interface ISearchRestaurantResult {
+    restaurants: Pick<IRestaurantDocument, '_id' | 'imageUrl' | 'ownerId'>[];
+    totalCount: number;
+}
+
+// For admin
+export interface ISearchRestaurantData extends Omit<ISearchRestaurantResult, 'totalCount'> {
+    numberOfPages: number;
+}
 
 export interface IRestaurantWithCuisines {
     restaurant: IRestaurantDocument | null;

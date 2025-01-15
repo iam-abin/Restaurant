@@ -3,7 +3,14 @@ import { autoInjectable } from 'tsyringe';
 import { IProfileDocument } from '../database/model';
 import { createSuccessResponse } from '../utils';
 import { ProfileService } from '../services';
-import { IJwtPayload, IProfilesData, Pagination, ProfileUpdate } from '../types';
+import {
+    IJwtPayload,
+    IProfilesData,
+    ISearchProfileData,
+    Pagination,
+    ProfileUpdate,
+    SearchQueryParams,
+} from '../types';
 
 @autoInjectable()
 export class ProfileController {
@@ -18,6 +25,16 @@ export class ProfileController {
     public getProfiles = async (req: Request, res: Response): Promise<void> => {
         const { page = 1, limit = 10 } = req.query as Pagination;
         const profilesData: IProfilesData = await this.profileService.getUserProfiles(
+            page as number,
+            limit as number,
+        );
+        res.status(200).json(createSuccessResponse('User Profiles fetched successfully', profilesData));
+    };
+
+    public searchProfile = async (req: Request, res: Response): Promise<void> => {
+        const { searchText, page = 1, limit = 10 } = req.query as SearchQueryParams;
+        const profilesData: ISearchProfileData = await this.profileService.searchProfileByName(
+            searchText as string,
             page as number,
             limit as number,
         );

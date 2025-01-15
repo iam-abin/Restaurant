@@ -1,6 +1,12 @@
 import { ClientSession } from 'mongoose';
 import { singleton } from 'tsyringe';
-import { CountByDay, IRestaurant, SearchResult } from '../../types';
+import {
+    CountByDay,
+    IRestaurant,
+    ISearchFilterRestaurantResult,
+    ISearchRestaurantResult,
+    SearchFilterResult,
+} from '../../types';
 import { IRestaurantDocument, RestaurantModel } from '../model';
 
 @singleton()
@@ -61,7 +67,7 @@ export class RestaurantRepository {
         selectedCuisines: string[],
         skip: number,
         limit: number,
-    ): Promise<SearchResult> => {
+    ): Promise<SearchFilterResult> => {
         const pipeline = [
             // Lookup address details
             {
@@ -172,8 +178,71 @@ export class RestaurantRepository {
         const result = await RestaurantModel.aggregate(pipeline);
 
         // Extract results and totalCount from the pipeline output
-        const restaurants = result[0]?.results || [];
-        const totalCount = result[0]?.totalCount?.[0]?.count || 0;
+        const restaurants: ISearchFilterRestaurantResult[] = result[0]?.results || [];
+        const totalCount: number = result[0]?.totalCount?.[0]?.count || 0;
+
+        return { restaurants, totalCount };
+    };
+
+    // Admin will use it
+    searchRestaurantByName = async (
+        searchText: string,
+        skip: number,
+        limit: number,
+    ): Promise<ISearchRestaurantResult> => {
+        const pipeline = [
+            // Lookup the associated user details
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'ownerId',
+                    foreignField: '_id',
+                    as: 'ownerId', // Name of the field to include user details
+                },
+            },
+            // Unwind the user details array
+            {
+                $unwind: {
+                    path: '$ownerId',
+                    preserveNullAndEmptyArrays: true, // Keep restaurants even if no user is found
+                },
+            },
+            // Match based on the user name
+            {
+                $match: {
+                    'ownerId.name': {
+                        $regex: new RegExp(searchText, 'i'), // Escape special chars and use case-insensitive flag
+                    },
+                },
+            },
+            // Project required fields
+            {
+                $project: {
+                    _id: 1,
+                    imageUrl: 1,
+                    'ownerId._id': 1,
+                    'ownerId.name': 1,
+                    'ownerId.email': 1,
+                    'ownerId.phone': 1,
+                    'ownerId.isBlocked': 1,
+                    'ownerId.role': 1,
+                },
+            },
+            // Use $facet to calculate count and get paginated results
+            {
+                $facet: {
+                    totalCount: [{ $count: 'count' }], // Count the total number of matching documents
+                    results: [{ $skip: skip }, { $limit: limit }],
+                },
+            },
+        ];
+
+        const result = await RestaurantModel.aggregate(pipeline);
+
+        // Extract results and totalCount from the pipeline output
+        const restaurants: Pick<IRestaurantDocument, '_id' | 'imageUrl' | 'ownerId'>[] =
+            result[0]?.results || [];
+        const totalCount: number = result[0]?.totalCount?.[0]?.count || 0;
 
         return { restaurants, totalCount };
     };

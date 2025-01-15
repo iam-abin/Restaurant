@@ -1,4 +1,5 @@
-import { param, query, body, ValidationChain } from 'express-validator';
+import { query, body, ValidationChain } from 'express-validator';
+import { paginationValidator } from './pagination.validation';
 
 export const restaurantUpdateValidator: ValidationChain[] = [
     body('name')
@@ -29,9 +30,9 @@ export const restaurantUpdateValidator: ValidationChain[] = [
         .withMessage('Delivery time must be a positive integer'),
 ];
 
-export const searchRestaurantValidator: ValidationChain[] = [
+export const searchFilterRestaurantValidator: ValidationChain[] = [
     // Validate the `searchText` in the URL parameter
-    param('searchText')
+    query('searchText')
         .notEmpty()
         .withMessage('Search text is required')
         .isString()
@@ -54,4 +55,5 @@ export const searchRestaurantValidator: ValidationChain[] = [
 
     // Validate the `searchQuery` in the query (optional, should be a string)
     query('searchQuery').optional().isString().withMessage('Search query must be a string').trim().escape(),
+    ...paginationValidator,
 ];

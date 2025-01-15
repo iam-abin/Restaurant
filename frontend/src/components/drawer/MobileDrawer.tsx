@@ -43,7 +43,7 @@ const MobileDrawer: React.FC<IDrawerProps> = ({
                             <Link
                                 key={item.to}
                                 to={item.to}
-                                className={`flex items-center gap-2 text-gray-800 ${isActiveLink(location, item.to)}`}
+                                className={`flex bg-yellow-200 items-center gap-2 text-gray-800 ${isActiveLink(location, item.to)}`}
                                 onClick={handleCloseDrawer}
                             >
                                 {item?.icon}

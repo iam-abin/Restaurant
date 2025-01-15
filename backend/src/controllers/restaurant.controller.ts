@@ -9,9 +9,11 @@ import {
     IRestaurantsData,
     IRestaurantUpdate,
     IRestaurantWithCuisines,
+    ISearchRestaurantData,
     Pagination,
     RestaurantIdParam,
     SearchData,
+    SearchQueryParams,
 } from '../types';
 
 @autoInjectable()
@@ -55,11 +57,21 @@ export class RestaurantController {
     };
 
     public searchRestaurant = async (req: Request, res: Response): Promise<void> => {
-        const searchText: string = req.params.searchText || ''; // From home page search bar
+        const { searchText, page = 1, limit = 10 } = req.query as SearchQueryParams;
+        const profilesData: ISearchRestaurantData = await this.restaurantService.searchRestaurantByName(
+            searchText as string,
+            page as number,
+            limit as number,
+        );
+        res.status(200).json(createSuccessResponse('User Profiles fetched successfully', profilesData));
+    };
+
+    public searchFilterRestaurant = async (req: Request, res: Response): Promise<void> => {
+        const searchText: string = (req.query.searchText as string) || ''; // From home page search bar
         const searchQuery: string = (req.query.searchQuery as string) || ''; // From search page search bar
         const { page = 1, limit = 10 } = req.query as Pagination;
         const selectedCuisines: string = (req.query.selectedCuisines as string) || ''; // From filter area
-        const restaurant: SearchData = await this.restaurantService.searchRestaurant({
+        const restaurant: SearchData = await this.restaurantService.searchFilterRestaurant({
             searchText,
             searchQuery,
             selectedCuisines,

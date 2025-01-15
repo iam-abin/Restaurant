@@ -27,7 +27,16 @@ export interface ISearchRestaurantApi {
     page: number;
     limit?: number;
 }
-export const searchRestaurantApi = async ({
+
+export const searchRestaurantApi = async (
+    searchText: string,
+    page: number,
+    limit?: number,
+): Promise<IResponse> => {
+    return await makeApiCall('get', restaurantApiUrls.searchRestaurantUrl(searchText, page, limit));
+};
+
+export const searchFilterRestaurantApi = async ({
     searchText,
     searchQuery,
     selectedCuisines,
@@ -36,6 +45,12 @@ export const searchRestaurantApi = async ({
 }: ISearchRestaurantApi): Promise<IResponse> => {
     return await makeApiCall(
         'get',
-        restaurantApiUrls.searchRestaurantUrl({ searchText, searchQuery, selectedCuisines, page, limit }),
+        restaurantApiUrls.searchFilterRestaurantUrl({
+            searchText,
+            searchQuery,
+            selectedCuisines,
+            page,
+            limit,
+        }),
     );
 };

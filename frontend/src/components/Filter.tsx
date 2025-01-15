@@ -21,7 +21,7 @@ const Filter: React.FC<IFiterProps> = ({ filterArray, setSelectedFilters, filter
     };
 
     return (
-        <div className="sm:w-52 md:w-64">
+        <div className="w-52">
             <div className="flex items-center justify-between">
                 <h1 className="font-medium text-lg">Filter by cuisines</h1>
                 <CustomButton onClick={resetFilters} variant="text">

@@ -2,7 +2,7 @@ import { autoInjectable } from 'tsyringe';
 import { NotFoundError } from '../errors';
 import { AddressRepository, ProfileRepository } from '../database/repository';
 import { IAddressDocument, IProfileDocument } from '../database/model';
-import { IAddress, IProfile, IProfilesData, IUser } from '../types';
+import { IAddress, IProfile, IProfilesData, ISearchProfileData, IUser } from '../types';
 import {
     executeTransaction,
     getPaginationSkipValue,
@@ -32,6 +32,23 @@ export class ProfileService {
         ]);
 
         const numberOfPages: number = getPaginationTotalNumberOfPages(profilesCount, limit);
+        return { profiles, numberOfPages };
+    };
+
+    public searchProfileByName = async (
+        searchText: string,
+        page: number,
+        limit: number,
+    ): Promise<ISearchProfileData> => {
+        const skip: number = getPaginationSkipValue(page, limit);
+
+        const { profiles, totalCount } = await this.profileRepository.searchProfileByName(
+            searchText,
+            skip,
+            limit,
+        );
+
+        const numberOfPages: number = getPaginationTotalNumberOfPages(totalCount, limit);
         return { profiles, numberOfPages };
     };
 

@@ -5,25 +5,27 @@ import SearchBar from '../../components/search/SearchBar';
 import Table from '../../components/table/Table';
 import { hotToastMessage } from '../../utils/hotToast';
 import { blockUnblockUserApi } from '../../api/apiMethods/auth';
-import { getRestaurantsApi } from '../../api/apiMethods/restaurant';
+import { getRestaurantsApi, searchRestaurantApi } from '../../api/apiMethods/restaurant';
 import { useConfirmationContext } from '../../context/confirmationContext';
 import { Chip } from '@mui/material';
 import CustomButton from '../../components/Button/CustomButton';
 
 const RestaurantsList: React.FC = () => {
     const [restaurantsData, setRestaurantsData] = useState<IRestaurant[]>([]);
-    const [numberOfPages, setNumberOfPages] = useState(1);
+    const [numberOfPages, setNumberOfPages] = useState<number>(1);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [searchKey, setSearchKey] = useState<string>('');
     const { showConfirmation } = useConfirmationContext();
-    const currentPage: number = 1;
-
-    const [searchKey, setSearchKey] = useState('');
 
     const USERS_PER_PAGE: number = 2;
 
-    const fetchUsers = async (currentPage: number): Promise<void> => {
+    const fetchRestaurants = async (currentPage: number): Promise<void> => {
         let restaurantsData: IResponse | [] = [];
-        // if (!searchKey) {
-        restaurantsData = await getRestaurantsApi(currentPage, USERS_PER_PAGE);
+        if (!searchKey) {
+            restaurantsData = await getRestaurantsApi(currentPage, USERS_PER_PAGE);
+        } else {
+            restaurantsData = await searchRestaurantApi(searchKey, currentPage, USERS_PER_PAGE);
+        }
         const data = restaurantsData?.data as IRestaurantsResponse;
         setRestaurantsData(data.restaurants as IRestaurant[]);
 
@@ -31,8 +33,12 @@ const RestaurantsList: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchUsers(1); // Fetch initial data for the first page
+        fetchRestaurants(1); // Fetch initial data for the first page
     }, [searchKey, currentPage]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchKey]);
 
     const handleBlockUnblockButton = (userId: string, isBlocked: boolean): void => {
         showConfirmation({
@@ -93,19 +99,19 @@ const RestaurantsList: React.FC = () => {
             button: (row: { ownerId: { _id: string; isBlocked: boolean } }) => (
                 <CustomButton
                     sx={{
-                        backgroundColor: row.ownerId.isBlocked ? '#3B9212' : '#D10000',
+                        backgroundColor: row?.ownerId?.isBlocked ? '#3B9212' : '#D10000',
                         '&:hover': {
-                            backgroundColor: row.ownerId.isBlocked ? '#2B690D' : '#A30000',
+                            backgroundColor: row?.ownerId?.isBlocked ? '#2B690D' : '#A30000',
                         },
                         fontWeight: 'bold',
                     }}
-                    // color={row.ownerId.isBlocked ? 'success' : 'error'}
+                    // color={row?.ownerId?.isBlocked ? 'success' : 'error'}
                     onClick={() => {
-                        handleBlockUnblockButton(row.ownerId._id, row.ownerId.isBlocked);
+                        handleBlockUnblockButton(row?.ownerId?._id, row?.ownerId?.isBlocked);
                     }}
                     variant="contained"
                 >
-                    {row.ownerId.isBlocked ? 'Unblock' : 'Block'}
+                    {row?.ownerId?.isBlocked ? 'Unblock' : 'Block'}
                 </CustomButton>
             ),
         },
@@ -121,7 +127,7 @@ const RestaurantsList: React.FC = () => {
                 columns={columns}
                 data={restaurantsData}
                 numberOfPages={numberOfPages}
-                fetchData={fetchUsers}
+                fetchData={fetchRestaurants}
             />
         </div>
     );
