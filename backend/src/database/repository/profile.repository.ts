@@ -17,10 +17,6 @@ export class ProfileRepository {
         return await ProfileModel.findOne({ userId }).populate(['userId', 'addressId']);
     };
 
-    findProfileById = async (profileId: string): Promise<IProfileDocument | null> => {
-        return await ProfileModel.findById(profileId).populate('userId');
-    };
-
     findProfiles = async (skip: number, limit: number): Promise<IProfileDocument[]> => {
         return await ProfileModel.find()
             .skip(skip ?? 0)

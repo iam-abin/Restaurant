@@ -258,7 +258,6 @@ export class OrderRepository {
     };
 
     // menuItemPrice
-
     findTotalOrderedPrice = async (): Promise<number> => {
         const total = await OrderModel.aggregate([
             {

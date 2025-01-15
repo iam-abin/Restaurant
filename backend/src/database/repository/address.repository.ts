@@ -5,10 +5,7 @@ import { IAddress } from '../../types';
 
 @singleton()
 export class AddressRepository {
-    findAddressById = async (addressId: string): Promise<IAddressDocument | null> => {
-        return await AddressModel.findById(addressId);
-    };
-
+   
     findAddressByUserId = async (userId: string): Promise<IAddressDocument | null> => {
         return await AddressModel.findOne({ userId });
     };
