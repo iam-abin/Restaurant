@@ -64,7 +64,7 @@ const SearchResult: React.FC = () => {
         fetchRestaurants();
     };
 
-    const handleSearchKeyChange = (e: ChangeEvent<HTMLInputElement>): void=> {
+    const handleSearchKeyChange = (e: ChangeEvent<HTMLInputElement>): void => {
         if (e.target.value === '') fetchRestaurants();
         setSearchQuery(e.target.value);
     };

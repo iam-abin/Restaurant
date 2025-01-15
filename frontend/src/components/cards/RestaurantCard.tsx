@@ -86,10 +86,7 @@ const RestaurantCard: React.FC<IRestaurantCardProps> = ({ restaurant }) => {
                 }}
             >
                 <Link to={`/user/restaurant/${restaurant._id}`} style={{ textDecoration: 'none' }}>
-                    <CustomButton
-                    >
-                        View Menus
-                    </CustomButton>
+                    <CustomButton>View Menus</CustomButton>
                 </Link>
             </CardActions>
         </Card>
