@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Chip } from '@mui/material';
 import { Search } from '@mui/icons-material';
 
-import { getCuisinesApi, searchRestaurantApi } from '../../api/apiMethods';
+import { getCuisinesApi, searchFilterRestaurantApi } from '../../api/apiMethods';
 import { ICuisineResponse1, IResponse, ISearchResult, SearchResponse } from '../../types';
 import { NoResultFound } from '../../components/NoResultFound';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
@@ -27,7 +27,7 @@ const SearchResult: React.FC = () => {
     const fetchRestaurants = async () => {
         setIsLoading(true);
         try {
-            const response = await searchRestaurantApi({
+            const response = await searchFilterRestaurantApi({
                 searchText,
                 searchQuery,
                 selectedCuisines: selectedFilters,

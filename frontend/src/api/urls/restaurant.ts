@@ -8,14 +8,16 @@ const restaurantApiUrls = {
     getRestaurantsUrl: (page: number, limit?: number) =>
         `${RESTAURANT_URL}/restaurants?page=${page ?? 1}${limit ? `&limit=${limit}` : ''}`,
     updateRestaurantUrl: `${RESTAURANT_URL}`,
-    searchRestaurantUrl: ({
+    searchRestaurantUrl: (searchText: string, page: number, limit?: number) =>
+        `${RESTAURANT_URL}/search?searchText=${searchText ?? ''}&page=${page ?? 1}${limit ? `&limit=${limit}` : ''}`,
+    searchFilterRestaurantUrl: ({
         searchText,
         searchQuery,
         selectedCuisines,
         page,
         limit,
     }: ISearchRestaurantApi): string =>
-        `${RESTAURANT_URL}/search/${searchText}?searchQuery=${searchQuery}&selectedCuisines=${selectedCuisines}&page=${page ?? 1}${limit ? `&limit=${limit}` : ''}`,
+        `${RESTAURANT_URL}/search-filter?searchText=${searchText ?? ''}&searchQuery=${searchQuery ?? ''}&selectedCuisines=${selectedCuisines}&page=${page ?? 1}${limit ? `&limit=${limit}` : ''}`,
 };
 
 export default restaurantApiUrls;

@@ -14,4 +14,5 @@ export * from './profile';
 export * from './rating';
 export * from './restaurant';
 export * from './roles';
+export * from './search';
 export * from './user';

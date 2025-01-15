@@ -1,7 +1,7 @@
 import { ClientSession } from 'mongoose';
 import { singleton } from 'tsyringe';
 import { IProfileDocument, ProfileModel } from '../model';
-import { CountByDay, IProfile } from '../../types';
+import { CountByDay, IProfile, ISearchProfileResult } from '../../types';
 
 @singleton()
 export class ProfileRepository {
@@ -26,6 +26,67 @@ export class ProfileRepository {
             .skip(skip ?? 0)
             .limit(limit ?? 0)
             .populate('userId');
+    };
+
+    searchProfileByName = async (
+        searchText: string,
+        skip: number,
+        limit: number,
+    ): Promise<ISearchProfileResult> => {
+        const pipeline = [
+            // Lookup the associated user details
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'userId', // Name of the field to include user details
+                },
+            },
+            // Unwind the user details array
+            {
+                $unwind: {
+                    path: '$userId',
+                    preserveNullAndEmptyArrays: true, // Keep profiles even if no user is found
+                },
+            },
+            // Match based on the user name
+            {
+                $match: {
+                    'userId.name': {
+                        $regex: new RegExp(searchText, 'i'), // Escape special chars and use case-insensitive flag
+                    },
+                },
+            },
+            // Project required fields
+            {
+                $project: {
+                    _id: 1,
+                    imageUrl: 1,
+                    'userId._id': 1,
+                    'userId.name': 1,
+                    'userId.email': 1,
+                    'userId.phone': 1,
+                    'userId.isBlocked': 1,
+                    'userId.role': 1,
+                },
+            },
+            // Use $facet to calculate count and get paginated results
+            {
+                $facet: {
+                    totalCount: [{ $count: 'count' }], // Count the total number of matching documents
+                    results: [{ $skip: skip }, { $limit: limit }],
+                },
+            },
+        ];
+
+        const result = await ProfileModel.aggregate(pipeline);
+
+        // Extract results and totalCount from the pipeline output
+        const profiles = result[0]?.results || [];
+        const totalCount = result[0]?.totalCount?.[0]?.count || 0;
+
+        return { profiles, totalCount };
     };
 
     updateProfile = async (

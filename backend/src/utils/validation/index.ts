@@ -9,4 +9,5 @@ export * from './password.validation';
 export * from './profile.validaton';
 export * from './rating.validation';
 export * from './restaurant.validation';
+export * from './search.validation';
 export * from './user.validation';

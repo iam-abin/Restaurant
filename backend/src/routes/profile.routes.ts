@@ -1,7 +1,11 @@
 import express, { Router } from 'express';
 import { container } from 'tsyringe';
 import { ProfileController } from '../controllers';
-import { paginationValidator, updateProfileRequestBodyValidator } from '../utils';
+import {
+    paginationValidator,
+    searchRequestQueryValidator,
+    updateProfileRequestBodyValidator,
+} from '../utils';
 import { checkCurrentUser, auth, validateRequest } from '../middlewares';
 import { UserRole } from '../types';
 
@@ -17,6 +21,15 @@ router.get(
     paginationValidator,
     validateRequest,
     profileController.getProfiles,
+);
+
+router.get(
+    '/search',
+    checkCurrentUser,
+    auth(UserRole.ADMIN),
+    searchRequestQueryValidator,
+    validateRequest,
+    profileController.searchProfile,
 );
 
 router.patch(
