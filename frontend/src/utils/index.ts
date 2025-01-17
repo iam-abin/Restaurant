@@ -4,6 +4,7 @@ export * from './role';
 export * from './constants';
 export * from './dateFormat';
 export * from './hotToast';
+export * from './otp';
 export * from './schema/menuSchema';
 export * from './schema/restaurantSchema';
 export * from './schema/userSchema';

@@ -1,3 +1,5 @@
+import { IUser } from './user';
+
 export interface IOtp {
     userId: string;
     otp: string;
@@ -22,4 +24,8 @@ export interface IResetPassword {
 export interface IResetPasswordRequest {
     userId: string;
     password: string;
+}
+export interface IOtpResponse {
+    user: IUser;
+    otpOrTokenExpiresAt: Date;
 }

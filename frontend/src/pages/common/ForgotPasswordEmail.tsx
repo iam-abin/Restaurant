@@ -7,8 +7,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ForgotPasswordEmailApi } from '../../api/apiMethods';
 import { IResponse } from '../../types/api';
 import { hotToastMessage } from '../../utils/hotToast';
-import { IUser } from '../../types';
+import { ISignupResponse } from '../../types';
 import CustomButton from '../../components/Button/CustomButton';
+import { useAppDispatch } from '../../redux/hooks';
+import { addOtpTokenTimer } from '../../redux/slice/otpTokenSlice';
 
 export interface IForgotPasswordEmail {
     email: string;
@@ -19,6 +21,7 @@ const ForgotPasswordEmail: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errors, setErrors] = useState<Partial<IForgotPasswordEmail>>({});
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     const changeEventHandler = (e: ChangeEvent<HTMLInputElement>): void => {
         setEmail(e.target.value);
@@ -49,12 +52,13 @@ const ForgotPasswordEmail: React.FC = () => {
         try {
             setIsLoading(true);
             const response: IResponse = await ForgotPasswordEmailApi({ email });
-            const userData = response.data as IUser;
-            if (userData) {
+            const { user, otpOrTokenExpiresAt } = response.data as ISignupResponse;
+            dispatch(addOtpTokenTimer(otpOrTokenExpiresAt));
+            if (user) {
                 hotToastMessage(response.message, 'success');
                 setEmail('');
-                navigate('/forgot-password/otp', {
-                    state: { userId: userData._id, role: userData.role },
+                navigate('/forgot-password/resetlink-sended', {
+                    state: { email: user.email },
                 });
             }
         } catch (error: unknown) {
@@ -90,7 +94,7 @@ const ForgotPasswordEmail: React.FC = () => {
                                 Sending <LoaderCircle />
                             </label>
                         ) : (
-                            <>Send otp</>
+                            <>Send Reset Lint</>
                         )}
                     </CustomButton>
                 </div>

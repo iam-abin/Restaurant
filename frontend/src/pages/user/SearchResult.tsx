@@ -49,7 +49,7 @@ const SearchResult: React.FC = () => {
 
     useEffect(() => {
         fetchRestaurants();
-    }, [selectedFilters, searchText]);
+    }, [selectedFilters, searchQuery, searchText]);
 
     useEffect(() => {
         fetchFilters();
@@ -59,7 +59,7 @@ const SearchResult: React.FC = () => {
         setSelectedFilters((prev) => prev.filter((item) => item !== filter));
     };
 
-    const handleSearch = (): void => {
+    const handleSearchButton = (): void => {
         if (searchQuery === '') return;
         fetchRestaurants();
     };
@@ -67,6 +67,21 @@ const SearchResult: React.FC = () => {
     const handleSearchKeyChange = (e: ChangeEvent<HTMLInputElement>): void => {
         if (e.target.value === '') fetchRestaurants();
         setSearchQuery(e.target.value);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Backspace') {
+            if (e.ctrlKey) {
+                // Handle Ctrl + Backspace: Remove the last word
+                const words = searchQuery.trim().split(' ');
+                words.pop(); // Remove the last word
+                setSearchQuery(words.join(' '));
+                e.preventDefault(); // Prevent default behavior
+            } else if (searchQuery.length > 0) {
+                // Handle normal Backspace: Remove the last character
+                setSearchQuery((prev) => prev.slice(0, -1));
+            }
+        }
     };
 
     return (
@@ -80,7 +95,7 @@ const SearchResult: React.FC = () => {
                 />
             </div>
             {/* right side */}
-            <div className="flex-col bg-green-100 py-3 rounded-lg">
+            <div className="flex-col bg-green-100 py-3 rounded-lg w-full">
                 <div className="relative flex items-center gap-1">
                     <div className="w-full">
                         <Search className="absolute text-gray-500 inset-y-3 left-2" />
@@ -89,42 +104,41 @@ const SearchResult: React.FC = () => {
                             value={searchQuery}
                             placeholder="Search by restaurant & cuisines"
                             onChange={(e) => handleSearchKeyChange(e)}
+                            onKeyDown={handleKeyDown}
                             onKeyPress={(e) => e.key === 'Enter' && fetchRestaurants()}
                             className="border-2 pl-10 h-11 w-full border-black shadow-lg rounded-lg"
                         />
                     </div>
-                    <CustomButton onClick={handleSearch} variant="contained" disabled={isLoading}>
+                    <CustomButton onClick={handleSearchButton} variant="contained" disabled={isLoading}>
                         {isLoading ? <LoaderCircle /> : 'Search'}
                     </CustomButton>
                 </div>
 
                 <div className="flex gap-2 my-3">
-                    {selectedFilters.map((filter, index) => (
-                        <Chip
-                            key={index}
-                            label={filter}
-                            variant="outlined"
-                            onDelete={() => handleDeleteChip(filter)}
-                        />
-                    ))}
+                    {selectedFilters &&
+                        selectedFilters.map((filter, index) => (
+                            <Chip
+                                key={index}
+                                label={filter}
+                                variant="outlined"
+                                onDelete={() => handleDeleteChip(filter)}
+                            />
+                        ))}
                 </div>
 
                 {isLoading ? (
-                    <div className="flex flex-wrap justify-center gap-3">
+                    <div className="flex flex-wrap justify-center md:justify-start gap-3 md:gap-2  px-7 ">
+                        <RestaurantCardSkeleton />
                         <RestaurantCardSkeleton />
                         <RestaurantCardSkeleton />
                     </div>
                 ) : searchResults.length ? (
-                    <div className="flex flex-wrap justify-center gap-3">
+                    <div className="flex flex-wrap justify-center md:justify-start gap-3 md:gap-2  px-7">
                         {searchResults.map((restaurant, index) => (
-                            <RestaurantCard key={index} restaurant={restaurant} />
-                        ))}
-                        {searchResults.map((restaurant, index) => (
-                            <RestaurantCard key={index} restaurant={restaurant} />
-                        ))}
-
-                        {searchResults.map((restaurant, index) => (
-                            <RestaurantCard key={index} restaurant={restaurant} />
+                            <>
+                                <RestaurantCard key={index} restaurant={restaurant} />
+                                <RestaurantCardSkeleton />
+                            </>
                         ))}
                     </div>
                 ) : (

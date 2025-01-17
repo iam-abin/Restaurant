@@ -1,3 +1,4 @@
+import { IOtpResponse } from './otp';
 import { UserRole } from './roles';
 
 export interface IUser {
@@ -13,6 +14,9 @@ export interface IUser {
 export interface ISignup extends Omit<IUser, '_id' | 'isBlocked' | 'isVerified'> {
     password: string;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface ISignupResponse extends IOtpResponse {}
 
 export interface ISignin extends Pick<IUser, 'email' | 'role'> {
     password: string;

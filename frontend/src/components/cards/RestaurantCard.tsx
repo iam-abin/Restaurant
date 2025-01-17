@@ -47,9 +47,9 @@ const RestaurantCard: React.FC<IRestaurantCardProps> = ({ restaurant }) => {
                     className="absolute inset-0 bg-gradient-to-t from-black to-transparent"
                     style={{ opacity: 0.6 }}
                 />
-                <div className="absolute top-3 left-3 bg-yellow-500 text-white text-sm font-medium rounded-lg px-3 py-1">
+                {/* <div className="absolute top-3 left-3 bg-yellow-500 text-white text-sm font-medium rounded-lg px-3 py-1">
                     Featured
-                </div>
+                </div> */}
             </div>
             <CardContent sx={{ flexGrow: 1 }}>
                 <Typography gutterBottom variant="h5" component="div" className="text-gray-900">
@@ -68,7 +68,7 @@ const RestaurantCard: React.FC<IRestaurantCardProps> = ({ restaurant }) => {
                     </Typography>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-4">
-                    {restaurant.cuisines.map((cuisine, index) => (
+                    {restaurant?.cuisines?.map((cuisine, index) => (
                         <Chip
                             key={index}
                             label={cuisine}

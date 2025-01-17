@@ -1,6 +1,6 @@
 import { DecodedGoogleToken } from '../types';
-import { GOOGLE_TOKEN_INFO_URL } from './constants';
 import makeApiCall from './apiCall';
+import { GOOGLE_TOKEN_INFO_URL } from './constants';
 
 /**
  * Verifies the Google Credential Token by making an API call to retrieve token information.

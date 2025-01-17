@@ -134,7 +134,13 @@ export class RestaurantRepository {
                         },
                         // Match selected cuisines if provided
                         ...(selectedCuisines.length > 0
-                            ? [{ 'cuisines.name': { $in: selectedCuisines } }]
+                            ? [
+                                  {
+                                      'cuisines.name': {
+                                          $in: selectedCuisines,
+                                      },
+                                  },
+                              ]
                             : []),
                     ],
                 },

@@ -1,3 +1,5 @@
+import { IUserDocument } from '../database/model';
+
 export interface IOtpToken {
     userId: string;
     otp: string;
@@ -15,3 +17,8 @@ export type OtpConfig = {
     upperCaseAlphabets: boolean;
     specialChars: boolean;
 };
+
+export interface IOtpTokenData {
+    user: IUserDocument;
+    otpOrTokenExpiresAt: Date;
+}
