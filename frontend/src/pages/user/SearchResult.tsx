@@ -137,7 +137,6 @@ const SearchResult: React.FC = () => {
                         {searchResults.map((restaurant, index) => (
                             <>
                                 <RestaurantCard key={index} restaurant={restaurant} />
-                                <RestaurantCardSkeleton />
                             </>
                         ))}
                     </div>

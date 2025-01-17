@@ -1,13 +1,11 @@
-import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
-import MenuIcon from '@mui/icons-material/Menu';
+
 import { useAppSelector } from '../../redux/hooks';
 import { useConfirmationContext } from '../../context/confirmationContext';
 import { IUser, UserRole } from '../../types';
-import { IconButton } from '@mui/material';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined';
 import RestaurantOutlinedIcon from '@mui/icons-material/RestaurantOutlined';
@@ -25,7 +23,6 @@ interface INavBarProps {
 const NavBar: React.FC<INavBarProps> = ({ currentUser, handleLogout }) => {
     const { showConfirmation } = useConfirmationContext();
     const { myProfile } = useAppSelector((store) => store.profileReducer);
-    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const location = useLocation();
 
     const isAdmin: boolean = checkRole(UserRole.ADMIN, currentUser?.role);
@@ -101,17 +98,12 @@ const NavBar: React.FC<INavBarProps> = ({ currentUser, handleLogout }) => {
                 </div>
                 {/* Mobile Menu */}
                 <div className="md:hidden">
-                    <IconButton onClick={() => setIsDrawerOpen(true)}>
-                        <MenuIcon />
-                    </IconButton>
+                    <MobileDrawer
+                        anchor="right"
+                        navItems={navItems}
+                        handleLogoutButton={handleLogoutButton}
+                    />
                 </div>
-                <MobileDrawer
-                    anchor="right"
-                    navItems={navItems}
-                    isDrawerOpen={isDrawerOpen}
-                    handleCloseDrawer={() => setIsDrawerOpen(false)}
-                    handleLogoutButton={handleLogoutButton}
-                />
             </div>
         </div>
     );
