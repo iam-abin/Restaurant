@@ -11,6 +11,7 @@ export interface IRestaurant {
     deliveryTime: number;
     imageUrl: string;
     image?: File;
+    rating: number;
     cuisines: ICuisine[];
 }
 
@@ -21,6 +22,7 @@ export interface IRestaurantCard {
     city: string;
     country: string;
     cuisines: string[];
+    rating: number;
 }
 
 export interface IRestaurantsResponse {
