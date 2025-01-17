@@ -132,13 +132,19 @@ export class OtpService {
             const token: string = createToken();
 
             // Here we are storing token in otp collection.
-            const tokenData: IOtpTokenDocument = await this.otpTokenRepository.create({ userId: user._id.toString(), resetToken: token }, session);
+            const tokenData: IOtpTokenDocument = await this.otpTokenRepository.create(
+                { userId: user._id.toString(), resetToken: token },
+                session,
+            );
 
             const resetURL: string = `${RESET_PASSWORD_URL}/${token}`;
-            const otpExpiryInSeconds = calculateExpiryTime(tokenData.expiresAt)
-            const emailTemplate: IEmailTemplate = getForgotPasswordEmailTemplate(resetURL, otpExpiryInSeconds);
+            const otpExpiryInSeconds = calculateExpiryTime(tokenData.expiresAt);
+            const emailTemplate: IEmailTemplate = getForgotPasswordEmailTemplate(
+                resetURL,
+                otpExpiryInSeconds,
+            );
             await sendEmail(email, emailTemplate);
-            return {user, otpOrTokenExpiresAt: tokenData.expiresAt};
+            return { user, otpOrTokenExpiresAt: tokenData.expiresAt };
         });
     };
 

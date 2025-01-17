@@ -33,7 +33,6 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu, addItemToCartHandler }) => {
     };
 
     return (
-        // <div className="flex justify-center bg-yellow-700">
         <Card
             sx={{
                 width: {
@@ -54,23 +53,30 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu, addItemToCartHandler }) => {
             )}
             {/* modal end */}
 
-            <div className="flex flex-col md:flex-row md:justify-between bg-yellow-300 w-full">
+            <div className="relative flex flex-col md:flex-row md:justify-between bg-yellow-300 w-full">
+                {/* Featured Card */}
+                {menu.featured && (
+                    <div className="absolute top-0 left-0 bg-yellow-500 text-white text-xs font-bold p-2">
+                        Featured
+                    </div>
+                )}
+
                 <div className="w-full md:w-80">
                     <CardMedia
                         component="img"
                         alt="green iguana"
-                        // className="h-5/5 md:h-60 object-cover"
                         sx={{
                             height: 200, // Fixed height
                             width: {
                                 sm: 300,
                                 md: 200,
-                            }, // Width relative to the container
-                            objectFit: 'fill', // Maintains aspect ratio
+                            },
+                            objectFit: 'fill',
                         }}
                         image={menu.imageUrl}
                     />
                 </div>
+
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
                         <h1 className="text-2xl font-bold text-gray-900">{menu?.name}</h1>
@@ -79,12 +85,12 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu, addItemToCartHandler }) => {
                         component="p"
                         sx={{
                             display: '-webkit-box',
-                            WebkitLineClamp: 3, // Limit to 3 lines
+                            WebkitLineClamp: 3,
                             WebkitBoxOrient: 'vertical',
                             width: {
-                                xs: 100, // Full width on extra-small screens
+                                xs: 100,
                                 sm: 100,
-                                md: 450, // Fixed width on medium and larger screens
+                                md: 450,
                             },
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
@@ -120,9 +126,7 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu, addItemToCartHandler }) => {
                     )}
                 </div>
             </div>
-            {/* </div> */}
         </Card>
-        // </div>
     );
 };
 

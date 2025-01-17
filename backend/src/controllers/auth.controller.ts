@@ -123,8 +123,6 @@ export class AuthController {
 
     public verifyResetToken = async (req: Request, res: Response): Promise<void> => {
         const { resetToken } = req.body as Pick<IOtpToken, 'resetToken'>;
-        console.log("resetToken ", resetToken);
-        
         const user: IUserDocument | null = await this.otpService.verifyResetToken(resetToken);
         res.status(200).json(
             createSuccessResponse('Reset Token verified successfully, Pleast Reset your password', user),

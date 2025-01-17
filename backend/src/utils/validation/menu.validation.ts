@@ -41,6 +41,11 @@ export const addMenuRequestBodyValidator: ValidationChain[] = [
             }
             return true;
         }),
+    body('featured')
+        .notEmpty()
+        .withMessage('Featured is required')
+        .isBoolean()
+        .withMessage('Featured must be a boolean'),
 ];
 
 export const updateMenuRequestBodyValidator: ValidationChain[] = [
@@ -61,11 +66,11 @@ export const updateMenuRequestBodyValidator: ValidationChain[] = [
     body('cuisine')
         .optional()
         .isString()
-        .isString()
         .withMessage('Cuisine must be a string')
         .trim()
         .isLength({ min: 4, max: 50 })
         .withMessage('Cuisine name must be between 4 and 50 characters long'),
     body('price').optional().isFloat({ min: 0 }).withMessage('Price must be a positive number'),
-    body('salePrice').optional().isFloat({ min: 0 }).withMessage('Price must be a positive number'),
+    body('salePrice').optional().isFloat({ min: 0 }).withMessage('SalePrice must be a positive number'),
+    body('featured').optional().isBoolean().withMessage('Featured must be a boolean'),
 ];

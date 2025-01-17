@@ -5,7 +5,7 @@ import { calculateRemainingTime } from '../../utils';
 
 const ResetPasswordSended: React.FC = () => {
     const location = useLocation();
-    const tokenExpiryTime = useAppSelector((store)=> store.otpTokenReducer?.otpTokenExpiry)
+    const tokenExpiryTime = useAppSelector((store) => store.otpTokenReducer?.otpTokenExpiry);
 
     // Safely extract email or provide a fallback
     const email = location?.state?.email || 'your email';
@@ -13,7 +13,9 @@ const ResetPasswordSended: React.FC = () => {
     return (
         <div className="flex flex-col items-center justify-center w-full h-screen text-center">
             <p className="text-lg">
-                {!tokenExpiryTime && calculateRemainingTime(tokenExpiryTime!) === 0? "reset link has expired" :`A password reset link has been sent to your email ID ${email}. Please verify.`}
+                {!tokenExpiryTime && calculateRemainingTime(tokenExpiryTime!) === 0
+                    ? 'reset link has expired'
+                    : `A password reset link has been sent to your email ID ${email}. Please verify.`}
             </p>
 
             <a href="https://mail.google.com" target="_blank" rel="noopener noreferrer" className="mt-4">

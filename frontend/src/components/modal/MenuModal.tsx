@@ -1,5 +1,14 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { Box, Modal, IconButton, Typography, TextField, Grid } from '@mui/material';
+import {
+    Box,
+    Modal,
+    IconButton,
+    Typography,
+    TextField,
+    Grid,
+    FormControlLabel,
+    Checkbox,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import LoaderCircle from '../Loader/LoaderCircle';
 import { MenuFormSchema, menuSchema } from '../../utils/schema/menuSchema';
@@ -54,6 +63,7 @@ const MenuModal: React.FC<IMenuModalProps> = ({
         cuisine: '',
         price: 0,
         salePrice: undefined,
+        featured: false,
         image: undefined,
     });
     const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -115,6 +125,7 @@ const MenuModal: React.FC<IMenuModalProps> = ({
             formData.append('cuisine', inputData.cuisine!);
             formData.append('price', inputData.price?.toString() ?? '0');
             formData.append('salePrice', inputData.salePrice ? inputData.salePrice?.toString() : '0');
+            formData.append('featured', inputData.featured.toString());
             if (inputData.image) formData.append('image', inputData.image);
 
             const restaurantId = restaurantData?.restaurant._id;
@@ -149,6 +160,7 @@ const MenuModal: React.FC<IMenuModalProps> = ({
                 cuisine: '',
                 price: 0,
                 salePrice: undefined,
+                featured: false,
                 image: undefined,
             });
             setPreviewImage(null);
@@ -254,6 +266,22 @@ const MenuModal: React.FC<IMenuModalProps> = ({
                                 helperText={errors.salePrice}
                                 variant="outlined"
                                 type="number"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={input.featured}
+                                        onChange={
+                                            (e) =>
+                                                setInput((prev) => ({ ...prev, featured: e.target.checked })) // Change `isFeatured` to `featured`
+                                        }
+                                        name="featured"
+                                        color="primary"
+                                    />
+                                }
+                                label="Featured (e.g., special items, chef's recommendations etc)"
                             />
                         </Grid>
                         {/* select options add here */}

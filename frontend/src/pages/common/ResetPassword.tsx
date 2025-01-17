@@ -15,7 +15,7 @@ import { useAppDispatch } from '../../redux/hooks';
 const ResetPassword: React.FC = () => {
     const navigate = useNavigate();
     const { uniqueId } = useParams();
-    const dispatch = useAppDispatch()
+    const dispatch = useAppDispatch();
 
     const [password, setPassword] = useState<IResetPassword>({
         password: '',
@@ -30,7 +30,6 @@ const ResetPassword: React.FC = () => {
             const response: IResponse = await verifyResetTokenApi({
                 resetToken: uniqueId!,
             });
-            console.log(response.data);
 
             if (response.data) {
                 setUser(response.data as IUser);
@@ -75,7 +74,7 @@ const ResetPassword: React.FC = () => {
                 userId: user._id,
                 password: password.password,
             }); // Pass the uniqueId if required by the API
-            
+
             hotToastMessage(response.message, 'success');
             dispatch(clearOtpTokenTimer());
             navigate('/auth');
@@ -144,10 +143,10 @@ const ResetPassword: React.FC = () => {
                 </form>
             ) : (
                 <div className="flex flex-col items-center justify-center w-full h-screen text-center">
-                    <p className='text-lg font-bold'>Reset token has expired</p>
-                   <div className='my-5'>
-                   <CustomButton onClick={() => navigate('/')}>Go back to sign in</CustomButton>
-                   </div>
+                    <p className="text-lg font-bold">Reset token has expired</p>
+                    <div className="my-5">
+                        <CustomButton onClick={() => navigate('/')}>Go back to sign in</CustomButton>
+                    </div>
                 </div>
             )}
         </div>

@@ -47,9 +47,9 @@ export const checkIsOtpTokenExpired = (expiresAt: Date): boolean => {
 
 /**
  * To find exact otp expiry time in seconds.
- * 
+ *
  * @param {Date} expiresAt - The absolute time when the OTP or resetToken is set to expire.
- * @returns Returns the exact expiry time it seconds  
+ * @returns Returns the exact expiry time it seconds
  */
 export const calculateExpiryTime = (expiresAt: Date): number => {
     if (!expiresAt) return 0;
