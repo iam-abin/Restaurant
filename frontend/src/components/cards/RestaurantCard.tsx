@@ -9,7 +9,7 @@ import PublicIcon from '@mui/icons-material/Public';
 import { Chip } from '@mui/material';
 import { IRestaurantCard } from '../../types';
 import CustomButton from '../Button/CustomButton';
-import { TOP_RATED_MINIMUM_VALUE } from '../../utils';
+import { TOP_RATED_MINIMUM_VALUE } from '../../constants';
 
 interface IRestaurantCardProps {
     restaurant: IRestaurantCard;

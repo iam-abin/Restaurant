@@ -3,6 +3,7 @@ import { CustomError, NotAuthorizedError } from '../errors';
 import { winstonLogError } from '../utils';
 import { appConfig } from '../config/app.config';
 import { TokenType } from '../types';
+import { HTTP_STATUS_CODE } from '../constants';
 
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction): void => {
     const isProduction = appConfig.NODE_ENVIRONMENT === 'production';
@@ -23,7 +24,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
     }
 
     // For unexpected errors, send a response
-    res.status(500).send({
+    res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).send({
         errors: [
             {
                 message: isProduction ? 'Something went wrong!!!' : err.message || 'Internal server error',

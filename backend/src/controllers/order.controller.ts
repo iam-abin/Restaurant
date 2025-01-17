@@ -4,6 +4,7 @@ import { createSuccessResponse } from '../utils';
 import { IOrderDocument } from '../database/model';
 import { OrderService } from '../services';
 import { IJwtPayload, IOrder, Orders, OrderStatus, Pagination, RestaurantIdParam } from '../types';
+import { HTTP_STATUS_CODE } from '../constants';
 
 @autoInjectable()
 export class OrderController {
@@ -17,7 +18,7 @@ export class OrderController {
             userId,
             checkoutSessionData as Pick<IOrder, 'restaurantId'>,
         );
-        res.status(201).json(createSuccessResponse('Order created successfully', order));
+        res.status(HTTP_STATUS_CODE.CREATED).json(createSuccessResponse('Order created successfully', order));
     };
 
     public confirmOrderStripeWebhook = async (req: Request, res: Response): Promise<void> => {
@@ -28,7 +29,7 @@ export class OrderController {
             signature,
             // userId,
         );
-        res.status(201).json(createSuccessResponse('Order Confirmed successfully', order));
+        res.status(HTTP_STATUS_CODE.OK).json(createSuccessResponse('Order Confirmed successfully', order));
     };
 
     public getRestaurantOrders = async (req: Request, res: Response): Promise<void> => {
@@ -41,14 +42,18 @@ export class OrderController {
             page: page as number,
             limit: limit as number,
         });
-        res.status(200).json(createSuccessResponse('Restaurant orders fetched successfully', orders));
+        res.status(HTTP_STATUS_CODE.OK).json(
+            createSuccessResponse('Restaurant orders fetched successfully', orders),
+        );
     };
 
     public getMyOrders = async (req: Request, res: Response): Promise<void> => {
         const { userId } = req.currentUser as IJwtPayload;
         const { page = 1, limit = 10 } = req.query as Pagination;
         const orders: Orders = await this.orderService.getMyOrders(userId, page as number, limit as number);
-        res.status(200).json(createSuccessResponse('Your orders fetched successfully', orders));
+        res.status(HTTP_STATUS_CODE.OK).json(
+            createSuccessResponse('Your orders fetched successfully', orders),
+        );
     };
 
     public updateOrderStatus = async (req: Request, res: Response): Promise<void> => {
@@ -60,6 +65,8 @@ export class OrderController {
             status,
             userId,
         );
-        res.status(200).json(createSuccessResponse('Order status updated successfully', order));
+        res.status(HTTP_STATUS_CODE.OK).json(
+            createSuccessResponse('Order status updated successfully', order),
+        );
     };
 }

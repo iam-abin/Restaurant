@@ -11,6 +11,7 @@ import { clearAdminDashboard } from '../redux/slice/dashboardSlice';
 import { clearMenus } from '../redux/slice/menusSlice';
 import { clearProfile } from '../redux/slice/profileSlice';
 import { clearCart } from '../redux/slice/cartSlice';
+import { clearOtpTokenTimer } from '../redux/slice/otpTokenSlice';
 
 const MainLayout = () => {
     const currentUser: IUser | null = useAppSelector((store: RootState) => store.authReducer.authData);
@@ -25,6 +26,7 @@ const MainLayout = () => {
         const response = await dispatch(logoutUser());
         if (isUser) {
             dispatch(clearProfile());
+            dispatch(clearMenus());
             dispatch(clearCart());
         }
 
@@ -36,7 +38,7 @@ const MainLayout = () => {
         if (isAdmin) {
             dispatch(clearAdminDashboard());
         }
-
+        dispatch(clearOtpTokenTimer());
         // Check if the action was rejected
         if (response.meta.requestStatus !== 'rejected') {
             naivgate('/auth');

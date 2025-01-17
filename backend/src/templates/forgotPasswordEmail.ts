@@ -1,4 +1,4 @@
-import { CURRENT_YEAR } from '../utils';
+import { CURRENT_YEAR } from '../constants';
 
 export const getForgotPasswordEmailTemplate = (resetURL: string, tokenExpiryTime: number) => {
     const html = `

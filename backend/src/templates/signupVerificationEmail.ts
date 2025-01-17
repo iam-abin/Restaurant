@@ -1,4 +1,4 @@
-import { CURRENT_YEAR } from '../utils';
+import { CURRENT_YEAR } from '../constants';
 
 export const getEmailVerificationTemplate = function (name: string, otp: string) {
     const html = `

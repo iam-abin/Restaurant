@@ -4,7 +4,6 @@ import {
     generateOtp,
     isOtpTOkenResendAllowed,
     sendEmail,
-    RESET_PASSWORD_URL,
     createToken,
     executeTransaction,
     checkIsOtpTokenExpired,
@@ -20,6 +19,7 @@ import { IOtpTokenDocument, IUserDocument } from '../database/model';
 import { IEmailTemplate, IOtpTokenData, UserRole } from '../types';
 import { getEmailVerificationTemplate } from '../templates/signupVerificationEmail';
 import { getForgotPasswordEmailTemplate } from '../templates/forgotPasswordEmail';
+import { RESET_PASSWORD_URL } from '../constants';
 
 @autoInjectable()
 export class OtpService {

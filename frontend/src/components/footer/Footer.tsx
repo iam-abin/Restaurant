@@ -1,4 +1,4 @@
-import { CURRENT_YEAR } from '../../utils';
+import { CURRENT_YEAR } from '../../constants';
 
 const Footer: React.FC = () => {
     return (

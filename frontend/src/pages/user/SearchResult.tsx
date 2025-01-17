@@ -87,7 +87,7 @@ const SearchResult: React.FC = () => {
             </Drawer>
 
             {/* Left Filter Panel for Larger Screens */}
-            <div className="hidden md:block shadow-2xl bg-red-100 p-3 rounded-lg">
+            <div className="hidden md:block shadow-2xl  p-3 rounded-lg">
                 <Filter
                     filterArray={selectedFilters}
                     setSelectedFilters={setSelectedFilters}
@@ -96,7 +96,7 @@ const SearchResult: React.FC = () => {
             </div>
 
             {/* Right Side */}
-            <div className="flex-col shadow-2xl bg-green-400 px-7 py-3 rounded-lg w-full">
+            <div className="flex-col shadow-2xl px-7 py-3 rounded-lg w-full">
                 <div className="relative flex items-center gap-1">
                     <div className="w-full">
                         <Search className="absolute text-gray-500 inset-y-3 left-2" />

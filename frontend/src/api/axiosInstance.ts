@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import { BASE_URL_BACKEND } from '../utils';
+import { BASE_URL_BACKEND } from '../constants';
 
 export const axiosInstance = axios.create({
     baseURL: BASE_URL_BACKEND,
