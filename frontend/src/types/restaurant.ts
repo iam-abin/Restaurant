@@ -42,6 +42,7 @@ export interface ISearchResult {
     city: string;
     country: string;
     restaurantName: string;
+    rating: number;
     cuisines: string[];
 }
 

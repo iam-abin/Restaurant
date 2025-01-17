@@ -12,7 +12,7 @@ import {
     ISearchRestaurantData,
     Pagination,
     RestaurantIdParam,
-    SearchData,
+    SearchFilterData,
     SearchQueryParams,
 } from '../types';
 
@@ -71,7 +71,7 @@ export class RestaurantController {
         const searchQuery: string = (req.query.searchQuery as string) || ''; // From search page search bar
         const { page = 1, limit = 10 } = req.query as Pagination;
         const selectedCuisines: string = (req.query.selectedCuisines as string) || ''; // From filter area
-        const restaurant: SearchData = await this.restaurantService.searchFilterRestaurant({
+        const restaurant: SearchFilterData = await this.restaurantService.searchFilterRestaurant({
             searchText,
             searchQuery,
             selectedCuisines,

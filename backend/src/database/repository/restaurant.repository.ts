@@ -131,9 +131,9 @@ export class RestaurantRepository {
                     as: 'cuisines',
                 },
             },
-            {
-                $unwind: { path: '$cuisines', preserveNullAndEmptyArrays: true },
-            },
+            // {
+            //     $unwind: { path: '$cuisines', preserveNullAndEmptyArrays: true },
+            // },
             // Match conditions
             {
                 $match: {
@@ -174,7 +174,7 @@ export class RestaurantRepository {
                     city: { $first: '$address.city' },
                     country: { $first: '$address.country' },
                     imageUrl: { $first: '$imageUrl' },
-                    cuisines: { $addToSet: '$cuisines.name' },
+                    cuisines: { $first: '$cuisines.name' },
                     rating: { $first: '$rating' },
                 },
             },
