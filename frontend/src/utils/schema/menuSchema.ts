@@ -7,6 +7,7 @@ export const menuSchema = z
         cuisine: z.string().min(4, { message: 'cuisine is required' }),
         price: z.number().min(0, { message: 'price cannot be negative' }),
         salePrice: z.number().min(0, { message: 'sale price cannot be negative' }).optional(), // Marking salePrice as optional
+        featured: z.boolean(), // Add validation for "Featured" field
         image: z
             .instanceof(File)
             .optional()

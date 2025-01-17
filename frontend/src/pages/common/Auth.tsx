@@ -10,7 +10,7 @@ import { googleAuthThunk, signinUser } from '../../redux/thunk/authThunk';
 import { signupApi } from '../../api/apiMethods';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 
-import { ISignup, IUser, UserRole } from '../../types';
+import { ISignup, ISignupResponse, UserRole } from '../../types';
 
 import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
 import { fetchUserProfile } from '../../redux/thunk/profileThunk';
@@ -26,6 +26,7 @@ import {
 } from '@react-oauth/google';
 import { checkRole, getRoleFromPath } from '../../utils';
 import CustomButton from '../../components/Button/CustomButton';
+import { addOtpTokenTimer } from '../../redux/slice/otpTokenSlice';
 
 const Auth: React.FC = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -106,13 +107,14 @@ const Auth: React.FC = () => {
                 naivgate('/');
             } else {
                 const response = await signupApi(input);
-                const data = response.data as IUser;
+                const { user, otpOrTokenExpiresAt } = response.data as ISignupResponse;
+                dispatch(addOtpTokenTimer(otpOrTokenExpiresAt));
                 if (response.data) {
                     hotToastMessage(response.message, 'success');
                     naivgate('/signup/otp', {
                         state: {
-                            userId: data._id,
-                            role: data.role,
+                            userId: user._id,
+                            role: user.role,
                         },
                     });
                 }

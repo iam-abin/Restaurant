@@ -1,7 +1,7 @@
 import { autoInjectable } from 'tsyringe';
 import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
 import {
-    isOtpResendAllowed,
+    isOtpTOkenResendAllowed,
     generateOtp,
     comparePassword,
     createJwtAccessToken,
@@ -10,6 +10,7 @@ import {
     createJwtRefreshToken,
     verifyGoogleCredentialToken,
     executeTransaction,
+    checkIsOtpTokenExpired,
 } from '../utils';
 import {
     OtpTokenRepository,
@@ -28,6 +29,8 @@ import {
     Tokens,
     IJwtPayload,
     UserRole,
+    ISigninData,
+    ISignupData,
 } from '../types';
 import { getEmailVerificationTemplate } from '../templates/signupVerificationEmail';
 
@@ -40,7 +43,7 @@ export class UserService {
         private readonly restaurantRepository: RestaurantRepository,
     ) {}
 
-    public signUp = async (userRegisterDto: ISignup): Promise<IUserDocument | null> => {
+    public signUp = async (userRegisterDto: ISignup): Promise<ISignupData | null> => {
         return executeTransaction(async (session) => {
             const { name, email } = userRegisterDto;
             const existingUser: IUserDocument | null = await this.userRepository.findUserByEmail(email);
@@ -51,16 +54,24 @@ export class UserService {
                     existingUser._id.toString(),
                 );
                 if (existingOtp) {
-                    const isResendTimeLimitCompleted = isOtpResendAllowed(existingOtp.createdAt);
-                    if (!isResendTimeLimitCompleted) {
-                        throw new BadRequestError(
-                            'OTP has been recently sent. Please wait a minute before requesting again.',
-                        );
+                    const isExpired: boolean = checkIsOtpTokenExpired(existingOtp?.expiresAt);
+                    if (!isExpired) {
+                        const isResendTimeLimitCompleted = isOtpTOkenResendAllowed(existingOtp.createdAt);
+                        if (!isResendTimeLimitCompleted) {
+                            throw new BadRequestError(
+                                'OTP has been recently sent. Please wait a minute before requesting again.',
+                            );
+                        } else {
+                            await this.otpTokenRepository.deleteById(existingOtp._id.toString(), session);
+                        }
                     }
                 }
 
                 const otp: string = generateOtp();
-                await this.otpTokenRepository.create({ userId: existingUser._id.toString(), otp }, session);
+                const otpResponse: IOtpTokenDocument = await this.otpTokenRepository.create(
+                    { userId: existingUser._id.toString(), otp },
+                    session,
+                );
 
                 // Update if user enter new name or password
                 const updatedUser: IUserDocument | null = await this.userRepository.updateUser(
@@ -69,9 +80,11 @@ export class UserService {
                     session,
                 );
 
+                if (!updatedUser) throw new BadRequestError('User update failed');
+
                 await this.sendVerificationEmail(name, email, otp);
 
-                return updatedUser;
+                return { user: updatedUser, otpOrTokenExpiresAt: otpResponse.expiresAt };
             }
 
             // If the user is already verified, throw an error
@@ -80,17 +93,17 @@ export class UserService {
             // Create a new user and generate OTP and send confirmation email
             const user: IUserDocument = await this.userRepository.createUser(userRegisterDto, session);
             const otp: string = generateOtp();
-            await this.otpTokenRepository.create({ userId: user._id.toString(), otp }, session);
+            const otpResponse: IOtpTokenDocument = await this.otpTokenRepository.create(
+                { userId: user._id.toString(), otp },
+                session,
+            );
 
             await this.sendVerificationEmail(name, email, otp);
-
-            return user;
+            return { user, otpOrTokenExpiresAt: otpResponse.expiresAt };
         });
     };
 
-    public signIn = async (
-        userSignInDto: ISignin,
-    ): Promise<{ user: IUserDocument; jwtAccessToken: string; jwtRefreshToken: string }> => {
+    public signIn = async (userSignInDto: ISignin): Promise<ISigninData> => {
         const { email, password, role } = userSignInDto;
         const existingUser: IUserDocument | null = await this.userRepository.findUserByEmail(email);
         if (!existingUser) throw new BadRequestError('Invalid email or password');
@@ -119,9 +132,7 @@ export class UserService {
         return { user: existingUser, jwtAccessToken, jwtRefreshToken };
     };
 
-    public googleAuth = async (
-        authCredential: IGoogleAuthCredential,
-    ): Promise<{ user: IUserDocument; jwtAccessToken: string; jwtRefreshToken: string }> => {
+    public googleAuth = async (authCredential: IGoogleAuthCredential): Promise<ISigninData> => {
         const { credential, role } = authCredential;
         return executeTransaction(async (session) => {
             const { name, email, picture, email_verified, sub }: DecodedGoogleToken =

@@ -4,7 +4,7 @@ import {
     IRestaurantsData,
     IRestaurantUpdate,
     IRestaurantWithCuisines,
-    SearchData,
+    SearchFilterData,
     SearchRestaurant,
     SearchFilterResult,
     ISearchRestaurantData,
@@ -160,7 +160,7 @@ export class RestaurantService {
         selectedCuisines,
         page,
         limit,
-    }: SearchRestaurant): Promise<SearchData> => {
+    }: SearchRestaurant): Promise<SearchFilterData> => {
         const skip: number = getPaginationSkipValue(page, limit);
 
         let cuisinesArray: string[] = selectedCuisines.split(',');

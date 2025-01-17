@@ -70,7 +70,7 @@ export type SearchFilterResult = {
     totalCount: number;
 };
 
-export type SearchData = Omit<SearchFilterResult, 'totalCount'> & {
+export type SearchFilterData = Omit<SearchFilterResult, 'totalCount'> & {
     numberOfPages: number;
 };
 

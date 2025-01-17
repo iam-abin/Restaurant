@@ -9,10 +9,13 @@ import { IResponse, IResetPassword, IUser } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import LockIcon from '@mui/icons-material/Lock';
 import CustomButton from '../../components/Button/CustomButton';
+import { clearOtpTokenTimer } from '../../redux/slice/otpTokenSlice';
+import { useAppDispatch } from '../../redux/hooks';
 
 const ResetPassword: React.FC = () => {
     const navigate = useNavigate();
     const { uniqueId } = useParams();
+    const dispatch = useAppDispatch();
 
     const [password, setPassword] = useState<IResetPassword>({
         password: '',
@@ -71,7 +74,9 @@ const ResetPassword: React.FC = () => {
                 userId: user._id,
                 password: password.password,
             }); // Pass the uniqueId if required by the API
+
             hotToastMessage(response.message, 'success');
+            dispatch(clearOtpTokenTimer());
             navigate('/auth');
         } catch (error: unknown) {
             hotToastMessage((error as Error).message, 'error');
@@ -82,59 +87,68 @@ const ResetPassword: React.FC = () => {
 
     return (
         <div className="flex items-center justify-center min-h-screen w-full">
-            <form onSubmit={handleSubmit} className="flex flex-col md:w-2/6">
-                <div className="text-center">
-                    <h1 className="font-extrabold text-2xl mb-2">Reset Password</h1>
-                    <p className="text-sm text-gray-600">Enter your new password to reset the old one</p>
-                </div>
-                <div className="items-center relative">
-                    <LockIcon className="ml-2 mr-2 absolute inset-y-7 pointer-events-none" />
-                    <Input
-                        className="w-full p-1 pl-8 border border-black mt-5"
-                        type="password"
-                        name="password"
-                        value={password.password}
-                        onChange={changeEventHandler}
-                        placeholder="Enter your password"
-                        autoComplete="new-password"
-                    />
-                    {errors.password && (
-                        <Typography className="text-sm text-red-500">{errors.password}</Typography>
-                    )}
-                </div>
-                <div className="items-center relative">
-                    <LockIcon className="ml-2 mr-2 absolute inset-y-7 pointer-events-none" />
-                    <Input
-                        className="w-full p-1 pl-8 border border-black mt-5"
-                        type="password"
-                        name="confirmPassword"
-                        value={password.confirmPassword}
-                        onChange={changeEventHandler}
-                        placeholder="Confirm your password"
-                        autoComplete="new-password"
-                    />
-                    {errors.confirmPassword && (
-                        <Typography className="text-sm text-red-500">{errors.confirmPassword}</Typography>
-                    )}
-                </div>
-                <div className="py-5">
-                    <CustomButton type="submit" className="w-full" disabled={isLoading}>
-                        {isLoading ? (
-                            <label className="flex items-center gap-4">
-                                Sending <LoaderCircle />
-                            </label>
-                        ) : (
-                            <>Reset</>
+            {user ? (
+                <form onSubmit={handleSubmit} className="flex flex-col md:w-2/6">
+                    <div className="text-center">
+                        <h1 className="font-extrabold text-2xl mb-2">Reset Password</h1>
+                        <p className="text-sm text-gray-600">Enter your new password to reset the old one</p>
+                    </div>
+                    <div className="items-center relative">
+                        <LockIcon className="ml-2 mr-2 absolute inset-y-7 pointer-events-none" />
+                        <Input
+                            className="w-full p-1 pl-8 border border-black mt-5"
+                            type="password"
+                            name="password"
+                            value={password.password}
+                            onChange={changeEventHandler}
+                            placeholder="Enter your password"
+                            autoComplete="new-password"
+                        />
+                        {errors.password && (
+                            <Typography className="text-sm text-red-500">{errors.password}</Typography>
                         )}
-                    </CustomButton>
+                    </div>
+                    <div className="items-center relative">
+                        <LockIcon className="ml-2 mr-2 absolute inset-y-7 pointer-events-none" />
+                        <Input
+                            className="w-full p-1 pl-8 border border-black mt-5"
+                            type="password"
+                            name="confirmPassword"
+                            value={password.confirmPassword}
+                            onChange={changeEventHandler}
+                            placeholder="Confirm your password"
+                            autoComplete="new-password"
+                        />
+                        {errors.confirmPassword && (
+                            <Typography className="text-sm text-red-500">{errors.confirmPassword}</Typography>
+                        )}
+                    </div>
+                    <div className="py-5">
+                        <CustomButton type="submit" className="w-full" disabled={isLoading}>
+                            {isLoading ? (
+                                <label className="flex items-center gap-4">
+                                    Sending <LoaderCircle />
+                                </label>
+                            ) : (
+                                <>Reset</>
+                            )}
+                        </CustomButton>
+                    </div>
+                    <Typography className="mt-5 text-center">
+                        Back to{' '}
+                        <Link to="/auth" className="ml-1 text-blue-500 hover:text-blue-800">
+                            Login
+                        </Link>
+                    </Typography>
+                </form>
+            ) : (
+                <div className="flex flex-col items-center justify-center w-full h-screen text-center">
+                    <p className="text-lg font-bold">Reset token has expired</p>
+                    <div className="my-5">
+                        <CustomButton onClick={() => navigate('/')}>Go back to sign in</CustomButton>
+                    </div>
                 </div>
-                <Typography className="mt-5 text-center">
-                    Back to{' '}
-                    <Link to="/auth" className="ml-1 text-blue-500 hover:text-blue-800">
-                        Login
-                    </Link>
-                </Typography>
-            </form>
+            )}
         </div>
     );
 };

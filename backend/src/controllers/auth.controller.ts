@@ -11,6 +11,9 @@ import {
     CustomCookieOptions,
     IGoogleAuthCredential,
     TokenType,
+    ISigninData,
+    ISignupData,
+    IOtpTokenData,
 } from '../types';
 import { appConfig } from '../config/app.config';
 import { autoInjectable } from 'tsyringe';
@@ -25,14 +28,19 @@ export class AuthController {
     ) {}
 
     public signup = async (req: Request, res: Response): Promise<void> => {
-        const user: IUserDocument | null = await this.userService.signUp(req.body as ISignup);
+        const signupData: ISignupData | null = await this.userService.signUp(req.body as ISignup);
         res.status(201).json(
-            createSuccessResponse(`An otp is send to ${user?.email || 'email'}, Please verify`, user),
+            createSuccessResponse(
+                `An otp is send to ${signupData?.user?.email || 'email'}, Please verify`,
+                signupData,
+            ),
         );
     };
 
     public signin = async (req: Request, res: Response): Promise<void> => {
-        const { user, jwtAccessToken, jwtRefreshToken } = await this.userService.signIn(req.body as ISignin);
+        const { user, jwtAccessToken, jwtRefreshToken }: ISigninData = await this.userService.signIn(
+            req.body as ISignin,
+        );
 
         this.setTokenToCookie(res, jwtAccessToken, TokenType.JwtAccessToken);
         this.setTokenToCookie(res, jwtRefreshToken, TokenType.JwtRefreshToken);
@@ -41,7 +49,7 @@ export class AuthController {
     };
 
     public googleAuth = async (req: Request, res: Response): Promise<void> => {
-        const { user, jwtAccessToken, jwtRefreshToken } = await this.userService.googleAuth(
+        const { user, jwtAccessToken, jwtRefreshToken }: ISigninData = await this.userService.googleAuth(
             req.body as IGoogleAuthCredential,
         );
         this.setTokenToCookie(res, jwtAccessToken, TokenType.JwtAccessToken);
@@ -96,15 +104,18 @@ export class AuthController {
 
     public resendOtp = async (req: Request, res: Response): Promise<void> => {
         const { userId } = req.body as Pick<IOtpToken, 'userId'>;
-        const user: IUserDocument | null = await this.otpService.resendOtp(userId);
+        const otpData: IOtpTokenData = await this.otpService.resendOtp(userId);
         res.status(200).json(
-            createSuccessResponse(`An otp is send to ${user?.email || 'your email'}, Please verify`, user),
+            createSuccessResponse(
+                `An otp is send to ${otpData?.user?.email || 'your email'}, Please verify`,
+                otpData,
+            ),
         );
     };
 
     public forgotPassword = async (req: Request, res: Response): Promise<void> => {
         const { email } = req.body as Pick<IUser, 'email'>;
-        const user: IUserDocument | null = await this.otpService.forgotPassword(email);
+        const user: IOtpTokenData | null = await this.otpService.forgotPassword(email);
         res.status(200).json(
             createSuccessResponse(`Password reset link sent to ${email}, Please verify`, user),
         );

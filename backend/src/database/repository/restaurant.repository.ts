@@ -93,6 +93,27 @@ export class RestaurantRepository {
             {
                 $unwind: '$owner',
             },
+            // Lookup ratings
+            {
+                $lookup: {
+                    from: 'ratings',
+                    localField: '_id',
+                    foreignField: 'restaurantId',
+                    as: 'ratings',
+                },
+            },
+            // Calculate average rating
+            {
+                $addFields: {
+                    rating: {
+                        $cond: {
+                            if: { $gt: [{ $size: '$ratings' }, 0] },
+                            then: { $avg: '$ratings.rating' },
+                            else: 0,
+                        },
+                    },
+                },
+            },
             // Lookup cuisines associated with the restaurant
             {
                 $lookup: {
@@ -110,9 +131,9 @@ export class RestaurantRepository {
                     as: 'cuisines',
                 },
             },
-            {
-                $unwind: { path: '$cuisines', preserveNullAndEmptyArrays: true },
-            },
+            // {
+            //     $unwind: { path: '$cuisines', preserveNullAndEmptyArrays: true },
+            // },
             // Match conditions
             {
                 $match: {
@@ -134,7 +155,13 @@ export class RestaurantRepository {
                         },
                         // Match selected cuisines if provided
                         ...(selectedCuisines.length > 0
-                            ? [{ 'cuisines.name': { $in: selectedCuisines } }]
+                            ? [
+                                  {
+                                      'cuisines.name': {
+                                          $in: selectedCuisines,
+                                      },
+                                  },
+                              ]
                             : []),
                     ],
                 },
@@ -147,7 +174,8 @@ export class RestaurantRepository {
                     city: { $first: '$address.city' },
                     country: { $first: '$address.country' },
                     imageUrl: { $first: '$imageUrl' },
-                    cuisines: { $addToSet: '$cuisines.name' },
+                    cuisines: { $first: '$cuisines.name' },
+                    rating: { $first: '$rating' },
                 },
             },
             // Optionally project only the required fields
@@ -158,6 +186,7 @@ export class RestaurantRepository {
                     city: 1,
                     country: 1,
                     imageUrl: 1,
+                    rating: 1,
                     cuisines: 1,
                 },
             },

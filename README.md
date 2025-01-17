@@ -4,6 +4,7 @@
 It is a Restaurant application where users can order food from different restaurants.
 
 ### prerequsties
+- Vscode
 - Nodejs v20.16.0
 - Mongodb 
 

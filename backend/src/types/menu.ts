@@ -8,6 +8,7 @@ export interface IMenu {
     imageUrl: string;
     cuisine: string;
     cuisineId?: string;
+    featured: boolean;
     restaurantId: string;
 }
 

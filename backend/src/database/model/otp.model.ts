@@ -1,12 +1,13 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 import { IOtpToken } from '../../types';
-import { omitDocFields } from '../../utils';
+import { omitDocFields, OTP_EXPIRY_MILLISECONDS, OTP_EXPIRY_SECONDS } from '../../utils';
 
 // Use Omit to exclude 'string type' userId from IOtpToken and redefine it in IOtpTokenDocument
 export interface IOtpTokenDocument extends Document, Omit<IOtpToken, 'userId'> {
     _id: Types.ObjectId;
     userId: Types.ObjectId;
     createdAt: Date;
+    expiresAt: Date;
 }
 
 // Here we store otp as well as token
@@ -28,10 +29,9 @@ const otpTokenSchema = new Schema<IOtpTokenDocument>(
             minlength: 80,
             maxlength: 80,
         },
-        createdAt: {
+        expiresAt: {
             type: Date,
-            default: Date.now(),
-            expires: 600, // TTL index: 10 minutes (600 seconds)
+            default: () => new Date(Date.now() + OTP_EXPIRY_MILLISECONDS), // 60 seconds from now
         },
     },
     {
@@ -41,5 +41,8 @@ const otpTokenSchema = new Schema<IOtpTokenDocument>(
         },
     },
 );
+
+// Define a TTL index explicitly on the createdAt field
+otpTokenSchema.index({ createdAt: 1 }, { expireAfterSeconds: OTP_EXPIRY_SECONDS });
 
 export const OtpTokenModel = mongoose.model<IOtpTokenDocument>('OtpToken', otpTokenSchema);

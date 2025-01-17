@@ -5,6 +5,7 @@ const Auth = lazy(() => import('../../pages/common/Auth'));
 const ForgotPasswordEmail = lazy(() => import('../../pages/common/ForgotPasswordEmail'));
 const ResetPassword = lazy(() => import('../../pages/common/ResetPassword'));
 const Otp = lazy(() => import('../../pages/common/Otp'));
+const ResetPasswordSended = lazy(() => import('../../pages/common/ResetPasswordSended'));
 
 const AuthRoutes = [
     {
@@ -39,8 +40,8 @@ const AuthRoutes = [
             </AuthenticatedUser>
         ),
     },
+    { path: '/forgot-password/resetlink-sended', element: <ResetPasswordSended /> },
     { path: '/reset-password/:uniqueId', element: <ResetPassword /> },
-    { path: '/forgot-password/otp', element: <Otp /> },
     { path: '/signup/otp', element: <Otp /> },
 ];
 

@@ -50,6 +50,11 @@ const menuSchema = new Schema<IMenuDocument>(
             required: true,
             index: true,
         },
+        featured: {
+            type: Boolean,
+            required: true,
+            default: false,
+        },
         isClosed: {
             type: Boolean,
             required: true,

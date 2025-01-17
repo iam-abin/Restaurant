@@ -1,3 +1,5 @@
+import { IUserDocument } from '../database/model';
+import { IOtpTokenData } from './otp';
 import { UserRole } from './roles';
 
 export interface IUser {
@@ -34,3 +36,12 @@ export type DecodedGoogleToken = {
     exp: number; // Expiration time (timestamp)
     email_verified: boolean;
 };
+
+export interface ISigninData {
+    user: IUserDocument;
+    jwtAccessToken: string;
+    jwtRefreshToken: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface ISignupData extends IOtpTokenData {}

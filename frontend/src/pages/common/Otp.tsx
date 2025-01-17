@@ -1,26 +1,53 @@
-import { FormEvent, useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { verifyOtpApi } from '../../api/apiMethods';
+import { resendOtpApi, verifyOtpApi } from '../../api/apiMethods';
 import { hotToastMessage } from '../../utils/hotToast';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
-import { UserRole } from '../../types';
-import { checkPathIsSame, checkRole } from '../../utils';
+import { IOtpResponse, IResponse, UserRole } from '../../types';
+import { calculateRemainingTime, checkPathIsSame, checkRole } from '../../utils';
 import CustomButton from '../../components/Button/CustomButton';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { addOtpTokenTimer, clearOtpTokenTimer } from '../../redux/slice/otpTokenSlice';
 
 const Otp: React.FC = () => {
     const inputRef = useRef<(HTMLInputElement | null)[]>([]);
     const navigate = useNavigate();
     const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isVerificationLoading, setVerificationIsLoading] = useState<boolean>(false);
+    const [isResendOtpLoading, setResendOtpIsLoading] = useState<boolean>(false);
     const location = useLocation();
     const { userId, role } = location.state;
+    const otpTokenExpiry: Date | null = useAppSelector((store) => store.otpTokenReducer.otpTokenExpiry);
+    const [timer, setTimer] = useState<number>(0); // Timer in seconds
+    const dispatch = useAppDispatch();
+    const ONE_SECOND_IN_MS: number = 1000;
 
     const isUser: boolean = checkRole(UserRole.USER, role);
     const isRestaurant: boolean = checkRole(UserRole.RESTAURANT, role);
 
     const isSignupOtpPage: boolean = checkPathIsSame(location, '/signup/otp');
-    const isForgotPasswordEmailOtpPage: boolean = checkPathIsSame(location, '/forgot-password/otp');
+
+    useEffect(() => {
+        if (!otpTokenExpiry) return;
+
+        // Calculate remaining time in seconds for otp resend
+        const remainingTime = calculateRemainingTime(otpTokenExpiry);
+        setTimer(remainingTime);
+
+        // Start the countdown
+        const countdown = setInterval(() => {
+            setTimer((prev) => {
+                if (prev <= 1) {
+                    clearInterval(countdown);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, ONE_SECOND_IN_MS);
+
+        return () => clearInterval(countdown); // Cleanup interval on unmount
+    }, [otpTokenExpiry]);
 
     const handleChange = (index: number, value: string): void => {
         if (/^[a-zA-Z0-9]$/.test(value) || value === '') {
@@ -41,9 +68,25 @@ const Otp: React.FC = () => {
         }
     };
 
+    const handleResendOtp = async (): Promise<void> => {
+        // onResend(); // Trigger resend OTP functionality
+        try {
+            setResendOtpIsLoading(true);
+            const response: IResponse = await resendOtpApi({ userId });
+            hotToastMessage(response.message, 'success');
+            dispatch(addOtpTokenTimer((response.data as IOtpResponse).otpOrTokenExpiresAt));
+            const remainingTime: number = calculateRemainingTime(otpTokenExpiry!);
+            setTimer(remainingTime);
+        } catch (error: unknown) {
+            hotToastMessage((error as Error).message, 'error');
+        } finally {
+            setResendOtpIsLoading(false);
+        }
+    };
+
     const handleSubmit = async (e: FormEvent): Promise<void> => {
         try {
-            setIsLoading(true);
+            setVerificationIsLoading(true);
             e.preventDefault();
             if (otp.length < 6 || otp.length > 6) {
                 return;
@@ -53,6 +96,7 @@ const Otp: React.FC = () => {
             const response = await verifyOtpApi({ userId, otp: otpString });
             if (response.data) {
                 hotToastMessage(response.message, 'success');
+                dispatch(clearOtpTokenTimer());
                 if (isSignupOtpPage) {
                     if (isRestaurant) {
                         navigate('/restaurant/auth');
@@ -62,13 +106,11 @@ const Otp: React.FC = () => {
                         navigate('/auth');
                     }
                 }
-
-                if (isForgotPasswordEmailOtpPage) {
-                    navigate('/reset-password', { state: { userId } });
-                }
             }
+        } catch (error: unknown) {
+            hotToastMessage((error as Error).message, 'error');
         } finally {
-            setIsLoading(false);
+            setVerificationIsLoading(false);
         }
     };
 
@@ -102,8 +144,8 @@ const Otp: React.FC = () => {
                             ))}
                     </div>
                     <div className="py-5">
-                        <CustomButton type="submit" disabled={isLoading} className="w-full">
-                            {isLoading ? (
+                        <CustomButton type="submit" disabled={isVerificationLoading} className="w-full">
+                            {isVerificationLoading ? (
                                 <label className="flex items-center gap-4">
                                     Verifying... <LoaderCircle />
                                 </label>
@@ -111,6 +153,13 @@ const Otp: React.FC = () => {
                                 <>Verify</>
                             )}
                         </CustomButton>
+                        <div className="py-2 flex justify-end">
+                            <CustomButton variant="text" onClick={handleResendOtp}>
+                                {timer === 0
+                                    ? `${isResendOtpLoading ? 'sending...' : 'resend otp'}`
+                                    : `${timer} seconds`}
+                            </CustomButton>
+                        </div>
                     </div>
                 </form>
             </div>
