@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { IResponse, IProfile, IProfilesResponse, IUser } from '../../types';
-import { hotToastMessage } from '../../utils/hotToast';
+import { hotToastMessage } from '../../utils';
 import { getProfilesApi, blockUnblockUserApi, searchProfileApi } from '../../api/apiMethods';
 import SearchBar from '../../components/search/SearchBar';
 import Table from '../../components/table/Table';

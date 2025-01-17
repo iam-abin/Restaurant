@@ -8,7 +8,7 @@ import LoaderCircle from '../Loader/LoaderCircle';
 import { useAppSelector } from '../../redux/hooks';
 import { checkoutOrderApi } from '../../api/apiMethods/order';
 import { IAddress, ICart, ICheckoutResponse } from '../../types';
-import { hotToastMessage } from '../../utils/hotToast';
+import { hotToastMessage } from '../../utils';
 import CustomButton from '../Button/CustomButton';
 import { Link } from 'react-router-dom';
 

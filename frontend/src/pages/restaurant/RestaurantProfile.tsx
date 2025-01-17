@@ -1,8 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 
-import { RestaurantFormSchema, restaurantFromSchema } from '../../utils/schema/restaurantSchema';
+import { hotToastMessage, RestaurantFormSchema, restaurantFromSchema } from '../../utils';
 import { updateRestaurantApi } from '../../api/apiMethods';
-import { hotToastMessage } from '../../utils/hotToast';
 import { IResponse, ICuisine, ICuisineResponse, IRestaurant, IRestaurantResponse } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';

@@ -11,10 +11,9 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import LoaderCircle from '../Loader/LoaderCircle';
-import { MenuFormSchema, menuSchema } from '../../utils/schema/menuSchema';
+import { MenuFormSchema, menuSchema, hotToastMessage } from '../../utils';
 import { IResponse } from '../../types/api';
 import { addMenuApi } from '../../api/apiMethods/menu';
-import { hotToastMessage } from '../../utils/hotToast';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { searchCuisineApi } from '../../api/apiMethods/cuisine';
 import { ICuisineResponse1, IMenu } from '../../types';

@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 interface ISearchBarProps {
     onSearch: (searchTerm: string) => void;
     placeholder: string;
+    className?: string;
 }
 
-const SearchBar: React.FC<ISearchBarProps> = ({ placeholder, onSearch }) => {
+const SearchBar: React.FC<ISearchBarProps> = ({ placeholder, onSearch, className }) => {
     const [searchKey, setSearchKey] = useState('');
     const [debouncedSearchKey, setDebouncedSearchKey] = useState('');
 
@@ -28,7 +29,7 @@ const SearchBar: React.FC<ISearchBarProps> = ({ placeholder, onSearch }) => {
         <input
             type="text"
             placeholder={placeholder}
-            className="px-4 py-2 border w-4/12 border-gray-300 rounded-md"
+            className={`${className ? className : 'px-4 py-2 border w-4/12 border-gray-300 rounded-md'}`}
             onChange={(e) => setSearchKey(e.target.value.trim())}
         />
     );

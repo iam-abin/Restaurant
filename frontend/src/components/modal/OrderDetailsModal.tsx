@@ -1,7 +1,7 @@
 import { Typography, Box, Modal, IconButton, Divider, Grid, Backdrop, Fade } from '@mui/material';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import CloseIcon from '@mui/icons-material/Close';
-import { formatDateWithTime } from '../../utils/dateFormat';
+import { formatDateWithTime } from '../../utils';
 import { IRestaurantOrder } from '../../types';
 
 interface IOrderDetailsModalProps {

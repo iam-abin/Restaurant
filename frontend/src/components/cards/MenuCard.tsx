@@ -6,7 +6,7 @@ import MenuModal from '../modal/MenuModal';
 import CustomButton from '../Button/CustomButton';
 import { IMenu, IUser, UserRole } from '../../types';
 import { useAppSelector } from '../../redux/hooks';
-import { checkRole } from '../../utils/role';
+import { checkRole } from '../../utils';
 
 interface IMenuCardProps {
     menu: IMenu;

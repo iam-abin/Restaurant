@@ -6,7 +6,7 @@ import {
     removeCartItemsApi,
     updateQuantityApi,
 } from '../../api/apiMethods/cart';
-import { hotToastMessage } from '../../utils/hotToast';
+import { hotToastMessage } from '../../utils';
 import { ICart, ICartItemsData, ICartQuantityUpdate } from '../../types';
 
 // Async thunk for fetching user cart

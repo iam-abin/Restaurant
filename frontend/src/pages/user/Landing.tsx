@@ -33,7 +33,7 @@ const Landing: React.FC = () => {
                             value={searchText}
                             placeholder="Search restaurant by name, city & country"
                             onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value)}
-                            className="border-2 pl-10 h-11 w-full text-sm border-black shadow-lg rounded-lg"
+                            className="border-2 pl-10 h-11 w-full text-xs md:text-base border-black shadow-lg rounded-lg"
                         />
                     </div>
                     <CustomButton onClick={handleSearchClick}>Search</CustomButton>

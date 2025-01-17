@@ -3,8 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Input, Typography, Divider } from '@mui/material';
 import { Email, Person, Lock, LocalPhone } from '@mui/icons-material';
 
-import { signInSchema, signUpSchema } from '../../utils/schema/userSchema';
-import { hotToastMessage } from '../../utils/hotToast';
+import { hotToastMessage, signInSchema, signUpSchema, checkRole, getRoleFromPath } from '../../utils';
 import { useAppDispatch } from '../../redux/hooks';
 import { googleAuthThunk, signinUser } from '../../redux/thunk/authThunk';
 import { signupApi } from '../../api/apiMethods';
@@ -24,7 +23,6 @@ import {
     GoogleLogin,
     //  useGoogleLogin
 } from '@react-oauth/google';
-import { checkRole, getRoleFromPath } from '../../utils';
 import CustomButton from '../../components/Button/CustomButton';
 import { addOtpTokenTimer } from '../../redux/slice/otpTokenSlice';
 

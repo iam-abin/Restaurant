@@ -1,12 +1,11 @@
 import { Input, Typography } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { emailSchema } from '../../utils/schema/userSchema';
+import { emailSchema, hotToastMessage } from '../../utils';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import { Link, useNavigate } from 'react-router-dom';
 import { ForgotPasswordEmailApi } from '../../api/apiMethods';
 import { IResponse } from '../../types/api';
-import { hotToastMessage } from '../../utils/hotToast';
 import { ISignupResponse } from '../../types';
 import CustomButton from '../../components/Button/CustomButton';
 import { useAppDispatch } from '../../redux/hooks';

@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
-import { IRestaurant, IRestaurantsResponse, IUser } from '../../types';
-import { IResponse } from '../../types/api';
+import { Chip } from '@mui/material';
+import { IRestaurant, IRestaurantsResponse, IUser, IResponse } from '../../types';
 import SearchBar from '../../components/search/SearchBar';
 import Table from '../../components/table/Table';
-import { hotToastMessage } from '../../utils/hotToast';
+import { hotToastMessage } from '../../utils';
 import { blockUnblockUserApi } from '../../api/apiMethods/auth';
 import { getRestaurantsApi, searchRestaurantApi } from '../../api/apiMethods/restaurant';
 import { useConfirmationContext } from '../../context/confirmationContext';
-import { Chip } from '@mui/material';
 import CustomButton from '../../components/Button/CustomButton';
 
 const RestaurantsList: React.FC = () => {

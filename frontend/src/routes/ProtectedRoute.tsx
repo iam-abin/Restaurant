@@ -3,7 +3,7 @@ import { useAppSelector } from '../redux/hooks';
 import { RootState } from '../redux/store';
 import { ReactNode } from 'react';
 import { IUser, UserRole } from '../types';
-import { checkRole } from '../utils/role';
+import { checkRole } from '../utils';
 
 interface RoleProtectedRouteProps {
     children: ReactNode;

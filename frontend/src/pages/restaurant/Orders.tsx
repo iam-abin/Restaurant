@@ -15,7 +15,7 @@ import { getRestaurantOrdersApi, updateOrderStatusApi } from '../../api/apiMetho
 import { useAppSelector } from '../../redux/hooks';
 import OrdersTableRestaurantSkelton from '../../components/shimmer/OrdersTableRestaurantSkelton';
 import { IResponse, IRestaurantOrder, Orders } from '../../types';
-import { hotToastMessage } from '../../utils/hotToast';
+import { hotToastMessage } from '../../utils';
 import OrderDetailsModal from '../../components/modal/OrderDetailsModal';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
 import usePagination from '../../hooks/usePagination';

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { getMyRestaurantApi, updateRestaurantApi } from '../../api/apiMethods/restaurant';
-import { hotToastMessage } from '../../utils/hotToast';
+import { hotToastMessage } from '../../utils';
 import { IRestaurantResponse } from '../../types';
 
 // Async thunk for fetching user profile
