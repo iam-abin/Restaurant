@@ -9,7 +9,8 @@
     "format": "prettier --write 'src/**/*.ts'",
     "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
     "build": "tsc",
-    "start": "cross-env NODE_ENV=production node build/src/index.js"
+    "start": "cross-env NODE_ENV=production node build/src/index.js",
+    "stripe": "stripe listen --forward-to localhost:3000/api/v1/webhook/stripe/confirm-order"
   },
   "author": "abin",
   "license": "ISC",
