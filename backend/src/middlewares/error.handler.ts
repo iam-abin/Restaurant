@@ -5,7 +5,7 @@ import { NodeEnvironment, TokenType } from '../types';
 import { HTTP_STATUS_CODE } from '../constants';
 
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction): void => {
-    const isProduction: boolean = checkNodeEnvironment(NodeEnvironment.PRODUCTION)
+    const isProduction: boolean = checkNodeEnvironment(NodeEnvironment.PRODUCTION);
 
     // log the error details to the error.log file
     winstonLogError(err);

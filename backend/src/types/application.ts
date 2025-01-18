@@ -6,8 +6,8 @@ export type CustomCookieOptions = {
 };
 
 export enum NodeEnvironment {
-    DEVELOPMENT= 'development' ,
-    TEST='test' ,
-    STAGING= 'staging' ,
-    PRODUCTION='production'
-};
+    DEVELOPMENT = 'development',
+    TEST = 'test',
+    STAGING = 'staging',
+    PRODUCTION = 'production',
+}

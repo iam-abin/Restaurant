@@ -25,14 +25,12 @@ import { NodeEnvironment } from './types';
 
 const app: Application = express();
 
-const isProductionENV: boolean = checkNodeEnvironment(NodeEnvironment.PRODUCTION)
+const isProductionENV: boolean = checkNodeEnvironment(NodeEnvironment.PRODUCTION);
 
 // // Set trust proxy
 // app.set('trust proxy', true); // Trust all proxies
 
 // Middlewares
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(helmet());
 app.disable('x-powered-by');
 app.use(
@@ -49,7 +47,15 @@ if (!isProductionENV) app.use(morgan('dev'));
 
 app.use(rateLimiter);
 
-// Routes
+// Webhook route: Use express.raw() to preserve the raw payload as a Buffer.
+// This is necessary for signature verification of Stripe webhooks.
+// It must be defined before express.json(), as express.json() modifies the request body.
+app.use(`${appConfig.API_PREFIX}/webhook`, express.raw({ type: 'application/json' }), orderRoutes);
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Other routes
 app.use(`${appConfig.API_PREFIX}/auth`, authRoutes);
 app.use(`${appConfig.API_PREFIX}/cart`, cartRoutes);
 app.use(`${appConfig.API_PREFIX}/cuisine`, cuisineRoutes);
