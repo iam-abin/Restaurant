@@ -1,10 +1,10 @@
-import { Environment } from '../types/application';
+import { NodeEnvironment } from '../types';
 
 export interface IAppConfig {
     PORT: number;
     DB_NAME: string;
     MONGO_URI: string;
-    NODE_ENVIRONMENT: Environment;
+    NODE_ENVIRONMENT: NodeEnvironment;
     API_PREFIX: string;
     LOG_FILE_PATH: string;
     JWT_ACCESS_SECRET: string;
@@ -36,7 +36,7 @@ const appConfig: Readonly<IAppConfig> = Object.freeze({
     PORT: +process.env.PORT! || 4000,
     DB_NAME: process.env.DB_NAME!,
     MONGO_URI: process.env.MONGODB_CONNECTION_STRING!,
-    NODE_ENVIRONMENT: process.env.NODE_ENV as Environment,
+    NODE_ENVIRONMENT: process.env.NODE_ENV as NodeEnvironment,
     API_PREFIX: '/api/v1',
     LOG_FILE_PATH: 'error.log',
     JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET!,

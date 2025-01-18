@@ -20,10 +20,12 @@ import {
     restaurantRoutes,
 } from './routes';
 import { appConfig } from './config/app.config';
+import { checkNodeEnvironment } from './utils';
+import { NodeEnvironment } from './types';
 
 const app: Application = express();
 
-const isProductionENV: boolean = appConfig.NODE_ENVIRONMENT === 'production';
+const isProductionENV: boolean = checkNodeEnvironment(NodeEnvironment.PRODUCTION)
 
 // // Set trust proxy
 // app.set('trust proxy', true); // Trust all proxies

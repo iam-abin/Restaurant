@@ -1,12 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import { CustomError, NotAuthorizedError } from '../errors';
-import { winstonLogError } from '../utils';
-import { appConfig } from '../config/app.config';
-import { TokenType } from '../types';
+import { checkNodeEnvironment, winstonLogError } from '../utils';
+import { NodeEnvironment, TokenType } from '../types';
 import { HTTP_STATUS_CODE } from '../constants';
 
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction): void => {
-    const isProduction = appConfig.NODE_ENVIRONMENT === 'production';
+    const isProduction: boolean = checkNodeEnvironment(NodeEnvironment.PRODUCTION)
 
     // log the error details to the error.log file
     winstonLogError(err);

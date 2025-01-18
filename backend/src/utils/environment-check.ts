@@ -1,10 +1,11 @@
 import { appConfig } from '../config/app.config';
+import { NodeEnvironment } from '../types';
 
 /**
- * Checks if the current environment is 'production'.
- * This function compares the value of `NODE_ENVIRONMENT` from the appConfig.
- * It returns `true` if the environment is 'production', and `false` otherwise.
+ * Checks the current node environment of the application.
  *
- * @returns {boolean} - `true` if in production environment, `false` otherwise.
+ * @param environment provide the environment name to check
+ * @returns  {boolean} - `true` if in current node environment, matches with the provided one  `false` otherwise.
  */
-export const isProduction = (): boolean => appConfig.NODE_ENVIRONMENT === 'production';
+export const checkNodeEnvironment = (environment: NodeEnvironment): boolean =>
+    appConfig.NODE_ENVIRONMENT === environment;
