@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+
+
+# Navigate to frontend, run linting and formatting
+echo "Running linting and formatting for frontend..."
+cd frontend && npm run lint:fix && npm run format
+if [ $? -ne 0 ]; then
+  echo "✖ Frontend linting or formatting failed."
+  exit 1
+fi
+
+# Navigate to backend, run linting and formatting
+echo "Running linting and formatting for backend..."
+cd ../backend && npm run lint:fix && npm run format
+if [ $? -ne 0 ]; then
+  echo "✖ Backend linting or formatting failed."
+  exit 1
+fi
+
+# Return to the root directory
+cd ..
+
+# Stage all changes
+git add --all
+
+# If everything is okay
+exit 0
