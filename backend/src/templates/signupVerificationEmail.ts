@@ -1,6 +1,6 @@
-export const getEmailVerificationTemplate = function (name: string, otp: string) {
-    const year = new Date().getFullYear(); // Dynamically get the current year
+import { CURRENT_YEAR } from '../constants';
 
+export const getEmailVerificationTemplate = function (name: string, otp: string) {
     const html = `
     <!doctype html>
       <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -69,7 +69,7 @@ export const getEmailVerificationTemplate = function (name: string, otp: string)
                       >
                           <p>RestaurantApp</p>
                           <p>India</p>
-                          <p>&copy; ${year} RestaurantApp. All rights reserved.</p>
+                          <p>&copy; ${CURRENT_YEAR} RestaurantApp. All rights reserved.</p>
                       </div>
                   </div>
               </div>

@@ -2,8 +2,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Input, Typography } from '@mui/material';
 
-import { resetPasswordSchema } from '../../utils/schema/userSchema';
-import { hotToastMessage } from '../../utils/hotToast';
+import { hotToastMessage, resetPasswordSchema } from '../../utils';
 import { resetPasswordApi, verifyResetTokenApi } from '../../api/apiMethods';
 import { IResponse, IResetPassword, IUser } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';

@@ -17,6 +17,7 @@ import {
 } from '../types';
 import { appConfig } from '../config/app.config';
 import { autoInjectable } from 'tsyringe';
+import { HTTP_STATUS_CODE } from '../constants';
 
 @autoInjectable()
 export class AuthController {
@@ -29,7 +30,7 @@ export class AuthController {
 
     public signup = async (req: Request, res: Response): Promise<void> => {
         const signupData: ISignupData | null = await this.userService.signUp(req.body as ISignup);
-        res.status(201).json(
+        res.status(HTTP_STATUS_CODE.CREATED).json(
             createSuccessResponse(
                 `An otp is send to ${signupData?.user?.email || 'email'}, Please verify`,
                 signupData,
@@ -45,7 +46,7 @@ export class AuthController {
         this.setTokenToCookie(res, jwtAccessToken, TokenType.JwtAccessToken);
         this.setTokenToCookie(res, jwtRefreshToken, TokenType.JwtRefreshToken);
 
-        res.status(200).json(createSuccessResponse('Login success', user));
+        res.status(HTTP_STATUS_CODE.OK).json(createSuccessResponse('Login success', user));
     };
 
     public googleAuth = async (req: Request, res: Response): Promise<void> => {
@@ -55,7 +56,7 @@ export class AuthController {
         this.setTokenToCookie(res, jwtAccessToken, TokenType.JwtAccessToken);
         this.setTokenToCookie(res, jwtRefreshToken, TokenType.JwtRefreshToken);
 
-        res.status(200).json(createSuccessResponse('Login success', user));
+        res.status(HTTP_STATUS_CODE.OK).json(createSuccessResponse('Login success', user));
     };
 
     public refresh = async (req: Request, res: Response): Promise<void> => {
@@ -65,11 +66,11 @@ export class AuthController {
             const { jwtAccessToken }: { jwtAccessToken: string } =
                 await this.userService.jwtRefresh(jwtRefreshToken);
             this.setTokenToCookie(res, jwtAccessToken, TokenType.JwtAccessToken);
-            res.status(200).json(createSuccessResponse('Token refreshed successfully'));
+            res.status(HTTP_STATUS_CODE.OK).json(createSuccessResponse('Token refreshed successfully'));
         } catch {
             res.clearCookie(TokenType.JwtAccessToken);
             res.clearCookie(TokenType.JwtRefreshToken);
-            res.status(400).json('Token refresh failed');
+            res.status(HTTP_STATUS_CODE.BAD_REQUEST).json('Token refresh failed');
         }
     };
 
@@ -99,13 +100,15 @@ export class AuthController {
     public verifyOtp = async (req: Request, res: Response): Promise<void> => {
         const { userId, otp } = req.body as Omit<IOtpToken, 'resetToken'>;
         const user: IUserDocument | null = await this.otpService.verifyOtp(userId, otp);
-        res.status(200).json(createSuccessResponse('Otp verified successfully, Pleast login', user));
+        res.status(HTTP_STATUS_CODE.OK).json(
+            createSuccessResponse('Otp verified successfully, Pleast login', user),
+        );
     };
 
     public resendOtp = async (req: Request, res: Response): Promise<void> => {
         const { userId } = req.body as Pick<IOtpToken, 'userId'>;
         const otpData: IOtpTokenData = await this.otpService.resendOtp(userId);
-        res.status(200).json(
+        res.status(HTTP_STATUS_CODE.OK).json(
             createSuccessResponse(
                 `An otp is send to ${otpData?.user?.email || 'your email'}, Please verify`,
                 otpData,
@@ -116,7 +119,7 @@ export class AuthController {
     public forgotPassword = async (req: Request, res: Response): Promise<void> => {
         const { email } = req.body as Pick<IUser, 'email'>;
         const user: IOtpTokenData | null = await this.otpService.forgotPassword(email);
-        res.status(200).json(
+        res.status(HTTP_STATUS_CODE.OK).json(
             createSuccessResponse(`Password reset link sent to ${email}, Please verify`, user),
         );
     };
@@ -124,7 +127,7 @@ export class AuthController {
     public verifyResetToken = async (req: Request, res: Response): Promise<void> => {
         const { resetToken } = req.body as Pick<IOtpToken, 'resetToken'>;
         const user: IUserDocument | null = await this.otpService.verifyResetToken(resetToken);
-        res.status(200).json(
+        res.status(HTTP_STATUS_CODE.OK).json(
             createSuccessResponse('Reset Token verified successfully, Pleast Reset your password', user),
         );
     };
@@ -132,13 +135,13 @@ export class AuthController {
     public resetPassword = async (req: Request, res: Response): Promise<void> => {
         const { userId, password } = req.body as IPassword;
         const user: IUserDocument | null = await this.otpService.resetPassword(userId, password);
-        res.status(200).json(createSuccessResponse('Password reseted successfully', user));
+        res.status(HTTP_STATUS_CODE.OK).json(createSuccessResponse('Password reseted successfully', user));
     };
 
     public blockUnblockUser = async (req: Request, res: Response): Promise<void> => {
         const { userId } = req.params;
         const user: IUserDocument | null = await this.userService.updateBlockStatus(userId);
-        res.status(200).json(
+        res.status(HTTP_STATUS_CODE.OK).json(
             createSuccessResponse(`user ${user?.isBlocked ? 'blocked' : 'unBlocked'}  successfully`, user),
         );
     };
@@ -146,6 +149,6 @@ export class AuthController {
     public logout = async (req: Request, res: Response): Promise<void> => {
         res.clearCookie(TokenType.JwtAccessToken);
         res.clearCookie(TokenType.JwtRefreshToken);
-        res.status(200).json(createSuccessResponse('Successfully logged out'));
+        res.status(HTTP_STATUS_CODE.OK).json(createSuccessResponse('Successfully logged out'));
     };
 }

@@ -2,10 +2,9 @@ import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { resendOtpApi, verifyOtpApi } from '../../api/apiMethods';
-import { hotToastMessage } from '../../utils/hotToast';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import { IOtpResponse, IResponse, UserRole } from '../../types';
-import { calculateRemainingTime, checkPathIsSame, checkRole } from '../../utils';
+import { calculateRemainingTime, checkPathIsSame, checkRole, hotToastMessage } from '../../utils';
 import CustomButton from '../../components/Button/CustomButton';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { addOtpTokenTimer, clearOtpTokenTimer } from '../../redux/slice/otpTokenSlice';

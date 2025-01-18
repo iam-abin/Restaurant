@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { addAsyncThunkCases } from '../../utils/addCase';
+import { addAsyncThunkCases } from '../../utils';
 import {
     addToCart,
     changeCartItemQuantity,

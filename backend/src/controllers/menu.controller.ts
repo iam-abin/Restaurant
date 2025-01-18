@@ -4,6 +4,7 @@ import { createSuccessResponse } from '../utils';
 import { IMenuDocument } from '../database/model';
 import { MenuService } from '../services';
 import { IJwtPayload, IMenu, MenuIdParam, Menus, Pagination, RestaurantIdParam } from '../types';
+import { HTTP_STATUS_CODE } from '../constants';
 
 @autoInjectable()
 export class MenuController {
@@ -17,7 +18,7 @@ export class MenuController {
             req.body as Omit<IMenu, 'imageUrl' | 'restaurantId' | 'cuisineId'>,
             file,
         );
-        res.status(201).json(createSuccessResponse('Menu created successfully', menu));
+        res.status(HTTP_STATUS_CODE.CREATED).json(createSuccessResponse('Menu created successfully', menu));
     };
 
     public getMenus = async (req: Request, res: Response): Promise<void> => {
@@ -25,13 +26,13 @@ export class MenuController {
         const { page = 1, limit = 10 } = req.query as Pagination;
 
         const menu: Menus = await this.menuService.getMenus(restaurantId, page as number, limit as number);
-        res.status(200).json(createSuccessResponse('Menus fetched successfully', menu));
+        res.status(HTTP_STATUS_CODE.OK).json(createSuccessResponse('Menus fetched successfully', menu));
     };
 
     public getMenu = async (req: Request, res: Response): Promise<void> => {
         const { menuId } = req.params as MenuIdParam;
         const menu: IMenuDocument = await this.menuService.getMenu(menuId);
-        res.status(200).json(createSuccessResponse('Menu item fetched successfully', menu));
+        res.status(HTTP_STATUS_CODE.OK).json(createSuccessResponse('Menu item fetched successfully', menu));
     };
 
     public editMenu = async (req: Request, res: Response): Promise<void> => {
@@ -45,6 +46,6 @@ export class MenuController {
             req.body as Partial<IMenu>,
             file,
         );
-        res.status(200).json(createSuccessResponse('Menus updated successfully', menu));
+        res.status(HTTP_STATUS_CODE.OK).json(createSuccessResponse('Menus updated successfully', menu));
     };
 }

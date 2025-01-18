@@ -1,5 +1,5 @@
 import { axiosInstance } from './axiosInstance';
-import { hotToastMessage } from '../utils/hotToast';
+import { hotToastMessage } from '../utils';
 import { IResponse } from '../types/api';
 import { AxiosError } from 'axios';
 

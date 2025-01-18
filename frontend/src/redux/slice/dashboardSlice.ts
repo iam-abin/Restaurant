@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { addAsyncThunkCases } from '../../utils/addCase';
+import { addAsyncThunkCases } from '../../utils';
 import { IAdminDashboard } from '../../types';
 import { fetchAdminDashboard } from '../thunk/dashboardThunk';
 

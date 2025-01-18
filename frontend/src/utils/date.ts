@@ -34,3 +34,9 @@ export const formatDateWithTime = (dateString: string): string => {
 export const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString();
 };
+
+/**
+ *
+ * @returns Returns the current year, using local time.
+ */
+export const getThisYear = () => new Date().getFullYear();

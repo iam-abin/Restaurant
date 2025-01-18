@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { editMenuApi, getMenusApi } from '../../api/apiMethods/menu';
 import { IMenu, IResponse, Menus } from '../../types';
-import { hotToastMessage } from '../../utils/hotToast';
+import { hotToastMessage } from '../../utils';
 
 // Async thunk for fetching user menus
 export const fetchMenus = createAsyncThunk<

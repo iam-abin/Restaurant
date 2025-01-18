@@ -1,78 +1,151 @@
-import { Link, useLocation } from 'react-router-dom';
-import { Drawer, IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import Button from '@mui/material/Button';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import { Avatar, IconButton } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
-import Avatar from '@mui/material/Avatar';
+import { Link, useLocation } from 'react-router-dom';
 import { useAppSelector } from '../../redux/hooks';
-import { isActiveLink } from '../../utils';
 import { IUser } from '../../types';
-import { INavItems } from '../../types/navbar';
+import { isActiveLink } from '../../utils';
+import CloseIcon from '@mui/icons-material/Close';
+
+type Anchor = 'right';
+
+interface INavItems {
+    name: string;
+    to: string;
+    icon: React.ReactNode;
+    value: string;
+}
 
 interface IDrawerProps {
-    anchor: 'right' | 'left';
-    isDrawerOpen: boolean;
-    handleCloseDrawer: () => void;
+    anchor: Anchor;
     handleLogoutButton: () => void;
     navItems: INavItems[];
 }
 
-const MobileDrawer: React.FC<IDrawerProps> = ({
-    anchor,
-    isDrawerOpen,
-    handleCloseDrawer,
-    handleLogoutButton,
-    navItems,
-}) => {
-    const location = useLocation();
+const MobileDrawer: React.FC<IDrawerProps> = ({ anchor, handleLogoutButton, navItems }) => {
     const { myProfile } = useAppSelector((store) => store.profileReducer);
+    const location = useLocation();
+    const [state, setState] = React.useState({
+        right: false,
+    });
 
-    return (
-        <Drawer anchor={anchor} open={isDrawerOpen} onClose={handleCloseDrawer}>
-            <div className="flex flex-col gap-10 p-4 h-screen min-w-[250px]">
+    const toggleDrawer =
+        (anchor: Anchor, open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+            if (
+                event.type === 'keydown' &&
+                ((event as React.KeyboardEvent).key === 'Tab' ||
+                    (event as React.KeyboardEvent).key === 'Shift')
+            ) {
+                return;
+            }
+
+            setState({ ...state, [anchor]: open });
+        };
+
+    const list = (anchor: Anchor) => (
+        <Box
+            sx={{
+                width: 250,
+                bgcolor: '#f5f5f5',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+            }}
+            role="presentation"
+            onClick={toggleDrawer(anchor, false)}
+            onKeyDown={toggleDrawer(anchor, false)}
+        >
+            <Box>
                 {/* Top */}
-                <div className="flex  justify-between items-center">
+                <div className="flex justify-between items-center px-4 py-3">
                     <h2 className="font-bold text-xl">Select</h2>
-                    <IconButton onClick={handleCloseDrawer}>
+                    <IconButton className="hover:cursor-pointer">
                         <CloseIcon />
                     </IconButton>
                 </div>
-                <div className="flex flex-col justify-between h-full">
-                    {/* Middle */}
-                    <div className="flex flex-col justify-between gap-8 mt-4">
-                        {navItems.map((item) => (
+
+                <Divider />
+                <List>
+                    {navItems.map(({ icon, name, to, value }) => (
+                        <ListItem key={name} disablePadding>
                             <Link
-                                key={item.to}
-                                to={item.to}
-                                className={`flex bg-yellow-200 items-center gap-2 text-gray-800 ${isActiveLink(location, item.to)}`}
-                                onClick={handleCloseDrawer}
+                                to={to}
+                                className={`flex w-full items-center gap-2 text-gray-800 ${isActiveLink(location, to)}`}
                             >
-                                {item?.icon}
-                                <span>{item.value}</span>
+                                <ListItemButton
+                                    sx={{
+                                        width: '100%',
+                                        '&:hover': {
+                                            backgroundColor: 'rgba(0, 0, 0, 0.08)',
+                                        },
+                                    }}
+                                >
+                                    <ListItemIcon>{icon}</ListItemIcon>
+                                    <ListItemText primary={value} />
+                                </ListItemButton>
                             </Link>
-                        ))}
+                        </ListItem>
+                    ))}
+                </List>
+            </Box>
+            {/* Bottom */}
+            <Box>
+                <Divider />
+                {/* Logout Button */}
+                <div className="flex justify-between pb-4 px-4">
+                    <div className="flex items-center gap-2 mt-4">
+                        <Avatar src={`${myProfile?.imageUrl ? myProfile?.imageUrl : '/broken-image.jpg'}`} />
+                        <span>{(myProfile?.userId as IUser)?.name || 'Profile'}</span>
                     </div>
+                    <div
+                        className="flex items-center gap-2 mt-4 cursor-pointer text-red-500"
+                        onClick={handleLogoutButton}
+                    >
+                        {/* <Tooltip title='asdf'> */}
 
-                    {/* Bottom */}
-                    <div className="flex justify-between pr-5">
-                        <div className="flex items-center gap-2 mt-4">
-                            <Avatar
-                                src={`${myProfile?.imageUrl ? myProfile?.imageUrl : '/broken-image.jpg'}`}
-                            />
-                            <span>{(myProfile?.userId as IUser)?.name || 'Profile'}</span>
-                        </div>
-                        <div
-                            className="flex items-center gap-2 mt-4 cursor-pointer text-red-500"
-                            onClick={handleLogoutButton}
-                        >
-                            {/* <Tooltip title='asdf'> */}
-
-                            <LogoutIcon />
-                            {/* </Tooltip> */}
-                        </div>
+                        <LogoutIcon />
+                        {/* </Tooltip> */}
                     </div>
                 </div>
-            </div>
-        </Drawer>
+            </Box>
+        </Box>
+    );
+
+    return (
+        <div>
+            {([anchor] as const).map((anchor) => (
+                <React.Fragment key={anchor}>
+                    <Button onClick={toggleDrawer(anchor, true)}>
+                        <IconButton>
+                            <MenuIcon />
+                        </IconButton>
+                    </Button>
+                    <Drawer
+                        anchor={anchor}
+                        open={state[anchor]}
+                        onClose={toggleDrawer(anchor, false)}
+                        sx={{
+                            '& .MuiDrawer-paper': {
+                                transition: 'transform 0.3s ease-in-out',
+                            },
+                        }}
+                    >
+                        {list(anchor)}
+                    </Drawer>
+                </React.Fragment>
+            ))}
+        </div>
     );
 };
 

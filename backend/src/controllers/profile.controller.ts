@@ -11,6 +11,7 @@ import {
     ProfileUpdate,
     SearchQueryParams,
 } from '../types';
+import { HTTP_STATUS_CODE } from '../constants';
 
 @autoInjectable()
 export class ProfileController {
@@ -19,7 +20,7 @@ export class ProfileController {
     public getProfile = async (req: Request, res: Response): Promise<void> => {
         const { userId } = req.currentUser as IJwtPayload;
         const user: IProfileDocument | null = await this.profileService.getProfile(userId);
-        res.status(200).json(createSuccessResponse('User Profile', user));
+        res.status(HTTP_STATUS_CODE.OK).json(createSuccessResponse('User Profile', user));
     };
 
     public getProfiles = async (req: Request, res: Response): Promise<void> => {
@@ -28,7 +29,9 @@ export class ProfileController {
             page as number,
             limit as number,
         );
-        res.status(200).json(createSuccessResponse('User Profiles fetched successfully', profilesData));
+        res.status(HTTP_STATUS_CODE.OK).json(
+            createSuccessResponse('User Profiles fetched successfully', profilesData),
+        );
     };
 
     public searchProfile = async (req: Request, res: Response): Promise<void> => {
@@ -38,7 +41,9 @@ export class ProfileController {
             page as number,
             limit as number,
         );
-        res.status(200).json(createSuccessResponse('User Profiles fetched successfully', profilesData));
+        res.status(HTTP_STATUS_CODE.OK).json(
+            createSuccessResponse('User Profiles fetched successfully', profilesData),
+        );
     };
 
     public editProfile = async (req: Request, res: Response): Promise<void> => {
@@ -47,6 +52,6 @@ export class ProfileController {
             userId,
             req.body as ProfileUpdate,
         );
-        res.status(200).json(createSuccessResponse('Profile updated successfully', user));
+        res.status(HTTP_STATUS_CODE.OK).json(createSuccessResponse('Profile updated successfully', user));
     };
 }

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { signinApi, logoutApi, googleAuthApi } from '../../api/apiMethods/auth';
 import { IGoogleAuth, ISignin, IUser } from '../../types';
-import { hotToastMessage } from '../../utils/hotToast';
+import { hotToastMessage } from '../../utils';
 import { IResponse } from '../../types/api';
 
 // Async thunk for user sign-in

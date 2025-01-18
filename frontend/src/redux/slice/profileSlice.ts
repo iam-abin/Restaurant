@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchUserProfile, updateUserProfile } from '../thunk/profileThunk';
-import { addAsyncThunkCases } from '../../utils/addCase';
+import { addAsyncThunkCases } from '../../utils';
 import { IProfile } from '../../types';
 
 interface IProfileSlice {

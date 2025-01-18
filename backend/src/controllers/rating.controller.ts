@@ -4,6 +4,7 @@ import { createSuccessResponse } from '../utils';
 import { IRatingDocument } from '../database/model';
 import { RatingService } from '../services';
 import { IJwtPayload, IRating } from '../types';
+import { HTTP_STATUS_CODE } from '../constants';
 
 @autoInjectable()
 export class RatingController {
@@ -15,6 +16,8 @@ export class RatingController {
             userId,
             req.body as Omit<IRating, 'userId'>,
         );
-        res.status(201).json(createSuccessResponse('Rating updated successfully', rating));
+        res.status(HTTP_STATUS_CODE.CREATED).json(
+            createSuccessResponse('Rating updated successfully', rating),
+        );
     };
 }

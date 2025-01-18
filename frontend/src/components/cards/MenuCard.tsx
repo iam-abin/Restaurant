@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import MenuModal from '../modal/MenuModal';
 import CustomButton from '../Button/CustomButton';
 import { IMenu, IUser, UserRole } from '../../types';
 import { useAppSelector } from '../../redux/hooks';
-import { checkRole } from '../../utils/role';
+import { checkRole } from '../../utils';
 
 interface IMenuCardProps {
     menu: IMenu;
@@ -33,15 +32,7 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu, addItemToCartHandler }) => {
     };
 
     return (
-        <Card
-            sx={{
-                width: {
-                    sm: 12 / 12,
-                    md: 11 / 12,
-                    lg: 10 / 12,
-                },
-            }}
-        >
+        <Card className="w-72 md:w-10/12">
             {/* modal start */}
             {menu && isRestaurant && (
                 <MenuModal
@@ -61,20 +52,8 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu, addItemToCartHandler }) => {
                     </div>
                 )}
 
-                <div className="w-full md:w-80">
-                    <CardMedia
-                        component="img"
-                        alt="green iguana"
-                        sx={{
-                            height: 200, // Fixed height
-                            width: {
-                                sm: 300,
-                                md: 200,
-                            },
-                            objectFit: 'fill',
-                        }}
-                        image={menu.imageUrl}
-                    />
+                <div className="xs:w-6/8 md:w-72">
+                    <img src={menu.imageUrl} alt={menu.name} className="w-full h-48 object-cover" />
                 </div>
 
                 <CardContent>
@@ -85,11 +64,15 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu, addItemToCartHandler }) => {
                         component="p"
                         sx={{
                             display: '-webkit-box',
-                            WebkitLineClamp: 3,
+                            WebkitLineClamp: {
+                                xs: 3,
+                                sm: 2,
+                            },
                             WebkitBoxOrient: 'vertical',
                             width: {
-                                xs: 100,
-                                sm: 100,
+                                xs: '100%',
+                                // custom: 450,
+                                sm: '100%',
                                 md: 450,
                             },
                             overflow: 'hidden',

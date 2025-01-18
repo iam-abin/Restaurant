@@ -15,6 +15,7 @@ import {
     SearchFilterData,
     SearchQueryParams,
 } from '../types';
+import { HTTP_STATUS_CODE } from '../constants';
 
 @autoInjectable()
 export class RestaurantController {
@@ -28,13 +29,17 @@ export class RestaurantController {
             req.body as IRestaurantUpdate,
             file,
         );
-        res.status(200).json(createSuccessResponse('Restaurant updated successfully', restaurants));
+        res.status(HTTP_STATUS_CODE.OK).json(
+            createSuccessResponse('Restaurant updated successfully', restaurants),
+        );
     };
 
     public getMyRestaurant = async (req: Request, res: Response): Promise<void> => {
         const { userId } = req.currentUser as IJwtPayload;
         const restaurant: IRestaurantWithCuisines = await this.restaurantService.getMyRestaurant(userId);
-        res.status(200).json(createSuccessResponse('Your restaurant fetched successfully', restaurant));
+        res.status(HTTP_STATUS_CODE.OK).json(
+            createSuccessResponse('Your restaurant fetched successfully', restaurant),
+        );
     };
 
     public getARestaurant = async (req: Request, res: Response): Promise<void> => {
@@ -44,7 +49,9 @@ export class RestaurantController {
             restaurantId,
             userId,
         );
-        res.status(200).json(createSuccessResponse('Restaurant fetched successfully', restaurant));
+        res.status(HTTP_STATUS_CODE.OK).json(
+            createSuccessResponse('Restaurant fetched successfully', restaurant),
+        );
     };
 
     public getRestaurants = async (req: Request, res: Response): Promise<void> => {
@@ -53,7 +60,9 @@ export class RestaurantController {
             page as number,
             limit as number,
         );
-        res.status(200).json(createSuccessResponse('Restaurants fetched successfully', restaurantsData));
+        res.status(HTTP_STATUS_CODE.OK).json(
+            createSuccessResponse('Restaurants fetched successfully', restaurantsData),
+        );
     };
 
     public searchRestaurant = async (req: Request, res: Response): Promise<void> => {
@@ -63,7 +72,9 @@ export class RestaurantController {
             page as number,
             limit as number,
         );
-        res.status(200).json(createSuccessResponse('User Profiles fetched successfully', profilesData));
+        res.status(HTTP_STATUS_CODE.OK).json(
+            createSuccessResponse('User Profiles fetched successfully', profilesData),
+        );
     };
 
     public searchFilterRestaurant = async (req: Request, res: Response): Promise<void> => {
@@ -78,6 +89,8 @@ export class RestaurantController {
             page: page as number,
             limit: limit as number,
         });
-        res.status(200).json(createSuccessResponse('Searched restaurants fetched successfully', restaurant));
+        res.status(HTTP_STATUS_CODE.OK).json(
+            createSuccessResponse('Searched restaurants fetched successfully', restaurant),
+        );
     };
 }

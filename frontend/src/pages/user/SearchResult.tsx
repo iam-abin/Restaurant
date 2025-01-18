@@ -1,7 +1,7 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Chip } from '@mui/material';
-import { Search } from '@mui/icons-material';
+import { Chip, Drawer, IconButton, Box } from '@mui/material';
+import { Search, FilterList } from '@mui/icons-material';
 
 import { getCuisinesApi, searchFilterRestaurantApi } from '../../api/apiMethods';
 import { ICuisineResponse1, IResponse, ISearchResult, SearchResponse } from '../../types';
@@ -13,6 +13,7 @@ import Filter from '../../components/Filter';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
 import usePagination from '../../hooks/usePagination';
 import CustomButton from '../../components/Button/CustomButton';
+import SearchBar from '../../components/search/SearchBar';
 
 const SearchResult: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -20,10 +21,12 @@ const SearchResult: React.FC = () => {
     const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
     const [searchResults, setSearchResults] = useState<ISearchResult[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState<boolean>(false);
     const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
 
     const params = useParams();
     const searchText: string = params.searchText || '';
+
     const fetchRestaurants = async (): Promise<void> => {
         setIsLoading(true);
         try {
@@ -64,49 +67,43 @@ const SearchResult: React.FC = () => {
         fetchRestaurants();
     };
 
-    const handleSearchKeyChange = (e: ChangeEvent<HTMLInputElement>): void => {
-        if (e.target.value === '') fetchRestaurants();
-        setSearchQuery(e.target.value);
-    };
-
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Backspace') {
-            if (e.ctrlKey) {
-                // Handle Ctrl + Backspace: Remove the last word
-                const words = searchQuery.trim().split(' ');
-                words.pop(); // Remove the last word
-                setSearchQuery(words.join(' '));
-                e.preventDefault(); // Prevent default behavior
-            } else if (searchQuery.length > 0) {
-                // Handle normal Backspace: Remove the last character
-                setSearchQuery((prev) => prev.slice(0, -1));
-            }
-        }
-    };
-
     return (
-        <div className="flex flex-col  md:flex-row justify-between gap-1  bg-violet-300 my-5">
-            {/* left side */}
-            <div className="bg-red-100  p-3 rounded-lg">
+        <div className="flex flex-col md:flex-row justify-between gap-1 my-5">
+            {/* Left Drawer Toggle */}
+            <div className="block md:hidden">
+                <IconButton onClick={() => setIsFilterDrawerOpen(true)}>
+                    <FilterList />
+                </IconButton>
+            </div>
+            {/* Filter Drawer */}
+            <Drawer anchor="left" open={isFilterDrawerOpen} onClose={() => setIsFilterDrawerOpen(false)}>
+                <Box className="p-3" role="presentation">
+                    <Filter
+                        filterArray={selectedFilters}
+                        setSelectedFilters={setSelectedFilters}
+                        filtersList={filtersList}
+                    />
+                </Box>
+            </Drawer>
+
+            {/* Left Filter Panel for Larger Screens */}
+            <div className="hidden md:block shadow-2xl  p-3 rounded-lg">
                 <Filter
                     filterArray={selectedFilters}
                     setSelectedFilters={setSelectedFilters}
                     filtersList={filtersList}
                 />
             </div>
-            {/* right side */}
-            <div className="flex-col bg-green-100 py-3 rounded-lg w-full">
+
+            {/* Right Side */}
+            <div className="flex-col shadow-2xl px-7 py-3 rounded-lg w-full">
                 <div className="relative flex items-center gap-1">
                     <div className="w-full">
                         <Search className="absolute text-gray-500 inset-y-3 left-2" />
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            placeholder="Search by restaurant & cuisines"
-                            onChange={(e) => handleSearchKeyChange(e)}
-                            onKeyDown={handleKeyDown}
-                            onKeyPress={(e) => e.key === 'Enter' && fetchRestaurants()}
-                            className="border-2 pl-10 h-11 w-full border-black shadow-lg rounded-lg"
+                        <SearchBar
+                            className="border-2 pl-10 text-xs md:text-base h-11 w-full border-black shadow-lg rounded-lg"
+                            placeholder={'search by restaurant& cuisines'}
+                            onSearch={setSearchQuery}
                         />
                     </div>
                     <CustomButton onClick={handleSearchButton} variant="contained" disabled={isLoading}>
@@ -127,18 +124,15 @@ const SearchResult: React.FC = () => {
                 </div>
 
                 {isLoading ? (
-                    <div className="flex flex-wrap justify-center md:justify-start gap-3 md:gap-2  px-7 ">
+                    <div className="flex flex-wrap justify-center md:justify-start gap-3 md:gap-2">
                         <RestaurantCardSkeleton />
                         <RestaurantCardSkeleton />
                         <RestaurantCardSkeleton />
                     </div>
                 ) : searchResults.length ? (
-                    <div className="flex flex-wrap justify-center md:justify-start gap-3 md:gap-2  px-7">
+                    <div className="flex flex-wrap justify-center md:justify-start gap-3 md:gap-2 ">
                         {searchResults.map((restaurant, index) => (
-                            <>
-                                <RestaurantCard key={index} restaurant={restaurant} />
-                                <RestaurantCardSkeleton />
-                            </>
+                            <RestaurantCard key={index} restaurant={restaurant} />
                         ))}
                     </div>
                 ) : (
