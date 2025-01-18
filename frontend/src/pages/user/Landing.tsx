@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from '@mui/icons-material';
 
-import PizzaImage from '../../assets/hero_pizza.png';
+import PizzaImage from '../../assets/landing/hero_pizza.png';
 import CustomButton from '../../components/Button/CustomButton';
 
 const Landing: React.FC = () => {

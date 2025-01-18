@@ -11,7 +11,7 @@ import {
 import { ICart, IUser, UserRole } from '../../types';
 import TableCart from '../../components/table/TableCart';
 import CheckoutReviewModal from '../../components/modal/CheckoutReviewModal';
-import CartEmptyGif from '../../assets/cart-is-empty.jpeg';
+import CartEmptyGif from '../../assets/cart/cart-is-empty.jpeg';
 import usePagination from '../../hooks/usePagination';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
 import { useConfirmationContext } from '../../context/confirmationContext';

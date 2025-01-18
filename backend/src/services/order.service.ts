@@ -95,7 +95,8 @@ export class OrderService {
                 restaurantId,
                 quantity: item.quantity,
                 menuItemId: (item.itemId as IMenuDocument)._id.toString(),
-                menuItemPrice: (item.itemId as IMenuDocument)?.salePrice ?? (item.itemId as IMenuDocument).price,
+                menuItemPrice:
+                    (item.itemId as IMenuDocument)?.salePrice ?? (item.itemId as IMenuDocument).price,
             }));
 
             // Adding ordered items to OrderedItems collection
