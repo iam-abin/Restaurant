@@ -95,7 +95,8 @@ export class OrderService {
                 restaurantId,
                 quantity: item.quantity,
                 menuItemId: (item.itemId as IMenuDocument)._id.toString(),
-                menuItemPrice: (item.itemId as IMenuDocument).price,
+                menuItemPrice:
+                    (item.itemId as IMenuDocument)?.salePrice ?? (item.itemId as IMenuDocument).price,
             }));
 
             // Adding ordered items to OrderedItems collection
@@ -176,38 +177,33 @@ export class OrderService {
 
     public confirmOrder = async (
         status: string,
-        requestBody: string | Buffer,
-        signature: string | Buffer | Array<string>,
+        requestBody: Buffer,
+        stripeSignature: string | Buffer | Array<string>,
     ): Promise<IOrderDocument | null> => {
         const webhookEndPointSecret: string = appConfig.STRIPE_WEBHOOK_ENDPOINT_SECRET;
 
         const event: Stripe.Event = stripeInstance.webhooks.constructEvent(
-            JSON.stringify(requestBody),
-            signature,
+            requestBody,
+            stripeSignature,
             webhookEndPointSecret,
         );
+
         // Handle the checkout session completed event
-        if (event.type !== 'checkout.session.completed') {
-            throw new Error('Payment confirmation failed');
+        if (event.type === 'checkout.session.completed') {
+            const checkoutSession = event.data.object as Stripe.Checkout.Session;
+
+            if (!checkoutSession.metadata?.orderId)
+                throw new Error('Order ID is missing in the session metadata');
+
+            const order: IOrderDocument | null = await this.orderRepository.findOrderById(
+                checkoutSession.metadata.orderId!,
+            );
+            if (!order) throw new NotFoundError('Order not found');
+
+            const confirmedOrder = this.orderRepository.updateOrderStatus(order._id.toString(), status);
+            return confirmedOrder;
         }
-        const checkoutSession = event.data.object as Stripe.Checkout.Session;
-
-        if (!checkoutSession.metadata?.orderId)
-            throw new Error('Order ID is missing in the session metadata');
-
-        const order: IOrderDocument | null = await this.orderRepository.findOrder(
-            checkoutSession.metadata.orderId!,
-        );
-
-        if (!order) throw new NotFoundError('Order not found');
-
-        const confirmedOrder = this.orderRepository.updateOrderStatus(order._id.toString(), status);
-        // Update the order with the amount and status
-        // if (checkoutSession.amount_total) {
-        //     order.totalAmount = checkoutSession.amount_total;
-        // }
-
-        return confirmedOrder;
+        return null;
     };
 
     public updateOrderStatus = async (
@@ -215,7 +211,7 @@ export class OrderService {
         status: OrderStatus,
         ownerId: string,
     ): Promise<IOrderDocument | null> => {
-        const order: IOrderDocument | null = await this.orderRepository.findOrder(orderId);
+        const order: IOrderDocument | null = await this.orderRepository.findOrderById(orderId);
         if (!order) throw new NotFoundError('Order not found');
         if ('ownerId' in order.restaurantId && order.restaurantId.ownerId.toString() !== ownerId)
             throw new ForbiddenError('You cannot update other restaurants order status');

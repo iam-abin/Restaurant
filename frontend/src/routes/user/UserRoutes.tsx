@@ -9,7 +9,7 @@ const SearchResult = lazy(() => import('../../pages/user/SearchResult'));
 const RestaurantDetails = lazy(() => import('../../pages/common/RestaurantDetails'));
 const Cart = lazy(() => import('../../pages/user/Cart'));
 const OrdersUser = lazy(() => import('../../pages/user/OrdersUser'));
-const Success = lazy(() => import('../../pages/user/Success'));
+const PaymentSuccess = lazy(() => import('../../pages/user/PaymentSuccess'));
 
 const UserRoutes = {
     path: '/',
@@ -25,7 +25,7 @@ const UserRoutes = {
         { path: '/user/restaurant/:restaurantId', element: <RestaurantDetails /> },
         { path: '/cart/:restaurantId', element: <Cart /> },
         { path: '/orders', element: <OrdersUser /> },
-        { path: '/order/status', element: <Success /> },
+        { path: '/order/status', element: <PaymentSuccess /> },
     ],
 };
 

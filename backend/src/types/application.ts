@@ -5,4 +5,9 @@ export type CustomCookieOptions = {
     maxAge?: number;
 };
 
-export type Environment = 'development' | 'test' | 'staging' | 'production';
+export enum NodeEnvironment {
+    DEVELOPMENT = 'development',
+    TEST = 'test',
+    STAGING = 'staging',
+    PRODUCTION = 'production',
+}

@@ -1,5 +1,7 @@
 import { createLogger, transports, format, Logger } from 'winston';
 import { appConfig } from '../config/app.config';
+import { NodeEnvironment } from '../types';
+import { checkNodeEnvironment } from './environment-check';
 
 const { combine, timestamp, printf } = format;
 
@@ -28,5 +30,5 @@ const winstonLogger: Logger = createLogger({
  * @param {Error} err - The error object that needs to be logged.
  */
 export const winstonLogError = (err: Error): void => {
-    if (appConfig.NODE_ENVIRONMENT !== 'test') winstonLogger.error(`💥 ${err}\n${err.stack}`);
+    if (!checkNodeEnvironment(NodeEnvironment.TEST)) winstonLogger.error(`💥 ${err}\n${err.stack}`);
 };

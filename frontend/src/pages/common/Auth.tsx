@@ -14,9 +14,9 @@ import { ISignup, ISignupResponse, UserRole } from '../../types';
 import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
 import { fetchUserProfile } from '../../redux/thunk/profileThunk';
 
-import AuthRestaurantImage from '../../assets/auth-restaurant.png';
-import AuthUserImage from '../../assets/auth-user.png';
-import AuthAdminImage from '../../assets/auth-admin.png';
+import AuthRestaurantImage from '../../assets/auth/auth-restaurant.png';
+import AuthUserImage from '../../assets/auth/auth-user.png';
+import AuthAdminImage from '../../assets/auth/auth-admin.png';
 
 import {
     CredentialResponse,

@@ -19,7 +19,7 @@ router.get(
 
 router.post('/payment/checkout', checkCurrentUser, auth(UserRole.USER), orderController.addOrder);
 
-router.post('/webhook', express.raw({ type: 'application/json' }), orderController.confirmOrderStripeWebhook);
+router.post('/stripe/confirm-order', orderController.confirmOrderStripeWebhook);
 
 router.get(
     '/restaurant/:restaurantId',

@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from '@mui/icons-material';
 
-import PizzaImage from '../../assets/hero_pizza.png';
+import PizzaImage from '../../assets/landing/hero_pizza.png';
 import CustomButton from '../../components/Button/CustomButton';
 
 const Landing: React.FC = () => {
@@ -22,7 +22,7 @@ const Landing: React.FC = () => {
                         Order Food anytime & anywhere
                     </h1>
                     <p className="text-gray-500">
-                        Hey! Our Delicios food is waiting for you, we are always near to you{' '}
+                        Hey! Our Delicious food is waiting for you, we are always near to you{' '}
                     </p>
                 </div>
                 <div className="relative flex gap-1">

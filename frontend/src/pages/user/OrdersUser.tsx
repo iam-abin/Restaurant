@@ -19,7 +19,7 @@ const OrdersUser: React.FC = () => {
         (async () => {
             try {
                 setLoading(true);
-                const orders = await getMyOrdersApi(currentPage);
+                const orders = await getMyOrdersApi(currentPage, 2);
                 setOrders((orders.data as Orders).orders);
                 setTotalNumberOfPages((orders.data as Orders).numberOfPages);
             } finally {
