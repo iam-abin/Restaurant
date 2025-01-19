@@ -1,4 +1,5 @@
 import { IOrderDocument } from '../database/model';
+import { Pagination } from './pagination';
 
 export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'outfordelivery' | 'delivered';
 
@@ -24,9 +25,19 @@ export interface IOrderedItem {
     quantity: number;
 }
 
-export type GetRestaurantOrders = {
+export type GetRestaurantOrders = Required<Pagination> & {
     ownerId: string;
     restaurantId: string;
-    page: number;
-    limit: number;
 };
+
+export interface IStripeLintItems {
+    price_data: {
+        currency: string;
+        product_data: {
+            name: string;
+            images: string[];
+        };
+        unit_amount: number;
+    };
+    quantity: number;
+}

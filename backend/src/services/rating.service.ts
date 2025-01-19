@@ -17,7 +17,7 @@ export class RatingService {
     ): Promise<IRatingDocument | null> => {
         const { restaurantId, rating } = ratingData;
         const restaurant: IRestaurantDocument | null =
-            await this.restaurantRepository.findRestaurant(restaurantId);
+            await this.restaurantRepository.findRestaurantById(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
 
         if (rating === 0) {

@@ -205,7 +205,7 @@ export class UserService {
     public jwtRefresh = async (jwtRefreshToken: string | undefined): Promise<{ jwtAccessToken: string }> => {
         if (!jwtRefreshToken) throw new NotFoundError('RefreshToken not found');
         const { userId }: IJwtPayload = verifyJwtRefreshToken(jwtRefreshToken);
-        const user = await this.userRepository.findUserById(userId);
+        const user: IUserDocument | null = await this.userRepository.findUserById(userId);
         if (!user) throw new NotFoundError('This user does not exist');
 
         // Generate JWT

@@ -8,7 +8,13 @@ import {
     RestaurantCuisineRepository,
     RestaurantRepository,
 } from '../database/repository';
-import { IAddressDocument, ICuisineDocument, IMenuDocument, IRestaurantDocument } from '../database/model';
+import {
+    IAddressDocument,
+    ICuisineDocument,
+    IMenuDocument,
+    IRestaurantCuisineDocument,
+    IRestaurantDocument,
+} from '../database/model';
 import {
     executeTransaction,
     getPaginationSkipValue,
@@ -63,7 +69,8 @@ export class MenuService {
     };
 
     public getMenus = async (restaurantId: string, page: number, limit: number): Promise<Menus> => {
-        const restaurant = await this.restaurantRepository.findRestaurant(restaurantId);
+        const restaurant: IRestaurantDocument | null =
+            await this.restaurantRepository.findRestaurantById(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         const skip: number = getPaginationSkipValue(page, limit);
 
@@ -135,15 +142,16 @@ export class MenuService {
         restaurantId: string,
         session: mongoose.ClientSession,
     ): Promise<ICuisineDocument> => {
-        let cuisine = await this.cuisineRepository.findCuisineByName(cuisineName);
+        let cuisine: ICuisineDocument | null = await this.cuisineRepository.findCuisineByName(cuisineName);
         if (!cuisine) {
             cuisine = await this.cuisineRepository.createCuisine({ name: cuisineName }, session);
         }
 
-        const restaurantCuisine = await this.restaurantCuisineRepository.findRestaurantCuisine(
-            restaurantId,
-            cuisine._id.toString(),
-        );
+        const restaurantCuisine: IRestaurantCuisineDocument | null =
+            await this.restaurantCuisineRepository.findRestaurantCuisine(
+                restaurantId,
+                cuisine._id.toString(),
+            );
         if (!restaurantCuisine) {
             await this.restaurantCuisineRepository.createRestaurant(
                 { cuisineId: cuisine._id.toString(), restaurantId },

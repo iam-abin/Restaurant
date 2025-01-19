@@ -26,7 +26,7 @@ export class RestaurantRepository {
             .populate('ownerId');
     };
 
-    findRestaurant = async (restaurantId: string): Promise<IRestaurantDocument | null> => {
+    findRestaurantById = async (restaurantId: string): Promise<IRestaurantDocument | null> => {
         return await RestaurantModel.findById(restaurantId)
             .populate([
                 {
