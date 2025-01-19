@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { autoInjectable } from 'tsyringe';
 import { IUserDocument } from '../database/model';
 import { createSuccessResponse } from '../utils';
 import { OtpService, UserService } from '../services';
@@ -16,7 +17,6 @@ import {
     IOtpTokenData,
 } from '../types';
 import { appConfig } from '../config/app.config';
-import { autoInjectable } from 'tsyringe';
 import { HTTP_STATUS_CODE } from '../constants';
 
 @autoInjectable()

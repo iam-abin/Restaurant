@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { appConfig } from '../config/app.config';
 import { IEmailTemplate } from '../types';
+import { APPLICATION_NAME } from '../constants';
 
 // SMTP Transporter instance (reused for multiple emails)
 const transporter = nodemailer.createTransport({
@@ -27,7 +28,7 @@ export const sendEmail = async (
     template: IEmailTemplate,
 ): Promise<SMTPTransport.SentMessageInfo> => {
     const mailOptions = {
-        from: `RestaurantApp ${appConfig.EMAIL_USER}`,
+        from: `${APPLICATION_NAME} ${appConfig.EMAIL_USER}`,
         to: toEmail,
         subject: template.emailSubject,
         html: template.html,

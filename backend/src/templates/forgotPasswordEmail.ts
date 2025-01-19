@@ -1,4 +1,4 @@
-import { CURRENT_YEAR } from '../constants';
+import { APPLICATION_NAME, CURRENT_YEAR } from '../constants';
 
 export const getForgotPasswordEmailTemplate = (resetURL: string, tokenExpiryTime: number) => {
     const html = `
@@ -62,16 +62,16 @@ export const getForgotPasswordEmailTemplate = (resetURL: string, tokenExpiryTime
                             Please note that this link will expire in <strong>${tokenExpiryTime} seconds</strong>. 
                             If you didn't request a password reset, please ignore this email.
                         </p>
-                        <p>Thank you,<br />The RestaurantApp Team</p>
+                        <p>Thank you,<br />The ${APPLICATION_NAME} Team</p>
                     </div>
                     <div class="email-footer">
-                        <p>&copy; ${CURRENT_YEAR} RestaurantApp. All rights reserved.</p>
+                        <p>&copy; ${CURRENT_YEAR} ${APPLICATION_NAME}. All rights reserved.</p>
                     </div>
                 </div>
             </body>
         </html>
     `;
-    const EMAIL_SUBJECT = 'RestaurantApp Reset Password Email';
+    const EMAIL_SUBJECT = `${APPLICATION_NAME} Reset Password Email`;
 
     return {
         html: html,

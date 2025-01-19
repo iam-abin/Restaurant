@@ -2,28 +2,38 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 
-
 # Navigate to frontend, run linting and formatting
-echo "Running linting and formatting for frontend..."
-cd frontend && npm run lint:fix && npm run format
-if [ $? -ne 0 ]; then
-  echo "✖ Frontend linting or formatting failed."
-  exit 1
-fi
+echo "⏳ Running linting and formatting for frontend..."
+cd frontend && npm run lint:fix && npm run format || {
+  echo "❌ Frontend linting or formatting failed.";
+  exit 1;
+}
+echo "✅ Frontend linting and formatting completed. ⏳ Trying to check Backend now...";
+
 
 # Navigate to backend, run linting and formatting
-echo "Running linting and formatting for backend..."
-cd ../backend && npm run lint:fix && npm run format
-if [ $? -ne 0 ]; then
-  echo "✖ Backend linting or formatting failed."
-  exit 1
-fi
+cd ../backend && npm run lint:fix && npm run format || {
+  echo "❌ Backend linting or formatting failed.";
+  exit 1;
+}
+echo "✅ Backend linting and formatting completed.";
 
 # Return to the root directory
 cd ..
 
+echo "✅ Alright! All checks are passed. ⏳ Trying to build now...";
+
+# Build the project
+npm run build-all ||
+{
+  echo "❌ Your build failed, fix the errors above and try to commit again";
+  false;
+}
+
 # Stage all changes
 git add --all
+
+echo "✅ Commit success!"
 
 # If everything is okay
 exit 0
