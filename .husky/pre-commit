@@ -30,10 +30,10 @@ npm run build-all ||
   false;
 }
 
+echo "✅ Build completed!"
+
 # Stage all changes
 git add --all
-
-echo "✅ Commit success!"
 
 # If everything is okay
 exit 0
