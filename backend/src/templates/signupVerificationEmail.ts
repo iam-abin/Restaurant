@@ -1,4 +1,4 @@
-import { CURRENT_YEAR } from '../constants';
+import { APPLICATION_NAME, CURRENT_YEAR } from '../constants';
 
 export const getEmailVerificationTemplate = function (name: string, otp: string) {
     const html = `
@@ -33,13 +33,13 @@ export const getEmailVerificationTemplate = function (name: string, otp: string)
                           <a
                               href=""
                               style="font-size: 1.4em; color: #00466a; text-decoration: none; font-weight: 600"
-                              >RestaurantApp</a
+                              >${APPLICATION_NAME}</a
                           >
                       </div>
                       <p style="font-size: 1.1em">Hi,</p>
                         ${name}
                       <p>
-                          Thank you for choosing RestaurantApp. Use the following OTP to complete your Sign Up
+                          Thank you for choosing ${APPLICATION_NAME}. Use the following OTP to complete your Sign Up
                           procedures. This OTP is valid for 10 minutes from the time this email was sent. After this
                           period, You need to click on resend OTP or need to signup again to verify your email.
                       </p>
@@ -55,7 +55,7 @@ export const getEmailVerificationTemplate = function (name: string, otp: string)
                       >
                           ${otp}
                       </h2>
-                      <p style="font-size: 0.9em">Regards,<br />RestaurantApp</p>
+                      <p style="font-size: 0.9em">Regards,<br />${APPLICATION_NAME}</p>
                       <hr style="border: none; border-top: 1px solid #eee" />
                       <div
                           style="
@@ -67,9 +67,9 @@ export const getEmailVerificationTemplate = function (name: string, otp: string)
                               font-weight: 300;
                           "
                       >
-                          <p>RestaurantApp</p>
+                          <p>${APPLICATION_NAME}</p>
                           <p>India</p>
-                          <p>&copy; ${CURRENT_YEAR} RestaurantApp. All rights reserved.</p>
+                          <p>&copy; ${CURRENT_YEAR} ${APPLICATION_NAME}. All rights reserved.</p>
                       </div>
                   </div>
               </div>
@@ -77,7 +77,7 @@ export const getEmailVerificationTemplate = function (name: string, otp: string)
       </html>
     `;
 
-    const EMAIL_SUBJECT = 'RestaurantApp verify email';
+    const EMAIL_SUBJECT = `${APPLICATION_NAME} verify email`;
 
     return {
         html: html,
