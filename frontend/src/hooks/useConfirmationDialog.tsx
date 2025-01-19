@@ -14,12 +14,12 @@ export const useConfirmation = () => {
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState<UseConfirmationOptions | null>(null);
 
-    const showConfirmation = (newOptions: UseConfirmationOptions) => {
+    const showConfirmation = (newOptions: UseConfirmationOptions): void => {
         setOptions(newOptions);
         setOpen(true);
     };
 
-    const ConfirmationAlert = () =>
+    const ConfirmationAlert = (): JSX.Element | null =>
         options && (
             <ConfirmationDialogue
                 open={open}

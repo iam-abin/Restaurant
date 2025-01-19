@@ -9,7 +9,7 @@ const usePagination = ({ initialPage = 1, initialTotalPages = 5 }: Partial<UsePa
     const [currentPage, setCurrentPage] = useState<number>(initialPage);
     const [totalNumberOfPages, setTotalNumberOfPages] = useState<number>(initialTotalPages);
 
-    const handlePageChange = (_event: React.ChangeEvent<unknown>, page: number) => {
+    const handlePageChange = (_event: React.ChangeEvent<unknown>, page: number): void => {
         setCurrentPage(page);
     };
 

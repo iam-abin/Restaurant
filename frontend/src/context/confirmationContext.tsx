@@ -20,13 +20,14 @@ export const ConfirmationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState<ConfirmationOptions | null>(null);
 
-    const showConfirmation = (newOptions: ConfirmationOptions) => {
+    const showConfirmation = (newOptions: ConfirmationOptions): void => {
         setOptions(newOptions);
         setOpen(true);
     };
 
-    const handleClose = () => {
+    const handleClose = (): void => {
         setOpen(false);
+        setOptions(null);
     };
 
     return (
