@@ -1,9 +1,9 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, NavigateFunction, useLocation, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
 
-import { useAppSelector } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { useConfirmationContext } from '../../context/confirmationContext';
 import { IUser, UserRole } from '../../types';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -14,20 +14,52 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import { checkRole, isActiveLink } from '../../utils';
 import MobileDrawer from '../drawer/MobileDrawer';
 import { INavItems } from '../../types/navbar';
+import { clearProfile } from '../../redux/slice/profileSlice';
+import { clearMenus } from '../../redux/slice/menusSlice';
+import { clearCart } from '../../redux/slice/cartSlice';
+import { clearRestaurant } from '../../redux/slice/restaurantSlice';
+import { clearOtpTokenTimer } from '../../redux/slice/otpTokenSlice';
+import { clearAdminDashboard } from '../../redux/slice/dashboardSlice';
+import { logoutUser } from '../../redux/thunk/authThunk';
 
 interface INavBarProps {
     currentUser: IUser;
-    handleLogout: () => void;
 }
 
-const NavBar: React.FC<INavBarProps> = ({ currentUser, handleLogout }) => {
+const NavBar: React.FC<INavBarProps> = ({ currentUser }) => {
     const { showConfirmation } = useConfirmationContext();
     const { myProfile } = useAppSelector((store) => store.profileReducer);
     const location = useLocation();
 
+    const naivgate: NavigateFunction = useNavigate();
+    const dispatch = useAppDispatch();
+
     const isAdmin: boolean = checkRole(UserRole.ADMIN, currentUser?.role);
     const isRestaurant: boolean = checkRole(UserRole.RESTAURANT, currentUser?.role);
     const isUser: boolean = checkRole(UserRole.USER, currentUser?.role);
+
+    const handleLogout = async (): Promise<void> => {
+        const response = await dispatch(logoutUser());
+        if (isUser) {
+            dispatch(clearProfile());
+            dispatch(clearMenus());
+            dispatch(clearCart());
+        }
+
+        if (isRestaurant) {
+            dispatch(clearRestaurant());
+            dispatch(clearMenus());
+        }
+
+        if (isAdmin) {
+            dispatch(clearAdminDashboard());
+        }
+        dispatch(clearOtpTokenTimer());
+        // Check if the action was rejected
+        if (response.meta.requestStatus !== 'rejected') {
+            naivgate('/auth');
+        }
+    };
 
     const navItems: INavItems[] = [
         // Common
