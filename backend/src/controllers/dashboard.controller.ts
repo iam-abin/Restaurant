@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { autoInjectable } from 'tsyringe';
-import { createSuccessResponse } from '../utils';
+import { createSuccessResponse, getCurrentYear } from '../utils';
 import { DashboardService } from '../services';
-import { IAdminDashboard, IJwtPayload, IRestaurantDashboard } from '../types';
+import { IAdminDashboardCard, IAdminDashboardGraph, IJwtPayload, IRestaurantDashboard, Year } from '../types';
 import { HTTP_STATUS_CODE } from '../constants';
 
 @autoInjectable()
@@ -18,8 +18,17 @@ export class DashboardController {
         );
     };
 
-    public getAdminDashboard = async (req: Request, res: Response): Promise<void> => {
-        const dashboardData: IAdminDashboard = await this.dashboardService.getAdminDashboardData();
+    public getAdminDashboardCards = async (req: Request, res: Response): Promise<void> => {
+        const dashboardData: IAdminDashboardCard = await this.dashboardService.getAdminDashboardCardData();
+        res.status(HTTP_STATUS_CODE.OK).json(
+            createSuccessResponse('Admin Dashboard Data fetched successfully', dashboardData),
+        );
+    };
+
+    public getAdminDashboardGraphs = async (req: Request, res: Response): Promise<void> => {
+        const { year = getCurrentYear() } = req.query as Partial<Year>;
+        const dashboardData: IAdminDashboardGraph =
+            await this.dashboardService.getAdminDashboardGraphData(year);
         res.status(HTTP_STATUS_CODE.OK).json(
             createSuccessResponse('Admin Dashboard Data fetched successfully', dashboardData),
         );

@@ -179,7 +179,7 @@ export class UserService {
 
             if (role === UserRole.RESTAURANT) {
                 const restaurant: IRestaurantDocument | null =
-                    await this.restaurantRepository.findMyRestaurant(existingUser._id.toString());
+                    await this.restaurantRepository.findRestaurantByOwnerId(existingUser._id.toString());
                 if (restaurant?.imageUrl !== picture) {
                     await this.restaurantRepository.updateRestaurant(existingUser._id.toString(), {
                         imageUrl: picture,

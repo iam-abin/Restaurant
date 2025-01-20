@@ -1,9 +1,9 @@
 import { PieChart } from '@mui/x-charts/PieChart';
 
-import { IOrderStatusWithCounts } from '../../types';
+import { OrderStatusWithCounts } from '../../types';
 
 type PieChartGraph = {
-    statusCounts: IOrderStatusWithCounts[];
+    statusCounts: OrderStatusWithCounts[];
 };
 
 interface IOrderStatuses {
@@ -15,7 +15,7 @@ const PieChartGraph: React.FC<PieChartGraph> = ({ statusCounts }) => {
     const radius: number = 50;
     const itemNb: number = 5;
 
-    const orderStatuses: IOrderStatuses[] = statusCounts.map((value: IOrderStatusWithCounts) => ({
+    const orderStatuses: IOrderStatuses[] = statusCounts.map((value: OrderStatusWithCounts) => ({
         label: value.status,
         value: value.count,
     }));

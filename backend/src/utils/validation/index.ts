@@ -1,5 +1,6 @@
 export * from './cart.validation';
 export * from './cuisine.validation';
+export * from './dashboard.validation';
 export * from './menu.validation';
 export * from './mongodb-id.validation';
 export * from './order.validation';

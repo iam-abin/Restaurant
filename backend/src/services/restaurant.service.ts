@@ -76,7 +76,7 @@ export class RestaurantService {
 
     public getMyRestaurant = async (userId: string): Promise<IRestaurantWithCuisines> => {
         const restaurant: IRestaurantDocument | null =
-            await this.restaurantRepository.findMyRestaurant(userId);
+            await this.restaurantRepository.findRestaurantByOwnerId(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
 
         const [cuisines, restaurantRating, restaurantRatingsCount]: [

@@ -1,7 +1,8 @@
-import { ClientSession } from 'mongoose';
+import { ClientSession, PipelineStage } from 'mongoose';
 import { singleton } from 'tsyringe';
 import {
     CountByDay,
+    CountByMonth,
     IRestaurant,
     ISearchFilterRestaurantResult,
     ISearchRestaurantResult,
@@ -41,7 +42,7 @@ export class RestaurantRepository {
             .select('-createdAt -updatedAt'); // Exclude fields from the main restaurant document
     };
 
-    findMyRestaurant = async (ownerId: string): Promise<IRestaurantDocument | null> => {
+    findRestaurantByOwnerId = async (ownerId: string): Promise<IRestaurantDocument | null> => {
         return await RestaurantModel.findOne({ ownerId }).populate(['ownerId', 'addressId']);
     };
 
@@ -278,6 +279,40 @@ export class RestaurantRepository {
 
     countRestaurants = async (): Promise<number> => {
         return RestaurantModel.countDocuments();
+    };
+
+    findRestaurantsCountGroupedByMonth = async (year: number): Promise<CountByMonth[]> => {
+        const startOfYear: Date = new Date(year, 0, 1); // January 1st of the given year
+        const startOfNextYear: Date = new Date(year + 1, 0, 1); // January 1st of the next year
+
+        const pipeline: PipelineStage[] = [
+            {
+                $match: {
+                    createdAt: {
+                        $gte: startOfYear,
+                        $lt: startOfNextYear,
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: { month: { $month: '$createdAt' } },
+                    count: { $sum: 1 },
+                },
+            },
+            {
+                $project: {
+                    month: '$_id.month',
+                    count: 1,
+                    _id: 0,
+                },
+            },
+            {
+                $sort: { month: 1 },
+            },
+        ];
+
+        return await RestaurantModel.aggregate(pipeline);
     };
 
     countLast7DaysCreatedRestaurants = async (startDate: Date): Promise<CountByDay[]> => {

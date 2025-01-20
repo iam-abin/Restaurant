@@ -18,13 +18,7 @@ const initialState: IAuthSlice = {
 const authSlice = createSlice({
     name: 'auth-data',
     initialState,
-    reducers: {
-        // resetAuth: (state) => {
-        //     state.authData = null;
-        //     state.status = 'idle';
-        //     state.error = null;
-        // },
-    },
+    reducers: {},
     extraReducers: (builder) => {
         // Signin logic
         addAsyncThunkCases(builder, signinUser, (state, action) => {

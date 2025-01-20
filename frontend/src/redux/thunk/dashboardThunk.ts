@@ -1,16 +1,29 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { IAdminDashboard } from '../../types';
-import { getAdminDashboardApi } from '../../api/apiMethods';
+import { IAdminDashboardCard, IAdminDashboardGraph, Year } from '../../types';
+import { getAdminDashboardCardApi, getAdminDashboardGraphApi } from '../../api/apiMethods';
 
-// Async thunk for fetching user profile
-export const fetchAdminDashboard = createAsyncThunk<
-    IAdminDashboard, // Fulfilled type
+export const fetchAdminDashboardCard = createAsyncThunk<
+    IAdminDashboardCard, // Fulfilled type
     void, // Argument type
     { rejectValue: string } // Rejected value type
->('AdminDashboard/fetchAdminDashboard', async (_, { rejectWithValue }) => {
+>('AdminDashboard/fetchAdminDashboardCard', async (_, { rejectWithValue }) => {
     try {
-        const response = await getAdminDashboardApi();
-        return response.data as IAdminDashboard;
+        const response = await getAdminDashboardCardApi();
+        return response.data as IAdminDashboardCard;
+    } catch (error: unknown) {
+        // Use rejectWithValue to handle errors
+        return rejectWithValue((error as Error).message);
+    }
+});
+
+export const fetchAdminDashboardGraph = createAsyncThunk<
+    IAdminDashboardGraph, // Fulfilled type
+    Year, // Argument type
+    { rejectValue: string } // Rejected value type
+>('AdminDashboard/fetchAdminDashboardGraph', async ({ year }, { rejectWithValue }) => {
+    try {
+        const response = await getAdminDashboardGraphApi(year);
+        return response.data as IAdminDashboardGraph;
     } catch (error: unknown) {
         // Use rejectWithValue to handle errors
         return rejectWithValue((error as Error).message);

@@ -5,10 +5,20 @@ import {
     ProfileRepository,
     RestaurantCuisineRepository,
     RestaurantRepository,
+    UserRepository,
 } from '../database/repository';
 import { IRestaurantDocument } from '../database/model';
 import { NotFoundError } from '../errors';
-import { CountByDay, IAdminDashboard, IOrderStatusWithCounts, IRestaurantDashboard } from '../types';
+import {
+    CountByDay,
+    IAdminDashboardCard,
+    IAdminDashboardGraph,
+    IOrderStatusWithCounts,
+    CountByMonth,
+    IRestaurantDashboard,
+    MinMaxYears,
+} from '../types';
+// import { getCurrentYear } from '../utils';
 
 @autoInjectable()
 export class DashboardService {
@@ -18,11 +28,12 @@ export class DashboardService {
         private readonly profileRepository: ProfileRepository,
         private readonly orderRepository: OrderRepository,
         private readonly menuRepository: MenuRepository,
+        private readonly userRepository: UserRepository,
     ) {}
 
     public getRestaurantDashboardData = async (userId: string): Promise<IRestaurantDashboard> => {
         const restaurant: IRestaurantDocument | null =
-            await this.restaurantRepository.findMyRestaurant(userId);
+            await this.restaurantRepository.findRestaurantByOwnerId(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
 
         const restaurantId: string = restaurant._id.toString();
@@ -50,7 +61,7 @@ export class DashboardService {
         return { orderStatusData: transformedStatusesWithCounts, totalRevenue, menusCount, cuisinesCount };
     };
 
-    public getAdminDashboardData = async (): Promise<IAdminDashboard> => {
+    public getAdminDashboardCardData = async (): Promise<IAdminDashboardCard> => {
         const PERCENTAGE: number = 0.5; // Commission percentage
         const percentageDecimal: number = PERCENTAGE / 100; // Calculate commission percentage in decimal
 
@@ -90,6 +101,20 @@ export class DashboardService {
             lastSevenDaysUsers,
             lastSevenDaysRestaurants,
         };
+    };
+
+    public getAdminDashboardGraphData = async (year: number): Promise<IAdminDashboardGraph> => {
+        const [restaurantsCountByMonth, profilesCountByMonth, minMaxYears]: [
+            CountByMonth[],
+            CountByMonth[],
+            MinMaxYears,
+        ] = await Promise.all([
+            this.restaurantRepository.findRestaurantsCountGroupedByMonth(year),
+            this.profileRepository.findProfilesCountGroupedByMonth(year),
+            this.userRepository.findMinMaxYears(),
+        ]);
+
+        return { restaurantsCountByMonth, profilesCountByMonth, minMaxYears };
     };
 
     private mapOrderStatusesWithCounts = (

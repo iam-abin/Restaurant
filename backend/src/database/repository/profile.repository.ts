@@ -1,7 +1,7 @@
-import { ClientSession } from 'mongoose';
+import { ClientSession, PipelineStage } from 'mongoose';
 import { singleton } from 'tsyringe';
 import { IProfileDocument, ProfileModel } from '../model';
-import { CountByDay, IProfile, ISearchProfileResult } from '../../types';
+import { CountByDay, CountByMonth, IProfile, ISearchProfileResult } from '../../types';
 
 @singleton()
 export class ProfileRepository {
@@ -98,6 +98,40 @@ export class ProfileRepository {
 
     countProfiles = async (): Promise<number> => {
         return await ProfileModel.countDocuments();
+    };
+
+    findProfilesCountGroupedByMonth = async (year: number): Promise<CountByMonth[]> => {
+        // const startOfYear: Date = new Date(202, 0, 1); // January 1st of the given year
+        // const startOfNextYear: Date = new Date(202 + 1, 0, 1); // January 1st of the next year
+
+        const pipeline: PipelineStage[] = [
+            {
+                $match: {
+                    createdAt: {
+                        $gte: new Date(`${year}-01-01`),
+                        $lte: new Date(`${year}-12-31`),
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: { month: { $month: '$createdAt' } },
+                    count: { $sum: 1 },
+                },
+            },
+            {
+                $project: {
+                    month: '$_id.month',
+                    count: 1,
+                    _id: 0,
+                },
+            },
+            {
+                $sort: { month: 1 },
+            },
+        ];
+
+        return await ProfileModel.aggregate(pipeline);
     };
 
     countLast7DaysCreatedProfiles = async (startDate: Date): Promise<CountByDay[]> => {

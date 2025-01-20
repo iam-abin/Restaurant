@@ -6,6 +6,10 @@ export const getRestaurantDashboardApi = async (): Promise<IResponse> => {
     return await makeApiCall('get', dashboardApiUrls.getRestaurantDashboardUrl);
 };
 
-export const getAdminDashboardApi = async (): Promise<IResponse> => {
-    return await makeApiCall('get', dashboardApiUrls.getAdminDashboardUrl);
+export const getAdminDashboardCardApi = async (): Promise<IResponse> => {
+    return await makeApiCall('get', dashboardApiUrls.getAdminDashboardCardUrl);
+};
+
+export const getAdminDashboardGraphApi = async (year: number): Promise<IResponse> => {
+    return await makeApiCall('get', dashboardApiUrls.getAdminDashboardGraphUrl(year));
 };

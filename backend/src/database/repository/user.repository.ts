@@ -1,7 +1,7 @@
 import { ClientSession } from 'mongoose';
 import { singleton } from 'tsyringe';
 import { IUserDocument, UserModel } from '../model';
-import { IUser } from '../../types';
+import { IUser, MinMaxYears } from '../../types';
 
 @singleton()
 export class UserRepository {
@@ -23,5 +23,26 @@ export class UserRepository {
         session?: ClientSession,
     ): Promise<IUserDocument | null> => {
         return await UserModel.findByIdAndUpdate(userId, updateData, { new: true, session });
+    };
+
+    findMinMaxYears = async (): Promise<MinMaxYears> => {
+        const result = await UserModel.aggregate([
+            {
+                $group: {
+                    _id: null, // Group all documents together
+                    minYear: { $min: { $year: '$createdAt' } }, // Get the minimum year
+                    maxYear: { $max: { $year: '$createdAt' } }, // Get the maximum year
+                },
+            },
+            {
+                $project: {
+                    _id: 0, // Exclude the _id field from the result
+                    minYear: 1,
+                    maxYear: 1,
+                },
+            },
+        ]);
+
+        return result.length > 0 ? result[0] : { minYear: null, maxYear: null };
     };
 }
