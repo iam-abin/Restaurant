@@ -1,8 +1,8 @@
 import { lazy } from 'react';
 import { RoleProtectedRoute } from '../ProtectedRoute';
-import MainLayout from '../../layout/MainLayout';
 import { UserRole } from '../../types';
 
+const MainLayout = lazy(() => import('../../layout/MainLayout'));
 const RestaurantDashBoard = lazy(() => import('../../pages/restaurant/RestaurantDashBoard'));
 const RestaurantProfile = lazy(() => import('../../pages/restaurant/RestaurantProfile'));
 const Menu = lazy(() => import('../../pages/restaurant/Menu'));

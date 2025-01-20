@@ -1,13 +1,9 @@
 import { axiosInstance } from './axiosInstance';
 import { hotToastMessage } from '../utils';
-import { IResponse } from '../types/api';
+import { ApiErrorResponse, IResponse } from '../types/api';
 import { AxiosError } from 'axios';
 
 type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
-
-interface ApiErrorResponse {
-    errors?: Array<{ message: string }>;
-}
 
 const makeApiCall = async <T>(
     method: HttpMethod,
