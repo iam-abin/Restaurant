@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { ForbiddenError, NotFoundError } from '../errors';
+import { ForbiddenError, NotAuthorizedError } from '../errors';
 
 // Middleware factory that checks for different user types
 export const auth = (requiredRoles: string | string[]) => {
     return (req: Request, res: Response, next: NextFunction): void => {
         try {
-            if (!req.currentUser) throw new NotFoundError('User not found');
+            if (!req.currentUser) throw new NotAuthorizedError('Cannot access protected route');
 
             // Ensure `requiredRoles` is always treated as an array
             const roles: string[] = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles];

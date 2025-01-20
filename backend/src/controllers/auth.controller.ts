@@ -18,6 +18,7 @@ import {
 } from '../types';
 import { appConfig } from '../config/app.config';
 import { HTTP_STATUS_CODE } from '../constants';
+// import { BadRequestError } from '../errors';
 
 @autoInjectable()
 export class AuthController {
@@ -67,10 +68,10 @@ export class AuthController {
                 await this.userService.jwtRefresh(jwtRefreshToken);
             this.setTokenToCookie(res, jwtAccessToken, TokenType.JwtAccessToken);
             res.status(HTTP_STATUS_CODE.OK).json(createSuccessResponse('Token refreshed successfully'));
-        } catch {
+        } catch (error: unknown) {
             res.clearCookie(TokenType.JwtAccessToken);
             res.clearCookie(TokenType.JwtRefreshToken);
-            res.status(HTTP_STATUS_CODE.BAD_REQUEST).json('Token refresh failed');
+            throw error;
         }
     };
 

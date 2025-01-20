@@ -203,7 +203,7 @@ export class UserService {
     };
 
     public jwtRefresh = async (jwtRefreshToken: string | undefined): Promise<{ jwtAccessToken: string }> => {
-        if (!jwtRefreshToken) throw new NotFoundError('RefreshToken not found');
+        if (!jwtRefreshToken) throw new BadRequestError('Token refresh failed, signin again!');
         const { userId }: IJwtPayload = verifyJwtRefreshToken(jwtRefreshToken);
         const user: IUserDocument | null = await this.userRepository.findUserById(userId);
         if (!user) throw new NotFoundError('This user does not exist');
