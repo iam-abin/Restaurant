@@ -1,6 +1,6 @@
 import { Checkbox } from '@mui/material';
-import { ICuisineResponse1 } from '../types';
-import CustomButton from './Button/CustomButton';
+import { ICuisineResponse1 } from '../../types';
+import CustomButton from '../Button/CustomButton';
 
 interface IFiterProps {
     filterArray: string[];

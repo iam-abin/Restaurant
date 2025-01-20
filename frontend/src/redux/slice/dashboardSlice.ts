@@ -1,16 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { addAsyncThunkCases } from '../../utils';
-import { IAdminDashboard } from '../../types';
-import { fetchAdminDashboard } from '../thunk/dashboardThunk';
+import { IAdminDashboardCard, IAdminDashboardGraph } from '../../types';
+import { fetchAdminDashboardCard, fetchAdminDashboardGraph } from '../thunk/dashboardThunk';
 
 interface IAdminDashboardSlice {
-    adminDashboardData: IAdminDashboard | null;
+    adminDashboardCardData: IAdminDashboardCard | null;
+    adminDashboardGraphData: IAdminDashboardGraph | null;
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
 }
 
 const initialState: IAdminDashboardSlice = {
-    adminDashboardData: null,
+    adminDashboardCardData: null,
+    adminDashboardGraphData: null,
     status: 'idle',
     error: null,
 };
@@ -20,13 +22,19 @@ const adminDashboardSlice = createSlice({
     initialState,
     reducers: {
         clearAdminDashboard: (state) => {
-            state.adminDashboardData = null;
+            state.adminDashboardCardData = null;
+            state.adminDashboardGraphData = null;
         },
     },
     extraReducers: (builder) => {
-        addAsyncThunkCases(builder, fetchAdminDashboard, (state, action) => {
+        addAsyncThunkCases(builder, fetchAdminDashboardCard, (state, action) => {
             state.status = 'succeeded';
-            state.adminDashboardData = action.payload;
+            state.adminDashboardCardData = action.payload;
+        });
+
+        addAsyncThunkCases(builder, fetchAdminDashboardGraph, (state, action) => {
+            state.status = 'succeeded';
+            state.adminDashboardGraphData = action.payload;
         });
     },
 });

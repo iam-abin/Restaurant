@@ -1,7 +1,8 @@
 const DASHBOARD_URL = '/dashboard';
 
 const dashboardApiUrls = {
-    getAdminDashboardUrl: `${DASHBOARD_URL}/admin`,
+    getAdminDashboardCardUrl: `${DASHBOARD_URL}/admin/card`,
+    getAdminDashboardGraphUrl: (year: number) => `${DASHBOARD_URL}/admin/graph?year=${year}`,
     getRestaurantDashboardUrl: `${DASHBOARD_URL}/restaurant`,
 };
 

@@ -15,8 +15,6 @@ export const getRestaurantsApi = async (page: number, limit: number): Promise<IR
 };
 
 export const updateRestaurantApi = async (data: FormData): Promise<IResponse> => {
-    // console.log("[[[[[[[[[[[[[[[[[data", data);
-
     return await makeApiCall('patch', restaurantApiUrls.updateRestaurantUrl, data, true);
 };
 

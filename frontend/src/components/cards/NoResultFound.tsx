@@ -1,6 +1,6 @@
 import { Card, CardContent, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import CustomButton from './Button/CustomButton';
+import CustomButton from '../Button/CustomButton';
 
 interface INoResultFoundProps {
     searchText: string;

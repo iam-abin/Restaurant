@@ -5,11 +5,11 @@ import { Search, FilterList } from '@mui/icons-material';
 
 import { getCuisinesApi, searchFilterRestaurantApi } from '../../api/apiMethods';
 import { ICuisineResponse1, IResponse, ISearchResult, SearchResponse } from '../../types';
-import { NoResultFound } from '../../components/NoResultFound';
+import { NoResultFound } from '../../components/cards/NoResultFound';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import RestaurantCard from '../../components/cards/RestaurantCard';
 import RestaurantCardSkeleton from '../../components/shimmer/RestaurantCardSkeleton';
-import Filter from '../../components/Filter';
+import Filter from '../../components/filter/Filter';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
 import usePagination from '../../hooks/usePagination';
 import CustomButton from '../../components/Button/CustomButton';

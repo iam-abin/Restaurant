@@ -132,7 +132,7 @@ export class MenuService {
 
     private validateRestaurantOwnership = async (userId: string): Promise<IRestaurantDocument> => {
         const restaurant: IRestaurantDocument | null =
-            await this.restaurantRepository.findMyRestaurant(userId);
+            await this.restaurantRepository.findRestaurantByOwnerId(userId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         return restaurant;
     };

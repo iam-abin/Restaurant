@@ -1,33 +1,49 @@
-export interface IOrderStatusWithCounts {
-    status: string;
+type Count = {
     count: number;
-}
+};
 
-export interface IOrderStatusWithCounts {
+export type OrderStatusWithCounts = Count & {
     status: string;
-    count: number;
-}
+};
+
+export type CountByDay = Count & {
+    date: string;
+};
+
+export type CountByMonth = Count & {
+    month: number;
+};
 
 export interface IRestaurantDashboard {
-    orderStatusData: IOrderStatusWithCounts[];
+    orderStatusData: OrderStatusWithCounts[];
     totalRevenue: number | null;
     menusCount: number | null;
     cuisinesCount: number | null;
 }
 
-export interface IAdminDashboard {
+export interface IAdminDashboardCard {
     restaurantsCount: number;
     usersCount: number;
-    orderStatuses: IOrderStatusWithCounts[];
+    orderStatuses: OrderStatusWithCounts[];
     totalTurnover: number;
     totalCommission: number;
     lastSevenDaysUsers: CountByDay[];
     lastSevenDaysRestaurants: CountByDay[];
 }
 
-export type CountByDay = {
-    date: string;
-    count: number;
+export interface IAdminDashboardGraph {
+    restaurantsCountByMonth: CountByMonth[];
+    profilesCountByMonth: CountByMonth[];
+    minMaxYears: MinMaxYears;
+}
+
+export type Year = {
+    year: number;
+};
+
+export type MinMaxYears = {
+    minYear: number | null;
+    maxYear: number | null;
 };
 
 export type DashboardCardData = {
