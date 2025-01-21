@@ -13,11 +13,7 @@ export interface IRestaurantDashboard {
 export interface IAdminDashboardCard {
     restaurantsCount: number;
     usersCount: number;
-    orderStatuses: IOrderStatusWithCounts[];
     totalTurnover: number;
-    totalCommission: number;
-    lastSevenDaysUsers: CountByDay[];
-    lastSevenDaysRestaurants: CountByDay[];
 }
 
 export interface IAdminDashboardGraph {
@@ -32,10 +28,6 @@ type Count = {
 
 export type CountByMonth = Count & {
     month: number;
-};
-
-export type CountByDay = Count & {
-    date: string;
 };
 
 export type Year = {

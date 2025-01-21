@@ -74,8 +74,10 @@ const Cart: React.FC = () => {
     };
 
     const findTotalAmount = (cartItems: ICart[]): number => {
-        const totalAmount = cartItems.reduce((acc: number, currItem: ICart): number => {
-            acc += currItem?.itemId.price * currItem.quantity;
+        if (cartItems.length === 0) return 0; // Early return for empty arrays
+        const totalAmount: number = cartItems.reduce((acc: number, currItem: ICart): number => {
+            const effectivePrice = currItem.itemId.salePrice || currItem.itemId.price; // Use salePrice if available, otherwise price
+            acc += effectivePrice * currItem.quantity;
             return acc;
         }, 0);
         return totalAmount;

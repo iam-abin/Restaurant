@@ -10,7 +10,6 @@ import {
 import { IRestaurantDocument } from '../database/model';
 import { NotFoundError } from '../errors';
 import {
-    CountByDay,
     IAdminDashboardCard,
     IAdminDashboardGraph,
     IOrderStatusWithCounts,
@@ -55,51 +54,22 @@ export class DashboardService {
         const transformedStatusesWithCounts: IOrderStatusWithCounts[] =
             this.mapOrderStatusesWithCounts(orderStatusesWithCounts);
 
-        // totalRevenue: totalOrderedPrice, //
-        // lastSevenDaysUsers,
-        // lastSevenDaysRestaurants,
         return { orderStatusData: transformedStatusesWithCounts, totalRevenue, menusCount, cuisinesCount };
     };
 
     public getAdminDashboardCardData = async (): Promise<IAdminDashboardCard> => {
-        const PERCENTAGE: number = 0.5; // Commission percentage
-        const percentageDecimal: number = PERCENTAGE / 100; // Calculate commission percentage in decimal
-
-        const [restaurantsCount, usersCount, orderStatusesWithCounts, totalOrderedPrice, totalCommission]: [
-            number,
-            number,
-            IOrderStatusWithCounts[],
-            number,
-            number,
-        ] = await Promise.all([
-            this.restaurantRepository.countRestaurants(),
-            this.profileRepository.countProfiles(),
-            this.orderRepository.countOrderStatuses(),
-            this.orderRepository.findTotalOrderedPrice(),
-            this.orderRepository.findPercentageCommitionAmount(percentageDecimal),
-        ]);
-
-        // Transform order statuses
-        const transformedStatusesWithCount: IOrderStatusWithCounts[] =
-            this.mapOrderStatusesWithCounts(orderStatusesWithCounts);
-
-        // To get data of last 7 days
-        const startDate: Date = new Date();
-        startDate.setHours(0, 0, 0, 0); // Set to start of today
-        startDate.setDate(startDate.getDate() - 6); // Go back 6 days to include today and last 6 days
-        const lastSevenDaysUsers: CountByDay[] =
-            await this.profileRepository.countLast7DaysCreatedProfiles(startDate);
-        const lastSevenDaysRestaurants: CountByDay[] =
-            await this.restaurantRepository.countLast7DaysCreatedRestaurants(startDate);
+        const [restaurantsCount, usersCount, totalOrderedPrice]: [number, number, number] = await Promise.all(
+            [
+                this.restaurantRepository.countRestaurants(),
+                this.profileRepository.countProfiles(),
+                this.orderRepository.findTotalOrderedPrice(),
+            ],
+        );
 
         return {
             restaurantsCount,
             usersCount,
-            orderStatuses: transformedStatusesWithCount,
             totalTurnover: totalOrderedPrice,
-            totalCommission,
-            lastSevenDaysUsers,
-            lastSevenDaysRestaurants,
         };
     };
 

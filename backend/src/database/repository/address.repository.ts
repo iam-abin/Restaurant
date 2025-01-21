@@ -6,7 +6,7 @@ import { IAddress } from '../../types';
 @singleton()
 export class AddressRepository {
     findAddressByUserId = async (userId: string): Promise<IAddressDocument | null> => {
-        return await AddressModel.findOne({ userId });
+        return await AddressModel.findOne({ userId }).lean<IAddressDocument | null>();
     };
 
     updateAddress = async (

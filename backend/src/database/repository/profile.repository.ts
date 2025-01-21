@@ -1,7 +1,7 @@
 import { ClientSession, PipelineStage } from 'mongoose';
 import { singleton } from 'tsyringe';
 import { IProfileDocument, ProfileModel } from '../model';
-import { CountByDay, CountByMonth, IProfile, ISearchProfileResult } from '../../types';
+import { CountByMonth, IProfile, ISearchProfileResult } from '../../types';
 
 @singleton()
 export class ProfileRepository {
@@ -14,14 +14,28 @@ export class ProfileRepository {
     };
 
     findProfileByUserId = async (userId: string): Promise<IProfileDocument | null> => {
-        return await ProfileModel.findOne({ userId }).populate(['userId', 'addressId']);
+        return await ProfileModel.findOne({ userId })
+            .populate([
+                {
+                    path: 'userId',
+                    select: 'name email phone',
+                },
+                {
+                    path: 'addressId',
+                    select: '-createdAt -updatedAt',
+                },
+            ])
+            .select('-createdAt -updatedAt')
+            .lean<IProfileDocument | null>();
     };
 
     findProfiles = async (skip: number, limit: number): Promise<IProfileDocument[]> => {
         return await ProfileModel.find()
+            .select(['-createdAt', '-updatedAt', '-addressId', '-isVerified'])
             .skip(skip ?? 0)
             .limit(limit ?? 0)
-            .populate('userId');
+            .populate('userId', ['-createdAt', '-updatedAt'])
+            .lean<IProfileDocument[]>();
     };
 
     searchProfileByName = async (
@@ -132,38 +146,5 @@ export class ProfileRepository {
         ];
 
         return await ProfileModel.aggregate(pipeline);
-    };
-
-    countLast7DaysCreatedProfiles = async (startDate: Date): Promise<CountByDay[]> => {
-        const counts: CountByDay[] = await ProfileModel.aggregate([
-            {
-                $match: {
-                    createdAt: { $gte: startDate }, // Only include documents from the last 7 days
-                },
-            },
-            {
-                $project: {
-                    date: {
-                        $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }, // Format date to 'YYYY-MM-DD'
-                    },
-                },
-            },
-            {
-                $group: {
-                    _id: '$date', // Group by formatted date
-                    count: { $sum: 1 }, // Count the number of users for each date
-                },
-            },
-            {
-                $addFields: { date: '$_id' }, // Copy `_id` to `date`
-            },
-            {
-                $project: { _id: 0 }, // Remove the `_id` field
-            },
-            {
-                $sort: { date: 1 }, // Sort by date in ascending order
-            },
-        ]);
-        return counts;
     };
 }

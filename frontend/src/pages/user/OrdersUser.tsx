@@ -7,6 +7,7 @@ import OrderCardSkelton from '../../components/shimmer/OrderCardSkelton';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
 import OrderCard from '../../components/cards/OrderCard';
 import usePagination from '../../hooks/usePagination';
+import { ITEMS_PER_PAGE } from '../../constants';
 
 const OrdersUser: React.FC = () => {
     const [loading, setLoading] = useState(true);
@@ -19,7 +20,7 @@ const OrdersUser: React.FC = () => {
         (async () => {
             try {
                 setLoading(true);
-                const orders = await getMyOrdersApi(currentPage, 2);
+                const orders = await getMyOrdersApi(currentPage, ITEMS_PER_PAGE);
                 setOrders((orders.data as Orders).orders);
                 setTotalNumberOfPages((orders.data as Orders).numberOfPages);
             } finally {
@@ -46,7 +47,9 @@ const OrdersUser: React.FC = () => {
             </Typography>
             <div className="flex flex-col gap-2">
                 {loading
-                    ? Array.from(new Array(3)).map((_, index: number) => <OrderCardSkelton key={index} />)
+                    ? Array.from(new Array(ITEMS_PER_PAGE)).map((_, index: number) => (
+                          <OrderCardSkelton key={index} />
+                      ))
                     : orders.map((order: IRestaurantOrder) => (
                           <OrderCard
                               key={order._id}

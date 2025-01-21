@@ -1,6 +1,6 @@
 import { ClientSession } from 'mongoose';
 import { singleton } from 'tsyringe';
-import { IRestaurantCuisineDocument, RestaurantCuisineModel } from '../model';
+import { ICuisineDocument, IRestaurantCuisineDocument, RestaurantCuisineModel } from '../model';
 import { IRestaurantCuisine } from '../../types';
 
 @singleton()
@@ -22,14 +22,17 @@ export class RestaurantCuisineRepository {
                 path: 'cuisineId',
                 select: '-createdAt -updatedAt',
             })
-            .select('-_id cuisineId');
+            .select('-_id cuisineId')
+            .lean<IRestaurantCuisineDocument[]>();
     };
 
     findRestaurantCuisine = async (
         restaurantId: string,
         cuisineId: string,
     ): Promise<IRestaurantCuisineDocument | null> => {
-        return await RestaurantCuisineModel.findOne({ restaurantId, cuisineId }).populate('cuisineId');
+        return await RestaurantCuisineModel.findOne({ restaurantId, cuisineId })
+            .populate<ICuisineDocument>('cuisineId')
+            .lean<IRestaurantCuisineDocument | null>();
     };
 
     countRestaurantCuisines = async (restaurantId: string): Promise<number> => {

@@ -5,7 +5,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import { CountByMonth, DashboardCardData, IAdminDashboardCard, IAdminDashboardGraph } from '../../types';
 import LineGraph from '../../components/charts/LineGraph';
 import DashboardCard from '../../components/cards/DashboardCard';
-import { restaurantIcon, revenueIcon, totalTurnoverIcon, userIcon } from '../../components/icons/Icons';
+import { restaurantIcon, totalTurnoverIcon, userIcon } from '../../components/icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchAdminDashboardCard, fetchAdminDashboardGraph } from '../../redux/thunk/dashboardThunk';
 
@@ -46,17 +46,11 @@ const AdminDashboard: React.FC = () => {
             icon: restaurantIcon,
             description: 'Total number of restaurants',
         },
-        {
-            title: 'Total Revenue',
-            number: adminDashboardCardData?.totalCommission ?? 0,
-            icon: revenueIcon,
-            description: 'Total revenue of the application',
-        },
     ];
 
     const mapCountByMonth = (countByMonth: CountByMonth[] = []): number[] => {
-        const numberOfMonths = 12; // Total months in a year
-        const monthArray = new Array(numberOfMonths).fill(0); // Ensure `monthArray` is reset for each call
+        const numberOfMonths: number = 12; // Total months in a year
+        const monthArray: number[] = new Array(numberOfMonths).fill(0); // Ensure `monthArray` is reset for each call
 
         countByMonth.forEach((currentCountByMonth) => {
             if (currentCountByMonth && currentCountByMonth.month <= numberOfMonths) {
@@ -68,8 +62,8 @@ const AdminDashboard: React.FC = () => {
         return monthArray;
     };
 
-    const handleYearChange = (event: SelectChangeEvent<number>) => {
-        const year = parseInt(event.target.value as unknown as string, 10);
+    const handleYearChange = (event: SelectChangeEvent<number>): void => {
+        const year: number = parseInt(event.target.value as unknown as string, 10);
         setSelectedYear(year);
     };
 

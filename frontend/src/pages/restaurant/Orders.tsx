@@ -21,6 +21,7 @@ import PaginationButtons from '../../components/pagination/PaginationButtons';
 import usePagination from '../../hooks/usePagination';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from '../../components/Button/CustomButton';
+import { ITEMS_PER_PAGE } from '../../constants';
 
 const OrdersListPage: React.FC = () => {
     const [orders, setOrders] = useState<IRestaurantOrder[]>([]);
@@ -36,7 +37,11 @@ const OrdersListPage: React.FC = () => {
             if (restaurant?._id) {
                 setLoading(true);
                 try {
-                    const orders: IResponse = await getRestaurantOrdersApi(restaurant._id, currentPage);
+                    const orders: IResponse = await getRestaurantOrdersApi(
+                        restaurant._id,
+                        currentPage,
+                        ITEMS_PER_PAGE,
+                    );
                     setOrders((orders.data as Orders).orders);
                     setTotalNumberOfPages((orders.data as Orders).numberOfPages);
                 } finally {
@@ -76,7 +81,7 @@ const OrdersListPage: React.FC = () => {
                 Orders List
             </Typography>
             {loading ? (
-                <OrdersTableRestaurantSkelton />
+                <OrdersTableRestaurantSkelton rowCount={ITEMS_PER_PAGE} />
             ) : orders.length ? (
                 <TableContainer component={Paper}>
                     <Table>

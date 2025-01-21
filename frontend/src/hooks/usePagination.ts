@@ -5,7 +5,7 @@ type UsePaginationProps = {
     initialTotalPages: number;
 };
 
-const usePagination = ({ initialPage = 1, initialTotalPages = 5 }: Partial<UsePaginationProps>) => {
+const usePagination = ({ initialPage = 1, initialTotalPages = 1 }: Partial<UsePaginationProps>) => {
     const [currentPage, setCurrentPage] = useState<number>(initialPage);
     const [totalNumberOfPages, setTotalNumberOfPages] = useState<number>(initialTotalPages);
 

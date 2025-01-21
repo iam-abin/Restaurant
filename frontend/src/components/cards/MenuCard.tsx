@@ -103,7 +103,9 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu, addItemToCartHandler }) => {
                     {isUser ? (
                         <CustomButton onClick={handleAddToCart}>Add to cart</CustomButton>
                     ) : isRestaurant ? (
-                        <CustomButton onClick={handleEditMenuOpen}>Edit</CustomButton>
+                        <CustomButton onClick={handleEditMenuOpen} className="sm:w-full">
+                            Edit
+                        </CustomButton>
                     ) : (
                         <></>
                     )}

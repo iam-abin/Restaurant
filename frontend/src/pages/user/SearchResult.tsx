@@ -14,6 +14,7 @@ import PaginationButtons from '../../components/pagination/PaginationButtons';
 import usePagination from '../../hooks/usePagination';
 import CustomButton from '../../components/Button/CustomButton';
 import SearchBar from '../../components/search/SearchBar';
+import { ITEMS_PER_PAGE } from '../../constants';
 
 const SearchResult: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -35,6 +36,7 @@ const SearchResult: React.FC = () => {
                 searchQuery,
                 selectedCuisines: selectedFilters,
                 page: currentPage,
+                limit: ITEMS_PER_PAGE,
             });
             setSearchResults((response.data as SearchResponse).restaurants);
             setTotalNumberOfPages((response.data as SearchResponse).numberOfPages);
@@ -96,7 +98,7 @@ const SearchResult: React.FC = () => {
             </div>
 
             {/* Right Side */}
-            <div className="flex-col shadow-2xl px-7 py-3 rounded-lg w-full">
+            <div className="flex-col shadow-2xl px-7 py-3 rounded-lg w-full ">
                 <div className="relative flex items-center gap-1">
                     <div className="w-full">
                         <Search className="absolute text-gray-500 inset-y-3 left-2" />
@@ -123,25 +125,24 @@ const SearchResult: React.FC = () => {
                         ))}
                 </div>
 
-                {isLoading ? (
-                    <div className="flex flex-wrap justify-center md:justify-start gap-3 md:gap-2">
-                        <RestaurantCardSkeleton />
-                        <RestaurantCardSkeleton />
-                        <RestaurantCardSkeleton />
-                    </div>
-                ) : searchResults.length ? (
-                    <div className="flex flex-wrap justify-center md:justify-start gap-3 md:gap-2 ">
-                        {searchResults.map((restaurant, index) => (
+                <div className="flex flex-wrap justify-center md:justify-start gap-3 md:gap-2">
+                    {isLoading ? (
+                        Array.from(new Array(ITEMS_PER_PAGE)).map((_, index: number) => (
+                            <RestaurantCardSkeleton key={index} />
+                        ))
+                    ) : searchResults.length ? (
+                        searchResults.map((restaurant, index) => (
                             <RestaurantCard key={index} restaurant={restaurant} />
-                        ))}
-                    </div>
-                ) : (
-                    <NoResultFound
-                        searchText={searchText}
-                        searchQuery={searchQuery}
-                        filterList={selectedFilters}
-                    />
-                )}
+                        ))
+                    ) : (
+                        <NoResultFound
+                            searchText={searchText}
+                            searchQuery={searchQuery}
+                            filterList={selectedFilters}
+                        />
+                    )}
+                </div>
+
                 <div className="flex justify-center my-10">
                     <PaginationButtons
                         handlePageChange={handlePageChange}

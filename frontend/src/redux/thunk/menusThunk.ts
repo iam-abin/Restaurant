@@ -10,13 +10,14 @@ export const fetchMenus = createAsyncThunk<
         restaurantId: string;
         setTotalNumberOfPages: React.Dispatch<React.SetStateAction<number>>;
         currentPage: number;
+        limit?: number;
     },
     { rejectValue: string | null }
 >(
     'menus/fetchUserMenus',
-    async ({ restaurantId, setTotalNumberOfPages, currentPage }, { rejectWithValue }) => {
+    async ({ restaurantId, setTotalNumberOfPages, currentPage, limit }, { rejectWithValue }) => {
         try {
-            const menus = await getMenusApi(restaurantId, currentPage, 2);
+            const menus = await getMenusApi(restaurantId, currentPage, limit);
             setTotalNumberOfPages((menus.data as Menus).numberOfPages);
             return (menus.data as Menus).menus;
         } catch (error: unknown) {
