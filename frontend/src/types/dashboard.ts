@@ -24,11 +24,7 @@ export interface IRestaurantDashboard {
 export interface IAdminDashboardCard {
     restaurantsCount: number;
     usersCount: number;
-    orderStatuses: OrderStatusWithCounts[];
     totalTurnover: number;
-    totalCommission: number;
-    lastSevenDaysUsers: CountByDay[];
-    lastSevenDaysRestaurants: CountByDay[];
 }
 
 export interface IAdminDashboardGraph {

@@ -9,7 +9,11 @@ import {
     TableRow,
 } from '@mui/material';
 
-const OrdersTableRestaurantSkelton: React.FC = () => {
+interface IOrdersTableRestaurantSkeltonProps {
+    rowCount: number;
+}
+
+const OrdersTableRestaurantSkelton: React.FC<IOrdersTableRestaurantSkeltonProps> = ({ rowCount }) => {
     return (
         <TableContainer component={Paper}>
             <Table>
@@ -36,7 +40,7 @@ const OrdersTableRestaurantSkelton: React.FC = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {Array.from({ length: 5 }).map((_, index) => (
+                    {Array.from({ length: rowCount }).map((_, index) => (
                         <TableRow key={index}>
                             <TableCell>
                                 <Skeleton variant="rectangular" width={50} height={50} />

@@ -278,7 +278,7 @@ const RestaurantProfile: React.FC = () => {
                     </div>
 
                     {/* Right Side Image Preview */}
-                    <div className="md:col-span-1">
+                    <div className="md:col-span-1 pt-6 md:pt-1">
                         {selectedImage && (
                             <div className="flex justify-center items-center md:justify-end">
                                 <img

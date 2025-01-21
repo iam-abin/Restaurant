@@ -126,10 +126,8 @@ const MobileDrawer: React.FC<IDrawerProps> = ({ anchor, handleLogoutButton, navI
         <div>
             {([anchor] as const).map((anchor) => (
                 <React.Fragment key={anchor}>
-                    <Button onClick={toggleDrawer(anchor, true)}>
-                        <IconButton>
-                            <MenuIcon />
-                        </IconButton>
+                    <Button color="warning" onClick={toggleDrawer(anchor, true)}>
+                        <MenuIcon />
                     </Button>
                     <Drawer
                         anchor={anchor}

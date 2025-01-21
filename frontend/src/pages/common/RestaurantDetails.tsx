@@ -16,6 +16,7 @@ import { hotToastMessage } from '../../utils';
 import { fetchMenus } from '../../redux/thunk/menusThunk';
 import usePagination from '../../hooks/usePagination';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
+import { ITEMS_PER_PAGE } from '../../constants';
 
 const RestaurantDetails: React.FC = () => {
     const params = useParams();
@@ -88,6 +89,7 @@ const RestaurantDetails: React.FC = () => {
                 restaurantId,
                 setTotalNumberOfPages,
                 currentPage,
+                limit: ITEMS_PER_PAGE,
             }),
         );
     };

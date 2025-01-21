@@ -10,6 +10,7 @@ import MenuCard from '../../components/cards/MenuCard';
 import usePagination from '../../hooks/usePagination';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
 import CustomButton from '../../components/Button/CustomButton';
+import { ITEMS_PER_PAGE } from '../../constants';
 
 const Menu: React.FC = () => {
     const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
@@ -36,6 +37,7 @@ const Menu: React.FC = () => {
                 restaurantId,
                 setTotalNumberOfPages,
                 currentPage,
+                limit: ITEMS_PER_PAGE,
             }),
         );
     };

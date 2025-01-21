@@ -25,7 +25,8 @@ export class ProfileRepository {
                     select: '-createdAt -updatedAt',
                 },
             ])
-            .select('-createdAt -updatedAt').lean<IProfileDocument | null>();
+            .select('-createdAt -updatedAt')
+            .lean<IProfileDocument | null>();
     };
 
     findProfiles = async (skip: number, limit: number): Promise<IProfileDocument[]> => {
@@ -33,7 +34,8 @@ export class ProfileRepository {
             .select(['-createdAt', '-updatedAt', '-addressId', '-isVerified'])
             .skip(skip ?? 0)
             .limit(limit ?? 0)
-            .populate('userId', ['-createdAt', '-updatedAt']).lean<IProfileDocument[]>();
+            .populate('userId', ['-createdAt', '-updatedAt'])
+            .lean<IProfileDocument[]>();
     };
 
     searchProfileByName = async (

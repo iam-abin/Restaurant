@@ -53,7 +53,8 @@ export class RestaurantRepository {
             .populate({
                 path: 'addressId',
                 select: '-createdAt -updatedAt',
-            }).lean<IRestaurantDocument | null>();
+            })
+            .lean<IRestaurantDocument | null>();
     };
 
     updateRestaurant = async (

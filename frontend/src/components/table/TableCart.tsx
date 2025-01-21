@@ -71,7 +71,9 @@ export default function TableCart({
                             <StyledTableCell component="th" scope="cartItem">
                                 {cartItem.itemId.name}
                             </StyledTableCell>
-                            <StyledTableCell align="center">{cartItem.itemId.price}</StyledTableCell>
+                            <StyledTableCell align="center">
+                                {cartItem.itemId.salePrice ?? cartItem.itemId.price}
+                            </StyledTableCell>
                             <StyledTableCell align="center">
                                 <div className="flex items-center justify-center">
                                     <IconButton onClick={() => handleQuantityChange(cartItem, -1)}>
@@ -84,7 +86,9 @@ export default function TableCart({
                                 </div>
                             </StyledTableCell>
                             <StyledTableCell align="center">
-                                {cartItem.itemId.price * cartItem.quantity}
+                                {cartItem.itemId.salePrice
+                                    ? cartItem.itemId.salePrice * cartItem.quantity
+                                    : cartItem.itemId.price * cartItem.quantity}
                             </StyledTableCell>
                             <StyledTableCell align="center">
                                 <IconButton onClick={() => handleRemoveItem(cartItem._id)}>
