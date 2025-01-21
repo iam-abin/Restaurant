@@ -50,8 +50,18 @@ npm install
 
 5. Access the application from browser using:
 
+***For user***
 ```
 http://localhost:5000
+```
+***For restaurant***
+```
+http://localhost:5000/auth/restaurant
+```
+
+***For admin***
+```
+http://localhost:5000/auth/admin
 ```
 
 # Images

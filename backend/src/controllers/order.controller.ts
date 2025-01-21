@@ -23,12 +23,7 @@ export class OrderController {
 
     public confirmOrderStripeWebhook = async (req: Request, res: Response): Promise<void> => {
         const signature = req.headers['stripe-signature'] as string | Buffer | Array<string>;
-        const order = await this.orderService.confirmOrder(
-            'confirmed',
-            req.body,
-            signature,
-            // userId,
-        );
+        const order = await this.orderService.confirmOrder('confirmed', req.body, signature);
         res.status(HTTP_STATUS_CODE.OK).json(createSuccessResponse('Order Confirmed successfully', order));
     };
 

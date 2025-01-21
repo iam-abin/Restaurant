@@ -8,6 +8,7 @@ import { IAddress } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import { useConfirmationContext } from '../../context/confirmationContext';
 import CustomButton from '../../components/Button/CustomButton';
+import { hotToastMessage } from '../../utils';
 
 const Profile: React.FC = () => {
     const [selectedProfilePicture, setSelectedProfilePicture] = useState<string>('');
@@ -66,7 +67,12 @@ const Profile: React.FC = () => {
     };
 
     const updateProfileHandler = async (): Promise<void> => {
-        dispatch(updateUserProfile({ ...profileData, image: selectedProfilePicture }));
+        const result = await dispatch(updateUserProfile({ ...profileData, image: selectedProfilePicture }));
+        if (result.meta.requestStatus === 'rejected') {
+            hotToastMessage(result.payload as string, 'error');
+            return;
+        }
+
         setSelectedProfilePicture('');
     };
 
