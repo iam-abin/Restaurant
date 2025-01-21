@@ -11,18 +11,21 @@ export class UserRepository {
     };
 
     findUserByEmail = async (email: string): Promise<IUserDocument | null> => {
-        return await UserModel.findOne({ email });
+        return await UserModel.findOne({ email }).select('-createdAt -updatedAt').lean();
     };
 
     findUserById = async (userId: string): Promise<IUserDocument | null> => {
-        return await UserModel.findById(userId);
+        return await UserModel.findById(userId).select('-createdAt -updatedAt').lean();
     };
+
     updateUser = async (
         userId: string,
         updateData: Partial<IUser>,
         session?: ClientSession,
     ): Promise<IUserDocument | null> => {
-        return await UserModel.findByIdAndUpdate(userId, updateData, { new: true, session });
+        return await UserModel.findByIdAndUpdate(userId, updateData, { new: true, session }).select([
+            '-createdAt',
+        ]);
     };
 
     findMinMaxYears = async (): Promise<MinMaxYears> => {

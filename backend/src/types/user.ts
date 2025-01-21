@@ -3,6 +3,7 @@ import { IOtpTokenData } from './otp';
 import { UserRole } from './roles';
 
 export interface IUser {
+    _id: string;
     name: string;
     email: string;
     phone?: number;
@@ -14,7 +15,7 @@ export interface IUser {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ISignup extends Omit<IUser, 'isBlocked' | 'isVerified'> {}
+export interface ISignup extends Omit<IUser, '_id' | 'isBlocked' | 'isVerified'> {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ISignin extends Pick<IUser, 'email' | 'password' | 'role'> {}

@@ -114,15 +114,20 @@ export class OrderRepository {
                 },
             },
 
+            { $sort: { createdAt: -1 } },
             // Add skip and limit stages for pagination
-            { $skip: skip ?? 0 }, // Skip the specified number of documents
-            { $limit: limit ?? 10 }, // Limit the number of documents returned
+            { $skip: skip ?? 0 },
+            { $limit: limit ?? 10 },
         ]);
 
         return userOrders;
     };
 
-    findOrders = async (restaurantId: string, skip: number, limit?: number): Promise<IOrderDocument[]> => {
+    findRestaurantOrders = async (
+        restaurantId: string,
+        skip: number,
+        limit?: number,
+    ): Promise<IOrderDocument[]> => {
         const restaurantOrders = await OrderModel.aggregate([
             // Match orders by restaurantId
             { $match: { restaurantId: new mongoose.Types.ObjectId(restaurantId) } },
@@ -209,6 +214,8 @@ export class OrderRepository {
                     createdAt: 1,
                 },
             },
+
+            { $sort: { createdAt: -1 } },
             ...(skip ? [{ $skip: skip }] : []), // Skip documents if skip is provided
             ...(limit ? [{ $limit: limit }] : []), // Limit documents if limit is provided
         ]);
@@ -216,7 +223,7 @@ export class OrderRepository {
     };
 
     findOrderById = async (orderId: string): Promise<IOrderDocument | null> => {
-        return await OrderModel.findById(orderId).populate('userId');
+        return await OrderModel.findById(orderId).populate('restaurantId').lean<IOrderDocument | null>();
     };
 
     updateOrderStatus = async (orderId: string, status: string): Promise<IOrderDocument | null> => {
@@ -290,31 +297,6 @@ export class OrderRepository {
             },
         ]);
         return total.length ? total[0].totalSellPrice : 0;
-    };
-
-    findPercentageCommitionAmount = async (
-        percentageDecimal: number,
-        precision: number = 2,
-    ): Promise<number> => {
-        const result = await OrderModel.aggregate([
-            {
-                $project: {
-                    // Multiply totalAmount by the percentage
-                    percentageAmount: { $multiply: ['$totalAmount', percentageDecimal] },
-                },
-            },
-            {
-                $group: {
-                    _id: null, // No grouping (we want to sum everything)
-                    totalPercentageSum: { $sum: '$percentageAmount' }, // Sum the calculated percentage amounts
-                },
-            },
-        ]);
-        // Get the total sum or default to 0
-        const totalSum: number = result[0]?.totalPercentageSum || 0;
-
-        // Round the result to the desired precision
-        return parseFloat(totalSum.toFixed(precision));
     };
 
     countUserOrders = async ({ userId }: { userId: string }): Promise<number> => {

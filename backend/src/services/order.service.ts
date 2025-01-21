@@ -106,7 +106,7 @@ export class OrderService {
         const skip: number = getPaginationSkipValue(page, limit);
 
         const [orders, myOrdersCount]: [IOrderDocument[], number] = await Promise.all([
-            this.orderRepository.findOrders(restaurantId, skip, limit),
+            this.orderRepository.findRestaurantOrders(restaurantId, skip, limit),
             this.orderRepository.countRestaurantOrders({ restaurantId }),
         ]);
 
@@ -194,11 +194,14 @@ export class OrderService {
         });
     };
 
+    // Helper function to calculate total order amound
     private findtotalAmount = (cartItems: ICartDocument[]): number => {
         if (cartItems.length === 0) throw new Error('Cart is empty');
 
         const totalAmount: number = cartItems.reduce((acc: number, currItem: ICartDocument) => {
-            acc = acc + (currItem.itemId as IMenuDocument).price * currItem.quantity;
+            const effectivePrice =
+                (currItem.itemId as IMenuDocument).salePrice || (currItem.itemId as IMenuDocument).price;
+            acc += effectivePrice * currItem.quantity;
             return acc;
         }, 0);
 
@@ -218,7 +221,7 @@ export class OrderService {
             restaurantId,
             quantity: item.quantity,
             menuItemId: (item.itemId as IMenuDocument)._id.toString(),
-            menuItemPrice: (item.itemId as IMenuDocument)?.salePrice ?? (item.itemId as IMenuDocument).price,
+            menuItemPrice: (item.itemId as IMenuDocument).salePrice ?? (item.itemId as IMenuDocument).price,
         }));
     };
 

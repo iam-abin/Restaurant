@@ -2,7 +2,7 @@ import mongoose, { Document, Schema, Types } from 'mongoose';
 import { generateHashedPassword, omitDocFields } from '../../utils';
 import { ISignup, IUser, UserRole } from '../../types';
 
-export interface IUserDocument extends Document, IUser {
+export interface IUserDocument extends Document, Omit<IUser, '_id'> {
     _id: Types.ObjectId;
 }
 

@@ -6,7 +6,7 @@ import mongoose, { DeleteResult } from 'mongoose';
 @singleton()
 export class RatingRepository {
     findUserRating = async (restaurantId: string, userId: string): Promise<IRatingDocument | null> => {
-        return await RatingModel.findOne({ restaurantId, userId });
+        return await RatingModel.findOne({ restaurantId, userId }).lean();
     };
 
     findRestaurantRating = async (restaurantId: string): Promise<number> => {

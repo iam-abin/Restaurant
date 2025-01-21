@@ -11,7 +11,7 @@ export class MenuRepository {
     };
 
     findMenu = async (menuId: string): Promise<IMenuDocument | null> => {
-        return await MenuModel.findById(menuId);
+        return await MenuModel.findById(menuId).lean<IMenuDocument | null>();
     };
 
     findMenus = async (restaurantId: string, skip: number, limit: number): Promise<IMenuDocument[]> => {
@@ -19,7 +19,9 @@ export class MenuRepository {
             .populate('cuisineId', ['-_id', 'name'])
             .sort({ updatedAt: -1 })
             .skip(skip ?? 0)
-            .limit(limit ?? 0);
+            .limit(limit ?? 0)
+            .select(['-createdAt', '-updatedAt'])
+            .lean<IMenuDocument[]>();
     };
 
     updateMenu = async (menuId: string, updatedData: Partial<IMenu>): Promise<IMenuDocument | null> => {

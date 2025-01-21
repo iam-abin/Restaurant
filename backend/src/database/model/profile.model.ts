@@ -1,11 +1,13 @@
 import mongoose, { Schema, Types } from 'mongoose';
 import { IProfile } from '../../types';
 import { omitDocFields } from '../../utils';
+import { IUserDocument } from './user.model';
+import { IAddressDocument } from './address.model';
 
 export interface IProfileDocument extends Document, Omit<IProfile, 'userId' | 'addressId'> {
     _id: Types.ObjectId;
-    userId: Types.ObjectId;
-    addressId: Types.ObjectId;
+    userId: Types.ObjectId | IUserDocument;
+    addressId: Types.ObjectId | IAddressDocument;
 }
 
 const profileSchema = new Schema<IProfileDocument>(

@@ -15,11 +15,14 @@ export class CartRepository {
         restaurantId: string,
         itemId: string,
     ): Promise<ICartDocument | null> => {
-        return await CartModel.findOne({ userId, restaurantId, itemId });
+        return await CartModel.findOne({ userId, restaurantId, itemId }).lean<ICartDocument | null>();
     };
 
     findCartItemById = async (cartItemId: string): Promise<ICartDocument | null> => {
-        return await CartModel.findById(cartItemId).populate('userId').populate('itemId');
+        return await CartModel.findById(cartItemId)
+            .populate('userId')
+            .populate('itemId')
+            .lean<ICartDocument | null>();
     };
 
     findCartItemsByRestaurant = async (
@@ -29,9 +32,11 @@ export class CartRepository {
         limit?: number,
     ): Promise<ICartDocument[]> => {
         return await CartModel.find({ userId, restaurantId })
+            .sort({ createdAt: -1 })
             .skip(skip ?? 0) // If skip is undefined or null, it defaults to 0, ensuring no skipping of documents
             .limit(limit ?? 0) // If limit is undefined or null, it defaults to 0, which means no limit is applied
-            .populate('itemId');
+            .populate('itemId')
+            .lean<ICartDocument[]>();
     };
 
     updateCartItem = async (cartItemId: string, quantity: number): Promise<ICartDocument | null> => {

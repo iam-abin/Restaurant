@@ -1,7 +1,6 @@
 import { ClientSession, PipelineStage } from 'mongoose';
 import { singleton } from 'tsyringe';
 import {
-    CountByDay,
     CountByMonth,
     IRestaurant,
     ISearchFilterRestaurantResult,
@@ -22,9 +21,11 @@ export class RestaurantRepository {
 
     findRestaurants = async (skip: number, limit: number): Promise<IRestaurantDocument[]> => {
         return await RestaurantModel.find()
+            .select(['-createdAt', '-updatedAt', '-addressId', '-isVerified'])
             .skip(skip ?? 0)
             .limit(limit ?? 0)
-            .populate('ownerId');
+            .populate('ownerId', ['-createdAt', '-updatedAt'])
+            .lean<IRestaurantDocument[]>();
     };
 
     findRestaurantById = async (restaurantId: string): Promise<IRestaurantDocument | null> => {
@@ -39,11 +40,20 @@ export class RestaurantRepository {
                     select: '-createdAt -updatedAt', // Exclude fields from addressId
                 },
             ])
-            .select('-createdAt -updatedAt'); // Exclude fields from the main restaurant document
+            .select('-createdAt -updatedAt')
+            .lean<IRestaurantDocument | null>(); // Exclude fields from the main restaurant document
     };
 
     findRestaurantByOwnerId = async (ownerId: string): Promise<IRestaurantDocument | null> => {
-        return await RestaurantModel.findOne({ ownerId }).populate(['ownerId', 'addressId']);
+        return await RestaurantModel.findOne({ ownerId })
+            .populate({
+                path: 'ownerId',
+                select: '-createdAt -updatedAt',
+            })
+            .populate({
+                path: 'addressId',
+                select: '-createdAt -updatedAt',
+            }).lean<IRestaurantDocument | null>();
     };
 
     updateRestaurant = async (
@@ -132,9 +142,6 @@ export class RestaurantRepository {
                     as: 'cuisines',
                 },
             },
-            // {
-            //     $unwind: { path: '$cuisines', preserveNullAndEmptyArrays: true },
-            // },
             // Match conditions
             {
                 $match: {
@@ -313,38 +320,5 @@ export class RestaurantRepository {
         ];
 
         return await RestaurantModel.aggregate(pipeline);
-    };
-
-    countLast7DaysCreatedRestaurants = async (startDate: Date): Promise<CountByDay[]> => {
-        const counts: CountByDay[] = await RestaurantModel.aggregate([
-            {
-                $match: {
-                    createdAt: { $gte: startDate }, // Only include documents from the last 7 days
-                },
-            },
-            {
-                $project: {
-                    date: {
-                        $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }, // Format date to 'YYYY-MM-DD'
-                    },
-                },
-            },
-            {
-                $group: {
-                    _id: '$date', // Group by formatted date
-                    count: { $sum: 1 }, // Count the number of restaurants for each date
-                },
-            },
-            {
-                $addFields: { date: '$_id' }, // Copy `_id` to `date`
-            },
-            {
-                $project: { _id: 0 }, // Remove the `_id` field
-            },
-            {
-                $sort: { date: 1 }, // Sort by date in ascending order
-            },
-        ]);
-        return counts;
     };
 }
