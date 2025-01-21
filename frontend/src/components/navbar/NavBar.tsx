@@ -29,6 +29,7 @@ interface INavBarProps {
 const NavBar: React.FC<INavBarProps> = ({ currentUser }) => {
     const { showConfirmation } = useConfirmationContext();
     const { myProfile } = useAppSelector((store) => store.profileReducer);
+    const { restaurantData } = useAppSelector((store) => store.restaurantReducer);
     const location = useLocation();
 
     const naivgate: NavigateFunction = useNavigate();
@@ -125,7 +126,9 @@ const NavBar: React.FC<INavBarProps> = ({ currentUser }) => {
                         </Link>
                     ))}
 
-                    <Avatar src={`${myProfile?.imageUrl ? myProfile?.imageUrl : '/broken-image.jpg'}`} />
+                    <Avatar
+                        src={`${isUser ? myProfile?.imageUrl : isRestaurant ? restaurantData?.restaurant.imageUrl : '/broken-image.jpg'}`}
+                    />
                     <LogoutIcon onClick={handleLogoutButton} style={{ cursor: 'pointer' }} />
                 </div>
                 {/* Mobile Menu */}

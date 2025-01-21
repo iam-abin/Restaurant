@@ -46,5 +46,6 @@ export type DashboardCardData = {
     title: string;
     number: number;
     icon: JSX.Element;
-    description: string;
+    description?: string;
+    symbol?: JSX.Element;
 };

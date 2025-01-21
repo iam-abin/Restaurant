@@ -236,7 +236,7 @@ export class OrderService {
                         name: menuItem.name,
                         images: [menuItem.imageUrl],
                     },
-                    unit_amount: menuItem.price * 100, // Amount in cents (299 INR * 100)
+                    unit_amount: (menuItem.salePrice || menuItem.price) * 100, // Amount in cents (299 INR * 100)
                 },
                 quantity: cartItem.quantity,
             };
