@@ -4,6 +4,7 @@ import { omitDocFields } from '../../utils';
 import { IMenuDocument } from './menu.model';
 import { IUserDocument } from './user.model';
 import { IRestaurantDocument } from './restaurant.model';
+import { CART_MAX_QUANTITY, CART_MIN_QUANTITY } from '../../constants';
 
 export interface ICartDocument extends Document, Omit<ICart, 'userId' | 'itemId' | 'restaurantId'> {
     _id: Types.ObjectId;
@@ -35,7 +36,8 @@ const cartSchema = new Schema<ICartDocument>(
             type: Number,
             required: true,
             default: 1,
-            // min: [1, ""]
+            min: CART_MIN_QUANTITY,
+            max: CART_MAX_QUANTITY,
         },
     },
     {

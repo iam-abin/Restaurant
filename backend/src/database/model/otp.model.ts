@@ -3,7 +3,6 @@ import { IOtpToken } from '../../types';
 import { omitDocFields } from '../../utils';
 import { OTP_EXPIRY_MILLISECONDS, OTP_EXPIRY_SECONDS } from '../../constants';
 
-// Use Omit to exclude 'string type' userId from IOtpToken and redefine it in IOtpTokenDocument
 export interface IOtpTokenDocument extends Document, Omit<IOtpToken, 'userId'> {
     _id: Types.ObjectId;
     userId: Types.ObjectId;

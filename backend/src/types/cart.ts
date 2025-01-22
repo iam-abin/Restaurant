@@ -14,6 +14,14 @@ export type GetCartItemsByRestaurantIdParams = {
     limit: number;
 };
 
+export type CartItemId = {
+    cartItemId: string;
+};
+
+export type Quantity = {
+    quantity: number;
+};
+
 export interface ICartItemsData {
     cartItems: ICartDocument[];
     numberOfPages: number;

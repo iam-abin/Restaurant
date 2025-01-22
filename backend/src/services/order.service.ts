@@ -58,7 +58,7 @@ export class OrderService {
                     restaurantId,
                     addressId: address._id.toString(),
                     totalAmount,
-                    status: 'pending',
+                    status: OrderStatus.PENDING,
                 },
                 session,
             );
@@ -127,7 +127,7 @@ export class OrderService {
     };
 
     public confirmOrder = async (
-        status: string,
+        status: OrderStatus,
         requestBody: Buffer,
         stripeSignature: string | Buffer | Array<string>,
     ): Promise<IOrderDocument | null> => {

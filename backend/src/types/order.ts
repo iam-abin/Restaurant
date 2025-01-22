@@ -1,7 +1,21 @@
 import { IOrderDocument } from '../database/model';
 import { Pagination } from './pagination';
 
-export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'outfordelivery' | 'delivered';
+export enum OrderStatus {
+    PENDING = 'pending',
+    CONFIRMED = 'confirmed',
+    PREPARING = 'preparing',
+    OUT_FOR_DELIVERY = 'outfordelivery',
+    DELIVERED = 'delivered',
+}
+
+export type Status = {
+    status: OrderStatus;
+};
+
+export type OrderId = {
+    orderId: string;
+};
 
 export interface IOrder {
     userId: string;

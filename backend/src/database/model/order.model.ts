@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-import { IOrder } from '../../types';
+import { IOrder, OrderStatus } from '../../types';
 import { omitDocFields } from '../../utils';
 import { IUserDocument } from './user.model';
 import { IRestaurantDocument } from './restaurant.model';
@@ -39,7 +39,13 @@ const orderSchema = new Schema<IOrderDocument>(
         status: {
             type: String,
             required: true,
-            enum: ['pending', 'confirmed', 'preparing', 'outfordelivery', 'delivered'],
+            enum: [
+                OrderStatus.PENDING,
+                OrderStatus.CONFIRMED,
+                OrderStatus.PREPARING,
+                OrderStatus.OUT_FOR_DELIVERY,
+                OrderStatus.DELIVERED,
+            ],
         },
     },
     {

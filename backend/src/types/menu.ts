@@ -17,6 +17,6 @@ export type Menus = {
     numberOfPages: number;
 };
 
-export type MenuIdParam = {
+export type MenuId = {
     menuId: string;
 };

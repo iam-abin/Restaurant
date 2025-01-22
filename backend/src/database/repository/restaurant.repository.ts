@@ -19,11 +19,11 @@ export class RestaurantRepository {
         return restaurant[0];
     };
 
-    findRestaurants = async (skip: number, limit: number): Promise<IRestaurantDocument[]> => {
+    findRestaurants = async (skip: number = 0, limit: number = 0): Promise<IRestaurantDocument[]> => {
         return await RestaurantModel.find()
             .select(['-createdAt', '-updatedAt', '-addressId', '-isVerified'])
-            .skip(skip ?? 0)
-            .limit(limit ?? 0)
+            .skip(skip)
+            .limit(limit)
             .populate('ownerId', ['-createdAt', '-updatedAt'])
             .lean<IRestaurantDocument[]>();
     };

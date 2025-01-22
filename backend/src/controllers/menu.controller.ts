@@ -3,8 +3,8 @@ import { autoInjectable } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
 import { IMenuDocument } from '../database/model';
 import { MenuService } from '../services';
-import { IJwtPayload, IMenu, MenuIdParam, Menus, Pagination, RestaurantIdParam } from '../types';
-import { HTTP_STATUS_CODE } from '../constants';
+import { IJwtPayload, IMenu, MenuId, Menus, Pagination, RestaurantId } from '../types';
+import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE_VALUE, HTTP_STATUS_CODE } from '../constants';
 
 @autoInjectable()
 export class MenuController {
@@ -22,22 +22,22 @@ export class MenuController {
     };
 
     public getMenus = async (req: Request, res: Response): Promise<void> => {
-        const { restaurantId } = req.params as RestaurantIdParam;
-        const { page = 1, limit = 10 } = req.query as Pagination;
+        const { restaurantId } = req.params as RestaurantId;
+        const { page = DEFAULT_PAGE_VALUE, limit = DEFAULT_LIMIT_VALUE } = req.query as Pagination;
 
         const menu: Menus = await this.menuService.getMenus(restaurantId, page as number, limit as number);
         res.status(HTTP_STATUS_CODE.OK).json(createSuccessResponse('Menus fetched successfully', menu));
     };
 
     public getMenu = async (req: Request, res: Response): Promise<void> => {
-        const { menuId } = req.params as MenuIdParam;
+        const { menuId } = req.params as MenuId;
         const menu: IMenuDocument = await this.menuService.getMenu(menuId);
         res.status(HTTP_STATUS_CODE.OK).json(createSuccessResponse('Menu item fetched successfully', menu));
     };
 
     public editMenu = async (req: Request, res: Response): Promise<void> => {
         const { userId } = req.currentUser as IJwtPayload;
-        const { menuId } = req.params as MenuIdParam;
+        const { menuId } = req.params as MenuId;
         const file: Express.Multer.File = req.file!;
 
         const menu: IMenuDocument | null = await this.menuService.updateMenu(

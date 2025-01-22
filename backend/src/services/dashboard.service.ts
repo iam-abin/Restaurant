@@ -16,6 +16,7 @@ import {
     CountByMonth,
     IRestaurantDashboard,
     MinMaxYears,
+    OrderStatus,
 } from '../types';
 // import { getCurrentYear } from '../utils';
 
@@ -62,7 +63,7 @@ export class DashboardService {
             [
                 this.restaurantRepository.countRestaurants(),
                 this.profileRepository.countProfiles(),
-                this.orderRepository.findTotalOrderedPrice(),
+                this.orderRepository.findAllOrdersPrice(),
             ],
         );
 
@@ -90,7 +91,13 @@ export class DashboardService {
     private mapOrderStatusesWithCounts = (
         orderStatusesWithCounts: IOrderStatusWithCounts[],
     ): IOrderStatusWithCounts[] => {
-        const allStatuses: string[] = ['pending', 'confirmed', 'preparing', 'outfordelivery', 'delivered'];
+        const allStatuses: OrderStatus[] = [
+            OrderStatus.PENDING,
+            OrderStatus.CONFIRMED,
+            OrderStatus.PREPARING,
+            OrderStatus.OUT_FOR_DELIVERY,
+            OrderStatus.DELIVERED,
+        ];
 
         const countsMap: Map<string, number> = new Map(
             orderStatusesWithCounts.map(({ status, count }) => [status, count || 0]),

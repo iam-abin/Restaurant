@@ -11,7 +11,7 @@ import {
     ProfileUpdate,
     SearchQueryParams,
 } from '../types';
-import { HTTP_STATUS_CODE } from '../constants';
+import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE_VALUE, HTTP_STATUS_CODE } from '../constants';
 
 @autoInjectable()
 export class ProfileController {
@@ -24,7 +24,7 @@ export class ProfileController {
     };
 
     public getProfiles = async (req: Request, res: Response): Promise<void> => {
-        const { page = 1, limit = 10 } = req.query as Pagination;
+        const { page = DEFAULT_PAGE_VALUE, limit = DEFAULT_LIMIT_VALUE } = req.query as Pagination;
         const profilesData: IProfilesData = await this.profileService.getUserProfiles(
             page as number,
             limit as number,
@@ -35,7 +35,11 @@ export class ProfileController {
     };
 
     public searchProfile = async (req: Request, res: Response): Promise<void> => {
-        const { searchText, page = 1, limit = 10 } = req.query as SearchQueryParams;
+        const {
+            searchText,
+            page = DEFAULT_PAGE_VALUE,
+            limit = DEFAULT_LIMIT_VALUE,
+        } = req.query as SearchQueryParams;
         const profilesData: ISearchProfileData = await this.profileService.searchProfileByName(
             searchText as string,
             page as number,

@@ -1,7 +1,15 @@
 import { body, ValidationChain } from 'express-validator';
 import { mongoIdBodyValidator } from './mongodb-id.validation';
+import { PASSWORD_MAXIMUM_LENGTH, PASSWORD_MINIMUM_LENGTH, RESET_TOKEN_LENGTH } from '../../constants';
+import { validateAllowedFields } from './allowed-fields.validation';
+
+const forgotPasswordAllowedFields: string[] = ['email'];
+const resetPasswordAllowedFields: string[] = ['userId', 'password'];
+const verifyTokenAllowedFields: string[] = ['resetToken'];
+
 export const forgotPasswordRequestBodyValidator = [
     body('email').isEmail().withMessage('Email must be valid').toLowerCase().trim().escape(),
+    body('*').custom(validateAllowedFields(forgotPasswordAllowedFields)),
 ];
 
 export const resetPasswordRequestBodyValidator: ValidationChain[] = [
@@ -10,11 +18,19 @@ export const resetPasswordRequestBodyValidator: ValidationChain[] = [
         .notEmpty()
         .withMessage('Password is required')
         .trim()
-        .isLength({ min: 4, max: 20 })
-        .withMessage('Password must be between 4 and 20 characters')
-        .escape(), // used to sanitize input by escaping characters that could be used in cross-site scripting (XSS) attacks or other injection vulnerabilities.
+        .isLength({ min: PASSWORD_MINIMUM_LENGTH, max: PASSWORD_MAXIMUM_LENGTH })
+        .withMessage(
+            `Password must be between ${PASSWORD_MINIMUM_LENGTH} and ${PASSWORD_MAXIMUM_LENGTH} characters`,
+        )
+        .escape(),
+    body('*').custom(validateAllowedFields(resetPasswordAllowedFields)),
 ];
 
 export const verifyTokenRequestBodyValidator: ValidationChain[] = [
-    body('resetToken').trim().isLength({ min: 80, max: 80 }).withMessage('invalid reset token').escape(), // used to sanitize input by escaping characters that could be used in cross-site scripting (XSS) attacks or other injection vulnerabilities.
+    body('resetToken')
+        .trim()
+        .isLength({ min: RESET_TOKEN_LENGTH, max: RESET_TOKEN_LENGTH })
+        .withMessage('invalid reset token')
+        .escape(),
+    body('*').custom(validateAllowedFields(verifyTokenAllowedFields)),
 ];

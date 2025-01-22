@@ -5,17 +5,19 @@ import { IUser, MinMaxYears } from '../../types';
 
 @singleton()
 export class UserRepository {
+    private readonly excludedFields: string[] = ['-createdAt', '-updatedAt'];
+
     createUser = async (userData: Partial<IUser>, session?: ClientSession): Promise<IUserDocument> => {
         const user: IUserDocument[] = await UserModel.create([userData], { session });
         return user[0];
     };
 
     findUserByEmail = async (email: string): Promise<IUserDocument | null> => {
-        return await UserModel.findOne({ email }).select('-createdAt -updatedAt').lean();
+        return await UserModel.findOne({ email }).select(this.excludedFields).lean();
     };
 
     findUserById = async (userId: string): Promise<IUserDocument | null> => {
-        return await UserModel.findById(userId).select('-createdAt -updatedAt').lean();
+        return await UserModel.findById(userId).select(this.excludedFields).lean();
     };
 
     updateUser = async (
@@ -23,9 +25,9 @@ export class UserRepository {
         updateData: Partial<IUser>,
         session?: ClientSession,
     ): Promise<IUserDocument | null> => {
-        return await UserModel.findByIdAndUpdate(userId, updateData, { new: true, session }).select([
-            '-createdAt',
-        ]);
+        return await UserModel.findByIdAndUpdate(userId, updateData, { new: true, session }).select(
+            this.excludedFields,
+        );
     };
 
     findMinMaxYears = async (): Promise<MinMaxYears> => {

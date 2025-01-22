@@ -2,6 +2,7 @@ import mongoose, { Schema, Types } from 'mongoose';
 import { IAddress } from '../../types';
 import { omitDocFields } from '../../utils';
 
+// Use Omit to exclude 'string type' userId from IAddress and redefine it in IAddressDocument
 export interface IAddressDocument extends Document, Omit<IAddress, 'userId'> {
     _id: Types.ObjectId;
     userId: Types.ObjectId;

@@ -3,8 +3,8 @@ import { autoInjectable } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
 import { IOrderDocument } from '../database/model';
 import { OrderService } from '../services';
-import { IJwtPayload, IOrder, Orders, OrderStatus, Pagination, RestaurantIdParam } from '../types';
-import { HTTP_STATUS_CODE } from '../constants';
+import { IJwtPayload, OrderId, Orders, OrderStatus, Pagination, RestaurantId, Status } from '../types';
+import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE_VALUE, HTTP_STATUS_CODE } from '../constants';
 
 @autoInjectable()
 export class OrderController {
@@ -13,24 +13,21 @@ export class OrderController {
     public addOrder = async (req: Request, res: Response): Promise<void> => {
         const { userId } = req.currentUser as IJwtPayload;
 
-        const checkoutSessionData = req.body;
-        const order = await this.orderService.createOrder(
-            userId,
-            checkoutSessionData as Pick<IOrder, 'restaurantId'>,
-        );
+        const checkoutSessionData = req.body as RestaurantId;
+        const order = await this.orderService.createOrder(userId, checkoutSessionData);
         res.status(HTTP_STATUS_CODE.CREATED).json(createSuccessResponse('Order created successfully', order));
     };
 
     public confirmOrderStripeWebhook = async (req: Request, res: Response): Promise<void> => {
         const signature = req.headers['stripe-signature'] as string | Buffer | Array<string>;
-        const order = await this.orderService.confirmOrder('confirmed', req.body, signature);
+        const order = await this.orderService.confirmOrder(OrderStatus.CONFIRMED, req.body, signature);
         res.status(HTTP_STATUS_CODE.OK).json(createSuccessResponse('Order Confirmed successfully', order));
     };
 
     public getRestaurantOrders = async (req: Request, res: Response): Promise<void> => {
         const { userId } = req.currentUser as IJwtPayload;
-        const { restaurantId } = req.params as RestaurantIdParam;
-        const { page = 1, limit = 10 } = req.query as Pagination;
+        const { restaurantId } = req.params as RestaurantId;
+        const { page = DEFAULT_PAGE_VALUE, limit = DEFAULT_LIMIT_VALUE } = req.query as Pagination;
         const orders: Orders = await this.orderService.getRestaurantOrders({
             restaurantId,
             ownerId: userId,
@@ -44,7 +41,7 @@ export class OrderController {
 
     public getMyOrders = async (req: Request, res: Response): Promise<void> => {
         const { userId } = req.currentUser as IJwtPayload;
-        const { page = 1, limit = 10 } = req.query as Pagination;
+        const { page = DEFAULT_PAGE_VALUE, limit = DEFAULT_LIMIT_VALUE } = req.query as Pagination;
         const orders: Orders = await this.orderService.getMyOrders(userId, page as number, limit as number);
         res.status(HTTP_STATUS_CODE.OK).json(
             createSuccessResponse('Your orders fetched successfully', orders),
@@ -53,8 +50,8 @@ export class OrderController {
 
     public updateOrderStatus = async (req: Request, res: Response): Promise<void> => {
         const { userId } = req.currentUser as IJwtPayload;
-        const { orderId } = req.params as { orderId: string };
-        const { status } = req.body as { status: OrderStatus };
+        const { orderId } = req.params as OrderId;
+        const { status } = req.body as Status;
         const order: IOrderDocument | null = await this.orderService.updateOrderStatus(
             orderId,
             status,

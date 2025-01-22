@@ -1,3 +1,4 @@
+export * from './allowed-fields.validation';
 export * from './cart.validation';
 export * from './cuisine.validation';
 export * from './dashboard.validation';
