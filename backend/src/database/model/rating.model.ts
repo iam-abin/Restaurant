@@ -3,12 +3,11 @@ import { omitDocFields } from '../../utils';
 import { IRating } from '../../types/rating';
 
 export interface IRatingDocument extends Document, Omit<IRating, 'userId' | 'restaurantId'> {
-    // _id: Types.ObjectId;
     restaurantId: Types.ObjectId;
     userId: Types.ObjectId;
 }
 
-const ratingSchema = new Schema(
+const ratingSchema = new Schema<IRatingDocument>(
     {
         restaurantId: {
             type: Schema.Types.ObjectId,

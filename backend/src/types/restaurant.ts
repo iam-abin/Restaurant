@@ -92,6 +92,6 @@ export interface IRestaurantWithCuisines {
     restaurantRatingsCount: number;
 }
 
-export type RestaurantIdParam = {
+export type RestaurantId = {
     restaurantId: string;
 };

@@ -1,3 +1,4 @@
+import { container } from 'tsyringe';
 import { Request, Response, NextFunction } from 'express';
 import { ForbiddenError, NotAuthorizedError, NotFoundError } from '../errors';
 import { verifyJwtAccessToken } from '../utils';
@@ -14,7 +15,7 @@ declare global {
     }
 }
 
-const userRepository = new UserRepository();
+const userRepository = container.resolve(UserRepository);
 
 // Middleware to get current user from token and assign it to req.currentUser
 export const checkCurrentUser = async (req: Request, res: Response, next: NextFunction) => {

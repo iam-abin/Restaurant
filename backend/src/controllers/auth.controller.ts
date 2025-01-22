@@ -18,7 +18,6 @@ import {
 } from '../types';
 import { appConfig } from '../config/app.config';
 import { HTTP_STATUS_CODE } from '../constants';
-// import { BadRequestError } from '../errors';
 
 @autoInjectable()
 export class AuthController {

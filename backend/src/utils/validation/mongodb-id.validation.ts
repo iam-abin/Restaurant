@@ -1,5 +1,8 @@
 import { body, param, ValidationChain } from 'express-validator';
 
+/**
+ * Creates a validation chain to validate MongoDB ObjectId fields in request parameters or body.
+ */
 const mongoIdValidator = (
     validatorType: 'param' | 'body',
     mongoIdField: string | string[],
@@ -18,8 +21,20 @@ const mongoIdValidator = (
     );
 };
 
-// Specialized validators using the generic function
+/**
+ * Validates MongoDB ObjectId fields in request parameters.
+ *
+ * @param mongoIdField - A single mongodb id field name or an array of id field name(s) to be validated.
+ * @returns An array of validation chains for the specified parameter field(s).
+ */
 export const mongoIdParamsValidator = (mongoIdField: string | string[]): ValidationChain[] =>
     mongoIdValidator('param', mongoIdField);
+
+/**
+ * Validates MongoDB ObjectId fields in the request body.
+ *
+ * @param mongoIdField - A single mongodb id field name or an array of id field name(s) to be validated.
+ * @returns An array of validation chains for the specified body field(s).
+ */
 export const mongoIdBodyValidator = (mongoIdField: string | string[]): ValidationChain[] =>
     mongoIdValidator('body', mongoIdField);

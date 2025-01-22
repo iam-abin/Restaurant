@@ -29,11 +29,11 @@ export class ProfileRepository {
             .lean<IProfileDocument | null>();
     };
 
-    findProfiles = async (skip: number, limit: number): Promise<IProfileDocument[]> => {
+    findProfiles = async (skip: number = 0, limit: number = 0): Promise<IProfileDocument[]> => {
         return await ProfileModel.find()
             .select(['-createdAt', '-updatedAt', '-addressId', '-isVerified'])
-            .skip(skip ?? 0)
-            .limit(limit ?? 0)
+            .skip(skip)
+            .limit(limit)
             .populate('userId', ['-createdAt', '-updatedAt'])
             .lean<IProfileDocument[]>();
     };
@@ -115,9 +115,6 @@ export class ProfileRepository {
     };
 
     findProfilesCountGroupedByMonth = async (year: number): Promise<CountByMonth[]> => {
-        // const startOfYear: Date = new Date(202, 0, 1); // January 1st of the given year
-        // const startOfNextYear: Date = new Date(202 + 1, 0, 1); // January 1st of the next year
-
         const pipeline: PipelineStage[] = [
             {
                 $match: {

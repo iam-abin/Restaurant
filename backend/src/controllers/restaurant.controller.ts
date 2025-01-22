@@ -11,11 +11,11 @@ import {
     IRestaurantWithCuisines,
     ISearchRestaurantData,
     Pagination,
-    RestaurantIdParam,
+    RestaurantId,
     SearchFilterData,
     SearchQueryParams,
 } from '../types';
-import { HTTP_STATUS_CODE } from '../constants';
+import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE_VALUE, HTTP_STATUS_CODE } from '../constants';
 
 @autoInjectable()
 export class RestaurantController {
@@ -43,7 +43,7 @@ export class RestaurantController {
     };
 
     public getARestaurant = async (req: Request, res: Response): Promise<void> => {
-        const { restaurantId } = req.params as RestaurantIdParam;
+        const { restaurantId } = req.params as RestaurantId;
         const { userId } = req.currentUser as IJwtPayload;
         const restaurant: IRestaurantResult | null = await this.restaurantService.getARestaurant(
             restaurantId,
@@ -55,7 +55,7 @@ export class RestaurantController {
     };
 
     public getRestaurants = async (req: Request, res: Response): Promise<void> => {
-        const { page = 1, limit = 10 } = req.query as Pagination;
+        const { page = DEFAULT_PAGE_VALUE, limit = DEFAULT_LIMIT_VALUE } = req.query as Pagination;
         const restaurantsData: IRestaurantsData = await this.restaurantService.getRestaurants(
             page as number,
             limit as number,
@@ -66,7 +66,11 @@ export class RestaurantController {
     };
 
     public searchRestaurant = async (req: Request, res: Response): Promise<void> => {
-        const { searchText, page = 1, limit = 10 } = req.query as SearchQueryParams;
+        const {
+            searchText,
+            page = DEFAULT_PAGE_VALUE,
+            limit = DEFAULT_LIMIT_VALUE,
+        } = req.query as SearchQueryParams;
         const profilesData: ISearchRestaurantData = await this.restaurantService.searchRestaurantByName(
             searchText as string,
             page as number,
@@ -80,8 +84,8 @@ export class RestaurantController {
     public searchFilterRestaurant = async (req: Request, res: Response): Promise<void> => {
         const searchText: string = (req.query.searchText as string) || ''; // From home page search bar
         const searchQuery: string = (req.query.searchQuery as string) || ''; // From search page search bar
-        const { page = 1, limit = 10 } = req.query as Pagination;
         const selectedCuisines: string = (req.query.selectedCuisines as string) || ''; // From filter area
+        const { page = DEFAULT_PAGE_VALUE, limit = DEFAULT_LIMIT_VALUE } = req.query as Pagination;
         const restaurant: SearchFilterData = await this.restaurantService.searchFilterRestaurant({
             searchText,
             searchQuery,

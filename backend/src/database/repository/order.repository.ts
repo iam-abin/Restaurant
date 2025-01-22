@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { singleton } from 'tsyringe';
-import { IOrder, IOrderStatusWithCounts } from '../../types';
+import { IOrder, IOrderStatusWithCounts, OrderStatus } from '../../types';
 import { IOrderDocument, OrderModel } from '../model';
 
 @singleton()
@@ -10,7 +10,11 @@ export class OrderRepository {
         return order[0];
     };
 
-    findMyOrders = async (userId: string, skip: number, limit: number): Promise<IOrderDocument[]> => {
+    findMyOrders = async (
+        userId: string,
+        skip: number = 0,
+        limit: number = 10,
+    ): Promise<IOrderDocument[]> => {
         const userOrders = await OrderModel.aggregate([
             // Match orders for the specific user
             { $match: { userId: new mongoose.Types.ObjectId(userId) } },
@@ -116,8 +120,8 @@ export class OrderRepository {
 
             { $sort: { createdAt: -1 } },
             // Add skip and limit stages for pagination
-            { $skip: skip ?? 0 },
-            { $limit: limit ?? 10 },
+            { $skip: skip },
+            { $limit: limit },
         ]);
 
         return userOrders;
@@ -265,7 +269,7 @@ export class OrderRepository {
     };
 
     // menuItemPrice
-    findTotalOrderedPrice = async (): Promise<number> => {
+    findAllOrdersPrice = async (): Promise<number> => {
         const total = await OrderModel.aggregate([
             {
                 $group: {
@@ -284,7 +288,7 @@ export class OrderRepository {
             {
                 $match: {
                     restaurantId: new mongoose.Types.ObjectId(restaurantId),
-                    status: 'delivered',
+                    status: OrderStatus.DELIVERED,
                 },
             },
             {

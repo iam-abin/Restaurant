@@ -3,8 +3,8 @@ import { autoInjectable } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
 import { ICartDocument } from '../database/model';
 import { CartService } from '../services';
-import { ICart, ICartItemsData, IJwtPayload, Pagination, RestaurantIdParam } from '../types';
-import { HTTP_STATUS_CODE } from '../constants';
+import { CartItemId, ICart, ICartItemsData, IJwtPayload, Pagination, Quantity, RestaurantId } from '../types';
+import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE_VALUE, HTTP_STATUS_CODE } from '../constants';
 
 @autoInjectable()
 export class CartController {
@@ -23,8 +23,8 @@ export class CartController {
 
     public getCartItems = async (req: Request, res: Response): Promise<void> => {
         const { userId } = req.currentUser as IJwtPayload;
-        const { restaurantId } = req.params as RestaurantIdParam;
-        const { page = 1, limit = 10 } = req.query as Pagination;
+        const { restaurantId } = req.params as RestaurantId;
+        const { page = DEFAULT_PAGE_VALUE, limit = DEFAULT_LIMIT_VALUE } = req.query as Pagination;
         const cartItems: ICartItemsData = await this.cartService.getCartItemsByRestaurant({
             userId,
             restaurantId,
@@ -38,8 +38,8 @@ export class CartController {
 
     public updateQuantity = async (req: Request, res: Response): Promise<void> => {
         const { userId } = req.currentUser as IJwtPayload;
-        const { cartItemId } = req.params;
-        const { quantity } = req.body;
+        const { cartItemId } = req.params as CartItemId;
+        const { quantity } = req.body as Quantity;
 
         const cartItem: ICartDocument | null = await this.cartService.updateItemQuantity(
             userId,
@@ -61,7 +61,7 @@ export class CartController {
 
     public removeCartItem = async (req: Request, res: Response): Promise<void> => {
         const { userId } = req.currentUser as IJwtPayload;
-        const { cartItemId } = req.params;
+        const { cartItemId } = req.params as CartItemId;
         const cartItem: ICartDocument = await this.cartService.removeCartItem(cartItemId, userId);
         res.status(HTTP_STATUS_CODE.OK).json(
             createSuccessResponse('Cart item removed successfully', cartItem),

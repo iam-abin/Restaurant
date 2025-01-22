@@ -1,8 +1,15 @@
 import { query, ValidationChain } from 'express-validator';
 import { paginationValidator } from './pagination.validation';
+import { SEARCH_KEY_LENGTH } from '../../constants';
 
 export const searchRequestQueryValidator: ValidationChain[] = [
     ...paginationValidator,
-    // Validate the `searchText` in the query (optional, should be a string)
-    query('searchText').optional().isString().withMessage('SearchText must be a string').trim().escape(),
+    query('searchText')
+        .optional()
+        .isString()
+        .withMessage('SearchText must be a string')
+        .trim()
+        .isLength({ max: SEARCH_KEY_LENGTH })
+        .withMessage(`SearchText must not exceed ${SEARCH_KEY_LENGTH} characters`)
+        .escape(),
 ];

@@ -14,12 +14,16 @@ export class MenuRepository {
         return await MenuModel.findById(menuId).lean<IMenuDocument | null>();
     };
 
-    findMenus = async (restaurantId: string, skip: number, limit: number): Promise<IMenuDocument[]> => {
+    findMenus = async (
+        restaurantId: string,
+        skip: number = 0,
+        limit: number = 0,
+    ): Promise<IMenuDocument[]> => {
         return await MenuModel.find({ restaurantId })
             .populate('cuisineId', ['-_id', 'name'])
             .sort({ updatedAt: -1 })
-            .skip(skip ?? 0)
-            .limit(limit ?? 0)
+            .skip(skip)
+            .limit(limit)
             .select(['-createdAt', '-updatedAt'])
             .lean<IMenuDocument[]>();
     };
