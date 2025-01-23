@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
 import { useConfirmationContext } from '../../context/confirmationContext';
 import CustomButton from '../../components/Button/CustomButton';
+import { Chip } from '@mui/material';
 
 const RestaurantProfile: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -121,7 +122,7 @@ const RestaurantProfile: React.FC = () => {
 
         const result = restaurantFromSchema.safeParse({
             ...input,
-            cuisines: input.cuisines,
+            // cuisines: input.cuisines,
         });
         if (!result.success) {
             const fieldErrors = result.error.formErrors.fieldErrors;
@@ -136,7 +137,7 @@ const RestaurantProfile: React.FC = () => {
             formData.append('city', input.city);
             formData.append('country', input.country);
             formData.append('deliveryTime', input.deliveryTime.toString());
-            formData.append('cuisines', JSON.stringify(input.cuisines));
+            // formData.append('cuisines', JSON.stringify(input.cuisines));
 
             if (input.image) {
                 formData.append('image', input.image);
@@ -147,6 +148,8 @@ const RestaurantProfile: React.FC = () => {
                 const response: IResponse = await updateRestaurantApi(formData);
                 hotToastMessage(response.message, 'success');
             }
+        } catch (error: unknown) {
+            hotToastMessage((error as Error).message, 'error');
         } finally {
             setIsLoading(false);
         }
@@ -225,25 +228,16 @@ const RestaurantProfile: React.FC = () => {
                             </div>
 
                             {/* Cuisines */}
-                            <div className="relative">
-                                <label>cuisines</label>
-                                <input
-                                    className="w-full h-12 border border-black rounded-lg p-1 pl-4"
-                                    type="text"
-                                    name="cuisines"
-                                    value={input.cuisines}
-                                    onChange={(e) =>
-                                        setInput({
-                                            ...input,
-                                            cuisines: e.target.value.split(',').map((c) => c.trim()), // Split and trim for state
-                                        })
-                                    }
-                                    placeholder="Enter cuisines (e.g. Momos, Biryani)"
-                                    autoComplete="cuisines"
-                                />
-                                {errors.cuisines && (
-                                    <span className="text-red-500 text-sm">{errors.cuisines}</span>
-                                )}
+                            <div className="flex flex-wrap gap-2">
+                                {input.cuisines &&
+                                    input.cuisines.map((cuisine, index) => (
+                                        <Chip
+                                            label={cuisine}
+                                            key={index}
+                                            className="w-24"
+                                            variant="outlined"
+                                        />
+                                    ))}
                             </div>
 
                             {/* Upload Restaurant Banner */}

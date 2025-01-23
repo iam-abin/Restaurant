@@ -19,6 +19,7 @@ const authSlice = createSlice({
     name: 'auth-data',
     initialState,
     reducers: {
+        // Use when logout
         resetAuth: (state) => {
             state.authData = null;
             state.status = 'idle';

@@ -1,18 +1,22 @@
 import { query, body, ValidationChain } from 'express-validator';
 import { paginationValidator } from './pagination.validation';
 import { validateAllowedFields } from './allowed-fields.validation';
-import {
-    CITY_MAXIMUM_LENGTH,
-    CITY_MINIMUM_LENGTH,
-    COUNTRY_MAXIMUM_LENGTH,
-    COUNTRY_MINIMUM_LENGTH,
-    MAXIMUM_PRODUCT_DELIVERY_TIME_IN_MINUTES,
-    MINIMUM_PRODUCT_DELIVERY_TIME_IN_MINUTES,
-    NAME_MAXIMUM_LENGTH,
-    SEARCH_KEY_LENGTH,
-} from '../../constants';
 
-const restaurantUpdateAllowedFields: string[] = ['rating', 'restaurantId'];
+const NAME_MINIMUM_LENGTH: number = 1;
+const NAME_MAXIMUM_LENGTH: number = 50;
+
+const COUNTRY_MINIMUM_LENGTH: number = 2;
+const COUNTRY_MAXIMUM_LENGTH: number = 60;
+
+const CITY_MINIMUM_LENGTH: number = 2;
+const CITY_MAXIMUM_LENGTH: number = 60;
+
+const MINIMUM_PRODUCT_DELIVERY_TIME_IN_MINUTES: number = 1;
+const MAXIMUM_PRODUCT_DELIVERY_TIME_IN_MINUTES: number = 300;
+
+const SEARCH_KEY_LENGTH: number = 100;
+
+const restaurantUpdateAllowedFields: string[] = ['name', 'city', 'country', 'deliveryTime'];
 
 export const restaurantUpdateValidator: ValidationChain[] = [
     body('name')
@@ -20,8 +24,8 @@ export const restaurantUpdateValidator: ValidationChain[] = [
         .withMessage('Name is required')
         .isString()
         .withMessage('Name must be a string')
-        .isLength({ min: NAME_MAXIMUM_LENGTH, max: NAME_MAXIMUM_LENGTH })
-        .withMessage(`Name must be between ${NAME_MAXIMUM_LENGTH} and ${NAME_MAXIMUM_LENGTH} characters long`)
+        .isLength({ min: NAME_MINIMUM_LENGTH, max: NAME_MAXIMUM_LENGTH })
+        .withMessage(`Name must be between ${NAME_MINIMUM_LENGTH} and ${NAME_MAXIMUM_LENGTH} characters long`)
         .trim()
         .escape(),
     body('city')

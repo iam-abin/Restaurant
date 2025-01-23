@@ -35,14 +35,11 @@ const cartSlice = createSlice({
             state.cartData = action.payload;
         });
         addAsyncThunkCases(builder, addToCart, (state, action) => {
-            // Remove the item with the given ID from cartData
             state.status = 'succeeded';
-            // state.cartData = [...state.cartData, action.payload];
             state.cartData = action.payload;
         });
 
         addAsyncThunkCases(builder, changeCartItemQuantity, (state, action) => {
-            // Remove the item with the given ID from cartData
             state.status = 'succeeded';
             state.cartData = state.cartData.map((item: ICart) =>
                 item._id === action.payload.cartItemId
@@ -52,13 +49,11 @@ const cartSlice = createSlice({
         });
 
         addAsyncThunkCases(builder, removeCartItem, (state, action) => {
-            // Remove the item with the given ID from cartData
             state.status = 'succeeded';
             state.cartData = state.cartData.filter((item: ICart) => item._id !== action.payload);
         });
 
         addAsyncThunkCases(builder, removeCartItems, (state) => {
-            // Remove the item with the given ID from cartData
             state.status = 'succeeded';
             state.cartData = [];
         });

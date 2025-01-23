@@ -1,4 +1,3 @@
-// import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import '@fontsource/roboto/300.css';
@@ -15,7 +14,6 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { ConfirmationProvider } from './context/confirmationContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
-    // <StrictMode>
     <Provider store={store}>
         <PersistGate persistor={persistor}>
             <Suspense
@@ -29,5 +27,4 @@ createRoot(document.getElementById('root')!).render(
             </Suspense>
         </PersistGate>
     </Provider>,
-    // </StrictMode>,
 );

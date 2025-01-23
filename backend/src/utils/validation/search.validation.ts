@@ -1,6 +1,7 @@
 import { query, ValidationChain } from 'express-validator';
 import { paginationValidator } from './pagination.validation';
-import { SEARCH_KEY_LENGTH } from '../../constants';
+
+const SEARCH_KEY_LENGTH: number = 100;
 
 export const searchRequestQueryValidator: ValidationChain[] = [
     ...paginationValidator,

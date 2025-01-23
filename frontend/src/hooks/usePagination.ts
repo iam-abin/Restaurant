@@ -1,3 +1,4 @@
+import { debounce } from 'lodash';
 import { useState } from 'react';
 
 type UsePaginationProps = {
@@ -12,12 +13,13 @@ const usePagination = ({ initialPage = 1, initialTotalPages = 1 }: Partial<UsePa
     const handlePageChange = (_event: React.ChangeEvent<unknown>, page: number): void => {
         setCurrentPage(page);
     };
+    const debouncedHandlePageChange = debounce(handlePageChange, 150);
 
     return {
         currentPage,
         totalNumberOfPages,
         setTotalNumberOfPages, // You can use this if you need to update the total number of pages
-        handlePageChange,
+        handlePageChange: debouncedHandlePageChange,
     };
 };
 

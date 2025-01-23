@@ -1,19 +1,18 @@
 import { body, ValidationChain } from 'express-validator';
 import { UserRole } from '../../types';
 import { validateAllowedFields } from './allowed-fields.validation';
-import {
-    NAME_MAXIMUM_LENGTH,
-    NAME_MINIMUM_LENGTH,
-    PASSWORD_MAXIMUM_LENGTH,
-    PASSWORD_MINIMUM_LENGTH,
-    PHONE_NUMBER_LENGTH,
-} from '../../constants';
 
 const ROLES: UserRole[] = [UserRole.ADMIN, UserRole.RESTAURANT, UserRole.USER];
 
 const signinAllowedFields: string[] = ['email', 'password', 'role'];
 const signupAllowedFields: string[] = ['name', 'email', 'phone', 'password', 'role'];
 const googleAuthAllowedFields: string[] = ['credential', 'role'];
+
+const NAME_MINIMUM_LENGTH: number = 1;
+const NAME_MAXIMUM_LENGTH: number = 50;
+const PHONE_NUMBER_LENGTH: number = 10;
+const PASSWORD_MINIMUM_LENGTH: number = 4;
+const PASSWORD_MAXIMUM_LENGTH: number = 50;
 
 export const signinRequestBodyValidator: ValidationChain[] = [
     body('email')

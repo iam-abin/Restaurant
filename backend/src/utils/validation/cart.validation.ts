@@ -1,10 +1,12 @@
 import { body, ValidationChain } from 'express-validator';
 import { mongoIdBodyValidator } from './mongodb-id.validation';
-import { CART_MAX_QUANTITY, CART_MIN_QUANTITY } from '../../constants';
 import { validateAllowedFields } from './allowed-fields.validation';
 
-const addToCartAllowedFields: string[] = ['quantity'];
+const addToCartAllowedFields: string[] = ['itemId', 'restaurantId'];
 const updateCartAllowedFields: string[] = ['quantity'];
+
+const CART_MIN_QUANTITY: number = 1;
+const CART_MAX_QUANTITY: number = 10;
 
 export const addToCartRequestBodyValidator = [
     ...mongoIdBodyValidator(['itemId', 'restaurantId']),

@@ -1,17 +1,19 @@
 import { body, ValidationChain } from 'express-validator';
 import { validateAllowedFields } from './allowed-fields.validation';
-import {
-    ADDRESS_MAXIMUM_LENGTH,
-    ADDRESS_MINIMUM_LENGTH,
-    CITY_MAXIMUM_LENGTH,
-    CITY_MINIMUM_LENGTH,
-    COUNTRY_MAXIMUM_LENGTH,
-    COUNTRY_MINIMUM_LENGTH,
-    NAME_MAXIMUM_LENGTH,
-    NAME_MINIMUM_LENGTH,
-} from '../../constants';
 
 const profileAllowedFields: string[] = ['image', 'name', 'address', 'city', 'country'];
+
+const NAME_MINIMUM_LENGTH: number = 1;
+const NAME_MAXIMUM_LENGTH: number = 50;
+
+const ADDRESS_MINIMUM_LENGTH: number = 1;
+const ADDRESS_MAXIMUM_LENGTH: number = 50;
+
+const CITY_MINIMUM_LENGTH: number = 2;
+const CITY_MAXIMUM_LENGTH: number = 4;
+
+const COUNTRY_MINIMUM_LENGTH: number = 2;
+const COUNTRY_MAXIMUM_LENGTH: number = 60;
 
 export const updateProfileRequestBodyValidator: ValidationChain[] = [
     body('image').optional().isString().withMessage('Image must be a string').trim(),

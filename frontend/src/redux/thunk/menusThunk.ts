@@ -3,7 +3,6 @@ import { editMenuApi, getMenusApi } from '../../api/apiMethods/menu';
 import { IMenu, IResponse, Menus } from '../../types';
 import { hotToastMessage } from '../../utils';
 
-// Async thunk for fetching user menus
 export const fetchMenus = createAsyncThunk<
     IMenu[],
     {
@@ -26,7 +25,6 @@ export const fetchMenus = createAsyncThunk<
     },
 );
 
-// Async thunk for updating user menus
 export const updateMenu = createAsyncThunk<
     IMenu,
     { menuId: string; updateData: Partial<IMenu> },

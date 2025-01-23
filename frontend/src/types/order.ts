@@ -5,7 +5,6 @@ import { IUser } from './user';
 export interface IOrder {
     userId: string;
     restaurantId: string;
-    // cartId: string;
     addressId: string;
     totalAmount: number;
     status: 'pending' | 'confirmed' | 'preparing' | 'outfordelivery' | 'delivered';
@@ -29,7 +28,6 @@ export interface IOrdersResponse extends Omit<IOrder, 'userId' | 'restaurantId' 
     addressId: string;
 }
 
-// ==========================
 export interface OrderItem {
     name: string;
     price: number;

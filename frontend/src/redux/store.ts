@@ -14,9 +14,9 @@ import storage from 'redux-persist/lib/storage';
 
 // Configuration for redux-persist
 const persistConfig = {
-    key: 'root', // key is required
+    key: 'root',
     version: 1,
-    storage, // storage is required
+    storage,
 };
 
 // Create a persisted reducer using redux-persist

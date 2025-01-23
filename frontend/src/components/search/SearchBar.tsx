@@ -1,3 +1,4 @@
+import { debounce } from 'lodash';
 import { useEffect, useState } from 'react';
 
 interface ISearchBarProps {
@@ -8,22 +9,20 @@ interface ISearchBarProps {
 
 const SearchBar: React.FC<ISearchBarProps> = ({ placeholder, onSearch, className }) => {
     const [searchKey, setSearchKey] = useState('');
-    const [debouncedSearchKey, setDebouncedSearchKey] = useState('');
+
+    // Create a debounced version of onSearch() function
+    const debouncedOnSearch = debounce(onSearch, 800);
 
     // Update debouncedSearchKey after a delay
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setDebouncedSearchKey(searchKey);
-        }, 500); // 500 ms debounce time
+        // Call the debounced function when searchKey changes
+        debouncedOnSearch(searchKey);
 
-        // Clear timer if searchKey changes before 500 ms
-        return () => clearTimeout(timer);
-    }, [searchKey]);
-
-    // Trigger search when debouncedSearchKey changes
-    useEffect(() => {
-        onSearch(debouncedSearchKey);
-    }, [debouncedSearchKey, onSearch]);
+        // Cleanup function to cancel the debounce if the component unmounts
+        return () => {
+            debouncedOnSearch.cancel();
+        };
+    }, [searchKey, debouncedOnSearch]);
 
     return (
         <input
