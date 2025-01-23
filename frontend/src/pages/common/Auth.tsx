@@ -66,7 +66,6 @@ const Auth: React.FC = () => {
             // Clear existing errors
             setErrors({});
             setIsLoading(true);
-            // Convert phone to number for validation if necessary
 
             const filteredData = Object.fromEntries(Object.entries(input).filter(([, value]) => value));
             const inputData = {

@@ -29,7 +29,8 @@ const profileSlice = createSlice({
         },
 
         updateUserProfileBlockStatus: (state, action) => {
-            const { userId, isBlocked } = action.payload;
+            const { userId, isBlocked, name } = action.payload;
+
             if (state.userProfileListData) {
                 state.userProfileListData = state.userProfileListData.map((profile) => {
                     if ((profile.userId as IUser)._id === userId) {
@@ -38,6 +39,7 @@ const profileSlice = createSlice({
                             userId: {
                                 ...(profile.userId as IUser),
                                 isBlocked,
+                                name,
                             },
                         };
                     }

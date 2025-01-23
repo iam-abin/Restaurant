@@ -16,9 +16,10 @@ const MAXIMUM_PRODUCT_DELIVERY_TIME_IN_MINUTES: number = 300;
 
 const SEARCH_KEY_LENGTH: number = 100;
 
-const restaurantUpdateAllowedFields: string[] = ['name', 'city', 'country', 'deliveryTime'];
+const restaurantUpdateAllowedFields: string[] = ['name', 'city', 'country', 'deliveryTime', 'image'];
 
 export const restaurantUpdateValidator: ValidationChain[] = [
+    body('image').optional().isString().withMessage('Image must be a string').trim(),
     body('name')
         .notEmpty()
         .withMessage('Name is required')

@@ -20,8 +20,8 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu, addItemToCartHandler }) => {
     const isRestaurant: boolean = checkRole(UserRole.RESTAURANT, authData?.role);
 
     const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
-    const handleEditMenuOpen = () => setIsEditMenuOpen(true);
-    const handleEditMenuClose = () => setIsEditMenuOpen(false);
+    const handleEditMenuOpen = (): void => setIsEditMenuOpen(true);
+    const handleEditMenuClose = (): void => setIsEditMenuOpen(false);
 
     const handleAddToCart = async (): Promise<void> => {
         if (!addItemToCartHandler) {

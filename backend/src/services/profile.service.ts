@@ -1,6 +1,6 @@
 import { autoInjectable } from 'tsyringe';
 import { NotFoundError } from '../errors';
-import { AddressRepository, ProfileRepository } from '../database/repository';
+import { AddressRepository, ProfileRepository, UserRepository } from '../database/repository';
 import { IAddressDocument, IProfileDocument } from '../database/model';
 import { IAddress, IProfile, IProfilesData, ISearchProfileData, IUser } from '../types';
 import {
@@ -15,6 +15,7 @@ export class ProfileService {
     constructor(
         private readonly profileRepository: ProfileRepository,
         private readonly addressRepository: AddressRepository,
+        private readonly userRepository: UserRepository,
     ) {}
 
     public getProfile = async (userId: string): Promise<IProfileDocument | null> => {
@@ -54,15 +55,17 @@ export class ProfileService {
 
     public updateProfile = async (
         userId: string,
-        updateData: Partial<IProfile & IUser & IAddress>,
+        updateData: Partial<Pick<IUser, 'name'> & IAddress & Pick<IProfile, 'image'>>,
     ): Promise<IProfileDocument | null> => {
-        const { city, country, address, image } = updateData;
+        const { name, city, country, address, image } = updateData;
 
         return executeTransaction(async (session) => {
             let imageUrl: string | undefined;
             if (image) {
                 imageUrl = await uploadImageOnCloudinary(image);
             }
+
+            await this.userRepository.updateUser(userId, { name }, session);
 
             const addressData: IAddressDocument | null = await this.addressRepository.updateAddress(
                 userId,
