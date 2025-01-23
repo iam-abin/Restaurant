@@ -1,7 +1,7 @@
 import { body, ValidationChain } from 'express-validator';
 import { validateAllowedFields } from './allowed-fields.validation';
 
-const profileAllowedFields: string[] = ['image', 'name', 'address', 'city', 'country'];
+const profileAllowedFields: string[] = ['name', 'address', 'city', 'country', 'image'];
 
 const NAME_MINIMUM_LENGTH: number = 1;
 const NAME_MAXIMUM_LENGTH: number = 50;
@@ -10,7 +10,7 @@ const ADDRESS_MINIMUM_LENGTH: number = 1;
 const ADDRESS_MAXIMUM_LENGTH: number = 50;
 
 const CITY_MINIMUM_LENGTH: number = 2;
-const CITY_MAXIMUM_LENGTH: number = 4;
+const CITY_MAXIMUM_LENGTH: number = 60;
 
 const COUNTRY_MINIMUM_LENGTH: number = 2;
 const COUNTRY_MAXIMUM_LENGTH: number = 60;

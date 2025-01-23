@@ -41,7 +41,7 @@ export class MenuService {
         return executeTransaction(async (session) => {
             const restaurant: IRestaurantDocument = await this.validateRestaurantOwnership(userId);
             const { cuisine } = menuData;
-
+            if (!file) throw new BadRequestError('Must have image file to create menu');
             const addressData: IAddressDocument | null =
                 await this.addressRepository.findAddressByUserId(userId);
             if (!addressData) throw new BadRequestError('Must have address to create menu');

@@ -6,7 +6,7 @@ import {
     updateProfileApi,
 } from '../../api/apiMethods/profile';
 import { hotToastMessage } from '../../utils';
-import { IProfile, IProfilesResponse, IResponse } from '../../types';
+import { IProfile, IProfilesResponse, IResponse, ProfileUpdate } from '../../types';
 
 export const fetchUserProfile = createAsyncThunk<IProfile, void, { rejectValue: string | null }>(
     'profile/fetchUserProfile',
@@ -25,7 +25,7 @@ export const updateUserProfile = createAsyncThunk<
     IProfile,
     Partial<IProfile>,
     { rejectValue: string | null }
->('profile/updateUserProfile', async (updateData: Partial<IProfile>, { rejectWithValue }) => {
+>('profile/updateUserProfile', async (updateData: Partial<ProfileUpdate>, { rejectWithValue }) => {
     try {
         const updatedData = await updateProfileApi(updateData);
         hotToastMessage(updatedData.message, 'success');

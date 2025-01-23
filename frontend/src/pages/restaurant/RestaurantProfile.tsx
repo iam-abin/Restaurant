@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState } from 'react';
 
 import { hotToastMessage, RestaurantFormSchema, restaurantFromSchema } from '../../utils';
 import { updateRestaurantApi } from '../../api/apiMethods';
-import { IResponse, ICuisine, ICuisineResponse, IRestaurant, IRestaurantResponse } from '../../types';
+import { IResponse, ICuisineResponse, IRestaurant, IRestaurantResponse } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
@@ -27,7 +27,6 @@ const RestaurantProfile: React.FC = () => {
         city: '',
         country: '',
         deliveryTime: 0,
-        cuisines: [],
         image: undefined,
     });
     const [errors, setErrors] = useState<Partial<RestaurantFormSchema>>({});
@@ -46,7 +45,6 @@ const RestaurantProfile: React.FC = () => {
                 city: restaurant?.addressId?.city || '',
                 country: restaurant?.addressId?.country || '',
                 deliveryTime: restaurant?.deliveryTime || 0,
-                cuisines: cuisines.map((cuisine) => (cuisine.cuisineId as ICuisine).name) || [],
             }));
         }
     }, [restaurant]);
@@ -69,9 +67,10 @@ const RestaurantProfile: React.FC = () => {
     };
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        const files = event.target.files;
+        const files: FileList | null = event.target.files;
+
         if (files?.length) {
-            const file = files[0];
+            const file: File = files[0];
             setInput((prevInput) => ({
                 ...prevInput,
                 image: file,
@@ -106,18 +105,18 @@ const RestaurantProfile: React.FC = () => {
         };
     }, [selectedImage]);
 
-    const handleUpdateProfileButton = (e: FormEvent<HTMLFormElement>) => {
+    const handleUpdateProfileButton = (e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         showConfirmation({
             title: 'Do you want to update restaurant profile',
             description: 'Are you sure?',
-            onAgree: () => submitHandler(),
+            onAgree: () => udateProfileSubmitHandler(),
             closeText: 'No',
             okayText: 'Yes',
         });
     };
 
-    const submitHandler = async (): Promise<void> => {
+    const udateProfileSubmitHandler = async (): Promise<void> => {
         setIsLoading(true);
 
         const result = restaurantFromSchema.safeParse({
@@ -229,10 +228,10 @@ const RestaurantProfile: React.FC = () => {
 
                             {/* Cuisines */}
                             <div className="flex flex-wrap gap-2">
-                                {input.cuisines &&
-                                    input.cuisines.map((cuisine, index) => (
+                                {cuisines &&
+                                    cuisines.map((cuisine, index) => (
                                         <Chip
-                                            label={cuisine}
+                                            label={cuisine.cuisineId.name}
                                             key={index}
                                             className="w-24"
                                             variant="outlined"

@@ -65,6 +65,7 @@ const MenuModal: React.FC<IMenuModalProps> = ({
         featured: false,
         image: undefined,
     });
+
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [errors, setErrors] = useState<Partial<MenuFormSchema>>({});
     const dispatch = useAppDispatch();
@@ -78,21 +79,33 @@ const MenuModal: React.FC<IMenuModalProps> = ({
     useEffect(() => {
         if (isEditMode && initialValues) {
             setInput(transformInitialValueCuisine(initialValues));
-            // setPreviewImage(initialValues.imageUrl ? URL.createObjectURL(initialValues.imageUrl) : null);
             setPreviewImage(initialValues.imageUrl ? initialValues.imageUrl : null);
         }
     }, [isEditMode, initialValues]);
 
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const resetForm = (): void => {
+        setInput({
+            name: '',
+            description: '',
+            cuisine: '',
+            price: 0,
+            salePrice: undefined,
+            featured: false,
+            image: undefined,
+        });
+        setPreviewImage(null);
+    };
+
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = e.target;
         setInput((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>): void => {
-        const file = e.target.files?.[0];
+        const file: File | undefined = e.target.files?.[0];
         setInput((prev) => ({ ...prev, image: file }));
         if (file) {
-            const reader = new FileReader();
+            const reader: FileReader = new FileReader();
             reader.onload = () => setPreviewImage(reader.result as string);
             reader.readAsDataURL(file);
         } else {
@@ -121,7 +134,7 @@ const MenuModal: React.FC<IMenuModalProps> = ({
             const formData = new FormData();
             formData.append('name', inputData.name);
             formData.append('description', inputData.description);
-            formData.append('cuisine', inputData.cuisine!);
+            formData.append('cuisine', inputData.cuisine);
             formData.append('price', inputData.price?.toString() ?? '0');
             formData.append('salePrice', inputData.salePrice ? inputData.salePrice?.toString() : '0');
             formData.append('featured', inputData.featured.toString());
@@ -148,20 +161,12 @@ const MenuModal: React.FC<IMenuModalProps> = ({
                 // Call the API to add a new menu
                 const response: IResponse = await addMenuApi(formData as unknown as IMenu);
                 hotToastMessage(response.message, 'success');
+                resetForm();
             }
             if (handleMenusDispatch) {
                 handleMenusDispatch(restaurantId);
             }
 
-            setInput({
-                name: '',
-                description: '',
-                cuisine: '',
-                price: 0,
-                salePrice: undefined,
-                featured: false,
-                image: undefined,
-            });
             setPreviewImage(null);
             handleClose();
         } catch (error: unknown) {
@@ -296,15 +301,24 @@ const MenuModal: React.FC<IMenuModalProps> = ({
                                     input?.cuisine ? { value: input.cuisine, label: input.cuisine } : null
                                 }
                             />
+                            {errors.cuisine && <span className="text-red-500 text-sm">{errors.cuisine}</span>}
                         </Grid>
                         <Grid item xs={12}>
                             <CustomButton
                                 variant="contained"
                                 className="w-full"
                                 sx={{ background: '#059dc0' }}
+                                onClick={() => document.getElementById('fileInput')?.click()}
                             >
                                 Upload Image
-                                <input type="file" hidden accept="image/*" onChange={handleImageChange} />
+                                <input
+                                    type="file"
+                                    className="bg-red"
+                                    id="fileInput"
+                                    hidden
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                />
                             </CustomButton>
                             {previewImage && (
                                 <Box mt={2} textAlign="center">

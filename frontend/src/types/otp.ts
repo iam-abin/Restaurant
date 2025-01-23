@@ -29,3 +29,7 @@ export interface IOtpResponse {
     user: IUser;
     otpOrTokenExpiresAt: Date;
 }
+
+export interface IOtp {
+    otp: string;
+}

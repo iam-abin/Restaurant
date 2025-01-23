@@ -2,12 +2,13 @@ import { body, ValidationChain } from 'express-validator';
 import { BadRequestError } from '../../errors';
 import { validateAllowedFields } from './allowed-fields.validation';
 
-const nameMinimumLength: number = 3;
+const nameMinimumLength: number = 2;
 const nameMaximumLength: number = 50;
 
-const cuisineNameMinimumLength: number = 4;
+const cuisineNameMinimumLength: number = 2;
 const cuisineNameMaximumLength: number = 50;
 
+const descriptionMinimumLength: number = 10;
 const descriptionMaximumLength: number = 200;
 
 const minimumPrice: number = 0;
@@ -30,8 +31,10 @@ export const addMenuRequestBodyValidator: ValidationChain[] = [
         .isString()
         .withMessage('Description must be a string')
         .trim()
-        .isLength({ max: descriptionMaximumLength })
-        .withMessage(`Description must not exceed ${descriptionMaximumLength} characters`),
+        .isLength({ min: descriptionMinimumLength, max: descriptionMaximumLength })
+        .withMessage(
+            `Description must be between ${descriptionMinimumLength} and ${descriptionMaximumLength} characters long`,
+        ),
     body('cuisine')
         .notEmpty()
         .withMessage('Cuisine is required')
@@ -47,15 +50,20 @@ export const addMenuRequestBodyValidator: ValidationChain[] = [
         .notEmpty()
         .withMessage('Price is required')
         .isFloat({ min: minimumPrice, max: maxPriceLimit })
-        .withMessage(`Price must be a positive number and less than ${maxPriceLimit}`),
+        .withMessage(`Price must be a positive number and less than ${maxPriceLimit}`)
+        .toFloat(),
     body('salePrice')
         .notEmpty()
         .withMessage('SalePrice is required')
         .isFloat({ min: minimumPrice, max: maxPriceLimit })
         .withMessage(`SalePrice must be a positive number and less than ${maxPriceLimit}`)
+        .toFloat()
         .custom((value: number, { req }) => {
-            if (req.body.price && value > req.body.price) {
-                throw new BadRequestError('Saleprice must be less than or equal to the original price');
+            const price = req.body.price as number;
+            const salePrice: number = value;
+
+            if (!isNaN(price) && salePrice > price) {
+                throw new BadRequestError('SalePrice must be less than or equal to the original price');
             }
             return true;
         }),
@@ -81,8 +89,10 @@ export const updateMenuRequestBodyValidator: ValidationChain[] = [
         .isString()
         .withMessage('Description must be a string')
         .trim()
-        .isLength({ max: descriptionMaximumLength })
-        .withMessage(`Description must not exceed ${descriptionMaximumLength} characters`),
+        .isLength({ min: descriptionMinimumLength, max: descriptionMaximumLength })
+        .withMessage(
+            `Description must be between ${descriptionMinimumLength} and ${descriptionMaximumLength} characters long`,
+        ),
     body('cuisine')
         .optional()
         .isString()
@@ -96,14 +106,20 @@ export const updateMenuRequestBodyValidator: ValidationChain[] = [
     body('price')
         .optional()
         .isFloat({ min: minimumPrice, max: maxPriceLimit })
-        .withMessage(`Price must be a positive number and less than ${maxPriceLimit}`),
+        .withMessage(`Price must be a positive number and less than ${maxPriceLimit}`)
+        .toFloat(),
     body('salePrice')
-        .optional()
+        .notEmpty()
+        .withMessage('SalePrice is required')
         .isFloat({ min: minimumPrice, max: maxPriceLimit })
         .withMessage(`SalePrice must be a positive number and less than ${maxPriceLimit}`)
-        .custom((value: number, { req }) => {
-            if (req.body.price && value > req.body.price) {
-                throw new Error('SalePrice must be less than or equal to the original price');
+        .toFloat()
+        .custom((value, { req }) => {
+            const price: number = req.body.price;
+            const salePrice: number = value;
+
+            if (!isNaN(price) && salePrice > price) {
+                throw new BadRequestError('SalePrice must be less than or equal to the original price');
             }
             return true;
         }),

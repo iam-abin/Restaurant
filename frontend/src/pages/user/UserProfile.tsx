@@ -1,17 +1,20 @@
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
-import { Avatar, Box, Tooltip } from '@mui/material';
+import { Avatar, Box, Tooltip, Typography } from '@mui/material';
 import { Add, Email, Flag, LocationOn, LocationSearching } from '@mui/icons-material';
 
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchUserProfile, updateUserProfile } from '../../redux/thunk/profileThunk';
-import { IAddress } from '../../types';
+import { IAddress, IUser } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import { useConfirmationContext } from '../../context/confirmationContext';
 import CustomButton from '../../components/Button/CustomButton';
 import { hotToastMessage } from '../../utils';
+import { ProfileFormSchema, profileFromSchema } from '../../utils/schema/profileSchema';
 
 const Profile: React.FC = () => {
     const [selectedProfilePicture, setSelectedProfilePicture] = useState<string>('');
+    const [errors, setErrors] = useState<Partial<ProfileFormSchema>>({});
+
     const dispatch = useAppDispatch();
     const { showConfirmation } = useConfirmationContext();
 
@@ -24,8 +27,8 @@ const Profile: React.FC = () => {
 
     const isLoading: boolean = status === 'loading';
     const imageRef: React.MutableRefObject<HTMLInputElement | null> = useRef<HTMLInputElement | null>(null);
-    const [profileData, setProfileData] = useState({
-        name: authData?.name || '',
+    const [profileData, setProfileData] = useState<ProfileFormSchema>({
+        name: (myProfile?.userId as IUser)?.name || '',
         address: (myProfile?.addressId as IAddress)?.address || '',
         city: (myProfile?.addressId as IAddress)?.city || '',
         country: (myProfile?.addressId as IAddress)?.country || '',
@@ -67,9 +70,19 @@ const Profile: React.FC = () => {
     };
 
     const updateProfileHandler = async (): Promise<void> => {
-        const result = await dispatch(updateUserProfile({ ...profileData, image: selectedProfilePicture }));
-        if (result.meta.requestStatus === 'rejected') {
-            hotToastMessage(result.payload as string, 'error');
+        setErrors({});
+        // Form validation
+        const result = profileFromSchema.safeParse(profileData);
+
+        if (!result.success) {
+            const fieldErrors = result.error.formErrors.fieldErrors;
+            setErrors(fieldErrors as Partial<ProfileFormSchema>);
+            return;
+        }
+
+        const response = await dispatch(updateUserProfile({ ...profileData, image: selectedProfilePicture }));
+        if (response.meta.requestStatus === 'rejected') {
+            hotToastMessage(response.payload as string, 'error');
             return;
         }
 
@@ -80,7 +93,7 @@ const Profile: React.FC = () => {
         <form onSubmit={handleUpdateProfileButton} className=" mx-auto my-5">
             <div className="flex items-center justify-between">
                 <div className="flex gap-2 items-center">
-                    <div className="flex items-center gap-2 relative">
+                    <div className="flex flex-col items-center gap-2 relative">
                         <Avatar
                             sx={{
                                 width: 80,
@@ -116,11 +129,13 @@ const Profile: React.FC = () => {
                                 onChange={fileChangeHandler}
                                 className="hidden bg-inherit"
                             />
+
                             <Add
                                 className="hover:cursor-pointer text-white w-10 h-10"
                                 onClick={() => imageRef.current?.click()}
                             />
                         </Box>
+                        {errors && <Typography className="text-sm text-red-500">{errors.name}</Typography>}
                     </div>
                     <input
                         type="text"
@@ -144,51 +159,60 @@ const Profile: React.FC = () => {
                         </div>
                     </div>
                 </Tooltip>
-                <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
-                    <LocationOn className="text-gray-500" />
-                    <div className="w-full">
-                        <label>
-                            Address{' '}
-                            <input
-                                name="address"
-                                id="address"
-                                placeholder="update your address"
-                                value={profileData.address}
-                                onChange={changeHandler}
-                                className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
-                            />
-                        </label>
+                <div>
+                    <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
+                        <LocationOn className="text-gray-500" />
+                        <div className="w-full">
+                            <label>
+                                Address{' '}
+                                <input
+                                    name="address"
+                                    id="address"
+                                    placeholder="update your address"
+                                    value={profileData.address}
+                                    onChange={changeHandler}
+                                    className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
+                                />
+                            </label>
+                        </div>
                     </div>
+                    {errors && <Typography className="text-sm text-red-500">{errors.address}</Typography>}
                 </div>
-                <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
-                    <LocationSearching className="text-gray-500" />
-                    <div className="w-full">
-                        <label>
-                            City
-                            <input
-                                name="city"
-                                placeholder="update your city"
-                                value={profileData.city}
-                                onChange={changeHandler}
-                                className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
-                            />
-                        </label>
+                <div>
+                    <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
+                        <LocationSearching className="text-gray-500" />
+                        <div className="w-full">
+                            <label>
+                                City
+                                <input
+                                    name="city"
+                                    placeholder="update your city"
+                                    value={profileData.city}
+                                    onChange={changeHandler}
+                                    className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
+                                />
+                            </label>
+                        </div>
                     </div>
+                    {errors && <Typography className="text-sm text-red-500">{errors.city}</Typography>}
                 </div>
-                <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
-                    <Flag className="text-gray-500" />
-                    <div className="w-full">
-                        <label>
-                            Country
-                            <input
-                                name="country"
-                                placeholder="update your country"
-                                value={profileData.country}
-                                onChange={changeHandler}
-                                className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
-                            />
-                        </label>
+                <div>
+                    <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
+                        <Flag className="text-gray-500" />
+                        <div className="w-full">
+                            <label>
+                                Country
+                                <input
+                                    name="country"
+                                    placeholder="update your country"
+                                    value={profileData.country}
+                                    onChange={changeHandler}
+                                    className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
+                                />
+                            </label>
+                        </div>
                     </div>
+                    {errors && <Typography className="text-sm text-red-500">{errors.country}</Typography>}
                 </div>
             </div>
 

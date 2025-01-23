@@ -3,11 +3,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { resendOtpApi, verifyOtpApi } from '../../api/apiMethods';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
-import { IOtpResponse, IResponse, UserRole } from '../../types';
-import { calculateRemainingTime, checkPathIsSame, checkRole, hotToastMessage } from '../../utils';
+import { IOtp, IOtpResponse, IResponse, UserRole } from '../../types';
+import { calculateRemainingTime, checkPathIsSame, checkRole, hotToastMessage, otpSchema } from '../../utils';
 import CustomButton from '../../components/Button/CustomButton';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { addOtpTokenTimer, clearOtpTokenTimer } from '../../redux/slice/otpTokenSlice';
+import { Typography } from '@mui/material';
 
 const Otp: React.FC = () => {
     const inputRef = useRef<(HTMLInputElement | null)[]>([]);
@@ -15,6 +16,7 @@ const Otp: React.FC = () => {
     const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
     const [isVerificationLoading, setVerificationIsLoading] = useState<boolean>(false);
     const [isResendOtpLoading, setResendOtpIsLoading] = useState<boolean>(false);
+    const [errors, setErrors] = useState<Partial<IOtp>>({});
     const location = useLocation();
     const { userId, role } = location.state;
     const otpTokenExpiry: Date | null = useAppSelector((store) => store.otpTokenReducer.otpTokenExpiry);
@@ -87,11 +89,18 @@ const Otp: React.FC = () => {
         try {
             setVerificationIsLoading(true);
             e.preventDefault();
-            if (otp.length < 6 || otp.length > 6) {
+            setErrors({});
+
+            const otpString: string = otp.join('');
+            // Form validation
+            const result = otpSchema.safeParse({ otp: otpString });
+
+            if (!result.success) {
+                const fieldErrors = result.error.formErrors.fieldErrors;
+                setErrors(fieldErrors as Partial<IOtp>);
                 return;
             }
 
-            const otpString = otp.join('');
             const response = await verifyOtpApi({ userId, otp: otpString });
             if (response.data) {
                 hotToastMessage(response.message, 'success');
@@ -142,6 +151,7 @@ const Otp: React.FC = () => {
                                 />
                             ))}
                     </div>
+                    {errors && <Typography className="text-sm text-red-500">{errors.otp}</Typography>}
                     <div className="py-5">
                         <CustomButton type="submit" disabled={isVerificationLoading} className="w-full">
                             {isVerificationLoading ? (
