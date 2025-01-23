@@ -1,11 +1,14 @@
 import { body, ValidationChain } from 'express-validator';
 import { mongoIdBodyValidator } from './mongodb-id.validation';
-import { PASSWORD_MAXIMUM_LENGTH, PASSWORD_MINIMUM_LENGTH, RESET_TOKEN_LENGTH } from '../../constants';
 import { validateAllowedFields } from './allowed-fields.validation';
 
 const forgotPasswordAllowedFields: string[] = ['email'];
 const resetPasswordAllowedFields: string[] = ['userId', 'password'];
 const verifyTokenAllowedFields: string[] = ['resetToken'];
+
+const RESET_TOKEN_LENGTH: number = 80;
+const PASSWORD_MINIMUM_LENGTH: number = 4;
+const PASSWORD_MAXIMUM_LENGTH: number = 50;
 
 export const forgotPasswordRequestBodyValidator = [
     body('email').isEmail().withMessage('Email must be valid').toLowerCase().trim().escape(),

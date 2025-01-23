@@ -1,38 +1,49 @@
 import { useEffect, useState } from 'react';
 import { Chip } from '@mui/material';
-import { IRestaurant, IRestaurantsResponse, IUser, IResponse } from '../../types';
+import { IResponse, IUser } from '../../types';
 import SearchBar from '../../components/search/SearchBar';
 import Table from '../../components/table/Table';
 import { hotToastMessage } from '../../utils';
 import { blockUnblockUserApi } from '../../api/apiMethods/auth';
-import { getRestaurantsApi, searchRestaurantApi } from '../../api/apiMethods/restaurant';
 import { useConfirmationContext } from '../../context/confirmationContext';
 import CustomButton from '../../components/Button/CustomButton';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { fetchRestaurants, searchRestaurants } from '../../redux/thunk/restaurantThunk';
+import { updateRestaurantBlockStatus } from '../../redux/slice/restaurantSlice';
 
 const RestaurantsList: React.FC = () => {
-    const [restaurantsData, setRestaurantsData] = useState<IRestaurant[]>([]);
     const [numberOfPages, setNumberOfPages] = useState<number>(1);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [searchKey, setSearchKey] = useState<string>('');
     const { showConfirmation } = useConfirmationContext();
+    const restaurantsData = useAppSelector((store) => store.restaurantReducer.restaurantListData);
 
+    const dispatch = useAppDispatch();
     const USERS_PER_PAGE: number = 2;
 
-    const fetchRestaurants = async (currentPage: number): Promise<void> => {
-        let restaurantsData: IResponse | [] = [];
+    const fetchAllRestaurants = async (currentPage: number): Promise<void> => {
         if (!searchKey) {
-            restaurantsData = await getRestaurantsApi(currentPage, USERS_PER_PAGE);
+            dispatch(
+                fetchRestaurants({
+                    setTotalNumberOfPages: setNumberOfPages,
+                    currentPage,
+                    limit: USERS_PER_PAGE,
+                }),
+            );
         } else {
-            restaurantsData = await searchRestaurantApi(searchKey, currentPage, USERS_PER_PAGE);
+            dispatch(
+                searchRestaurants({
+                    searchKey,
+                    setTotalNumberOfPages: setNumberOfPages,
+                    currentPage,
+                    limit: USERS_PER_PAGE,
+                }),
+            );
         }
-        const data = restaurantsData?.data as IRestaurantsResponse;
-        setRestaurantsData(data.restaurants as IRestaurant[]);
-
-        setNumberOfPages(data.numberOfPages);
     };
 
     useEffect(() => {
-        fetchRestaurants(1); // Fetch initial data for the first page
+        fetchAllRestaurants(1); // Fetch initial data for the first page
     }, [searchKey, currentPage]);
 
     useEffect(() => {
@@ -50,26 +61,20 @@ const RestaurantsList: React.FC = () => {
     };
 
     const handleBlockUnblock = async (userId: string): Promise<void> => {
-        const updatedUser: IResponse | null = await blockUnblockUserApi(userId);
+        try {
+            const updatedUser: IResponse | null = await blockUnblockUserApi(userId);
 
-        if (updatedUser) {
-            hotToastMessage(updatedUser.message, 'success');
-
-            const restaurants: IRestaurant[] = restaurantsData.map((restaurant: IRestaurant) => {
-                if (restaurant.ownerId._id === userId) {
-                    return {
-                        ...restaurant,
-                        ownerId: {
-                            ...restaurant.ownerId,
-                            isBlocked: (updatedUser?.data as IUser).isBlocked,
-                        },
-                    };
-                }
-
-                return restaurant;
-            });
-
-            setRestaurantsData(restaurants);
+            if (updatedUser) {
+                hotToastMessage(updatedUser.message, 'success');
+                dispatch(
+                    updateRestaurantBlockStatus({
+                        userId,
+                        isBlocked: (updatedUser.data as IUser).isBlocked,
+                    }),
+                );
+            }
+        } catch (error: unknown) {
+            hotToastMessage((error as Error).message, 'error');
         }
     };
 
@@ -124,9 +129,9 @@ const RestaurantsList: React.FC = () => {
             </div>
             <Table
                 columns={columns}
-                data={restaurantsData}
+                data={restaurantsData!}
                 numberOfPages={numberOfPages}
-                fetchData={fetchRestaurants}
+                fetchData={fetchAllRestaurants}
             />
         </div>
     );

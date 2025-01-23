@@ -1,7 +1,8 @@
 import { body, ValidationChain } from 'express-validator';
 import { mongoIdBodyValidator } from './mongodb-id.validation';
-import { OTP_LENGTH } from '../../constants';
 import { validateAllowedFields } from './allowed-fields.validation';
+
+const OTP_LENGTH: number = 6;
 
 const verifyOtpAllowedFields: string[] = ['otp', 'userId'];
 const resendOtpAllowedFields: string[] = ['userId'];

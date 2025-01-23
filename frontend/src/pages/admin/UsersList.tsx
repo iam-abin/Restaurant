@@ -1,34 +1,46 @@
 import { useEffect, useState } from 'react';
 
-import { IResponse, IProfile, IProfilesResponse, IUser } from '../../types';
+import { IResponse, IUser } from '../../types';
 import { hotToastMessage } from '../../utils';
-import { getProfilesApi, blockUnblockUserApi, searchProfileApi } from '../../api/apiMethods';
+import { blockUnblockUserApi } from '../../api/apiMethods';
 import SearchBar from '../../components/search/SearchBar';
 import Table from '../../components/table/Table';
 import { useConfirmationContext } from '../../context/confirmationContext';
 import { Chip } from '@mui/material';
 import CustomButton from '../../components/Button/CustomButton';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { updateUserProfileBlockStatus } from '../../redux/slice/profileSlice';
+import { fetchProfiles, searchProfiles } from '../../redux/thunk/profileThunk';
 
 const UsersList: React.FC = () => {
-    const [profilesData, setProfilesData] = useState<IProfile[]>([]);
     const [numberOfPages, setNumberOfPages] = useState<number>(1);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [searchKey, setSearchKey] = useState<string>('');
     const { showConfirmation } = useConfirmationContext();
+    const profilesData = useAppSelector((store) => store.profileReducer.userProfileListData);
 
+    const dispatch = useAppDispatch();
     const USERS_PER_PAGE: number = 2;
 
     const fetchUsers = async (currentPage: number): Promise<void> => {
-        let profilesData: IResponse | [] = [];
         if (!searchKey) {
-            profilesData = await getProfilesApi(currentPage, USERS_PER_PAGE);
+            dispatch(
+                fetchProfiles({
+                    setTotalNumberOfPages: setNumberOfPages,
+                    currentPage,
+                    limit: USERS_PER_PAGE,
+                }),
+            );
         } else {
-            profilesData = await searchProfileApi(searchKey, currentPage, USERS_PER_PAGE);
+            dispatch(
+                searchProfiles({
+                    searchKey,
+                    setTotalNumberOfPages: setNumberOfPages,
+                    currentPage,
+                    limit: USERS_PER_PAGE,
+                }),
+            );
         }
-
-        const data = profilesData?.data as IProfilesResponse;
-        setProfilesData(data.profiles as IProfile[]);
-        setNumberOfPages(data.numberOfPages);
     };
 
     useEffect(() => {
@@ -50,26 +62,20 @@ const UsersList: React.FC = () => {
     };
 
     const handleBlockUnblock = async (userId: string): Promise<void> => {
-        const updatedUser: IResponse | null = await blockUnblockUserApi(userId);
+        try {
+            const updatedUser: IResponse | null = await blockUnblockUserApi(userId);
 
-        if (updatedUser) {
-            hotToastMessage(updatedUser.message, 'success');
-
-            const profiles: IProfile[] = profilesData.map((user: IProfile) => {
-                if ((user.userId as IUser)._id === userId) {
-                    return {
-                        ...user,
-                        userId: {
-                            ...(user.userId as IUser),
-                            isBlocked: (updatedUser?.data as IUser).isBlocked,
-                        },
-                    };
-                }
-
-                return user;
-            });
-
-            setProfilesData(profiles);
+            if (updatedUser) {
+                hotToastMessage(updatedUser.message, 'success');
+                dispatch(
+                    updateUserProfileBlockStatus({
+                        userId,
+                        isBlocked: (updatedUser.data as IUser).isBlocked,
+                    }),
+                );
+            }
+        } catch (error: unknown) {
+            hotToastMessage((error as Error).message, 'error');
         }
     };
 
@@ -123,7 +129,7 @@ const UsersList: React.FC = () => {
             </div>
             <Table
                 columns={columns}
-                data={profilesData}
+                data={profilesData!}
                 numberOfPages={numberOfPages}
                 fetchData={fetchUsers}
             />

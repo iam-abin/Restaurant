@@ -14,10 +14,10 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import { checkRole, isActiveLink } from '../../utils';
 import MobileDrawer from '../drawer/MobileDrawer';
 import { INavItems } from '../../types/navbar';
-import { clearProfile } from '../../redux/slice/profileSlice';
+import { clearProfile, clearUserProfileList } from '../../redux/slice/profileSlice';
 import { clearMenus } from '../../redux/slice/menusSlice';
 import { clearCart } from '../../redux/slice/cartSlice';
-import { clearRestaurant } from '../../redux/slice/restaurantSlice';
+import { clearRestaurant, clearRestaurantList } from '../../redux/slice/restaurantSlice';
 import { clearOtpTokenTimer } from '../../redux/slice/otpTokenSlice';
 import { clearAdminDashboard } from '../../redux/slice/dashboardSlice';
 import { logoutUser } from '../../redux/thunk/authThunk';
@@ -39,8 +39,7 @@ const NavBar: React.FC<INavBarProps> = ({ currentUser }) => {
     const isRestaurant: boolean = checkRole(UserRole.RESTAURANT, currentUser?.role);
     const isUser: boolean = checkRole(UserRole.USER, currentUser?.role);
 
-    const handleLogout = async (): Promise<void> => {
-        const response = await dispatch(logoutUser());
+    const doCleanUp = (): void => {
         if (isUser) {
             dispatch(clearProfile());
             dispatch(clearMenus());
@@ -54,8 +53,16 @@ const NavBar: React.FC<INavBarProps> = ({ currentUser }) => {
 
         if (isAdmin) {
             dispatch(clearAdminDashboard());
+            dispatch(clearUserProfileList());
+            dispatch(clearRestaurantList());
         }
         dispatch(clearOtpTokenTimer());
+    };
+
+    const handleLogout = async (): Promise<void> => {
+        const response = await dispatch(logoutUser());
+        // cleanup states
+        doCleanUp();
         // Check if the action was rejected
         if (response.meta.requestStatus !== 'rejected') {
             naivgate('/auth');

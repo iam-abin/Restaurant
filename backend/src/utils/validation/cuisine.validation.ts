@@ -1,5 +1,6 @@
 import { query, ValidationChain } from 'express-validator';
-import { SEARCH_KEY_LENGTH } from '../../constants';
+
+const SEARCH_KEY_LENGTH: number = 100;
 
 export const searchCuisineValidator: ValidationChain[] = [
     query('searchText')

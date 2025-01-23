@@ -4,6 +4,7 @@ import { validateAllowedFields } from './allowed-fields.validation';
 
 const minRating: number = 0;
 const maxRating: number = 5;
+
 const ratingAllowedFields: string[] = ['rating', 'restaurantId'];
 
 export const addRatingRequestBodyValidator: ValidationChain[] = [

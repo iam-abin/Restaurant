@@ -136,12 +136,6 @@ const Auth: React.FC = () => {
         }
     };
 
-    // const googleLogin = useGoogleLogin({
-    // 	onSuccess: responseGoogle,
-    // 	onError: responseGoogle,
-    // 	flow: "auth-code",
-    // });
-
     const handleError = (): void => {
         hotToastMessage('Login failed', 'error');
     };

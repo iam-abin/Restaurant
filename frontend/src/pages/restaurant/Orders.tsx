@@ -11,10 +11,10 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
-import { getRestaurantOrdersApi, updateOrderStatusApi } from '../../api/apiMethods';
-import { useAppSelector } from '../../redux/hooks';
+import { updateOrderStatusApi } from '../../api/apiMethods';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import OrdersTableRestaurantSkelton from '../../components/shimmer/OrdersTableRestaurantSkelton';
-import { IResponse, IRestaurantOrder, Orders } from '../../types';
+import { IResponse, IRestaurantOrder } from '../../types';
 import { hotToastMessage } from '../../utils';
 import OrderDetailsModal from '../../components/modal/OrderDetailsModal';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
@@ -22,44 +22,48 @@ import usePagination from '../../hooks/usePagination';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from '../../components/Button/CustomButton';
 import { ITEMS_PER_PAGE } from '../../constants';
+import { fetchRestaurantOrders } from '../../redux/thunk/orderThunk';
+import { updateOrderStatus } from '../../redux/slice/orderSlice';
 
 const OrdersListPage: React.FC = () => {
-    const [orders, setOrders] = useState<IRestaurantOrder[]>([]);
-    const [loading, setLoading] = useState(true);
     const [selectedOrder, setSelectedOrder] = useState<IRestaurantOrder | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
     const restaurant = useAppSelector((store) => store.restaurantReducer.restaurantData?.restaurant);
+    const { restaurantOrdersList, status } = useAppSelector((store) => store.orderReducer);
 
     useEffect(() => {
         (async () => {
             if (restaurant?._id) {
-                setLoading(true);
-                try {
-                    const orders: IResponse = await getRestaurantOrdersApi(
-                        restaurant._id,
+                dispatch(
+                    fetchRestaurantOrders({
+                        restaurantId: restaurant._id,
+                        setTotalNumberOfPages,
                         currentPage,
-                        ITEMS_PER_PAGE,
-                    );
-                    setOrders((orders.data as Orders).orders);
-                    setTotalNumberOfPages((orders.data as Orders).numberOfPages);
-                } finally {
-                    setLoading(false);
-                }
+                        limit: ITEMS_PER_PAGE,
+                    }),
+                );
             }
         })();
     }, [restaurant, currentPage]);
 
-    const handleStatusChange = async (id: string, newStatus: string): Promise<void> => {
-        setOrders((prevOrders: IRestaurantOrder[]) =>
-            prevOrders.map((order: IRestaurantOrder) =>
-                order._id === id ? { ...order, status: newStatus } : order,
-            ),
-        );
-        const response = await updateOrderStatusApi(id, newStatus);
-
-        hotToastMessage(response.message, 'success');
+    const handleStatusChange = async (orderId: string, newStatus: string): Promise<void> => {
+        try {
+            const response: IResponse | null = await updateOrderStatusApi(orderId, newStatus);
+            if (response) {
+                hotToastMessage(response.message, 'success');
+                dispatch(
+                    updateOrderStatus({
+                        orderId,
+                        status: newStatus,
+                    }),
+                );
+            }
+        } catch (error: unknown) {
+            hotToastMessage((error as Error).message, 'error');
+        }
     };
 
     const handleViewDetails = (order: IRestaurantOrder): void => {
@@ -80,9 +84,9 @@ const OrdersListPage: React.FC = () => {
             <Typography variant="h4" gutterBottom>
                 Orders List
             </Typography>
-            {loading ? (
+            {status === 'loading' && restaurantOrdersList.length === 0 ? (
                 <OrdersTableRestaurantSkelton rowCount={ITEMS_PER_PAGE} />
-            ) : orders.length ? (
+            ) : restaurantOrdersList.length ? (
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
@@ -93,7 +97,7 @@ const OrdersListPage: React.FC = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {orders.map((order: IRestaurantOrder) => (
+                            {restaurantOrdersList.map((order: IRestaurantOrder) => (
                                 <TableRow key={order._id}>
                                     <TableCell>
                                         <img

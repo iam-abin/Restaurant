@@ -16,26 +16,24 @@ export const signinUser = createAsyncThunk<
         return result.data as IUser;
     } catch (error: unknown) {
         hotToastMessage((error as Error).message, 'error');
+        // Use rejectWithValue to handle errors
         return rejectWithValue((error as Error).message);
     }
 });
 
-// Async thunk for user sign-in
-export const googleAuthThunk = createAsyncThunk<
-    IUser, // Return type of the resolved value
-    IGoogleAuth, // Argument type
-    { rejectValue: string } // Thunk API config with rejectValue
->('auth/googleAuthLogin', async (data: IGoogleAuth, { rejectWithValue }) => {
-    try {
-        const result: IResponse = await googleAuthApi(data);
-        hotToastMessage(result.message, 'success');
-        return result.data as IUser;
-    } catch (error: unknown) {
-        return rejectWithValue((error as Error).message);
-    }
-});
+export const googleAuthThunk = createAsyncThunk<IUser, IGoogleAuth, { rejectValue: string }>(
+    'auth/googleAuthLogin',
+    async (data: IGoogleAuth, { rejectWithValue }) => {
+        try {
+            const result: IResponse = await googleAuthApi(data);
+            hotToastMessage(result.message, 'success');
+            return result.data as IUser;
+        } catch (error: unknown) {
+            return rejectWithValue((error as Error).message);
+        }
+    },
+);
 
-// Async thunk for user logout
 export const logoutUser = createAsyncThunk<void, void, { rejectValue: string }>(
     'auth/userLogout',
     async (_, { rejectWithValue }) => {
