@@ -12,10 +12,10 @@ const DashboardCard: React.FC<IDashboardCardProps> = ({ title, number, icon, des
                 <div className="p-4 w-14 h-14 bg-red-100 rounded-full text-blue-600">{icon}</div>
                 <div className="ml-4">
                     <h3 className="text-gray-600 font-semibold">{title}</h3>
-                    <p className="text-2xl font-bold text-gray-800">
-                        {symbol}
-                        {number}
-                    </p>
+                    <div className="flex items-center text-2xl font-bold text-gray-800">
+                        <div className="text-sm">{symbol}</div>
+                        <div>{number}</div>
+                    </div>
                 </div>
             </div>
             <div className=" h-full ">

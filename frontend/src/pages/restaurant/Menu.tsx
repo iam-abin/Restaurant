@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { RestaurantMenu } from '@mui/icons-material';
 
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';

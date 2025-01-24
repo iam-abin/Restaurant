@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { Link, NavigateFunction, useNavigate, useParams } from 'react-router-dom';
+import { Link, NavigateFunction, useNavigate, useParams } from 'react-router';
 import { Input, Typography } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 

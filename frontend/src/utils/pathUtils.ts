@@ -1,4 +1,4 @@
-import { Location } from 'react-router-dom';
+import { Location } from 'react-router';
 
 /**
  * Function to find active link in the navbar

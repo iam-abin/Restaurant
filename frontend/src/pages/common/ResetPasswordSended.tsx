@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 import CustomButton from '../../components/Button/CustomButton';
 import { useAppSelector } from '../../redux/hooks';

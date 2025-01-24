@@ -1,3 +1,4 @@
+// Admin
 export const totalTurnoverIcon: JSX.Element = (
     <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -34,6 +35,24 @@ export const userIcon: JSX.Element = (
     </svg>
 );
 
+export const restaurantIcon: JSX.Element = (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8 3v10M8 3a1.5 1.5 0 013 0v10m-3-7h3m4 7v-7m0 0a1.5 1.5 0 113 0v7m-3 0h3m-8 4h8"
+        />
+    </svg>
+);
+
+// Restaurant
 export const revenueIcon: JSX.Element = (
     <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -57,7 +76,19 @@ export const revenueIcon: JSX.Element = (
     </svg>
 );
 
-export const restaurantIcon: JSX.Element = (
+export const menuIcon: JSX.Element = (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+    >
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+);
+
+export const cuisineIcon: JSX.Element = (
     <svg
         xmlns="http://www.w3.org/2000/svg"
         className="h-6 w-6"
@@ -69,8 +100,14 @@ export const restaurantIcon: JSX.Element = (
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={2}
-            d="M12 14l2-2m0 0l2 2m-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2h7a2 2 0 012 2v12a2 2 0 01-2 2z"
+            d="M12 12m-8 0a8 8 0 1 0 16 0 8 8 0 1 0-16 0z"
         />
-        <circle cx="12" cy="14" r="4" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 6v9M8 6v3M10 6v3" />
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 6c.9 0 1.5.5 1.5 1.5 0 .5-.2 1-.5 1.5s-.5.5-.5.5l0 5"
+        />
     </svg>
 );

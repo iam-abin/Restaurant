@@ -27,6 +27,7 @@ const RestaurantsList: React.FC = () => {
                 fetchRestaurants({
                     setTotalNumberOfPages: setNumberOfPages,
                     currentPage,
+                    limit: DEFAULT_LIMIT_VALUE,
                 }),
             );
         } else {

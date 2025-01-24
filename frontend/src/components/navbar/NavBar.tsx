@@ -1,4 +1,4 @@
-import { Link, NavigateFunction, useLocation, useNavigate } from 'react-router-dom';
+import { Link, NavigateFunction, useLocation, useNavigate } from 'react-router';
 import Avatar from '@mui/material/Avatar';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';

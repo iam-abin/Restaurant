@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import { Typography } from '@mui/material';
 
 import { resendOtpApi, verifyOtpApi } from '../../api/apiMethods';

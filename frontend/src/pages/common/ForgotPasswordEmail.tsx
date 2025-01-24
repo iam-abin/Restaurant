@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { Link, NavigateFunction, useNavigate } from 'react-router-dom';
+import { Link, NavigateFunction, useNavigate } from 'react-router';
 import { Input, Typography } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 

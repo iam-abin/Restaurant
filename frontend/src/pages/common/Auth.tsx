@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { Input, Typography, Divider } from '@mui/material';
 import { Email, Person, Lock, LocalPhone } from '@mui/icons-material';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';

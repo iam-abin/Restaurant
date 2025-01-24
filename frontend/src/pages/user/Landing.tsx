@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { Search } from '@mui/icons-material';
 
 import PizzaImage from '../../assets/landing/hero_pizza.png';

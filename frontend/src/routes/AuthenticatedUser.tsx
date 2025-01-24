@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router';
 
 import { useAppSelector } from '../redux/hooks';
 import { IUser, UserRole } from '../types';

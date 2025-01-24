@@ -24,7 +24,7 @@ export class RestaurantRepository {
             .select(['-createdAt', '-updatedAt', '-addressId', '-isVerified'])
             .skip(skip)
             .limit(limit)
-            .populate('ownerId', ['-createdAt', '-updatedAt'])
+            .populate('ownerId', ['-createdAt', '-updatedAt', '-password'])
             .lean<IRestaurantDocument[]>();
     };
 
