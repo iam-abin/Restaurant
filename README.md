@@ -45,11 +45,12 @@ npm install
 - In both frontend and backend terminal tabs, run
 
 ```
- npm run dev
+npm run dev
 ```
-- Run stript webhook (for payment confirmation) 
+- Run stript webhook (for payment confirmation) in backend terminal 
+
 ```
- npm run stripe
+npm run stripe
 ```
 
 5. Access the application from browser using:
