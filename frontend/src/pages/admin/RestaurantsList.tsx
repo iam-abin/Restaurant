@@ -10,16 +10,16 @@ import CustomButton from '../../components/Button/CustomButton';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchRestaurants, searchRestaurants } from '../../redux/thunk/restaurantThunk';
 import { updateRestaurantBlockStatus } from '../../redux/slice/restaurantSlice';
+import { DEFAULT_LIMIT_VALUE } from '../../constants';
 
 const RestaurantsList: React.FC = () => {
     const [numberOfPages, setNumberOfPages] = useState<number>(1);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [searchKey, setSearchKey] = useState<string>('');
     const { showConfirmation } = useConfirmationContext();
-    const restaurantsData = useAppSelector((store) => store.restaurantReducer.restaurantListData);
+    const { restaurantListData } = useAppSelector((store) => store.restaurantReducer);
 
     const dispatch = useAppDispatch();
-    const USERS_PER_PAGE: number = 2;
 
     const fetchAllRestaurants = async (currentPage: number): Promise<void> => {
         if (!searchKey) {
@@ -27,7 +27,6 @@ const RestaurantsList: React.FC = () => {
                 fetchRestaurants({
                     setTotalNumberOfPages: setNumberOfPages,
                     currentPage,
-                    limit: USERS_PER_PAGE,
                 }),
             );
         } else {
@@ -36,14 +35,14 @@ const RestaurantsList: React.FC = () => {
                     searchKey,
                     setTotalNumberOfPages: setNumberOfPages,
                     currentPage,
-                    limit: USERS_PER_PAGE,
+                    limit: DEFAULT_LIMIT_VALUE,
                 }),
             );
         }
     };
 
     useEffect(() => {
-        fetchAllRestaurants(1); // Fetch initial data for the first page
+        fetchAllRestaurants(currentPage); // Fetch initial data for the first page
     }, [searchKey, currentPage]);
 
     useEffect(() => {
@@ -85,7 +84,9 @@ const RestaurantsList: React.FC = () => {
         {
             Header: 'Profile Image',
             button: (row: { imageUrl: string }) => (
-                <img src={row.imageUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
+                <div className="flex justify-center items-center">
+                    <img src={row.imageUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
+                </div>
             ),
         },
         {
@@ -109,11 +110,9 @@ const RestaurantsList: React.FC = () => {
                         },
                         fontWeight: 'bold',
                     }}
-                    // color={row?.ownerId?.isBlocked ? 'success' : 'error'}
                     onClick={() => {
                         handleBlockUnblockButton(row?.ownerId?._id, row?.ownerId?.isBlocked);
                     }}
-                    variant="contained"
                 >
                     {row?.ownerId?.isBlocked ? 'Unblock' : 'Block'}
                 </CustomButton>
@@ -129,7 +128,7 @@ const RestaurantsList: React.FC = () => {
             </div>
             <Table
                 columns={columns}
-                data={restaurantsData!}
+                data={restaurantListData!}
                 numberOfPages={numberOfPages}
                 fetchData={fetchAllRestaurants}
             />

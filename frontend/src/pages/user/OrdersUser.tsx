@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Typography, Box } from '@mui/material';
+
 import { getMyOrdersApi } from '../../api/apiMethods';
 import { IResponse, IRestaurantOrder, Orders } from '../../types';
 import OrderDetailsModal from '../../components/modal/OrderDetailsModal';
@@ -7,14 +9,13 @@ import OrderCardSkelton from '../../components/shimmer/OrderCardSkelton';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
 import OrderCard from '../../components/cards/OrderCard';
 import usePagination from '../../hooks/usePagination';
-import { ITEMS_PER_PAGE } from '../../constants';
-import { useNavigate } from 'react-router-dom';
+import { DEFAULT_LIMIT_VALUE } from '../../constants';
 import CustomButton from '../../components/Button/CustomButton';
 
 const OrdersUser: React.FC = () => {
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
     const [selectedOrder, setSelectedOrder] = useState<IRestaurantOrder | null>(null);
-    const [modalOpen, setModalOpen] = useState(false);
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [orders, setOrders] = useState<IRestaurantOrder[]>([]);
     const navigate = useNavigate();
     const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
@@ -23,7 +24,7 @@ const OrdersUser: React.FC = () => {
         (async () => {
             try {
                 setLoading(true);
-                const orders: IResponse = await getMyOrdersApi(currentPage, ITEMS_PER_PAGE);
+                const orders: IResponse = await getMyOrdersApi(currentPage, DEFAULT_LIMIT_VALUE);
                 setOrders((orders.data as Orders).orders);
                 setTotalNumberOfPages((orders.data as Orders).numberOfPages);
             } finally {
@@ -48,9 +49,10 @@ const OrdersUser: React.FC = () => {
             <Typography variant="h4" gutterBottom>
                 Orders List
             </Typography>
+            {/* Orders list */}
             <div className="flex flex-col flex-grow gap-2">
-                {loading ? (
-                    Array.from(new Array(ITEMS_PER_PAGE)).map((_, index: number) => (
+                {orders.length === 0 && loading ? (
+                    Array.from(new Array(DEFAULT_LIMIT_VALUE)).map((_, index: number) => (
                         <OrderCardSkelton key={index} />
                     ))
                 ) : orders.length === 0 ? (
@@ -76,13 +78,6 @@ const OrdersUser: React.FC = () => {
                 )}
             </div>
 
-            {selectedOrder && (
-                <OrderDetailsModal
-                    modalOpen={modalOpen}
-                    handleCloseModal={handleCloseModal}
-                    selectedOrder={selectedOrder}
-                />
-            )}
             <div className="flex justify-center my-10">
                 <PaginationButtons
                     handlePageChange={handlePageChange}
@@ -90,6 +85,15 @@ const OrdersUser: React.FC = () => {
                     currentPage={currentPage}
                 />
             </div>
+
+            {/* Ordetails modal */}
+            {selectedOrder && (
+                <OrderDetailsModal
+                    modalOpen={modalOpen}
+                    handleCloseModal={handleCloseModal}
+                    selectedOrder={selectedOrder}
+                />
+            )}
         </Box>
     );
 };

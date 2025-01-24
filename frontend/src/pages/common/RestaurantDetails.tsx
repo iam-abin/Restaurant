@@ -3,20 +3,22 @@ import { Link, useParams } from 'react-router-dom';
 import { Badge, Chip, IconButton, Typography } from '@mui/material';
 import { ShoppingCart, TimerOutlined } from '@mui/icons-material';
 
-import { ICuisineResponse1, IMenu, IRestaurantResponse2, IRestaurantResult } from '../../types';
-import { changeRatingApi, getARestaurantApi } from '../../api/apiMethods';
-
+import { ICuisineResponse1, IMenu, IResponse, IRestaurantResponse2, IRestaurantResult } from '../../types';
+import { addToCartApi, changeRatingApi, getARestaurantApi } from '../../api/apiMethods';
 import MenuCardSkeleton from '../../components/shimmer/MenuCardSkeleton';
 import MenuCard from '../../components/cards/MenuCard';
 import StarRating from '../../components/rating/StarRating';
 import RatingModal from '../../components/modal/RatingModal';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { addToCart } from '../../redux/thunk/cartThunk';
 import { hotToastMessage } from '../../utils';
 import { fetchMenus } from '../../redux/thunk/menusThunk';
 import usePagination from '../../hooks/usePagination';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
-import { ITEMS_PER_PAGE } from '../../constants';
+import { DEFAULT_LIMIT_VALUE } from '../../constants';
+
+type CuisineState = {
+    cuisineId: ICuisineResponse1;
+};
 
 const RestaurantDetails: React.FC = () => {
     const params = useParams();
@@ -31,15 +33,10 @@ const RestaurantDetails: React.FC = () => {
     const [cartItemsCount, setCartItemsCount] = useState<number>(0);
     const [restaurantRatingValue, setRestaurantRatingValue] = useState<number>(0);
     const [restaurantRatingCount, setRestaurantRatingCount] = useState<number>(0);
-    const [cuisines, setCuisines] = useState<
-        {
-            cuisineId: ICuisineResponse1;
-        }[]
-    >([]);
+    const [cuisines, setCuisines] = useState<CuisineState[]>([]);
 
     const [isRatingModalOpen, setIsRatingModalOpen] = useState<boolean>(false);
     const handleOpenModal = (): void => setIsRatingModalOpen(true);
-
     const handleCloseModal = (): void => setIsRatingModalOpen(false);
 
     const handleRatingChange = async (
@@ -53,20 +50,19 @@ const RestaurantDetails: React.FC = () => {
     };
 
     const addItemToCartHandler = async (menuItemId: string): Promise<void> => {
-        const response = await dispatch(
-            addToCart({ itemId: menuItemId, restaurantId: params.restaurantId! }),
-        );
-        if (response.meta.requestStatus === 'rejected') {
-            hotToastMessage(response.payload as string, 'error');
-            return;
+        try {
+            const response: IResponse = await addToCartApi(menuItemId, restaurantId!);
+            hotToastMessage(response.message, 'success');
+            setCartItemsCount((cartItemCount: number) => cartItemCount + 1);
+        } catch (error: unknown) {
+            hotToastMessage((error as Error).message, 'error');
         }
-        setCartItemsCount((cartItemCount: number) => cartItemCount + 1);
     };
 
     useEffect(() => {
         (async () => {
             setIsLoading(true);
-            const response = await getARestaurantApi(restaurantId!);
+            const response: IResponse = await getARestaurantApi(restaurantId!);
             setRestaurant((response.data as IRestaurantResult).restaurant as IRestaurantResponse2);
             setCuisines((response.data as IRestaurantResult).restaurantCuisines);
             setRestaurantRatingValue((response.data as IRestaurantResult).restaurantRating);
@@ -89,7 +85,7 @@ const RestaurantDetails: React.FC = () => {
                 restaurantId,
                 setTotalNumberOfPages,
                 currentPage,
-                limit: ITEMS_PER_PAGE,
+                limit: DEFAULT_LIMIT_VALUE,
             }),
         );
     };
@@ -108,6 +104,7 @@ const RestaurantDetails: React.FC = () => {
                     <div className="my-5 w-full">
                         <span className="font-extrabold text-2xl">{restaurant?.ownerId?.name}</span>
                         <div className="flex my-2 items-center justify-between">
+                            {/* Chip with cuisine names */}
                             <div className="flex flex-row gap-1 max-w-full">
                                 {cuisines?.map((cuisine: { cuisineId: ICuisineResponse1 }, index: number) => {
                                     return (
@@ -117,6 +114,7 @@ const RestaurantDetails: React.FC = () => {
                                     );
                                 })}
                             </div>
+                            {/* Cart icon with count */}
                             <IconButton aria-label="cart  ">
                                 <Badge badgeContent={cartItemsCount} color="primary">
                                     <Link to={`/cart/${restaurantId}`}>
@@ -125,7 +123,7 @@ const RestaurantDetails: React.FC = () => {
                                 </Badge>
                             </IconButton>
                         </div>
-
+                        {/* Delivery time */}
                         <div className="flex md:flex-row flex-col gap-2 my-5">
                             <div className="flex items-center gap-2">
                                 <TimerOutlined className="w-5 h-5" />
@@ -137,6 +135,7 @@ const RestaurantDetails: React.FC = () => {
                                 </h1>
                             </div>
                         </div>
+                        {/* Start rating */}
                         <div className="flex ">
                             <StarRating ratingValue={restaurantRatingValue} isReadOnly={true} />{' '}
                             <span>
@@ -151,6 +150,7 @@ const RestaurantDetails: React.FC = () => {
                         </div>
                     </div>
                 </div>
+                {/* Menu area */}
                 <div className="md:p-4">
                     <h1 className="text-xl md:text-2xl font-extrabold mb-6">Available Menus</h1>
                     <div className="flex flex-col gap-2 items-center my-4">

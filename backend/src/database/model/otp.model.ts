@@ -28,6 +28,7 @@ const otpTokenSchema = new Schema<IOtpTokenDocument>(
             type: String,
             minlength: 80,
             maxlength: 80,
+            index: true,
         },
         expiresAt: {
             type: Date,

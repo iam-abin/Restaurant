@@ -47,6 +47,10 @@ npm install
 ```
  npm run dev
 ```
+- Run stript webhook (for payment confirmation) 
+```
+ npm run stripe
+```
 
 5. Access the application from browser using:
 

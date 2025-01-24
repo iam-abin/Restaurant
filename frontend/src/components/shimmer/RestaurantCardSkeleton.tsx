@@ -4,7 +4,6 @@ import CardContent from '@mui/material/CardContent';
 import Skeleton from '@mui/material/Skeleton';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import PublicIcon from '@mui/icons-material/Public';
-// import Chip from '@mui/material/Chip';
 
 const RestaurantCardSkeleton: React.FC = () => {
     return (

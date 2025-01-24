@@ -14,8 +14,10 @@ const Landing: React.FC = () => {
 
         navigate(`/search/${searchText}`);
     };
+
     return (
         <div className="flex flex-col md:flex-row items-center justify-center  max-w-7xl md:p-10 rounded-lg  m-4 gap-20">
+            {/* Left side */}
             <div className="flex flex-col gap-10 md:w-[41%]">
                 <div className="flex flex-col gap-5 ">
                     <h1 className="font-bold md:font-extrabold text-4xl md:text-5xl">
@@ -25,6 +27,7 @@ const Landing: React.FC = () => {
                         Hey! Our Delicious food is waiting for you, we are always near to you{' '}
                     </p>
                 </div>
+                {/* search area */}
                 <div className="relative flex gap-1">
                     <div className="w-full">
                         <Search className="absolute text-gray-500 inset-y-3 left-2" />
@@ -39,6 +42,7 @@ const Landing: React.FC = () => {
                     <CustomButton onClick={handleSearchClick}>Search</CustomButton>
                 </div>
             </div>
+            {/* Right side */}
             <div className="md:w-[41%]">
                 <div className="w-full">
                     <img src={PizzaImage} className=" w-full max-h-[500px] max-w-90%" alt="LandingImg" />

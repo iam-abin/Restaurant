@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -19,15 +20,14 @@ import { hotToastMessage } from '../../utils';
 import OrderDetailsModal from '../../components/modal/OrderDetailsModal';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
 import usePagination from '../../hooks/usePagination';
-import { useNavigate } from 'react-router-dom';
 import CustomButton from '../../components/Button/CustomButton';
-import { ITEMS_PER_PAGE } from '../../constants';
+import { DEFAULT_LIMIT_VALUE } from '../../constants';
 import { fetchRestaurantOrders } from '../../redux/thunk/orderThunk';
 import { updateOrderStatus } from '../../redux/slice/orderSlice';
 
 const OrdersListPage: React.FC = () => {
     const [selectedOrder, setSelectedOrder] = useState<IRestaurantOrder | null>(null);
-    const [modalOpen, setModalOpen] = useState(false);
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
@@ -42,7 +42,7 @@ const OrdersListPage: React.FC = () => {
                         restaurantId: restaurant._id,
                         setTotalNumberOfPages,
                         currentPage,
-                        limit: ITEMS_PER_PAGE,
+                        limit: DEFAULT_LIMIT_VALUE,
                     }),
                 );
             }
@@ -71,7 +71,7 @@ const OrdersListPage: React.FC = () => {
         setModalOpen(true);
     };
 
-    const statuses: string[] = ['preparing', 'outfordelivery', 'delivered'];
+    const orderStatuses: string[] = ['preparing', 'outfordelivery', 'delivered'];
     const tableColumns: string[] = ['Image', 'OrderId', 'Customer', 'Total', 'Status', 'Actions'];
 
     const handleCloseModal = (): void => {
@@ -84,45 +84,52 @@ const OrdersListPage: React.FC = () => {
             <Typography variant="h4" gutterBottom>
                 Orders List
             </Typography>
+            {/* Orders list table */}
             {status === 'loading' && restaurantOrdersList.length === 0 ? (
-                <OrdersTableRestaurantSkelton rowCount={ITEMS_PER_PAGE} />
+                <OrdersTableRestaurantSkelton rowCount={DEFAULT_LIMIT_VALUE} />
             ) : restaurantOrdersList.length ? (
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
                             <TableRow>
                                 {tableColumns.map((column: string) => (
-                                    <TableCell key={column}>{column}</TableCell>
+                                    <TableCell align="center" key={column}>
+                                        {column}
+                                    </TableCell>
                                 ))}
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {restaurantOrdersList.map((order: IRestaurantOrder) => (
                                 <TableRow key={order._id}>
-                                    <TableCell>
+                                    <TableCell align="center">
                                         <img
                                             src={order.orderedItems[0].imageUrl}
                                             alt="img not available"
                                             style={{ width: '50px', borderRadius: '5px' }}
                                         />
                                     </TableCell>
-                                    <TableCell>{order._id}</TableCell>
-                                    <TableCell>{order.userDetails.email}</TableCell>
-                                    <TableCell>{order.totalAmount}</TableCell>
-                                    <TableCell>
+                                    <TableCell align="center">{order._id}</TableCell>
+                                    <TableCell align="center">{order.userDetails.email}</TableCell>
+                                    <TableCell align="center">{order.totalAmount}</TableCell>
+                                    <TableCell align="center">
                                         <Select
+                                            fullWidth
                                             value={order.status}
                                             onChange={(e) => handleStatusChange(order._id, e.target.value)}
                                         >
                                             <MenuItem value={order.status}>{order.status}</MenuItem>
-                                            {statuses.map((item: string) => (
-                                                <MenuItem key={item} value={item}>
-                                                    {item}
-                                                </MenuItem>
-                                            ))}
+                                            {orderStatuses.map(
+                                                (item: string) =>
+                                                    item !== order.status && (
+                                                        <MenuItem key={item} value={item}>
+                                                            {item}
+                                                        </MenuItem>
+                                                    ),
+                                            )}
                                         </Select>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell align="center">
                                         <CustomButton onClick={() => handleViewDetails(order)}>
                                             View Details
                                         </CustomButton>
@@ -143,15 +150,6 @@ const OrdersListPage: React.FC = () => {
                 </div>
             )}
 
-            {/* Order Details Modal using Modal component */}
-            {selectedOrder && (
-                <OrderDetailsModal
-                    modalOpen={modalOpen}
-                    handleCloseModal={handleCloseModal}
-                    selectedOrder={selectedOrder}
-                />
-            )}
-
             <div className="flex justify-center my-10">
                 <PaginationButtons
                     handlePageChange={handlePageChange}
@@ -159,6 +157,14 @@ const OrdersListPage: React.FC = () => {
                     currentPage={currentPage}
                 />
             </div>
+            {/* Order Details Modal */}
+            {selectedOrder && (
+                <OrderDetailsModal
+                    modalOpen={modalOpen}
+                    handleCloseModal={handleCloseModal}
+                    selectedOrder={selectedOrder}
+                />
+            )}
         </Box>
     );
 };

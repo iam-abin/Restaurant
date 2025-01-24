@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Typography } from '@mui/material';
 
 import { resendOtpApi, verifyOtpApi } from '../../api/apiMethods';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
@@ -8,20 +9,20 @@ import { calculateRemainingTime, checkPathIsSame, checkRole, hotToastMessage, ot
 import CustomButton from '../../components/Button/CustomButton';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { addOtpTokenTimer, clearOtpTokenTimer } from '../../redux/slice/otpTokenSlice';
-import { Typography } from '@mui/material';
 
 const Otp: React.FC = () => {
     const inputRef = useRef<(HTMLInputElement | null)[]>([]);
-    const navigate = useNavigate();
     const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
     const [isVerificationLoading, setVerificationIsLoading] = useState<boolean>(false);
     const [isResendOtpLoading, setResendOtpIsLoading] = useState<boolean>(false);
     const [errors, setErrors] = useState<Partial<IOtp>>({});
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const location = useLocation();
     const { userId, role } = location.state;
     const otpTokenExpiry: Date | null = useAppSelector((store) => store.otpTokenReducer.otpTokenExpiry);
     const [timer, setTimer] = useState<number>(0); // Timer in seconds
-    const dispatch = useAppDispatch();
+
     const ONE_SECOND_IN_MS: number = 1000;
 
     const isUser: boolean = checkRole(UserRole.USER, role);
@@ -33,7 +34,7 @@ const Otp: React.FC = () => {
         if (!otpTokenExpiry) return;
 
         // Calculate remaining time in seconds for otp resend
-        const remainingTime = calculateRemainingTime(otpTokenExpiry);
+        const remainingTime: number = calculateRemainingTime(otpTokenExpiry);
         setTimer(remainingTime);
 
         // Start the countdown
@@ -50,7 +51,7 @@ const Otp: React.FC = () => {
         return () => clearInterval(countdown); // Cleanup interval on unmount
     }, [otpTokenExpiry]);
 
-    const handleChange = (index: number, value: string): void => {
+    const handleInputChange = (index: number, value: string): void => {
         if (/^[a-zA-Z0-9]$/.test(value) || value === '') {
             const otps = [...otp];
             otps[index] = value;
@@ -62,15 +63,15 @@ const Otp: React.FC = () => {
         }
     };
 
-    // to handle backSpace
+    // To handle backSpace
     const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>): void => {
         if (e.key === 'Backspace' && !otp[index] && index > 0) {
             inputRef.current[index - 1]?.focus();
         }
     };
 
+    // onResend(); // Trigger resend OTP functionality
     const handleResendOtp = async (): Promise<void> => {
-        // onResend(); // Trigger resend OTP functionality
         try {
             setResendOtpIsLoading(true);
             const response: IResponse = await resendOtpApi({ userId });
@@ -85,7 +86,7 @@ const Otp: React.FC = () => {
         }
     };
 
-    const handleSubmit = async (e: FormEvent): Promise<void> => {
+    const handleSubmitOtp = async (e: FormEvent): Promise<void> => {
         try {
             setVerificationIsLoading(true);
             e.preventDefault();
@@ -101,13 +102,13 @@ const Otp: React.FC = () => {
                 return;
             }
 
-            const response = await verifyOtpApi({ userId, otp: otpString });
+            const response: IResponse = await verifyOtpApi({ userId, otp: otpString });
             if (response.data) {
                 hotToastMessage(response.message, 'success');
                 dispatch(clearOtpTokenTimer());
                 if (isSignupOtpPage) {
                     if (isRestaurant) {
-                        navigate('/restaurant/auth');
+                        navigate('/auth/restaurant');
                     }
 
                     if (isUser) {
@@ -129,7 +130,8 @@ const Otp: React.FC = () => {
                     <h1 className="font-extrabold text-2xl">Verify Email</h1>
                     <p className="text-sm text-gray-600">Enter the 6-digit code sent to your email address</p>
                 </div>
-                <form onSubmit={handleSubmit}>
+                {/* Otp form */}
+                <form onSubmit={handleSubmitOtp}>
                     <div className="flex gap-2 justify-center">
                         {otp &&
                             otp.map((letter: string, index: number) => (
@@ -142,7 +144,7 @@ const Otp: React.FC = () => {
                                     maxLength={1}
                                     value={letter}
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                        handleChange(index, e.target.value)
+                                        handleInputChange(index, e.target.value)
                                     }
                                     onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
                                         handleKeyDown(index, e)

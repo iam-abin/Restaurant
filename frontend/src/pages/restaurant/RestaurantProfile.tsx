@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react';
+import { Alert, Chip } from '@mui/material';
 
 import { hotToastMessage, RestaurantFormSchema, restaurantFromSchema } from '../../utils';
 import { updateRestaurantApi } from '../../api/apiMethods';
@@ -8,7 +9,6 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
 import { useConfirmationContext } from '../../context/confirmationContext';
 import CustomButton from '../../components/Button/CustomButton';
-import { Chip } from '@mui/material';
 
 const RestaurantProfile: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -44,7 +44,7 @@ const RestaurantProfile: React.FC = () => {
                 name: restaurant.ownerId.name || '',
                 city: restaurant?.addressId?.city || '',
                 country: restaurant?.addressId?.country || '',
-                deliveryTime: restaurant?.deliveryTime || 0,
+                deliveryTime: restaurant?.deliveryTime,
             }));
         }
     }, [restaurant]);
@@ -121,7 +121,6 @@ const RestaurantProfile: React.FC = () => {
 
         const result = restaurantFromSchema.safeParse({
             ...input,
-            // cuisines: input.cuisines,
         });
         if (!result.success) {
             const fieldErrors = result.error.formErrors.fieldErrors;
@@ -154,9 +153,19 @@ const RestaurantProfile: React.FC = () => {
         }
     };
 
+    const isProfileIncomplete: boolean =
+        !input.name || !input.city || !input.country || input.deliveryTime <= 0;
+
     return (
         <div className="max-w-6xl mx-auto my-10">
             <div>
+                {/* Warning message */}
+                {isProfileIncomplete && (
+                    <Alert severity="warning" className="mb-4">
+                        Fill all the profile details if {input.name ? input.name : 'this'} restaurant want to
+                        be available in the search list.
+                    </Alert>
+                )}
                 <h1 className="font-extrabold text-2xl mb-5">Update Restaurant</h1>
                 <form onSubmit={handleUpdateProfileButton} className="md:grid md:grid-cols-3 md:gap-6">
                     {/* Left Side Form Inputs */}
@@ -220,6 +229,7 @@ const RestaurantProfile: React.FC = () => {
                                     onChange={changeEventHandler}
                                     placeholder="Enter delivery time"
                                     autoComplete="delivery-time"
+                                    max={300}
                                 />
                                 {errors.deliveryTime && (
                                     <span className="text-red-500 text-sm">{errors.deliveryTime}</span>
@@ -242,13 +252,23 @@ const RestaurantProfile: React.FC = () => {
                             {/* Upload Restaurant Banner */}
                             <div className="relative">
                                 <label>Upload Restaurant Banner</label>
-                                <input
-                                    className="w-full h-10 border-black rounded-lg p-1 pl-4"
-                                    type="file"
-                                    accept="image/*"
-                                    name="image"
-                                    onChange={handleImageChange}
-                                />
+
+                                <CustomButton
+                                    variant="contained"
+                                    className="w-full"
+                                    sx={{ background: '#059dc0' }}
+                                    onClick={() => document.getElementById('fileInput')?.click()}
+                                >
+                                    Choose image
+                                    <input
+                                        type="file"
+                                        id="fileInput"
+                                        hidden
+                                        name="image"
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                    />
+                                </CustomButton>
                                 {errors.image && (
                                     <span className="text-red-500 text-sm">
                                         {errors.image?.name || 'image file is required'}

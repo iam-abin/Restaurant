@@ -2,27 +2,19 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Input, Typography, Divider } from '@mui/material';
 import { Email, Person, Lock, LocalPhone } from '@mui/icons-material';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 
 import { hotToastMessage, signInSchema, signUpSchema, checkRole, getRoleFromPath } from '../../utils';
 import { useAppDispatch } from '../../redux/hooks';
 import { googleAuthThunk, signinUser } from '../../redux/thunk/authThunk';
 import { signupApi } from '../../api/apiMethods';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
-
 import { ISignup, ISignupResponse, UserRole } from '../../types';
-
 import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
 import { fetchUserProfile } from '../../redux/thunk/profileThunk';
-
 import AuthRestaurantImage from '../../assets/auth/auth-restaurant.png';
 import AuthUserImage from '../../assets/auth/auth-user.png';
 import AuthAdminImage from '../../assets/auth/auth-admin.png';
-
-import {
-    CredentialResponse,
-    GoogleLogin,
-    //  useGoogleLogin
-} from '@react-oauth/google';
 import CustomButton from '../../components/Button/CustomButton';
 import { addOtpTokenTimer } from '../../redux/slice/otpTokenSlice';
 
@@ -60,7 +52,7 @@ const Auth: React.FC = () => {
         setIsLogin((state) => !state);
     };
 
-    const handleSubmit = async (e: FormEvent): Promise<void> => {
+    const handleSubmitForm = async (e: FormEvent): Promise<void> => {
         try {
             e.preventDefault();
             // Clear existing errors
@@ -141,9 +133,11 @@ const Auth: React.FC = () => {
 
     return (
         <div className="bg-gray-300 min-h-screen flex justify-center items-center">
+            {/* Left side */}
             <div className="md:w-1/2 flex h-screen justify-center items-center">
+                {/* Login or Signup form */}
                 <form
-                    onSubmit={handleSubmit}
+                    onSubmit={handleSubmitForm}
                     className="bg-slate-200 items-center justify-center max-h-5/6 w-11/12 md:w-8/12 gap-5 p-8 border-black rounded-lg"
                 >
                     <div className="w-full flex flex-col gap-4 mb-10">
@@ -277,6 +271,7 @@ const Auth: React.FC = () => {
                     )}
                 </form>
             </div>
+            {/* Right side image */}
             <div className="md:w-1/2 hidden md:block">
                 <img
                     src={

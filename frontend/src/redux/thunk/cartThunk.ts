@@ -1,6 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
-    addToCartApi,
     getCartItemsApi,
     removeCartItemApi,
     removeCartItemsApi,
@@ -11,30 +10,20 @@ import { ICart, ICartItemsData, ICartQuantityUpdate } from '../../types';
 
 export const fetchCartItems = createAsyncThunk<
     ICart[],
-    { restaurantId: string; setTotalNumberOfPages: React.Dispatch<React.SetStateAction<number>> },
+    {
+        restaurantId: string;
+        setTotalNumberOfPages: React.Dispatch<React.SetStateAction<number>>;
+        currentPage: number;
+        limit?: number;
+    },
     { rejectValue: string | null }
->('cart/fetchCartItems', async ({ restaurantId, setTotalNumberOfPages }, { rejectWithValue }) => {
-    try {
-        const cart = await getCartItemsApi(restaurantId);
-        setTotalNumberOfPages((cart.data as ICartItemsData).numberOfPages);
-        return (cart.data as ICartItemsData).cartItems;
-    } catch (error: unknown) {
-        return rejectWithValue((error as Error).message);
-    }
-});
-
-export const addToCart = createAsyncThunk<
-    ICart[],
-    { itemId: string; restaurantId: string },
-    { rejectValue: string }
 >(
-    'cart/addToCart',
-    async ({ itemId, restaurantId }: { itemId: string; restaurantId: string }, { rejectWithValue }) => {
+    'cart/fetchCartItems',
+    async ({ restaurantId, setTotalNumberOfPages, currentPage, limit }, { rejectWithValue }) => {
         try {
-            const cart = await addToCartApi(itemId, restaurantId);
-            hotToastMessage(cart.message, 'success');
-            const cartItems = await getCartItemsApi(restaurantId);
-            return cartItems.data as ICart[];
+            const cart = await getCartItemsApi(restaurantId, currentPage, limit);
+            setTotalNumberOfPages((cart.data as ICartItemsData).numberOfPages);
+            return (cart.data as ICartItemsData).cartItems;
         } catch (error: unknown) {
             return rejectWithValue((error as Error).message);
         }

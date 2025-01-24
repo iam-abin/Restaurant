@@ -80,7 +80,7 @@ export class RestaurantRepository {
         skip: number,
         limit: number,
     ): Promise<SearchFilterResult> => {
-        const pipeline = [
+        const pipeline: PipelineStage[] = [
             // Lookup address details
             {
                 $lookup: {
@@ -199,6 +199,9 @@ export class RestaurantRepository {
                     cuisines: 1,
                 },
             },
+            {
+                $sort: { restaurantName: 1 }, // 1 for ascending, -1 for descending
+            },
             // Use $facet to separate the total count and paginated results
             {
                 $facet: {
@@ -228,7 +231,7 @@ export class RestaurantRepository {
         skip: number,
         limit: number,
     ): Promise<ISearchRestaurantResult> => {
-        const pipeline = [
+        const pipeline: PipelineStage[] = [
             // Lookup the associated user details
             {
                 $lookup: {

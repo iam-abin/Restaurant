@@ -21,6 +21,7 @@ import { clearRestaurant, clearRestaurantList } from '../../redux/slice/restaura
 import { clearOtpTokenTimer } from '../../redux/slice/otpTokenSlice';
 import { clearAdminDashboard } from '../../redux/slice/dashboardSlice';
 import { logoutUser } from '../../redux/thunk/authThunk';
+import { clearRestaurantOrdersList } from '../../redux/slice/orderSlice';
 
 interface INavBarProps {
     currentUser: IUser;
@@ -31,7 +32,6 @@ const NavBar: React.FC<INavBarProps> = ({ currentUser }) => {
     const { myProfile } = useAppSelector((store) => store.profileReducer);
     const { restaurantData } = useAppSelector((store) => store.restaurantReducer);
     const location = useLocation();
-
     const naivgate: NavigateFunction = useNavigate();
     const dispatch = useAppDispatch();
 
@@ -44,11 +44,14 @@ const NavBar: React.FC<INavBarProps> = ({ currentUser }) => {
             dispatch(clearProfile());
             dispatch(clearMenus());
             dispatch(clearCart());
+            dispatch(clearOtpTokenTimer());
         }
 
         if (isRestaurant) {
             dispatch(clearRestaurant());
             dispatch(clearMenus());
+            dispatch(clearRestaurantOrdersList());
+            dispatch(clearOtpTokenTimer());
         }
 
         if (isAdmin) {
@@ -86,9 +89,9 @@ const NavBar: React.FC<INavBarProps> = ({ currentUser }) => {
         isUser && { name: 'Orders', to: '/orders', value: 'Orders', icon: <LocalMallOutlinedIcon /> },
         // Restaurant
         isRestaurant && {
-            name: 'Restaurant',
+            name: 'Profile',
             to: '/restaurant/details',
-            value: 'Restaurant',
+            value: 'Profile',
             icon: <RestaurantOutlinedIcon />,
         },
         isRestaurant && {
@@ -127,7 +130,7 @@ const NavBar: React.FC<INavBarProps> = ({ currentUser }) => {
                         <Link
                             key={item.to}
                             to={item.to}
-                            className={`flex items-center gap-2 ${isActiveLink(location, item.to)}`}
+                            className={`flex items-center hover:text-orange-600 gap-2 ${isActiveLink(location, item.to)}`}
                         >
                             <span>{item.value}</span>
                         </Link>
@@ -136,7 +139,11 @@ const NavBar: React.FC<INavBarProps> = ({ currentUser }) => {
                     <Avatar
                         src={`${isUser ? myProfile?.imageUrl : isRestaurant ? restaurantData?.restaurant.imageUrl : '/broken-image.jpg'}`}
                     />
-                    <LogoutIcon onClick={handleLogoutButton} style={{ cursor: 'pointer' }} />
+                    <LogoutIcon
+                        onClick={handleLogoutButton}
+                        className="hover:text-orange-700"
+                        style={{ cursor: 'pointer' }}
+                    />
                 </div>
                 {/* Mobile Menu */}
                 <div className="md:hidden">

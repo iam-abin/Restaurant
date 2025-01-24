@@ -43,7 +43,7 @@ export class ProfileRepository {
         skip: number,
         limit: number,
     ): Promise<ISearchProfileResult> => {
-        const pipeline = [
+        const pipeline: PipelineStage[] = [
             // Lookup the associated user details
             {
                 $lookup: {

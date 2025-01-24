@@ -1,12 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { addAsyncThunkCases } from '../../utils';
-import {
-    addToCart,
-    changeCartItemQuantity,
-    fetchCartItems,
-    removeCartItem,
-    removeCartItems,
-} from '../thunk/cartThunk';
+import { changeCartItemQuantity, fetchCartItems, removeCartItem, removeCartItems } from '../thunk/cartThunk';
 import { ICart } from '../../types';
 
 interface ICartSlice {
@@ -31,10 +25,6 @@ const cartSlice = createSlice({
     },
     extraReducers: (builder) => {
         addAsyncThunkCases(builder, fetchCartItems, (state, action) => {
-            state.status = 'succeeded';
-            state.cartData = action.payload;
-        });
-        addAsyncThunkCases(builder, addToCart, (state, action) => {
             state.status = 'succeeded';
             state.cartData = action.payload;
         });

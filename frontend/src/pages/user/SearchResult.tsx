@@ -14,7 +14,7 @@ import PaginationButtons from '../../components/pagination/PaginationButtons';
 import usePagination from '../../hooks/usePagination';
 import CustomButton from '../../components/Button/CustomButton';
 import SearchBar from '../../components/search/SearchBar';
-import { ITEMS_PER_PAGE } from '../../constants';
+import { DEFAULT_LIMIT_VALUE } from '../../constants';
 
 const SearchResult: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -31,12 +31,12 @@ const SearchResult: React.FC = () => {
     const fetchRestaurants = async (): Promise<void> => {
         setIsLoading(true);
         try {
-            const response = await searchFilterRestaurantApi({
+            const response: IResponse = await searchFilterRestaurantApi({
                 searchText,
                 searchQuery,
                 selectedCuisines: selectedFilters,
                 page: currentPage,
-                limit: ITEMS_PER_PAGE,
+                limit: DEFAULT_LIMIT_VALUE,
             });
             setSearchResults((response.data as SearchResponse).restaurants);
             setTotalNumberOfPages((response.data as SearchResponse).numberOfPages);
@@ -54,7 +54,7 @@ const SearchResult: React.FC = () => {
 
     useEffect(() => {
         fetchRestaurants();
-    }, [selectedFilters, searchQuery, searchText]);
+    }, [selectedFilters, searchQuery, searchText, currentPage]);
 
     useEffect(() => {
         fetchFilters();
@@ -71,7 +71,7 @@ const SearchResult: React.FC = () => {
 
     return (
         <div className="flex flex-col md:flex-row justify-between gap-1 my-5">
-            {/* Left Drawer Toggle */}
+            {/* Left Filter Drawer Toggle icon */}
             <div className="block md:hidden">
                 <IconButton onClick={() => setIsFilterDrawerOpen(true)}>
                     <FilterList />
@@ -98,12 +98,12 @@ const SearchResult: React.FC = () => {
             </div>
 
             {/* Right Side */}
-            <div className="flex-col shadow-2xl px-7 py-3 rounded-lg w-full ">
+            <div className="flex-col shadow-2xl px-7 py-3 rounded-lg w-full bg-gradient-to-br from-white to-gray-100 ">
                 <div className="relative flex items-center gap-1">
                     <div className="w-full">
                         <Search className="absolute text-gray-500 inset-y-3 left-2" />
                         <SearchBar
-                            className="border-2 pl-10 text-xs md:text-base h-11 w-full border-black shadow-lg rounded-lg"
+                            className="border-2 pl-10 text-xs md:text-base h-11 w-full  border-black shadow-2xl rounded-lg"
                             placeholder={'search by restaurant& cuisines'}
                             onSearch={setSearchQuery}
                         />
@@ -113,6 +113,7 @@ const SearchResult: React.FC = () => {
                     </CustomButton>
                 </div>
 
+                {/* Cuisines chip */}
                 <div className="flex gap-2 my-3">
                     {selectedFilters &&
                         selectedFilters.map((filter, index) => (
@@ -125,9 +126,10 @@ const SearchResult: React.FC = () => {
                         ))}
                 </div>
 
+                {/* Restaurant list */}
                 <div className="flex flex-wrap justify-center md:justify-start gap-3 md:gap-2">
-                    {isLoading ? (
-                        Array.from(new Array(ITEMS_PER_PAGE)).map((_, index: number) => (
+                    {isLoading && searchResults.length === 0 ? (
+                        Array.from(new Array(DEFAULT_LIMIT_VALUE)).map((_, index: number) => (
                             <RestaurantCardSkeleton key={index} />
                         ))
                     ) : searchResults.length ? (

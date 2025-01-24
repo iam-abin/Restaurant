@@ -8,8 +8,8 @@ type PaginationButtonsProps = {
 };
 const PaginationButtons: React.FC<PaginationButtonsProps> = ({
     handlePageChange,
-    numberOfPages,
-    currentPage,
+    numberOfPages = 1,
+    currentPage = 1,
 }) => {
     return (
         <>

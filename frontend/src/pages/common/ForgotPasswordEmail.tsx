@@ -1,9 +1,10 @@
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { Link, NavigateFunction, useNavigate } from 'react-router-dom';
 import { Input, Typography } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
-import { ChangeEvent, FormEvent, useState } from 'react';
+
 import { emailSchema, hotToastMessage } from '../../utils';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
-import { Link, useNavigate } from 'react-router-dom';
 import { ForgotPasswordEmailApi } from '../../api/apiMethods';
 import { IResponse } from '../../types/api';
 import { ISignupResponse } from '../../types';
@@ -19,7 +20,7 @@ const ForgotPasswordEmail: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errors, setErrors] = useState<Partial<IForgotPasswordEmail>>({});
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
     const dispatch = useAppDispatch();
 
     const changeEventHandler = (e: ChangeEvent<HTMLInputElement>): void => {
