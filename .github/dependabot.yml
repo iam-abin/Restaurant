@@ -1,0 +1,19 @@
+version: 2
+updates:
+  # Update npm dependencies for the frontend
+  - package-ecosystem: "npm"
+    directory: "/frontend" # Path to your frontend folder
+    schedule:
+      interval: "weekly"
+
+  # Update npm dependencies for the backend
+  - package-ecosystem: "npm"
+    directory: "/backend" # Path to your backend folder
+    schedule:
+      interval: "weekly"
+    
+# GitHub Actions dependencies (e.g., actions/checkout@v2, actions/setup-node@v3)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
