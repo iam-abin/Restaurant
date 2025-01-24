@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Select, MenuItem, FormControl, InputLabel, SelectChangeEvent, Tooltip } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 
 import { CountByMonth, DashboardCardData, IAdminDashboardCard, IAdminDashboardGraph } from '../../types';
 import LineGraph from '../../components/charts/LineGraph';
 import DashboardCard from '../../components/cards/DashboardCard';
-import { restaurantIcon, totalTurnoverIcon, userIcon } from '../../components/icons/SvgIcons';
+import { restaurantIcon, totalTurnoverIcon, userIcon } from '../../components/icons/dashboardCard/SvgIcons';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchAdminDashboardCard, fetchAdminDashboardGraph } from '../../redux/thunk/dashboardThunk';
 
@@ -34,6 +35,7 @@ const AdminDashboard: React.FC = () => {
             number: adminDashboardCardData?.totalTurnover ?? 0,
             icon: totalTurnoverIcon,
             description: 'Amount earned by all restaurants',
+            symbol: <CurrencyRupeeIcon />,
         },
         {
             title: 'Total Users',
@@ -80,6 +82,7 @@ const AdminDashboard: React.FC = () => {
                         number={cardData?.number}
                         icon={cardData?.icon}
                         description={cardData?.description}
+                        symbol={cardData?.symbol}
                     />
                 ))}
             </div>

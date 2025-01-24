@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import CheckmarkSvg from '../../assets/payment/paymentTick.gif';
 import CustomButton from '../../components/Button/CustomButton';
 

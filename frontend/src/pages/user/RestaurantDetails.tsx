@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router';
 import { Badge, Chip, IconButton, Typography } from '@mui/material';
 import { ShoppingCart, TimerOutlined } from '@mui/icons-material';
 

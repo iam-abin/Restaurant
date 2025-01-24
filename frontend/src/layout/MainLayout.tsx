@@ -1,5 +1,5 @@
 import NavBar from '../components/navbar/NavBar';
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router';
 import Footer from '../components/footer/Footer';
 import { useAppSelector } from '../redux/hooks';
 import { RootState } from '../redux/store';

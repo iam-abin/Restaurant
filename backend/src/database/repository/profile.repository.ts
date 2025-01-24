@@ -34,7 +34,7 @@ export class ProfileRepository {
             .select(['-createdAt', '-updatedAt', '-addressId', '-isVerified'])
             .skip(skip)
             .limit(limit)
-            .populate('userId', ['-createdAt', '-updatedAt'])
+            .populate('userId', ['-createdAt', '-updatedAt', '-password'])
             .lean<IProfileDocument[]>();
     };
 

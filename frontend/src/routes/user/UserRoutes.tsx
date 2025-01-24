@@ -6,7 +6,7 @@ const MainLayout = lazy(() => import('../../layout/MainLayout'));
 const Landing = lazy(() => import('../../pages/user/Landing'));
 const Profile = lazy(() => import('../../pages/user/UserProfile'));
 const SearchResult = lazy(() => import('../../pages/user/SearchResult'));
-const RestaurantDetails = lazy(() => import('../../pages/common/RestaurantDetails'));
+const RestaurantDetails = lazy(() => import('../../pages/user/RestaurantDetails'));
 const Cart = lazy(() => import('../../pages/user/Cart'));
 const OrdersUser = lazy(() => import('../../pages/user/OrdersUser'));
 const PaymentSuccess = lazy(() => import('../../pages/user/PaymentSuccess'));

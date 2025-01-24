@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { Chip, Drawer, IconButton, Box } from '@mui/material';
 import { Search, FilterList } from '@mui/icons-material';
 
