@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { RestaurantMenu } from '@mui/icons-material'; // MUI Icon
 import { useNavigate } from 'react-router-dom';
+import { RestaurantMenu } from '@mui/icons-material';
 
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchMenus } from '../../redux/thunk/menusThunk';
@@ -10,15 +10,15 @@ import MenuCard from '../../components/cards/MenuCard';
 import usePagination from '../../hooks/usePagination';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
 import CustomButton from '../../components/Button/CustomButton';
-import { ITEMS_PER_PAGE } from '../../constants';
+import { DEFAULT_LIMIT_VALUE } from '../../constants';
 
 const Menu: React.FC = () => {
-    const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
-    const handleAddMenuOpen = () => setIsAddMenuOpen(true);
-    const handleAddMenuClose = () => setIsAddMenuOpen(false);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const { currentPage, handlePageChange, totalNumberOfPages, setTotalNumberOfPages } = usePagination({});
+    const [isAddMenuOpen, setIsAddMenuOpen] = useState<boolean>(false);
+    const handleAddMenuOpen = (): void => setIsAddMenuOpen(true);
+    const handleAddMenuClose = (): void => setIsAddMenuOpen(false);
 
     const restaurantData: IRestaurantResponse | null = useAppSelector(
         (state) => state.restaurantReducer.restaurantData,
@@ -37,7 +37,7 @@ const Menu: React.FC = () => {
                 restaurantId,
                 setTotalNumberOfPages,
                 currentPage,
-                limit: ITEMS_PER_PAGE,
+                limit: DEFAULT_LIMIT_VALUE,
             }),
         );
     };
@@ -48,14 +48,8 @@ const Menu: React.FC = () => {
                 <div className="mt-3 flex flex-col items-end gap-5">
                     <CustomButton onClick={handleAddMenuOpen}>Add menu</CustomButton>
                 </div>
-                {isAddMenuOpen && (
-                    <MenuModal
-                        isOpen={isAddMenuOpen}
-                        handleMenusDispatch={handleMenusDispatch}
-                        handleClose={handleAddMenuClose}
-                    />
-                )}
             </div>
+            {/* Menu list */}
             {menus && menus.length > 0 ? (
                 <div className=" flex flex-col gap-2 items-center my-4">
                     {/* <div className="flex flex-wrap justify-center gap-5 mx-5 bg-green-300"> */}
@@ -81,6 +75,15 @@ const Menu: React.FC = () => {
                         <CustomButton onClick={() => navigate('/')}>Back to Home</CustomButton>
                     </div>
                 </div>
+            )}
+
+            {/* Modal */}
+            {isAddMenuOpen && (
+                <MenuModal
+                    isOpen={isAddMenuOpen}
+                    handleMenusDispatch={handleMenusDispatch}
+                    handleClose={handleAddMenuClose}
+                />
             )}
         </div>
     );

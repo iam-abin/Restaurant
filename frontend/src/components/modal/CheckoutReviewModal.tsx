@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -10,7 +11,6 @@ import { checkoutOrderApi } from '../../api/apiMethods/order';
 import { IAddress, ICart, ICheckoutResponse } from '../../types';
 import { hotToastMessage } from '../../utils';
 import CustomButton from '../Button/CustomButton';
-import { Link } from 'react-router-dom';
 
 const style = {
     position: 'absolute',
@@ -31,7 +31,7 @@ interface ICheckoutReviewModalProps {
 }
 
 const CheckoutReviewModal: React.FC<ICheckoutReviewModalProps> = ({ isOpen, handleClose }) => {
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const { authData } = useAppSelector((store) => store.authReducer);
     const { myProfile } = useAppSelector((store) => store.profileReducer);

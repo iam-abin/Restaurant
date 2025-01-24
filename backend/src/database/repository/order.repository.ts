@@ -10,7 +10,7 @@ export class OrderRepository {
         return order[0];
     };
 
-    findMyOrders = async (
+    findUserOrders = async (
         userId: string,
         skip: number = 0,
         limit: number = 10,
@@ -18,6 +18,18 @@ export class OrderRepository {
         const userOrders = await OrderModel.aggregate([
             // Match orders for the specific user
             { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+
+            // Lookup to populate user details
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'userDetails',
+                },
+            },
+            // Unwind userDetails array
+            { $unwind: '$userDetails' },
 
             // Lookup for restaurant details
             {
@@ -90,6 +102,7 @@ export class OrderRepository {
                 $group: {
                     _id: '$_id', // Group by order ID
                     restaurantDetails: { $first: '$restaurantDetails' },
+                    userDetails: { $first: '$userDetails' },
                     status: { $first: '$status' }, // Delivery status
                     totalAmount: { $first: '$totalAmount' }, // Preserve totalAmount
                     address: { $first: '$address' }, // Preserve address
@@ -110,6 +123,7 @@ export class OrderRepository {
                 $project: {
                     _id: 1, // Include Order ID
                     restaurantDetails: { name: '$restaurantDetails.name', email: '$restaurantDetails.email' }, // Include only the email field
+                    userDetails: { name: '$userDetails.name', email: '$userDetails.email' }, // Include only the email field
                     status: 1,
                     totalAmount: 1,
                     address: 1,
@@ -129,8 +143,8 @@ export class OrderRepository {
 
     findRestaurantOrders = async (
         restaurantId: string,
-        skip: number,
-        limit?: number,
+        skip: number = 0,
+        limit: number = 10,
     ): Promise<IOrderDocument[]> => {
         const restaurantOrders = await OrderModel.aggregate([
             // Match orders by restaurantId
@@ -220,8 +234,9 @@ export class OrderRepository {
             },
 
             { $sort: { createdAt: -1 } },
-            ...(skip ? [{ $skip: skip }] : []), // Skip documents if skip is provided
-            ...(limit ? [{ $limit: limit }] : []), // Limit documents if limit is provided
+            // Add skip and limit stages for pagination
+            { $skip: skip },
+            { $limit: limit },
         ]);
         return restaurantOrders;
     };

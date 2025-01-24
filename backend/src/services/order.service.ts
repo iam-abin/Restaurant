@@ -118,7 +118,7 @@ export class OrderService {
         const skip: number = getPaginationSkipValue(page, limit);
 
         const [orders, myOrdersCount]: [IOrderDocument[], number] = await Promise.all([
-            this.orderRepository.findMyOrders(userId, skip, limit),
+            this.orderRepository.findUserOrders(userId, skip, limit),
             this.orderRepository.countUserOrders({ userId }),
         ]);
 
@@ -142,7 +142,6 @@ export class OrderService {
         // Handle the checkout session completed event
         if (event.type === 'checkout.session.completed') {
             const checkoutSession = event.data.object as Stripe.Checkout.Session;
-
             if (!checkoutSession.metadata?.orderId)
                 throw new Error('Order ID is missing in the session metadata');
 

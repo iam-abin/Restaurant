@@ -39,13 +39,9 @@ export class OtpService {
 
             // If user is not verified, Check otp
             const otpData: IOtpTokenDocument | null = await this.otpTokenRepository.findByUserId(userId);
-            if (!otpData) throw new BadRequestError('Otp has expired');
-            const isExpired: boolean = checkIsOtpTokenExpired(otpData?.expiresAt);
-            if (isExpired) {
-                await this.otpTokenRepository.deleteById(otpData._id.toString());
-                throw new BadRequestError('Otp has expired');
-            }
-            if (otp !== otpData.otp) throw new BadRequestError('Invalid otp');
+            const validatedOtpData: IOtpTokenDocument = await this.validateOtpOrResetToken(otpData);
+
+            if (otp !== validatedOtpData.otp) throw new BadRequestError('Invalid otp');
 
             // Update the user's verification status
             const updatedUser: IUserDocument | null = await this.userRepository.updateUser(
@@ -59,7 +55,7 @@ export class OtpService {
                 await this.restaurantRepository.createRestaurant({ ownerId: userId }, session);
             }
 
-            await this.otpTokenRepository.deleteById(otpData._id.toString(), session);
+            await this.otpTokenRepository.deleteById(validatedOtpData._id.toString(), session);
 
             return updatedUser;
         });
@@ -128,8 +124,8 @@ export class OtpService {
                 }
             }
 
-            // Generate a new token to send reset password verification email
-            const token: string = createToken();
+            // Handle edge case, if the the created token exist with anoter user and not expired his token
+            const token: string = await this.generateUniqueResetToken();
 
             // Here we are storing token in otp collection.
             const tokenData: IOtpTokenDocument = await this.otpTokenRepository.create(
@@ -151,16 +147,10 @@ export class OtpService {
     public verifyResetToken = async (resetToken: string): Promise<IUserDocument | null> => {
         const resetTokenData: IOtpTokenDocument | null =
             await this.otpTokenRepository.findByResetToken(resetToken);
-        if (!resetTokenData) throw new BadRequestError('Reset token has expired');
-        const isExpired: boolean = checkIsOtpTokenExpired(resetTokenData?.expiresAt);
-        if (isExpired) {
-            await this.otpTokenRepository.deleteById(resetTokenData._id.toString());
-            throw new BadRequestError('Reset token has expired');
-        }
-        if (resetToken !== resetTokenData.resetToken) throw new BadRequestError('Invalid reset Token');
 
-        const user: IUserDocument = await this.validateUserExistence(resetTokenData.userId.toString());
-        await this.otpTokenRepository.deleteById(resetTokenData._id.toString());
+        const validatedTokenData: IOtpTokenDocument = await this.validateOtpOrResetToken(resetTokenData);
+
+        const user: IUserDocument = await this.validateUserExistence(validatedTokenData.userId.toString());
 
         return user;
     };
@@ -168,6 +158,8 @@ export class OtpService {
     public resetPassword = async (userId: string, password: string): Promise<IUserDocument | null> => {
         const user: IUserDocument = await this.validateUserExistence(userId);
 
+        const resetTokenData: IOtpTokenDocument | null = await this.otpTokenRepository.findByUserId(userId);
+        await this.validateOtpOrResetToken(resetTokenData);
         // Update the user's verification status
         const updatedUser: IUserDocument | null = await this.userRepository.updateUser(user._id.toString(), {
             password,
@@ -179,5 +171,37 @@ export class OtpService {
         const user: IUserDocument | null = await this.userRepository.findUserById(userId);
         if (!user) throw new NotFoundError('This user does not exist.');
         return user;
+    };
+
+    private validateOtpOrResetToken = async (
+        otpOrResetTokenData: IOtpTokenDocument | null,
+        isOtp: boolean = false,
+    ): Promise<IOtpTokenDocument> => {
+        if (!otpOrResetTokenData) throw new BadRequestError(`${isOtp ? 'Otp' : 'Reset token'} has expired`);
+
+        // If the token expiration time is lesser than ttl expiry time
+        const isExpired: boolean = checkIsOtpTokenExpired(otpOrResetTokenData?.expiresAt);
+        if (isExpired) {
+            await this.otpTokenRepository.deleteById(otpOrResetTokenData._id.toString());
+            throw new BadRequestError(`${isOtp ? 'Otp' : 'Reset token'} has expired`);
+        }
+        return otpOrResetTokenData;
+    };
+
+    private generateUniqueResetToken = async (): Promise<string> => {
+        let token: string = '';
+        const maxAttempts = 10;
+
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            token = createToken();
+            const resetTokenData: IOtpTokenDocument | null =
+                await this.otpTokenRepository.findByResetToken(token);
+            if (!resetTokenData) break;
+
+            if (attempt === maxAttempts - 1) {
+                throw new BadRequestError('Unable to generate a unique token after multiple attempts.');
+            }
+        }
+        return token;
     };
 }

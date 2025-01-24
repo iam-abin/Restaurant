@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import AsyncCreatableSelect from 'react-select/async-creatable';
 import {
     Box,
     Modal,
@@ -17,7 +18,6 @@ import { addMenuApi } from '../../api/apiMethods/menu';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { searchCuisineApi } from '../../api/apiMethods/cuisine';
 import { ICuisineResponse1, IMenu } from '../../types';
-import AsyncCreatableSelect from 'react-select/async-creatable';
 import { updateMenu } from '../../redux/thunk/menusThunk';
 import CustomButton from '../Button/CustomButton';
 
@@ -310,10 +310,9 @@ const MenuModal: React.FC<IMenuModalProps> = ({
                                 sx={{ background: '#059dc0' }}
                                 onClick={() => document.getElementById('fileInput')?.click()}
                             >
-                                Upload Image
+                                Choose image
                                 <input
                                     type="file"
-                                    className="bg-red"
                                     id="fileInput"
                                     hidden
                                     accept="image/*"

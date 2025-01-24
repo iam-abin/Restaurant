@@ -2,10 +2,16 @@ import { LineChart } from '@mui/x-charts/LineChart';
 import { getNextPowerOfTen } from '../../utils';
 import { months } from '../../constants';
 
-export const LineGraph: React.FC<{
+type LineGraphProps = {
     countRestaurantsByMonthArray: number[];
     countProfilesByMonthArray: number[];
-}> = ({ countRestaurantsByMonthArray, countProfilesByMonthArray }) => {
+};
+
+export const LineGraph: React.FC<LineGraphProps> = ({
+    countRestaurantsByMonthArray,
+    countProfilesByMonthArray,
+}) => {
+    // To find maximum value in the y axis and its nearest 10's power
     const restaurantsTensPower: number[] = [getNextPowerOfTen(Math.max(...countRestaurantsByMonthArray))];
     const profilesTensPower: number[] = [getNextPowerOfTen(Math.max(...countProfilesByMonthArray))];
     const maxValue = Math.max(...restaurantsTensPower, ...profilesTensPower);

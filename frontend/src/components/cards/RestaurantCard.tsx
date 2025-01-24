@@ -9,7 +9,7 @@ import PublicIcon from '@mui/icons-material/Public';
 import { Chip } from '@mui/material';
 import { IRestaurantCard } from '../../types';
 import CustomButton from '../Button/CustomButton';
-import { TOP_RATED_MINIMUM_VALUE } from '../../constants';
+import { TOP_RATED_RESTAURANT_MINIMUM_VALUE } from '../../constants';
 
 interface IRestaurantCardProps {
     restaurant: IRestaurantCard;
@@ -48,7 +48,7 @@ const RestaurantCard: React.FC<IRestaurantCardProps> = ({ restaurant }) => {
                     className="absolute inset-0 bg-gradient-to-t from-black to-transparent"
                     style={{ opacity: 0.6 }}
                 />
-                {restaurant.rating && restaurant.rating > TOP_RATED_MINIMUM_VALUE && (
+                {restaurant.rating && restaurant.rating > TOP_RATED_RESTAURANT_MINIMUM_VALUE && (
                     <div className="absolute top-3 left-3 bg-yellow-500 text-white text-sm font-medium rounded-lg px-3 py-1">
                         Top rated
                     </div>

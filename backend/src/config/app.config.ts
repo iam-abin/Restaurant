@@ -33,7 +33,7 @@ export interface IAppConfig {
 }
 
 const appConfig: Readonly<IAppConfig> = Object.freeze({
-    PORT: +process.env.PORT! || 4000,
+    PORT: +process.env.PORT! || 3000,
     DB_NAME: process.env.DB_NAME!,
     MONGO_URI: process.env.MONGODB_CONNECTION_STRING!,
     NODE_ENVIRONMENT: process.env.NODE_ENV as NodeEnvironment,

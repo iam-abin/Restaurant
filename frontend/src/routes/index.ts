@@ -4,6 +4,6 @@ import AdminRoutes from './admin/AdminRoutes';
 import AuthRoutes from './auth/AuthRoutes';
 import NotFoundRoute from './404/NotFoundRoute';
 
-const routes = [UserRoutes, RestaurantRoutes, AdminRoutes, ...AuthRoutes, ...NotFoundRoute];
+const routes = [UserRoutes, RestaurantRoutes, AdminRoutes, ...AuthRoutes, NotFoundRoute];
 
 export default routes;

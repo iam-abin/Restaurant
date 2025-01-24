@@ -1,19 +1,22 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, NavigateFunction, useNavigate, useParams } from 'react-router-dom';
 import { Input, Typography } from '@mui/material';
+import LockIcon from '@mui/icons-material/Lock';
 
 import { hotToastMessage, resetPasswordSchema } from '../../utils';
 import { resetPasswordApi, verifyResetTokenApi } from '../../api/apiMethods';
 import { IResponse, IResetPassword, IUser } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
-import LockIcon from '@mui/icons-material/Lock';
 import CustomButton from '../../components/Button/CustomButton';
 import { clearOtpTokenTimer } from '../../redux/slice/otpTokenSlice';
 import { useAppDispatch } from '../../redux/hooks';
 
+type UniqueId = {
+    uniqueId: string | undefined;
+};
 const ResetPassword: React.FC = () => {
-    const navigate = useNavigate();
-    const { uniqueId } = useParams();
+    const navigate: NavigateFunction = useNavigate();
+    const { uniqueId }: Readonly<Partial<UniqueId>> = useParams();
     const dispatch = useAppDispatch();
 
     const [password, setPassword] = useState<IResetPassword>({
@@ -26,12 +29,16 @@ const ResetPassword: React.FC = () => {
 
     useEffect(() => {
         (async () => {
-            const response: IResponse = await verifyResetTokenApi({
-                resetToken: uniqueId!,
-            });
+            try {
+                const response: IResponse = await verifyResetTokenApi({
+                    resetToken: uniqueId!,
+                });
 
-            if (response.data) {
-                setUser(response.data as IUser);
+                if (response.data) {
+                    setUser(response.data as IUser);
+                }
+            } catch (error: unknown) {
+                hotToastMessage((error as Error).message, 'error');
             }
         })();
     }, []);
@@ -59,7 +66,7 @@ const ResetPassword: React.FC = () => {
         }
     };
 
-    const handleSubmit = async (e: FormEvent): Promise<void> => {
+    const handleSubmitPassword = async (e: FormEvent): Promise<void> => {
         e.preventDefault();
 
         if (!user) {
@@ -72,22 +79,24 @@ const ResetPassword: React.FC = () => {
             const response: IResponse = await resetPasswordApi({
                 userId: user._id,
                 password: password.password,
-            }); // Pass the uniqueId if required by the API
+            });
 
             hotToastMessage(response.message, 'success');
-            dispatch(clearOtpTokenTimer());
+
             navigate('/auth');
         } catch (error: unknown) {
             hotToastMessage((error as Error).message, 'error');
         } finally {
+            dispatch(clearOtpTokenTimer());
             setIsLoading(false);
         }
     };
 
     return (
         <div className="flex items-center justify-center min-h-screen w-full">
+            {/* Reset password form */}
             {user ? (
-                <form onSubmit={handleSubmit} className="flex flex-col md:w-2/6">
+                <form onSubmit={handleSubmitPassword} className="flex flex-col md:w-2/6">
                     <div className="text-center">
                         <h1 className="font-extrabold text-2xl mb-2">Reset Password</h1>
                         <p className="text-sm text-gray-600">Enter your new password to reset the old one</p>

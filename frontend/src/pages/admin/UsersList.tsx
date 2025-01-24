@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Chip } from '@mui/material';
 
 import { IResponse, IUser } from '../../types';
 import { hotToastMessage } from '../../utils';
@@ -6,29 +7,27 @@ import { blockUnblockUserApi } from '../../api/apiMethods';
 import SearchBar from '../../components/search/SearchBar';
 import Table from '../../components/table/Table';
 import { useConfirmationContext } from '../../context/confirmationContext';
-import { Chip } from '@mui/material';
 import CustomButton from '../../components/Button/CustomButton';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { updateUserProfileBlockStatus } from '../../redux/slice/profileSlice';
 import { fetchProfiles, searchProfiles } from '../../redux/thunk/profileThunk';
+import { DEFAULT_LIMIT_VALUE } from '../../constants';
 
 const UsersList: React.FC = () => {
     const [numberOfPages, setNumberOfPages] = useState<number>(1);
-    const [currentPage, setCurrentPage] = useState<number>(1);
     const [searchKey, setSearchKey] = useState<string>('');
+    const [currentPage, setCurrentPage] = useState<number>(1);
     const { showConfirmation } = useConfirmationContext();
     const profilesData = useAppSelector((store) => store.profileReducer.userProfileListData);
 
     const dispatch = useAppDispatch();
-    const USERS_PER_PAGE: number = 2;
-
     const fetchUsers = async (currentPage: number): Promise<void> => {
         if (!searchKey) {
             dispatch(
                 fetchProfiles({
                     setTotalNumberOfPages: setNumberOfPages,
                     currentPage,
-                    limit: USERS_PER_PAGE,
+                    limit: DEFAULT_LIMIT_VALUE,
                 }),
             );
         } else {
@@ -37,14 +36,14 @@ const UsersList: React.FC = () => {
                     searchKey,
                     setTotalNumberOfPages: setNumberOfPages,
                     currentPage,
-                    limit: USERS_PER_PAGE,
+                    limit: DEFAULT_LIMIT_VALUE,
                 }),
             );
         }
     };
 
     useEffect(() => {
-        fetchUsers(1); // Fetch initial data for the first page
+        fetchUsers(currentPage); // Fetch initial data for the first page
     }, [searchKey, currentPage]);
 
     useEffect(() => {
@@ -86,7 +85,9 @@ const UsersList: React.FC = () => {
         {
             Header: 'Profile Image',
             button: (row: { imageUrl: string }) => (
-                <img src={row.imageUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
+                <div className="flex justify-center items-center">
+                    <img src={row.imageUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
+                </div>
             ),
         },
         {
@@ -113,7 +114,6 @@ const UsersList: React.FC = () => {
                     onClick={() => {
                         handleBlockUnblockButton(row?.userId?._id, row?.userId?.isBlocked);
                     }}
-                    variant="contained"
                 >
                     {row?.userId?.isBlocked ? 'Unblock' : 'Block'}
                 </CustomButton>

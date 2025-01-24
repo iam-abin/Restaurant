@@ -6,8 +6,12 @@ export const addToCartApi = async (itemId: string, restaurantId: string): Promis
     return await makeApiCall('post', cartApiUrls.addToCartUrl, { itemId, restaurantId });
 };
 
-export const getCartItemsApi = async (restaurantId: string): Promise<IResponse> => {
-    return await makeApiCall('get', cartApiUrls.getCartItemsUrl(restaurantId));
+export const getCartItemsApi = async (
+    restaurantId: string,
+    page: number,
+    limit?: number,
+): Promise<IResponse> => {
+    return await makeApiCall('get', cartApiUrls.getCartItemsUrl(restaurantId, page, limit));
 };
 
 export const updateQuantityApi = async (cartItemId: string, quantity: number): Promise<IResponse> => {

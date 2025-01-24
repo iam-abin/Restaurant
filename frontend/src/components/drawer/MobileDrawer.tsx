@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
@@ -11,11 +12,10 @@ import ListItemText from '@mui/material/ListItemText';
 import { Avatar, IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { Link, useLocation } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
 import { useAppSelector } from '../../redux/hooks';
 import { IUser } from '../../types';
 import { isActiveLink } from '../../utils';
-import CloseIcon from '@mui/icons-material/Close';
 
 type Anchor = 'right';
 
@@ -76,6 +76,7 @@ const MobileDrawer: React.FC<IDrawerProps> = ({ anchor, handleLogoutButton, navI
                 </div>
 
                 <Divider />
+                {/* Middle */}
                 <List>
                     {navItems.map(({ icon, name, to, value }) => (
                         <ListItem key={name} disablePadding>
@@ -92,7 +93,7 @@ const MobileDrawer: React.FC<IDrawerProps> = ({ anchor, handleLogoutButton, navI
                                     }}
                                 >
                                     <ListItemIcon>{icon}</ListItemIcon>
-                                    <ListItemText primary={value} />
+                                    <ListItemText className="hover:text-orange-700" primary={value} />
                                 </ListItemButton>
                             </Link>
                         </ListItem>
@@ -112,10 +113,7 @@ const MobileDrawer: React.FC<IDrawerProps> = ({ anchor, handleLogoutButton, navI
                         className="flex items-center gap-2 mt-4 cursor-pointer text-red-500"
                         onClick={handleLogoutButton}
                     >
-                        {/* <Tooltip title='asdf'> */}
-
                         <LogoutIcon />
-                        {/* </Tooltip> */}
                     </div>
                 </div>
             </Box>

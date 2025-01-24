@@ -1,12 +1,16 @@
 import { debounce } from 'lodash';
 import { useState } from 'react';
+import { DEFAULT_PAGE_VALUE } from '../constants';
 
 type UsePaginationProps = {
     initialPage: number;
     initialTotalPages: number;
 };
 
-const usePagination = ({ initialPage = 1, initialTotalPages = 1 }: Partial<UsePaginationProps>) => {
+const usePagination = ({
+    initialPage = DEFAULT_PAGE_VALUE,
+    initialTotalPages = DEFAULT_PAGE_VALUE,
+}: Partial<UsePaginationProps>) => {
     const [currentPage, setCurrentPage] = useState<number>(initialPage);
     const [totalNumberOfPages, setTotalNumberOfPages] = useState<number>(initialTotalPages);
 

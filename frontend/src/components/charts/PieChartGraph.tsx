@@ -6,16 +6,16 @@ type PieChartGraph = {
     statusCounts: OrderStatusWithCounts[];
 };
 
-interface IOrderStatuses {
+type OrderStatuses = {
     label: string;
     value: number;
-}
+};
 
 const PieChartGraph: React.FC<PieChartGraph> = ({ statusCounts }) => {
     const radius: number = 50;
     const itemNb: number = 5;
 
-    const orderStatuses: IOrderStatuses[] = statusCounts.map((value: OrderStatusWithCounts) => ({
+    const orderStatuses: OrderStatuses[] = statusCounts.map((value: OrderStatusWithCounts) => ({
         label: value.status,
         value: value.count,
     }));

@@ -8,8 +8,7 @@ import { IAddress, IUser } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import { useConfirmationContext } from '../../context/confirmationContext';
 import CustomButton from '../../components/Button/CustomButton';
-import { hotToastMessage } from '../../utils';
-import { ProfileFormSchema, profileFromSchema } from '../../utils/schema/profileSchema';
+import { hotToastMessage, ProfileFormSchema, profileFromSchema } from '../../utils';
 
 const Profile: React.FC = () => {
     const [selectedProfilePicture, setSelectedProfilePicture] = useState<string>('');
@@ -93,6 +92,7 @@ const Profile: React.FC = () => {
         <form onSubmit={handleUpdateProfileButton} className=" mx-auto my-5">
             <div className="flex items-center justify-between">
                 <div className="flex gap-2 items-center">
+                    {/* Profile image */}
                     <div className="flex flex-col items-center gap-2 relative">
                         <Avatar
                             sx={{
@@ -137,6 +137,7 @@ const Profile: React.FC = () => {
                         </Box>
                         {errors && <Typography className="text-sm text-red-500">{errors.name}</Typography>}
                     </div>
+                    {/* Name */}
                     <input
                         type="text"
                         placeholder="update your name"
@@ -148,6 +149,7 @@ const Profile: React.FC = () => {
                 </div>
             </div>
             <div className="grid md:grid-cols-4 md:gap-2 gap-3 my-10">
+                {/* Email */}
                 <Tooltip title="Cannot modify email field">
                     <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
                         <Email className="text-gray-500" />
@@ -159,6 +161,7 @@ const Profile: React.FC = () => {
                         </div>
                     </div>
                 </Tooltip>
+                {/* Address */}
                 <div>
                     <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
                         <LocationOn className="text-gray-500" />
@@ -178,6 +181,7 @@ const Profile: React.FC = () => {
                     </div>
                     {errors && <Typography className="text-sm text-red-500">{errors.address}</Typography>}
                 </div>
+                {/* City */}
                 <div>
                     <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
                         <LocationSearching className="text-gray-500" />
@@ -196,6 +200,7 @@ const Profile: React.FC = () => {
                     </div>
                     {errors && <Typography className="text-sm text-red-500">{errors.city}</Typography>}
                 </div>
+                {/* Country */}
                 <div>
                     <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
                         <Flag className="text-gray-500" />

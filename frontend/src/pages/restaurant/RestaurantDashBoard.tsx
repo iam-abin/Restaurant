@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { IRestaurantDashboard } from '../../types';
+import { IResponse, IRestaurantDashboard } from '../../types';
 import { getRestaurantDashboardApi } from '../../api/apiMethods';
 import PieChartGraph from '../../components/charts/PieChartGraph';
 import DashboardCard from '../../components/cards/DashboardCard';
@@ -14,7 +14,7 @@ const RestaurantDashBoard: React.FC = () => {
     });
     useEffect(() => {
         (async () => {
-            const response = await getRestaurantDashboardApi();
+            const response: IResponse = await getRestaurantDashboardApi();
             setRestaurantDashboardData(response.data as IRestaurantDashboard);
         })();
     }, []);
@@ -38,6 +38,7 @@ const RestaurantDashBoard: React.FC = () => {
 
     return (
         <div className="w-full py-10">
+            {/* Cards */}
             <div className=" flex flex-wrap justify-center gap-2">
                 <DashboardCard
                     title="Total Revenue"
@@ -59,6 +60,7 @@ const RestaurantDashBoard: React.FC = () => {
                     description="Total number of cuisines available"
                 />
             </div>
+            {/* PieChart */}
             <PieChartGraph statusCounts={restaurantDashboardData.orderStatusData} />
         </div>
     );
