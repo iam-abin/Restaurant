@@ -7,7 +7,7 @@ const ResetPassword = lazy(() => import('../../pages/common/ResetPassword'));
 const Otp = lazy(() => import('../../pages/common/Otp'));
 const ResetPasswordSended = lazy(() => import('../../pages/common/ResetPasswordSended'));
 
-const AuthRoutes = [
+export const AuthRoutes = [
     {
         path: '/auth',
         element: (
@@ -44,5 +44,3 @@ const AuthRoutes = [
     { path: '/reset-password/:uniqueId', element: <ResetPassword /> },
     { path: '/signup/otp', element: <Otp /> },
 ];
-
-export default AuthRoutes;

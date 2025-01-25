@@ -32,8 +32,5 @@ npm run build-all ||
 
 echo "✅ Build completed!"
 
-# Stage all changes
-git add --all
-
 # If everything is okay
 exit 0
