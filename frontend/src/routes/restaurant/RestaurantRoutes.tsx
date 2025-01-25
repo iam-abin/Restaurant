@@ -8,7 +8,7 @@ const RestaurantProfile = lazy(() => import('../../pages/restaurant/RestaurantPr
 const Menu = lazy(() => import('../../pages/restaurant/Menu'));
 const Orders = lazy(() => import('../../pages/restaurant/Orders'));
 
-export const RestaurantRoutes = [{
+const RestaurantRoutes = () => ({
     path: '/restaurant',
     element: (
         <RoleProtectedRoute allowedRoles={[UserRole.RESTAURANT]}>
@@ -21,4 +21,6 @@ export const RestaurantRoutes = [{
         { path: 'menu', element: <Menu /> },
         { path: 'orders', element: <Orders /> },
     ],
-}];
+});
+
+export default RestaurantRoutes;

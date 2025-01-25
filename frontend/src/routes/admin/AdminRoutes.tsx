@@ -7,7 +7,7 @@ const AdminDashboard = lazy(() => import('../../pages/admin/AdminDashboard'));
 const Users = lazy(() => import('../../pages/admin/UsersList'));
 const RestaurantsList = lazy(() => import('../../pages/admin/RestaurantsList'));
 
-export const AdminRoutes = [{
+const AdminRoutes = () => ({
     path: '/admin',
     element: (
         <RoleProtectedRoute allowedRoles={[UserRole.ADMIN]}>
@@ -19,5 +19,6 @@ export const AdminRoutes = [{
         { path: 'users', element: <Users /> },
         { path: 'restaurants', element: <RestaurantsList /> },
     ],
-}
-]
+});
+
+export default AdminRoutes;
