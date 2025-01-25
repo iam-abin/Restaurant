@@ -60,7 +60,7 @@ const appConfig: Readonly<IAppConfig> = Object.freeze({
     STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY!,
     STRIPE_WEBHOOK_ENDPOINT_SECRET: process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET!,
 
-    PAYMENT_SUCCESS_URL: `${process.env.FRONTEND_URL}/order/status`,
+    PAYMENT_SUCCESS_URL: `${process.env.FRONTEND_URL}/order/success`,
     PAYMENT_CANCEL_URL: `${process.env.FRONTEND_URL}/cart`,
 });
 

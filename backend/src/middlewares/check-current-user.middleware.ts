@@ -23,7 +23,7 @@ export const checkCurrentUser = async (req: Request, res: Response, next: NextFu
         const jwtAccessToken: string = req.cookies?.jwtAccessToken;
         if (!jwtAccessToken) return next();
 
-        const payload = verifyJwtAccessToken(jwtAccessToken);
+        const payload: IJwtPayload = verifyJwtAccessToken(jwtAccessToken);
         const user: IUserDocument | null = await userRepository.findUserById(payload.userId);
         if (!user) throw new NotFoundError('User Not found');
         if (!user.isVerified) throw new ForbiddenError('Your are not verified');
