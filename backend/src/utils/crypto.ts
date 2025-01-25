@@ -1,11 +1,18 @@
 import crypto from 'crypto';
 
 /**
- * Creates a cryptographically secure random token of a specified length.
- * @param length - The length of the token to generate (default is 40 bytes).
- * @returns {string} - The generated token string.
+ * Generates a cryptographically secure random token.
+ *
+ * @param {number} [length=40] - The length of the token in bytes (will be doubled when returned as a hex string)
+ * @param {BufferEncoding} [encoding='hex'] - The encoding to use for the final token string
+ * @throws {TypeError} If length is not a positive integer
+ * @returns {string} The generated token string
  */
-export const createToken = (length: number = 40): string => {
-    const token = crypto.randomBytes(length).toString('hex');
-    return token; // token length will be `length * 2` because each byte is represented as two hex characters.
+export const createToken = (length: number = 40, encoding: BufferEncoding = 'hex'): string => {
+    if (!Number.isInteger(length) || length <= 0) {
+        throw new TypeError('Length must be a positive integer');
+    }
+
+    const token: Buffer = crypto.randomBytes(length);
+    return token.toString(encoding);
 };

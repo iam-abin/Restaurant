@@ -1,8 +1,8 @@
 import otpGenerator from 'otp-generator';
 import { OtpConfig } from '../types';
+import { OTP_LENGTH } from '../constants';
 
 // Configuration for OTP generation
-const OTP_LENGTH: number = 6;
 const OTP_CONFIG: OtpConfig = {
     digits: true,
     lowerCaseAlphabets: false,
@@ -10,21 +10,22 @@ const OTP_CONFIG: OtpConfig = {
     specialChars: false,
 };
 
-/**
- * Generates a one-time password (OTP) based on the predefined configuration.
- * @returns {string} The generated OTP as a string.
- */
-export const generateOtp = (): string => {
-    return otpGenerator.generate(OTP_LENGTH, OTP_CONFIG);
-};
-
 const DEFAULT_OTP_RESEND_THRESHOLD: number = 60 * 1000; // 1 minute(in milliseconds)
 
 /**
+ * Generates a one-time password (OTP) based on the predefined configuration.
+ * @param {OtpConfig} otpConfig - Optional custom OTP configuration.
+ * @returns {string} The generated OTP as a string.
+ */
+export const generateOtp = (otpConfig?: OtpConfig): string => {
+    return otpGenerator.generate(OTP_LENGTH, { ...OTP_CONFIG, ...otpConfig });
+};
+
+/**
  * Checks whether the resend interval for OTP has been completed.
- * @param createdTime - The time when the OTP was initially created.
- * @param otpResendThreshold - Optional threshold time for resending OTP (in milliseconds).
- *                              Defaults to 1 minute if not provided.
+ * @param {Date} createdAt - The time when the OTP was initially created.
+ * @param {number} otpResendThreshold - Optional threshold time for resending OTP (in milliseconds).
+ *                                    Defaults to 1 minute if not provided.
  * @returns {boolean} Returns true if the resend interval has been completed; false otherwise.
  */
 export const isOtpTOkenResendAllowed = (
@@ -42,18 +43,23 @@ export const isOtpTOkenResendAllowed = (
  * @returns {boolean} - Returns `true` if the OTP has expired, `false` otherwise.
  */
 export const checkIsOtpTokenExpired = (expiresAt: Date): boolean => {
+    if (!(expiresAt instanceof Date)) {
+        throw new Error('Invalid expiration time');
+    }
     return Date.now() > expiresAt.getTime();
 };
 
 /**
- * To find exact otp expiry time in seconds.
+ * Calculates the exact OTP expiry time in seconds.
  *
  * @param {Date} expiresAt - The absolute time when the OTP or resetToken is set to expire.
- * @returns Returns the exact expiry time it seconds
+ * @returns {number} Returns the exact expiry time in seconds.
  */
 export const calculateExpiryTime = (expiresAt: Date): number => {
-    if (!expiresAt) return 0;
-    const currentTime = new Date().getTime(); // Current time in milliseconds
-    const expiryTime = new Date(expiresAt).getTime(); // Expiry time in milliseconds
+    if (!(expiresAt instanceof Date)) {
+        throw new Error('Invalid date type');
+    }
+    const currentTime = Date.now(); // Current time in milliseconds
+    const expiryTime = expiresAt.getTime(); // Expiry time in milliseconds
     return Math.max(0, Math.floor((expiryTime - currentTime) / 1000)); // Difference in seconds
 };

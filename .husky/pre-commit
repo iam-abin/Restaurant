@@ -10,15 +10,6 @@ npx lint-staged || {
 
 echo "✅ Linting and formatting completed."
 
-# echo "⏳ Checking if linting/formatting modified any files..."
-# # Check if any files have been modified by lint-staged
-# git diff --cached --exit-code -- 'frontend/**/*.{ts,tsx}' 'backend/**/*.ts' || {
-#   echo "❌ Linting/formatting modified files. Please review the changes and re-add them before committing.";
-#   exit 1;
-# }
-
-# echo "✅ No unexpected changes detected."
-
 echo "⏳ Building the project..."
 # Build the project
 npm run build-all || {
