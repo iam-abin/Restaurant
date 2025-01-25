@@ -1,25 +1,27 @@
 {
+  "lint-staged": {
+    "frontend/**/*.{ts,tsx}": ["npm run lint:fix --prefix frontend", "npm run format --prefix frontend"],
+    "backend/**/*.ts": ["npm run lint:fix --prefix backend", "npm run format --prefix backend"]
+  },
+  "scripts": {
+    "prepare": "husky install",
+    "frontend": "npm run dev --prefix frontend",
+    "backend": "npm run dev --prefix backend",
+    "stripe": "npm run stripe --prefix backend",
+    "dev": "concurrently 'npm run backend' 'npm run stripe' 'npm run frontend'",
+    "build-frontend": "npm run build --prefix frontend",
+    "build-backend": "npm run build --prefix backend",
+    "build-all": "npm run build-frontend && npm run build-backend",
+    "preview-frontend": "npm run build-frontend && npm run preview --prefix frontend",
+    "preview-backend": "npm run build-backend && npm run start --prefix backend & npm run stripe --prefix backend",
+    "preview-all": "concurrently 'npm run preview-backend' 'npm run preview-frontend'",
+    "install-all": "npm i && concurrently 'cd ./frontend & npm i' 'cd ./backend & npm i'"
+  },
   "devDependencies": {
     "@commitlint/cli": "^19.6.1",
     "@commitlint/config-conventional": "^19.6.0",
     "concurrently": "^9.1.2",
-    "husky": "^8.0.0"
-  },
-  "scripts": {
-    "prepare": "husky install",
-
-    "frontend": "npm run dev --prefix frontend",
-    "backend": "npm run dev --prefix backend",
-    "dev": "concurrently 'npm run backend' 'npm run frontend'",
-
-    "build-frontend": "npm run build --prefix frontend",
-    "build-backend": "npm run build --prefix backend",
-    "build-all": "npm run build-frontend && npm run build-backend",
-
-    "preview-frontend": "npm run build-frontend & npm run preview --prefix frontend",
-    "preview-backend": "npm run build-backend & npm run start --prefix backend",
-    "preview-all": "concurrently 'npm run preview-backend' 'npm run preview-frontend'",
-
-    "install-all": "npm i && concurrently 'cd ./frontend & npm i' 'cd ./backend & npm i'"
+    "husky": "^8.0.0",
+    "lint-staged": "^15.4.2"
   }
 }

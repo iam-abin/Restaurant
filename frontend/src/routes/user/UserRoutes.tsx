@@ -11,7 +11,7 @@ const Cart = lazy(() => import('../../pages/user/Cart'));
 const OrdersUser = lazy(() => import('../../pages/user/OrdersUser'));
 const PaymentSuccess = lazy(() => import('../../pages/user/PaymentSuccess'));
 
-const UserRoutes = {
+const UserRoutes = () => ({
     path: '/',
     element: (
         <RoleProtectedRoute allowedRoles={[UserRole.USER]}>
@@ -25,8 +25,8 @@ const UserRoutes = {
         { path: '/user/restaurant/:restaurantId', element: <RestaurantDetails /> },
         { path: '/cart/:restaurantId', element: <Cart /> },
         { path: '/orders', element: <OrdersUser /> },
-        { path: '/order/status', element: <PaymentSuccess /> },
+        { path: '/order/success', element: <PaymentSuccess /> },
     ],
-};
+});
 
 export default UserRoutes;

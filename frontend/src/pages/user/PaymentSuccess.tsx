@@ -5,7 +5,7 @@ import CustomButton from '../../components/Button/CustomButton';
 const PaymentSuccess: React.FC = () => {
     return (
         <div className="bg-gray-100 h-screen flex justify-center items-center">
-            <div className="bg-white p-6 w-2/5 shadow-2xl rounded-3xl">
+            <div className="bg-white p-6 md:w-2/5 shadow-2xl rounded-3xl">
                 <img src={CheckmarkSvg} alt="Checkmark" className="text-green-600 w-16 h-16 mx-auto my-6" />
 
                 <div className="text-center">

@@ -7,7 +7,7 @@ const ResetPassword = lazy(() => import('../../pages/common/ResetPassword'));
 const Otp = lazy(() => import('../../pages/common/Otp'));
 const ResetPasswordSended = lazy(() => import('../../pages/common/ResetPasswordSended'));
 
-const AuthRoutes = [
+const AuthRoutes = () => [
     {
         path: '/auth',
         element: (

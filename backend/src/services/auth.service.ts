@@ -230,7 +230,6 @@ export class UserService {
         // Generate JWT tokens
         const userPayload: IJwtPayload = {
             userId: user._id.toString(),
-            email: user.email,
             role: user.role,
         };
         const jwtAccessToken: string = createJwtAccessToken(userPayload);
