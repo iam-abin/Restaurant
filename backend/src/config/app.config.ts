@@ -16,6 +16,7 @@ export interface IAppConfig {
     COOKIE_JWT_REFRESH_EXPIRY_TIME: number;
 
     FRONTEND_URL: string;
+    FRONTEND_DOMAIN: string;
 
     EMAIL_USER: string;
     EMAIL_PASSWORD: string;
@@ -48,6 +49,7 @@ const appConfig: Readonly<IAppConfig> = Object.freeze({
     COOKIE_JWT_REFRESH_EXPIRY_TIME: 7 * 24 * 60 * 60 * 1000, // Convert days to milliseconds (7 days)
 
     FRONTEND_URL: process.env.FRONTEND_URL!,
+    FRONTEND_DOMAIN: process.env.FRONTEND_DOMAIN!,
 
     EMAIL_USER: process.env.EMAIL_USER!,
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD!,

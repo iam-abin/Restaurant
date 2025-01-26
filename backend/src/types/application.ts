@@ -3,6 +3,7 @@ export type CustomCookieOptions = {
     secure: boolean;
     sameSite: 'strict' | 'lax' | 'none';
     maxAge?: number;
+    domain: string;
 };
 
 export enum NodeEnvironment {
