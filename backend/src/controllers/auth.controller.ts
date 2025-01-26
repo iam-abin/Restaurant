@@ -92,7 +92,7 @@ export class AuthController {
         return {
             httpOnly: true,
             secure: true,
-            sameSite: 'lax',
+            sameSite: 'none',
             maxAge,
             domain: appConfig.FRONTEND_DOMAIN,
         };
