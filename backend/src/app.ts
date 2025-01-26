@@ -27,8 +27,8 @@ const app: Application = express();
 
 const isProductionENV: boolean = checkNodeEnvironment(NodeEnvironment.PRODUCTION);
 
-// // Set trust proxy
-// app.set('trust proxy', true); // Trust all proxies
+// Set trust proxy
+app.set('trust proxy', 1); // Trust the first proxy
 
 // Middlewares
 app.use(helmet());
