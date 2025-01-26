@@ -94,7 +94,6 @@ export class AuthController {
             secure: true,
             sameSite: 'none',
             maxAge,
-            domain: appConfig.FRONTEND_DOMAIN,
         };
     };
 
