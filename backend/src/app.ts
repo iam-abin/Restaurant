@@ -35,7 +35,7 @@ app.use(helmet());
 app.disable('x-powered-by');
 app.use(
     cors({
-        origin: appConfig.FRONTEND_URL,
+        origin: [appConfig.FRONTEND_URL],
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
         allowedHeaders: ['Content-Type', 'Set-Cookie'],
         credentials: true,

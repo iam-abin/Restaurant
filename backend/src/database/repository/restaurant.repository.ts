@@ -11,6 +11,8 @@ import { IRestaurantDocument, RestaurantModel } from '../model';
 
 @singleton()
 export class RestaurantRepository {
+    private readonly excludedFields: string[] = ['-createdAt', '-updatedAt', '-__v'];
+
     createRestaurant = async (
         restaurantData: Pick<IRestaurant, 'ownerId' | 'imageUrl'>,
         session?: ClientSession,
@@ -21,10 +23,10 @@ export class RestaurantRepository {
 
     findRestaurants = async (skip: number = 0, limit: number = 0): Promise<IRestaurantDocument[]> => {
         return await RestaurantModel.find()
-            .select(['-createdAt', '-updatedAt', '-addressId', '-isVerified'])
+            .select([...this.excludedFields, '-addressId', '-isVerified'])
             .skip(skip)
             .limit(limit)
-            .populate('ownerId', ['-createdAt', '-updatedAt', '-password'])
+            .populate('ownerId', [...this.excludedFields, '-password'])
             .lean<IRestaurantDocument[]>();
     };
 
@@ -48,12 +50,13 @@ export class RestaurantRepository {
         return await RestaurantModel.findOne({ ownerId })
             .populate({
                 path: 'ownerId',
-                select: '-createdAt -updatedAt',
+                select: this.excludedFields,
             })
             .populate({
                 path: 'addressId',
-                select: '-createdAt -updatedAt',
+                select: this.excludedFields,
             })
+            .select(this.excludedFields)
             .lean<IRestaurantDocument | null>();
     };
 

@@ -13,11 +13,15 @@ export class UserRepository {
     };
 
     findUserByEmail = async (email: string): Promise<IUserDocument | null> => {
-        return await UserModel.findOne({ email }).select(this.excludedFields).lean();
+        return await UserModel.findOne({ email })
+            .select([...this.excludedFields, '-passwored'])
+            .lean();
     };
 
     findUserById = async (userId: string): Promise<IUserDocument | null> => {
-        return await UserModel.findById(userId).select(this.excludedFields).lean();
+        return await UserModel.findById(userId)
+            .select([...this.excludedFields, '-passwored'])
+            .lean();
     };
 
     updateUser = async (

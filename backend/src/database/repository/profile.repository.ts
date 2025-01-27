@@ -5,6 +5,8 @@ import { CountByMonth, IProfile, ISearchProfileResult } from '../../types';
 
 @singleton()
 export class ProfileRepository {
+    private readonly excludedFields: string[] = ['-createdAt', '-updatedAt', '-__v'];
+
     createProfile = async (
         profileData: Pick<IProfile, 'userId' | 'imageUrl'>,
         session?: ClientSession,
@@ -22,19 +24,19 @@ export class ProfileRepository {
                 },
                 {
                     path: 'addressId',
-                    select: '-createdAt -updatedAt',
+                    select: this.excludedFields,
                 },
             ])
-            .select('-createdAt -updatedAt')
+            .select(this.excludedFields)
             .lean<IProfileDocument | null>();
     };
 
     findProfiles = async (skip: number = 0, limit: number = 0): Promise<IProfileDocument[]> => {
         return await ProfileModel.find()
-            .select(['-createdAt', '-updatedAt', '-addressId', '-isVerified'])
+            .select([...this.excludedFields, '-addressId', '-isVerified'])
             .skip(skip)
             .limit(limit)
-            .populate('userId', ['-createdAt', '-updatedAt', '-password'])
+            .populate('userId', [...this.excludedFields, '-password'])
             .lean<IProfileDocument[]>();
     };
 

@@ -5,6 +5,8 @@ import { IRestaurantCuisine } from '../../types';
 
 @singleton()
 export class RestaurantCuisineRepository {
+    private readonly excludedFields: string[] = ['-createdAt', '-updatedAt', '-__v'];
+
     createRestaurant = async (
         restaurantCuisineData: IRestaurantCuisine,
         session?: ClientSession,
@@ -20,7 +22,7 @@ export class RestaurantCuisineRepository {
         return await RestaurantCuisineModel.find({ restaurantId })
             .populate({
                 path: 'cuisineId',
-                select: '-createdAt -updatedAt',
+                select: this.excludedFields,
             })
             .select('-_id cuisineId')
             .lean<IRestaurantCuisineDocument[]>();

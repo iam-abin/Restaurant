@@ -5,6 +5,8 @@ import { IMenuDocument, MenuModel } from '../model';
 
 @singleton()
 export class MenuRepository {
+    private readonly excludedFields: string[] = ['-createdAt', '-updatedAt', '-__v'];
+
     createMenu = async (menuData: IMenu, session?: mongoose.ClientSession): Promise<IMenuDocument> => {
         const menu: IMenuDocument[] = await MenuModel.create([menuData], { session });
         return menu[0];
@@ -24,7 +26,7 @@ export class MenuRepository {
             .sort({ updatedAt: -1 })
             .skip(skip)
             .limit(limit)
-            .select(['-createdAt', '-updatedAt'])
+            .select(this.excludedFields)
             .lean<IMenuDocument[]>();
     };
 

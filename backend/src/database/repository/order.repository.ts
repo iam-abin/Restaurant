@@ -126,7 +126,13 @@ export class OrderRepository {
                     userDetails: { name: '$userDetails.name', email: '$userDetails.email' }, // Include only the email field
                     status: 1,
                     totalAmount: 1,
-                    address: 1,
+                    address: {
+                        _id: 1,
+                        userId: 1,
+                        address: 1,
+                        city: 1,
+                        country: 1,
+                    },
                     orderedItems: 1, // Array of grouped ordered items
                     createdAt: 1,
                 },
@@ -227,7 +233,13 @@ export class OrderRepository {
                     userDetails: { name: '$userDetails.name', email: '$userDetails.email' }, // Include only the email field
                     status: 1,
                     totalAmount: 1,
-                    address: 1,
+                    address: {
+                        _id: 1,
+                        userId: 1,
+                        address: 1,
+                        city: 1,
+                        country: 1,
+                    },
                     orderedItems: 1, // Array of grouped ordered items
                     createdAt: 1,
                 },
