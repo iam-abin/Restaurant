@@ -19,6 +19,7 @@ export interface IRestaurantDashboard {
     totalRevenue: number | null;
     menusCount: number | null;
     cuisinesCount: number | null;
+    ordersCount: number | null;
 }
 
 export interface IAdminDashboardCard {

@@ -15,7 +15,7 @@ import Box from '@mui/material/Box';
 import { updateOrderStatusApi } from '../../api/apiMethods';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import OrdersTableRestaurantSkelton from '../../components/shimmer/OrdersTableRestaurantSkelton';
-import { IResponse, IRestaurantOrder } from '../../types';
+import { IResponse, IRestaurantOrder, OrderStatus } from '../../types';
 import { hotToastMessage } from '../../utils';
 import OrderDetailsModal from '../../components/modal/OrderDetailsModal';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
@@ -71,7 +71,7 @@ const OrdersListPage: React.FC = () => {
         setModalOpen(true);
     };
 
-    const orderStatuses: string[] = ['preparing', 'outfordelivery', 'delivered'];
+    const orderStatuses: OrderStatus[] = ['preparing', 'outfordelivery', 'delivered'];
     const tableColumns: string[] = ['Image', 'OrderId', 'Customer', 'Total', 'Status', 'Actions'];
 
     const handleCloseModal = (): void => {
@@ -111,7 +111,7 @@ const OrdersListPage: React.FC = () => {
                                     </TableCell>
                                     <TableCell align="center">{order._id}</TableCell>
                                     <TableCell align="center">{order.userDetails.email}</TableCell>
-                                    <TableCell align="center">{order.totalAmount}</TableCell>
+                                    <TableCell align="center">₹{order.totalAmount}</TableCell>
                                     <TableCell align="center">
                                         <Select
                                             fullWidth
@@ -119,14 +119,13 @@ const OrdersListPage: React.FC = () => {
                                             onChange={(e) => handleStatusChange(order._id, e.target.value)}
                                         >
                                             <MenuItem value={order.status}>{order.status}</MenuItem>
-                                            {orderStatuses.map(
-                                                (item: string) =>
-                                                    item !== order.status && (
-                                                        <MenuItem key={item} value={item}>
-                                                            {item}
-                                                        </MenuItem>
-                                                    ),
-                                            )}
+                                            {orderStatuses
+                                                .filter((status) => status !== order.status)
+                                                .map((item) => (
+                                                    <MenuItem key={item} value={item}>
+                                                        {item}
+                                                    </MenuItem>
+                                                ))}
                                         </Select>
                                     </TableCell>
                                     <TableCell align="center">

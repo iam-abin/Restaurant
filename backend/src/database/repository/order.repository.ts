@@ -122,8 +122,16 @@ export class OrderRepository {
             {
                 $project: {
                     _id: 1, // Include Order ID
-                    restaurantDetails: { name: '$restaurantDetails.name', email: '$restaurantDetails.email' }, // Include only the email field
-                    userDetails: { name: '$userDetails.name', email: '$userDetails.email' }, // Include only the email field
+                    restaurantDetails: {
+                        name: '$restaurantDetails.name',
+                        email: '$restaurantDetails.email',
+                        phone: '$restaurantDetails.phone',
+                    }, // Include only the email field
+                    userDetails: {
+                        name: '$userDetails.name',
+                        email: '$userDetails.email',
+                        phone: '$userDetails.phone',
+                    }, // Include only the email field
                     status: 1,
                     totalAmount: 1,
                     address: {
@@ -230,7 +238,11 @@ export class OrderRepository {
             {
                 $project: {
                     _id: 1, // Include Order ID
-                    userDetails: { name: '$userDetails.name', email: '$userDetails.email' }, // Include only the email field
+                    userDetails: {
+                        name: '$userDetails.name',
+                        email: '$userDetails.email',
+                        phone: '$userDetails.phone',
+                    }, // Include only the email field
                     status: 1,
                     totalAmount: 1,
                     address: {

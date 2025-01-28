@@ -2,12 +2,14 @@ import { IAddress } from './address';
 import { IRestaurantResponse } from './restaurant';
 import { IUser } from './user';
 
+export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'outfordelivery' | 'delivered';
+
 export interface IOrder {
     userId: string;
     restaurantId: string;
     addressId: string;
     totalAmount: number;
-    status: 'pending' | 'confirmed' | 'preparing' | 'outfordelivery' | 'delivered';
+    status: OrderStatus;
 }
 
 export interface IOrderedItem {
@@ -37,10 +39,10 @@ export interface OrderItem {
 
 export interface IRestaurantOrder {
     _id: string;
-    userDetails: Pick<IUser, 'name' | 'email'>;
-    restaurantDetails: Pick<IUser, 'name' | 'email'>;
+    userDetails: Pick<IUser, 'name' | 'email' | 'phone'>;
+    restaurantDetails: Pick<IUser, 'name' | 'email' | 'phone'>;
     address: IAddress;
-    status: string;
+    status: OrderStatus;
     createdAt: string;
     orderedItems: OrderItem[];
     totalAmount: number;

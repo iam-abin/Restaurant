@@ -39,8 +39,9 @@ export class DashboardService {
         const restaurantId: string = restaurant._id.toString();
 
         // Fetch all required data concurrently
-        const [orderStatusesWithCounts, totalRevenue, menusCount, cuisinesCount]: [
+        const [orderStatusesWithCounts, totalRevenue, menusCount, cuisinesCount, ordersCount]: [
             IOrderStatusWithCounts[],
+            number,
             number,
             number,
             number,
@@ -49,13 +50,20 @@ export class DashboardService {
             this.orderRepository.findRestaurantTotalOrdersPrice(restaurantId),
             this.menuRepository.countRestaurantMenuItems(restaurantId),
             this.restaurantCuisineRepository.countRestaurantCuisines(restaurantId),
+            this.orderRepository.countRestaurantOrders({ restaurantId }),
         ]);
 
         // Transform statuses
         const transformedStatusesWithCounts: IOrderStatusWithCounts[] =
             this.mapOrderStatusesWithCounts(orderStatusesWithCounts);
 
-        return { orderStatusData: transformedStatusesWithCounts, totalRevenue, menusCount, cuisinesCount };
+        return {
+            orderStatusData: transformedStatusesWithCounts,
+            totalRevenue,
+            menusCount,
+            cuisinesCount,
+            ordersCount,
+        };
     };
 
     public getAdminDashboardCardData = async (): Promise<IAdminDashboardCard> => {

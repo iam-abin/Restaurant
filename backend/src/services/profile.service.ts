@@ -55,9 +55,9 @@ export class ProfileService {
 
     public updateProfile = async (
         userId: string,
-        updateData: Partial<Pick<IUser, 'name'> & IAddress & Pick<IProfile, 'image'>>,
+        updateData: Partial<Pick<IUser, 'name' | 'phone'> & IAddress & Pick<IProfile, 'image'>>,
     ): Promise<IProfileDocument | null> => {
-        const { name, city, country, address, image } = updateData;
+        const { name, phone, city, country, address, image } = updateData;
 
         return executeTransaction(async (session) => {
             let imageUrl: string | undefined;
@@ -65,7 +65,7 @@ export class ProfileService {
                 imageUrl = await uploadImageOnCloudinary(image);
             }
 
-            await this.userRepository.updateUser(userId, { name }, session);
+            await this.userRepository.updateUser(userId, { name, phone }, session);
 
             const addressData: IAddressDocument | null = await this.addressRepository.updateAddress(
                 userId,

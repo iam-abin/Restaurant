@@ -8,6 +8,7 @@ export interface IRestaurantDashboard {
     totalRevenue: number;
     menusCount: number;
     cuisinesCount: number;
+    ordersCount: number;
 }
 
 export interface IAdminDashboardCard {

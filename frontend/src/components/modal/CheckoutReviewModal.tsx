@@ -126,7 +126,7 @@ const CheckoutReviewModal: React.FC<ICheckoutReviewModalProps> = ({ isOpen, hand
                     sx={{
                         display: 'flex',
                         flexDirection: { xs: 'column', sm: 'row' },
-                        justifyContent: 'flex-end',
+                        justifySelf: 'center',
                         mt: 5,
                         gap: 2,
                     }}

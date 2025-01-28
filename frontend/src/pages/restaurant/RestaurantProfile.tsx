@@ -3,7 +3,7 @@ import { Alert, Chip } from '@mui/material';
 
 import { hotToastMessage, RestaurantFormSchema, restaurantFromSchema } from '../../utils';
 import { updateRestaurantApi } from '../../api/apiMethods';
-import { IResponse, ICuisineResponse, IRestaurant, IRestaurantResponse } from '../../types';
+import { IResponse, ICuisineResponse, IRestaurant, IRestaurantResponse, IUser } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchMyRestaurant } from '../../redux/thunk/restaurantThunk';
@@ -27,6 +27,7 @@ const RestaurantProfile: React.FC = () => {
         city: '',
         country: '',
         deliveryTime: 0,
+        phone: '',
         image: undefined,
     });
     const [errors, setErrors] = useState<Partial<RestaurantFormSchema>>({});
@@ -45,6 +46,7 @@ const RestaurantProfile: React.FC = () => {
                 city: restaurant?.addressId?.city || '',
                 country: restaurant?.addressId?.country || '',
                 deliveryTime: restaurant?.deliveryTime,
+                phone: (restaurant?.ownerId as IUser).phone,
             }));
         }
     }, [restaurant]);
@@ -118,10 +120,11 @@ const RestaurantProfile: React.FC = () => {
 
     const udateProfileSubmitHandler = async (): Promise<void> => {
         setIsLoading(true);
-
         const result = restaurantFromSchema.safeParse({
             ...input,
+            ['phone']: input['phone'].toString(),
         });
+
         if (!result.success) {
             const fieldErrors = result.error.formErrors.fieldErrors;
             setErrors(fieldErrors as Partial<RestaurantFormSchema>);
@@ -135,7 +138,7 @@ const RestaurantProfile: React.FC = () => {
             formData.append('city', input.city);
             formData.append('country', input.country);
             formData.append('deliveryTime', input.deliveryTime.toString());
-            // formData.append('cuisines', JSON.stringify(input.cuisines));
+            formData.append('phone', input.phone);
 
             if (input.image) {
                 formData.append('image', input.image);
@@ -154,7 +157,7 @@ const RestaurantProfile: React.FC = () => {
     };
 
     const isProfileIncomplete: boolean =
-        !input.name || !input.city || !input.country || input.deliveryTime <= 0;
+        !input.name || !input.city || !input.country || !input.phone || input.deliveryTime <= 0;
 
     return (
         <div className="max-w-6xl mx-auto my-10">
@@ -235,58 +238,33 @@ const RestaurantProfile: React.FC = () => {
                                     <span className="text-red-500 text-sm">{errors.deliveryTime}</span>
                                 )}
                             </div>
-
-                            {/* Cuisines */}
-                            <div className="flex flex-wrap gap-2">
-                                {cuisines &&
-                                    cuisines.map((cuisine, index) => (
-                                        <Chip
-                                            label={cuisine.cuisineId.name}
-                                            key={index}
-                                            className="w-24"
-                                            variant="outlined"
-                                        />
-                                    ))}
-                            </div>
-
-                            {/* Upload Restaurant Banner */}
+                            {/* {Phone} */}
                             <div className="relative">
-                                <label>Upload Restaurant Banner</label>
-
-                                <CustomButton
-                                    variant="contained"
-                                    className="w-full"
-                                    sx={{ background: '#059dc0' }}
-                                    onClick={() => document.getElementById('fileInput')?.click()}
-                                >
-                                    Choose image
-                                    <input
-                                        type="file"
-                                        id="fileInput"
-                                        hidden
-                                        name="image"
-                                        accept="image/*"
-                                        onChange={handleImageChange}
-                                    />
-                                </CustomButton>
-                                {errors.image && (
-                                    <span className="text-red-500 text-sm">
-                                        {errors.image?.name || 'image file is required'}
-                                    </span>
-                                )}
+                                <label>phone</label>
+                                <input
+                                    className="w-full h-12 border border-black rounded-lg p-1 pl-4"
+                                    type="number"
+                                    name="phone"
+                                    value={input.phone}
+                                    onChange={changeEventHandler}
+                                    placeholder="Enter your phone"
+                                    autoComplete="phone"
+                                />
+                                {errors.phone && <span className="text-red-500 text-sm">{errors.phone}</span>}
                             </div>
                         </div>
 
-                        <div className="my-5 w-fit">
-                            <CustomButton type="submit" disabled={isLoading}>
-                                {isLoading ? (
-                                    <label className="flex items-center gap-4">
-                                        Please wait <LoaderCircle />
-                                    </label>
-                                ) : (
-                                    'Update Restaurant'
-                                )}
-                            </CustomButton>
+                        {/* Cuisines */}
+                        <div className="flex flex-wrap gap-2">
+                            {cuisines &&
+                                cuisines.map((cuisine, index) => (
+                                    <Chip
+                                        label={cuisine.cuisineId.name}
+                                        key={index}
+                                        className="w-24"
+                                        variant="outlined"
+                                    />
+                                ))}
                         </div>
                     </div>
 
@@ -301,6 +279,45 @@ const RestaurantProfile: React.FC = () => {
                                 />
                             </div>
                         )}
+
+                        {/* Upload Restaurant Banner */}
+                        <div className="relative">
+                            <label>Upload Restaurant Banner</label>
+
+                            <CustomButton
+                                variant="contained"
+                                className="w-full"
+                                sx={{ background: '#059dc0' }}
+                                onClick={() => document.getElementById('fileInput')?.click()}
+                            >
+                                Choose image
+                                <input
+                                    type="file"
+                                    id="fileInput"
+                                    hidden
+                                    name="image"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                />
+                            </CustomButton>
+                            {errors.image && (
+                                <span className="text-red-500 text-sm">
+                                    {errors.image?.name || 'image file is required'}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="my-5 w-fit">
+                        <CustomButton type="submit" disabled={isLoading}>
+                            {isLoading ? (
+                                <label className="flex items-center gap-4">
+                                    Please wait <LoaderCircle />
+                                </label>
+                            ) : (
+                                'Update Restaurant'
+                            )}
+                        </CustomButton>
                     </div>
                 </form>
             </div>

@@ -1,6 +1,7 @@
 import { Box, Card, CardContent, CardMedia, Typography } from '@mui/material';
 import { IRestaurantOrder, OrderItem } from '../../types';
 import CustomButton from '../Button/CustomButton';
+import ChipCustom from '../chip/OrderChip';
 
 interface IOrderCardProps {
     order: IRestaurantOrder;
@@ -40,19 +41,26 @@ const OrderCard: React.FC<IOrderCardProps> = ({ order, handleModalOpen }) => {
                 <CardContent>
                     <Typography variant="h6">{order.restaurantDetails.name}</Typography>
                     <Typography variant="body2" sx={{ marginTop: 1 }}>
-                        Items:{' '}
-                        {order.orderedItems &&
-                            order.orderedItems.map(
-                                (item: OrderItem, index: number) =>
-                                    `${item.name}${index === order.orderedItems.length - 1 ? '' : ', '}`,
-                            )}
+                        <span className="font-bold">Items: </span>
+                        <span>
+                            {order.orderedItems &&
+                                order.orderedItems.map(
+                                    (item: OrderItem, index: number) =>
+                                        `${item.name}${index === order.orderedItems.length - 1 ? '' : ', '}`,
+                                )}
+                        </span>
                     </Typography>
                     <Typography variant="body2" sx={{ marginTop: 1 }}>
-                        Total price: {order.orderedItems && order.totalAmount}
+                        <span className="flex items-center">
+                            <span className="font-bold"> Total price: </span>
+                            <span className="flex items-center">
+                                ₹ <span>{order.orderedItems && order.totalAmount}</span>
+                            </span>
+                        </span>
                     </Typography>
-                    <Typography variant="body2" sx={{ marginTop: 1 }}>
-                        Status: {order.status}
-                    </Typography>
+                    <div className="text-sm font-bold">
+                        <span>Status:</span> <ChipCustom status={order.status} />
+                    </div>
                 </CardContent>
             </Box>
             <Box

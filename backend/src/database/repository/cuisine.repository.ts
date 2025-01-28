@@ -4,7 +4,7 @@ import { ICuisineDocument, CuisineModel } from '../model';
 
 @singleton()
 export class CuisineRepository {
-    private readonly excludedFields: string[] = ['-createdAt', '-updatedAt'];
+    private readonly excludedFields: string[] = ['-createdAt', '-updatedAt', '-__v'];
 
     createCuisine = async (
         cuisineData: { name: string },
