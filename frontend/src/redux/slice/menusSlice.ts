@@ -22,6 +22,21 @@ const menusSlice = createSlice({
         clearMenus: (state) => {
             state.menusData = null;
         },
+        updateMenuItemCloseStatus: (state, action) => {
+            const { menuItemId, isClosed } = action.payload;
+
+            if (state.menusData) {
+                state.menusData = state.menusData.map((menu: IMenu) => {
+                    if (menu._id === menuItemId) {
+                        return {
+                            ...menu,
+                            isClosed,
+                        };
+                    }
+                    return menu;
+                });
+            }
+        },
     },
     extraReducers: (builder) => {
         addAsyncThunkCases(builder, fetchMenus, (state, action) => {
@@ -42,5 +57,5 @@ const menusSlice = createSlice({
     },
 });
 
-export const { clearMenus } = menusSlice.actions;
+export const { clearMenus, updateMenuItemCloseStatus } = menusSlice.actions;
 export default menusSlice.reducer;

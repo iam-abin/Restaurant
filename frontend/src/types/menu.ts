@@ -14,7 +14,7 @@ export interface IMenu {
     isClosed: boolean;
 }
 
-export type Menus = {
-    menus: IMenu[];
+export type Menu = {
+    menu: IMenu[];
     numberOfPages: number;
 };

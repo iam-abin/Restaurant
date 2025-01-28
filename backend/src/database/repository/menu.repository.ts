@@ -7,16 +7,16 @@ import { IMenuDocument, MenuModel } from '../model';
 export class MenuRepository {
     private readonly excludedFields: string[] = ['-createdAt', '-updatedAt', '-__v'];
 
-    createMenu = async (menuData: IMenu, session?: mongoose.ClientSession): Promise<IMenuDocument> => {
+    createMenuItem = async (menuData: IMenu, session?: mongoose.ClientSession): Promise<IMenuDocument> => {
         const menu: IMenuDocument[] = await MenuModel.create([menuData], { session });
         return menu[0];
     };
 
-    findMenu = async (menuId: string): Promise<IMenuDocument | null> => {
-        return await MenuModel.findById(menuId).lean<IMenuDocument | null>();
+    findMenuItemById = async (menuItemId: string): Promise<IMenuDocument | null> => {
+        return await MenuModel.findById(menuItemId).lean<IMenuDocument | null>();
     };
 
-    findMenus = async (
+    findMenu = async (
         restaurantId: string,
         skip: number = 0,
         limit: number = 0,
@@ -30,14 +30,14 @@ export class MenuRepository {
             .lean<IMenuDocument[]>();
     };
 
-    updateMenu = async (menuId: string, updatedData: Partial<IMenu>): Promise<IMenuDocument | null> => {
+    updateMenuItem = async (menuId: string, updatedData: Partial<IMenu>): Promise<IMenuDocument | null> => {
         const menu: IMenuDocument | null = await MenuModel.findByIdAndUpdate(menuId, updatedData, {
             new: true,
         }).populate('cuisineId', ['-_id', 'name']);
         return menu;
     };
 
-    countRestaurantMenus = async (restaurantId: string): Promise<number> => {
+    countRestaurantMenuItems = async (restaurantId: string): Promise<number> => {
         return MenuModel.countDocuments({ restaurantId });
     };
 }

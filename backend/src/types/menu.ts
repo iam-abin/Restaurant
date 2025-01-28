@@ -10,13 +10,14 @@ export interface IMenu {
     cuisineId?: string;
     featured: boolean;
     restaurantId: string;
+    isClosed: boolean;
 }
 
-export type Menus = {
-    menus: IMenuDocument[];
+export type Menu = {
+    menu: IMenuDocument[];
     numberOfPages: number;
 };
 
 export type MenuId = {
-    menuId: string;
+    menuItemId: string;
 };

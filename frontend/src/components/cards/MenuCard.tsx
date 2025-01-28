@@ -4,9 +4,13 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import MenuModal from '../modal/MenuModal';
 import CustomButton from '../Button/CustomButton';
-import { IMenu, IUser, UserRole } from '../../types';
-import { useAppSelector } from '../../redux/hooks';
-import { checkRole } from '../../utils';
+import { IMenu, IResponse, IUser, UserRole } from '../../types';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import ToggleButton from '../Button/ToggleButton';
+import { checkRole, hotToastMessage } from '../../utils';
+import { useConfirmationContext } from '../../context/confirmationContext';
+import { closeOpenMenuItemApi } from '../../api/apiMethods';
+import { updateMenuItemCloseStatus } from '../../redux/slice/menusSlice';
 
 interface IMenuCardProps {
     menu: IMenu;
@@ -15,6 +19,8 @@ interface IMenuCardProps {
 
 const MenuCard: React.FC<IMenuCardProps> = ({ menu, addItemToCartHandler }) => {
     const authData: IUser | null = useAppSelector((store) => store.authReducer.authData);
+    const { showConfirmation } = useConfirmationContext();
+    const dispatch = useAppDispatch();
 
     const isUser: boolean = checkRole(UserRole.USER, authData?.role);
     const isRestaurant: boolean = checkRole(UserRole.RESTAURANT, authData?.role);
@@ -29,6 +35,34 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu, addItemToCartHandler }) => {
         }
 
         await addItemToCartHandler(menu._id);
+    };
+    // closeOpenMenuItemApi
+    const handleCloseOpenButton = (menuItemId: string, isClosed: boolean): void => {
+        showConfirmation({
+            title: `Do you want to ${isClosed ? 'open' : 'close'} this menu`,
+            description: 'Are you sure?',
+            onAgree: () => handleCloseOpen(menuItemId),
+            closeText: 'No',
+            okayText: `Yes ${isClosed ? 'open' : 'close'}`,
+        });
+    };
+
+    const handleCloseOpen = async (menuItemId: string): Promise<void> => {
+        try {
+            const updatedMenuItem: IResponse | null = await closeOpenMenuItemApi(menuItemId);
+
+            if (updatedMenuItem) {
+                hotToastMessage(updatedMenuItem.message, 'success');
+                dispatch(
+                    updateMenuItemCloseStatus({
+                        menuItemId,
+                        isClosed: (updatedMenuItem.data as IMenu).isClosed,
+                    }),
+                );
+            }
+        } catch (error: unknown) {
+            hotToastMessage((error as Error).message, 'error');
+        }
     };
 
     return (
@@ -101,11 +135,19 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu, addItemToCartHandler }) => {
 
                 <div className="flex items-center justify-center px-4 py-2">
                     {isUser ? (
-                        <CustomButton onClick={handleAddToCart}>Add to cart</CustomButton>
-                    ) : isRestaurant ? (
-                        <CustomButton onClick={handleEditMenuOpen} className="sm:w-full">
-                            Edit
+                        <CustomButton disabled={menu?.isClosed} onClick={handleAddToCart}>
+                            {menu?.isClosed ? 'Not available' : 'Add to cart'}
                         </CustomButton>
+                    ) : isRestaurant ? (
+                        <div className="sm:w-full flex gap-2 md:flex-col md:gap-3">
+                            <ToggleButton
+                                handleCloseOpenButton={() => handleCloseOpenButton(menu._id, menu.isClosed)}
+                                isClosed={menu.isClosed}
+                            />
+                            <CustomButton onClick={handleEditMenuOpen} className="sm:w-full">
+                                Edit
+                            </CustomButton>
+                        </div>
                     ) : (
                         <></>
                     )}

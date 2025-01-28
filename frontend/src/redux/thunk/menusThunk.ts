@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { editMenuApi, getMenusApi } from '../../api/apiMethods/menu';
-import { IMenu, IResponse, Menus } from '../../types';
+import { editMenuItemApi, getMenuApi } from '../../api/apiMethods/menu';
+import { IMenu, IResponse, Menu } from '../../types';
 import { hotToastMessage } from '../../utils';
 
 export const fetchMenus = createAsyncThunk<
@@ -16,9 +16,9 @@ export const fetchMenus = createAsyncThunk<
     'menus/fetchUserMenus',
     async ({ restaurantId, setTotalNumberOfPages, currentPage, limit }, { rejectWithValue }) => {
         try {
-            const menus = await getMenusApi(restaurantId, currentPage, limit);
-            setTotalNumberOfPages((menus.data as Menus).numberOfPages);
-            return (menus.data as Menus).menus;
+            const menus = await getMenuApi(restaurantId, currentPage, limit);
+            setTotalNumberOfPages((menus.data as Menu).numberOfPages);
+            return (menus.data as Menu).menu;
         } catch (error: unknown) {
             return rejectWithValue((error as Error).message);
         }
@@ -31,7 +31,7 @@ export const updateMenu = createAsyncThunk<
     { rejectValue: string | null }
 >('menu/updateUserMenu', async ({ menuId, updateData }, { rejectWithValue }) => {
     try {
-        const updatedData: IResponse = await editMenuApi(menuId, updateData);
+        const updatedData: IResponse = await editMenuItemApi(menuId, updateData);
         hotToastMessage(updatedData.message, 'success');
         return updatedData.data as IMenu;
     } catch (error: unknown) {
