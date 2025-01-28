@@ -77,21 +77,21 @@ const OrderDetailsModal: React.FC<IOrderDetailsModalProps> = ({
                                 </Box>
 
                                 <Box className="flex gap-2">
-                                    <Typography variant="subtitle2"> Email: </Typography>
+                                    <Typography variant="subtitle2">Email:</Typography>
                                     <Typography variant="body2">
                                         {selectedOrder?.userDetails?.email}
                                     </Typography>
                                 </Box>
 
                                 <Box className="flex gap-2">
-                                    <Typography variant="subtitle2"> Phone: </Typography>
+                                    <Typography variant="subtitle2">Phone:</Typography>
                                     <Typography variant="body2">
                                         {selectedOrder?.userDetails?.phone}
                                     </Typography>
                                 </Box>
 
                                 <Box className="flex gap-2">
-                                    <Typography variant="subtitle2"> Address: </Typography>
+                                    <Typography variant="subtitle2">Address:</Typography>
                                     <Typography variant="body2">
                                         {selectedOrder?.address?.address}, {selectedOrder?.address?.city},{' '}
                                         {selectedOrder?.address?.country}
@@ -144,23 +144,31 @@ const OrderDetailsModal: React.FC<IOrderDetailsModalProps> = ({
                                     <Typography variant="h6" gutterBottom>
                                         Restaurant Information
                                     </Typography>
-                                    <Typography variant="body2" className="flex gap-2">
-                                        <Typography variant="subtitle2"> Name: </Typography>{' '}
-                                        {selectedOrder?.restaurantDetails?.name}
-                                    </Typography>
-                                    <Typography variant="body2" className="flex gap-2">
-                                        <Typography variant="subtitle2"> Email: </Typography>
-                                        {selectedOrder?.restaurantDetails?.email}
-                                    </Typography>
-                                    <Typography variant="body2" className="flex gap-2">
-                                        <Typography variant="subtitle2"> Phone: </Typography>
-                                        {selectedOrder?.restaurantDetails?.phone}
-                                    </Typography>
-                                    <Typography variant="body2" className="flex gap-2">
-                                        <Typography variant="subtitle2"> Address: </Typography>
-                                        {selectedOrder?.address?.address}, {selectedOrder?.address?.city},{' '}
-                                        {selectedOrder?.address?.country}
-                                    </Typography>
+                                    <Box className="flex gap-2">
+                                        <Typography variant="subtitle2">Name:</Typography>
+                                        <Typography variant="body2">
+                                            {selectedOrder?.restaurantDetails?.name}
+                                        </Typography>
+                                    </Box>
+                                    <Box className="flex gap-2">
+                                        <Typography variant="subtitle2">Email:</Typography>
+                                        <Typography variant="body2">
+                                            {selectedOrder?.restaurantDetails?.email}
+                                        </Typography>
+                                    </Box>
+                                    <Box className="flex gap-2">
+                                        <Typography variant="subtitle2">Phone:</Typography>
+                                        <Typography variant="body2">
+                                            {selectedOrder?.restaurantDetails?.phone}
+                                        </Typography>
+                                    </Box>
+                                    <Box className="flex gap-2">
+                                        <Typography variant="subtitle2">Address:</Typography>
+                                        <Typography variant="body2">
+                                            {selectedOrder?.address?.address}, {selectedOrder?.address?.city},{' '}
+                                            {selectedOrder?.address?.country}
+                                        </Typography>
+                                    </Box>
                                 </Grid>
                             )}
 
