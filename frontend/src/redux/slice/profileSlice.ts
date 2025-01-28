@@ -32,7 +32,7 @@ const profileSlice = createSlice({
             const { userId, isBlocked, name } = action.payload;
 
             if (state.userProfileListData) {
-                state.userProfileListData = state.userProfileListData.map((profile) => {
+                state.userProfileListData = state.userProfileListData.map((profile: IProfile) => {
                     if ((profile.userId as IUser)._id === userId) {
                         return {
                             ...profile,

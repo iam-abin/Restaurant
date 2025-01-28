@@ -5,6 +5,7 @@ import { verifyJwtAccessToken } from '../utils';
 import { UserRepository } from '../database/repository';
 import { IJwtPayload } from '../types';
 import { IUserDocument } from '../database/model';
+import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 
 // Extend Express's Request interface globally
 declare global {
@@ -32,11 +33,10 @@ export const checkCurrentUser = async (req: Request, res: Response, next: NextFu
 
         next();
     } catch (error: unknown) {
-        if (error instanceof Error) {
-            // Pass the error message string to NotAuthorizedError
-            next(new NotAuthorizedError(error.message));
-        } else {
-            next(new NotAuthorizedError('Authorization error'));
-        }
+        // Handle specific JWT errors
+        if (error instanceof TokenExpiredError) throw new NotAuthorizedError('Token has expired');
+        if (error instanceof JsonWebTokenError) throw new NotAuthorizedError('Invalid token');
+
+        next(error);
     }
 };

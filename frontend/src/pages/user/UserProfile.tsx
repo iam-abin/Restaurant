@@ -20,8 +20,15 @@ const Profile: React.FC = () => {
     const { authData } = useAppSelector((state) => state.authReducer);
     const { myProfile, status } = useAppSelector((state) => state.profileReducer);
 
+    const fetchUserProfileData = async () => {
+        const response = await dispatch(fetchUserProfile());
+        if (response.meta.requestStatus === 'rejected') {
+            hotToastMessage(response.payload as string, 'error');
+        }
+    };
+
     useEffect(() => {
-        dispatch(fetchUserProfile());
+        fetchUserProfileData();
     }, []);
 
     const isLoading: boolean = status === 'loading';

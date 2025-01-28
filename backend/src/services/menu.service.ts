@@ -45,8 +45,10 @@ export class MenuService {
             const addressData: IAddressDocument | null =
                 await this.addressRepository.findAddressByUserId(userId);
             if (!addressData) throw new BadRequestError('Must have address to create menu');
-            if (!addressData.city && !addressData.country)
-                throw new BadRequestError('Must have city and country to create menu');
+
+            // Ensure city and country are present
+            const { city, country } = addressData;
+            if (!city || !country) throw new BadRequestError('Must have city and country to create menu');
 
             const cuisineData: ICuisineDocument | null = await this.handleCuisine(
                 cuisine,

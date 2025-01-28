@@ -11,6 +11,7 @@ import OrderCard from '../../components/cards/OrderCard';
 import usePagination from '../../hooks/usePagination';
 import { DEFAULT_LIMIT_VALUE } from '../../constants';
 import CustomButton from '../../components/Button/CustomButton';
+import { hotToastMessage } from '../../utils';
 
 const OrdersUser: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
@@ -27,6 +28,8 @@ const OrdersUser: React.FC = () => {
                 const orders: IResponse = await getMyOrdersApi(currentPage, DEFAULT_LIMIT_VALUE);
                 setOrders((orders.data as Orders).orders);
                 setTotalNumberOfPages((orders.data as Orders).numberOfPages);
+            } catch (error: unknown) {
+                hotToastMessage((error as Error).message, 'error');
             } finally {
                 setLoading(false);
             }
