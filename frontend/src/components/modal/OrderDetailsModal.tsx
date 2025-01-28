@@ -1,20 +1,37 @@
 import { Typography, Box, Modal, IconButton, Divider, Grid, Backdrop, Fade } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { formatDateWithTime } from '../../utils';
-import { IRestaurantOrder } from '../../types';
+import { checkRole, formatDateWithTime } from '../../utils';
+import { IRestaurantOrder, UserRole } from '../../types';
 import ChipCustom from '../chip/OrderChip';
+import { useAppSelector } from '../../redux/hooks';
 
 interface IOrderDetailsModalProps {
     modalOpen: boolean;
     handleCloseModal: () => void;
     selectedOrder: IRestaurantOrder;
 }
+const style = {
+    position: 'absolute' as const,
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '90%',
+    maxWidth: 600,
+    maxHeight: '95vh',
+    bgcolor: 'background.paper',
+    borderRadius: 4,
+    boxShadow: 24,
+    p: 4,
+    overflowY: 'auto',
+};
 
 const OrderDetailsModal: React.FC<IOrderDetailsModalProps> = ({
     modalOpen,
     handleCloseModal,
     selectedOrder,
 }) => {
+    const { authData } = useAppSelector((store) => store.authReducer);
+    const isUser = checkRole(UserRole.USER, authData?.role);
     return (
         <Modal
             open={modalOpen}
@@ -26,20 +43,7 @@ const OrderDetailsModal: React.FC<IOrderDetailsModalProps> = ({
             }}
         >
             <Fade in={modalOpen}>
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: { xs: '90%', sm: '80%', md: '60%', lg: '50%' },
-                        bgcolor: 'background.paper',
-                        border: '2px solid #000',
-                        boxShadow: 24,
-                        p: 3,
-                        borderRadius: 2,
-                    }}
-                >
+                <Box sx={style}>
                     {/* Header */}
                     <Box
                         sx={{
@@ -49,7 +53,7 @@ const OrderDetailsModal: React.FC<IOrderDetailsModalProps> = ({
                             mb: 2,
                         }}
                     >
-                        <Typography variant="h5" sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem' } }}>
+                        <Typography id="order-details-title" variant="h5">
                             Order Details
                         </Typography>
                         <IconButton edge="end" color="inherit" onClick={handleCloseModal}>
@@ -65,19 +69,34 @@ const OrderDetailsModal: React.FC<IOrderDetailsModalProps> = ({
                                 <Typography variant="h6" gutterBottom>
                                     Customer Information
                                 </Typography>
-                                <Typography variant="body2" className="flex gap-2">
-                                    <Typography variant="subtitle2"> Name: </Typography>{' '}
-                                    {selectedOrder?.userDetails?.name}
-                                </Typography>
-                                <Typography variant="body2" className="flex gap-2">
+                                <Box className="flex gap-2">
+                                    <Typography variant="subtitle2">Name:</Typography>
+                                    <Typography variant="body2">
+                                        {selectedOrder?.userDetails?.name}
+                                    </Typography>
+                                </Box>
+
+                                <Box className="flex gap-2">
                                     <Typography variant="subtitle2"> Email: </Typography>
-                                    {selectedOrder?.userDetails?.email}
-                                </Typography>
-                                <Typography variant="body2" className="flex gap-2">
+                                    <Typography variant="body2">
+                                        {selectedOrder?.userDetails?.email}
+                                    </Typography>
+                                </Box>
+
+                                <Box className="flex gap-2">
+                                    <Typography variant="subtitle2"> Phone: </Typography>
+                                    <Typography variant="body2">
+                                        {selectedOrder?.userDetails?.phone}
+                                    </Typography>
+                                </Box>
+
+                                <Box className="flex gap-2">
                                     <Typography variant="subtitle2"> Address: </Typography>
-                                    {selectedOrder?.address?.address}, {selectedOrder?.address?.city},{' '}
-                                    {selectedOrder?.address?.country}
-                                </Typography>
+                                    <Typography variant="body2">
+                                        {selectedOrder?.address?.address}, {selectedOrder?.address?.city},{' '}
+                                        {selectedOrder?.address?.country}
+                                    </Typography>
+                                </Box>
                             </Grid>
 
                             {/* Ordered Items */}
@@ -119,21 +138,48 @@ const OrderDetailsModal: React.FC<IOrderDetailsModalProps> = ({
                                 </Box>
                             </Grid>
 
+                            {/* Restaurant Information */}
+                            {isUser && (
+                                <Grid item xs={12} sm={6}>
+                                    <Typography variant="h6" gutterBottom>
+                                        Restaurant Information
+                                    </Typography>
+                                    <Typography variant="body2" className="flex gap-2">
+                                        <Typography variant="subtitle2"> Name: </Typography>{' '}
+                                        {selectedOrder?.restaurantDetails?.name}
+                                    </Typography>
+                                    <Typography variant="body2" className="flex gap-2">
+                                        <Typography variant="subtitle2"> Email: </Typography>
+                                        {selectedOrder?.restaurantDetails?.email}
+                                    </Typography>
+                                    <Typography variant="body2" className="flex gap-2">
+                                        <Typography variant="subtitle2"> Phone: </Typography>
+                                        {selectedOrder?.restaurantDetails?.phone}
+                                    </Typography>
+                                    <Typography variant="body2" className="flex gap-2">
+                                        <Typography variant="subtitle2"> Address: </Typography>
+                                        {selectedOrder?.address?.address}, {selectedOrder?.address?.city},{' '}
+                                        {selectedOrder?.address?.country}
+                                    </Typography>
+                                </Grid>
+                            )}
+
                             {/* Order Details */}
                             <Grid item xs={12}>
                                 <Divider sx={{ margin: '16px 0' }} />
                                 <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center' }}>
                                     Total Amount: ₹ {selectedOrder?.totalAmount}
                                 </Typography>
-                                <Typography variant="body2" className="flex gap-2">
-                                    <Typography variant="subtitle2"> Order Status: </Typography>
+                                <Box className="flex gap-2">
+                                    <Typography variant="subtitle2">Order Status:</Typography>
                                     <ChipCustom status={selectedOrder?.status} />
-                                </Typography>
-                                <Typography variant="body2" className="flex gap-2">
-                                    <Typography variant="subtitle2">Order Date: </Typography>
-
-                                    {formatDateWithTime(selectedOrder?.createdAt)}
-                                </Typography>
+                                </Box>
+                                <Box className="flex gap-2">
+                                    <Typography variant="subtitle2">Order Date:</Typography>
+                                    <Typography variant="body2">
+                                        {formatDateWithTime(selectedOrder?.createdAt)}
+                                    </Typography>
+                                </Box>
                             </Grid>
                         </Grid>
                     </Box>

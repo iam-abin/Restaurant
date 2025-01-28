@@ -5,6 +5,7 @@ export interface IRestaurant {
     ownerId: string;
     addressId: string;
     name: string;
+    phone: number;
     city: string;
     country: string;
     deliveryTime: number;

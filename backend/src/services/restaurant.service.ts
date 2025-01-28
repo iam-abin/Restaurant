@@ -109,11 +109,11 @@ export class RestaurantService {
         restaurantData: IRestaurantUpdate,
         file?: Express.Multer.File,
     ): Promise<IRestaurantDocument | null> => {
-        const { name, city, country, deliveryTime } = restaurantData;
+        const { name, phone, city, country, deliveryTime } = restaurantData;
 
         return executeTransaction(async (session) => {
             // user
-            await this.userRepository.updateUser(ownerId, { name }, session);
+            await this.userRepository.updateUser(ownerId, { name, phone }, session);
             // address
             const addressData: IAddressDocument | null = await this.addressRepository.updateAddress(
                 ownerId,

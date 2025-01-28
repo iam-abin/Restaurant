@@ -39,8 +39,8 @@ export interface OrderItem {
 
 export interface IRestaurantOrder {
     _id: string;
-    userDetails: Pick<IUser, 'name' | 'email'>;
-    restaurantDetails: Pick<IUser, 'name' | 'email'>;
+    userDetails: Pick<IUser, 'name' | 'email' | 'phone'>;
+    restaurantDetails: Pick<IUser, 'name' | 'email' | 'phone'>;
     address: IAddress;
     status: OrderStatus;
     createdAt: string;

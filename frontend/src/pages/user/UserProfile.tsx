@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { Avatar, Box, Tooltip, Typography } from '@mui/material';
-import { Add, Email, Flag, LocationOn, LocationSearching } from '@mui/icons-material';
+import { Add, Email, Flag, LocationOn, LocationSearching, Phone } from '@mui/icons-material';
 
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { fetchUserProfile, updateUserProfile } from '../../redux/thunk/profileThunk';
@@ -35,6 +35,7 @@ const Profile: React.FC = () => {
     const imageRef: React.MutableRefObject<HTMLInputElement | null> = useRef<HTMLInputElement | null>(null);
     const [profileData, setProfileData] = useState<ProfileFormSchema>({
         name: (myProfile?.userId as IUser)?.name || '',
+        phone: (myProfile?.userId as IUser)?.phone || '',
         address: (myProfile?.addressId as IAddress)?.address || '',
         city: (myProfile?.addressId as IAddress)?.city || '',
         country: (myProfile?.addressId as IAddress)?.country || '',
@@ -77,8 +78,12 @@ const Profile: React.FC = () => {
 
     const updateProfileHandler = async (): Promise<void> => {
         setErrors({});
-        // Form validation
-        const result = profileFromSchema.safeParse(profileData);
+
+        const updateData = {
+            ...profileData,
+            phone: profileData.phone.toString(),
+        };
+        const result = profileFromSchema.safeParse(updateData);
 
         if (!result.success) {
             const fieldErrors = result.error.formErrors.fieldErrors;
@@ -155,19 +160,41 @@ const Profile: React.FC = () => {
                     />
                 </div>
             </div>
+            {/* Email */}
+            <Tooltip title="Cannot modify email field">
+                <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
+                    <Email className="text-gray-500" />
+                    <div className="w-full">
+                        <label>Email</label>
+                        <span className="w-full block text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none">
+                            {authData && authData.email}
+                        </span>
+                    </div>
+                </div>
+            </Tooltip>
+
             <div className="grid md:grid-cols-4 md:gap-2 gap-3 my-10">
-                {/* Email */}
-                <Tooltip title="Cannot modify email field">
+                {/* Phone */}
+                <div>
                     <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
-                        <Email className="text-gray-500" />
+                        <Phone className="text-gray-500" />
                         <div className="w-full">
-                            <label>Email</label>
-                            <span className="w-full block text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none">
-                                {authData && authData.email}
-                            </span>
+                            <label>
+                                Phone
+                                <Tooltip title="Clilck to modify 'Phone'">
+                                    <input
+                                        name="phone"
+                                        placeholder="update your phone"
+                                        value={profileData.phone}
+                                        onChange={changeHandler}
+                                        className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
+                                    />
+                                </Tooltip>
+                            </label>
                         </div>
                     </div>
-                </Tooltip>
+                    {errors && <Typography className="text-sm text-red-500">{errors.phone}</Typography>}
+                </div>
                 {/* Address */}
                 <div>
                     <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
@@ -175,14 +202,16 @@ const Profile: React.FC = () => {
                         <div className="w-full">
                             <label>
                                 Address{' '}
-                                <input
-                                    name="address"
-                                    id="address"
-                                    placeholder="update your address"
-                                    value={profileData.address}
-                                    onChange={changeHandler}
-                                    className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
-                                />
+                                <Tooltip title="Clilck to modify the 'Address'">
+                                    <input
+                                        name="address"
+                                        id="address"
+                                        placeholder="update your address"
+                                        value={profileData.address}
+                                        onChange={changeHandler}
+                                        className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
+                                    />
+                                </Tooltip>
                             </label>
                         </div>
                     </div>
@@ -195,13 +224,15 @@ const Profile: React.FC = () => {
                         <div className="w-full">
                             <label>
                                 City
-                                <input
-                                    name="city"
-                                    placeholder="update your city"
-                                    value={profileData.city}
-                                    onChange={changeHandler}
-                                    className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
-                                />
+                                <Tooltip title="Clilck to modify the 'city'">
+                                    <input
+                                        name="city"
+                                        placeholder="update your city"
+                                        value={profileData.city}
+                                        onChange={changeHandler}
+                                        className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
+                                    />
+                                </Tooltip>
                             </label>
                         </div>
                     </div>
@@ -214,13 +245,15 @@ const Profile: React.FC = () => {
                         <div className="w-full">
                             <label>
                                 Country
-                                <input
-                                    name="country"
-                                    placeholder="update your country"
-                                    value={profileData.country}
-                                    onChange={changeHandler}
-                                    className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
-                                />
+                                <Tooltip title="Clilck to modify the 'country'">
+                                    <input
+                                        name="country"
+                                        placeholder="update your country"
+                                        value={profileData.country}
+                                        onChange={changeHandler}
+                                        className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
+                                    />
+                                </Tooltip>
                             </label>
                         </div>
                     </div>

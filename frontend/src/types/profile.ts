@@ -8,7 +8,9 @@ export interface IProfile {
     imageUrl: string;
     image?: string;
 }
-export type ProfileUpdate = Partial<Pick<IProfile, 'image'> & Pick<IUser, 'name'> & Omit<IAddress, 'userId'>>;
+export type ProfileUpdate = Partial<
+    Pick<IProfile, 'image'> & Pick<IUser, 'name' | 'phone'> & Omit<IAddress, 'userId'>
+>;
 
 export interface IProfilesResponse {
     profiles: IProfile[] | null;

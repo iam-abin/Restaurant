@@ -102,8 +102,20 @@ const Cart: React.FC = () => {
     const columns = [
         { Header: 'Name', accessor: 'itemId.name' },
         {
+            Header: 'Image',
+            element: (row: { itemId: { imageUrl: string } }) => (
+                <div className="flex items-center justify-center">
+                    <img
+                        src={row.itemId.imageUrl}
+                        alt="img not available"
+                        style={{ width: '50px', borderRadius: '5px' }}
+                    />
+                </div>
+            ),
+        },
+        {
             Header: 'Price',
-            button: (row: { itemId: { price: number; salePrice: number } }) => (
+            element: (row: { itemId: { price: number; salePrice: number } }) => (
                 <div className="flex items-center justify-center">
                     ₹{row?.itemId?.salePrice || row?.itemId?.price}
                 </div>
@@ -111,7 +123,7 @@ const Cart: React.FC = () => {
         },
         {
             Header: 'Quantity',
-            button: (row: ICart) => (
+            element: (row: ICart) => (
                 <div className="flex items-center justify-center">
                     <IconButton onClick={() => handleQuantityChange(row, -1)}>
                         <RemoveIcon />
@@ -125,7 +137,7 @@ const Cart: React.FC = () => {
         },
         {
             Header: 'Total',
-            button: (row: {
+            element: (row: {
                 quantity: number;
                 itemId: { quantity: number; price: number; salePrice: number };
             }) => (
@@ -139,7 +151,7 @@ const Cart: React.FC = () => {
         },
         {
             Header: 'Remove',
-            button: (row: { _id: string }) => (
+            element: (row: { _id: string }) => (
                 <IconButton onClick={() => handleRemoveCartItemButton(row?._id)}>
                     <DeleteIcon />
                 </IconButton>

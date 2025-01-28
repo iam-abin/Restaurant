@@ -111,7 +111,7 @@ const OrdersListPage: React.FC = () => {
                                     </TableCell>
                                     <TableCell align="center">{order._id}</TableCell>
                                     <TableCell align="center">{order.userDetails.email}</TableCell>
-                                    <TableCell align="center">{order.totalAmount}</TableCell>
+                                    <TableCell align="center">₹{order.totalAmount}</TableCell>
                                     <TableCell align="center">
                                         <Select
                                             fullWidth
@@ -119,14 +119,13 @@ const OrdersListPage: React.FC = () => {
                                             onChange={(e) => handleStatusChange(order._id, e.target.value)}
                                         >
                                             <MenuItem value={order.status}>{order.status}</MenuItem>
-                                            {orderStatuses.map(
-                                                (item: string) =>
-                                                    item !== order.status && (
-                                                        <MenuItem key={item} value={item}>
-                                                            {item}
-                                                        </MenuItem>
-                                                    ),
-                                            )}
+                                            {orderStatuses
+                                                .filter((status) => status !== order.status)
+                                                .map((item) => (
+                                                    <MenuItem key={item} value={item}>
+                                                        {item}
+                                                    </MenuItem>
+                                                ))}
                                         </Select>
                                     </TableCell>
                                     <TableCell align="center">

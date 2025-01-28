@@ -16,7 +16,9 @@ const MAXIMUM_PRODUCT_DELIVERY_TIME_IN_MINUTES: number = 300;
 
 const SEARCH_KEY_LENGTH: number = 100;
 
-const restaurantUpdateAllowedFields: string[] = ['name', 'city', 'country', 'deliveryTime', 'image'];
+const PHONE_NUMBER_LENGTH: number = 10;
+
+const restaurantUpdateAllowedFields: string[] = ['name', 'city', 'country', 'deliveryTime', 'image', 'phone'];
 
 export const restaurantUpdateValidator: ValidationChain[] = [
     body('image').optional().isString().withMessage('Image must be a string').trim(),
@@ -61,6 +63,15 @@ export const restaurantUpdateValidator: ValidationChain[] = [
         .withMessage(
             `Delivery time must be between ${MINIMUM_PRODUCT_DELIVERY_TIME_IN_MINUTES} and ${MAXIMUM_PRODUCT_DELIVERY_TIME_IN_MINUTES} minutes`,
         ),
+    body('phone')
+        .notEmpty()
+        .withMessage('Phone number is required')
+        .isNumeric()
+        .withMessage('Phone number must be numeric')
+        .isLength({ min: PHONE_NUMBER_LENGTH, max: PHONE_NUMBER_LENGTH })
+        .withMessage(`Phone number must be exactly ${PHONE_NUMBER_LENGTH} digits`)
+        .trim()
+        .toInt(),
     body('*').custom(validateAllowedFields(restaurantUpdateAllowedFields)),
 ];
 

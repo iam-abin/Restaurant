@@ -84,7 +84,7 @@ const UsersList: React.FC = () => {
         { Header: 'Phone', accessor: 'userId.phone' },
         {
             Header: 'Profile Image',
-            button: (row: { imageUrl: string }) => (
+            element: (row: { imageUrl: string }) => (
                 <div className="flex justify-center items-center">
                     <img src={row.imageUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
                 </div>
@@ -92,7 +92,7 @@ const UsersList: React.FC = () => {
         },
         {
             Header: 'Status',
-            button: (row: { userId?: { isBlocked: string } }) => (
+            element: (row: { userId?: { isBlocked: string } }) => (
                 <Chip
                     label={row?.userId?.isBlocked ? 'inActive' : 'active'}
                     color={row?.userId?.isBlocked ? 'error' : 'success'}
@@ -102,7 +102,7 @@ const UsersList: React.FC = () => {
         },
         {
             Header: 'Action',
-            button: (row: { userId: { _id: string; isBlocked: boolean } }) => (
+            element: (row: { userId: { _id: string; isBlocked: boolean } }) => (
                 <CustomButton
                     sx={{
                         backgroundColor: row?.userId?.isBlocked ? '#3B9212' : '#D10000',

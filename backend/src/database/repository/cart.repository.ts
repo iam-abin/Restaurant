@@ -5,6 +5,8 @@ import { ICart } from '../../types';
 
 @singleton()
 export class CartRepository {
+    private readonly excludedFields: string[] = ['-createdAt', '-updatedAt', '-__v'];
+
     createCartItem = async (cartItemData: Omit<ICart, 'quantity'>): Promise<ICartDocument> => {
         const cartItem: ICartDocument = await CartModel.create(cartItemData);
         return cartItem;
@@ -15,7 +17,9 @@ export class CartRepository {
         restaurantId: string,
         itemId: string,
     ): Promise<ICartDocument | null> => {
-        return await CartModel.findOne({ userId, restaurantId, itemId }).lean<ICartDocument | null>();
+        return await CartModel.findOne({ userId, restaurantId, itemId })
+            .select(this.excludedFields)
+            .lean<ICartDocument | null>();
     };
 
     findCartItemById = async (cartItemId: string): Promise<ICartDocument | null> => {
@@ -35,12 +39,15 @@ export class CartRepository {
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
-            .populate('itemId')
+            .populate('itemId', this.excludedFields) // Exclude from subdocument 'itemId'
+            .select(this.excludedFields) // Exclude from main subdocument
             .lean<ICartDocument[]>();
     };
 
     updateCartItem = async (cartItemId: string, quantity: number): Promise<ICartDocument | null> => {
-        return await CartModel.findByIdAndUpdate(cartItemId, { quantity }, { new: true });
+        return await CartModel.findByIdAndUpdate(cartItemId, { quantity }, { new: true }).select(
+            this.excludedFields,
+        );
     };
 
     deleteCartItemById = async (

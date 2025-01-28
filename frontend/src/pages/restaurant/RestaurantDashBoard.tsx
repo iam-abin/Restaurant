@@ -5,7 +5,12 @@ import { DashboardCardData, IResponse, IRestaurantDashboard } from '../../types'
 import { getRestaurantDashboardApi } from '../../api/apiMethods';
 import PieChartGraph from '../../components/charts/PieChartGraph';
 import DashboardCard from '../../components/cards/DashboardCard';
-import { cuisineIcon, menuIcon, totalTurnoverIcon } from '../../components/icons/dashboardCard/SvgIcons';
+import {
+    cuisineIcon,
+    menuIcon,
+    ordersIcon,
+    totalTurnoverIcon,
+} from '../../components/icons/dashboardCard/SvgIcons';
 
 const RestaurantDashBoard: React.FC = () => {
     const [restaurantDashboardData, setRestaurantDashboardData] = useState<IRestaurantDashboard>({
@@ -13,6 +18,7 @@ const RestaurantDashBoard: React.FC = () => {
         totalRevenue: null,
         menusCount: null,
         cuisinesCount: null,
+        ordersCount: null,
     });
     useEffect(() => {
         (async () => {
@@ -40,6 +46,12 @@ const RestaurantDashBoard: React.FC = () => {
             number: restaurantDashboardData?.cuisinesCount ?? 0,
             icon: cuisineIcon,
             description: 'Total number of cuisines available',
+        },
+        {
+            title: 'Total Orders',
+            number: restaurantDashboardData?.ordersCount ?? 0,
+            icon: ordersIcon,
+            description: 'Total orders received',
         },
     ];
 

@@ -1,7 +1,7 @@
 import { body, ValidationChain } from 'express-validator';
 import { validateAllowedFields } from './allowed-fields.validation';
 
-const profileAllowedFields: string[] = ['name', 'address', 'city', 'country', 'image'];
+const profileAllowedFields: string[] = ['name', 'address', 'city', 'country', 'image', 'phone'];
 
 const NAME_MINIMUM_LENGTH: number = 1;
 const NAME_MAXIMUM_LENGTH: number = 50;
@@ -15,6 +15,8 @@ const CITY_MAXIMUM_LENGTH: number = 60;
 const COUNTRY_MINIMUM_LENGTH: number = 2;
 const COUNTRY_MAXIMUM_LENGTH: number = 60;
 
+const PHONE_NUMBER_LENGTH: number = 10;
+
 export const updateProfileRequestBodyValidator: ValidationChain[] = [
     body('image').optional().isString().withMessage('Image must be a string').trim(),
     body('name')
@@ -26,6 +28,15 @@ export const updateProfileRequestBodyValidator: ValidationChain[] = [
         .isLength({ min: NAME_MINIMUM_LENGTH, max: NAME_MAXIMUM_LENGTH })
         .withMessage(`Name must be between ${NAME_MINIMUM_LENGTH} and ${NAME_MAXIMUM_LENGTH} characters long`)
         .escape(),
+    body('phone')
+        .notEmpty()
+        .withMessage('Phone number is required')
+        .isNumeric()
+        .withMessage('Phone number must be numeric')
+        .isLength({ min: PHONE_NUMBER_LENGTH, max: PHONE_NUMBER_LENGTH })
+        .withMessage(`Phone number must be exactly ${PHONE_NUMBER_LENGTH} digits`)
+        .trim()
+        .toInt(),
     body('address')
         .notEmpty()
         .withMessage('Address is required')

@@ -84,7 +84,7 @@ const RestaurantsList: React.FC = () => {
         { Header: 'Phone', accessor: 'ownerId.phone' },
         {
             Header: 'Profile Image',
-            button: (row: { imageUrl: string }) => (
+            element: (row: { imageUrl: string }) => (
                 <div className="flex justify-center items-center">
                     <img src={row.imageUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
                 </div>
@@ -92,7 +92,7 @@ const RestaurantsList: React.FC = () => {
         },
         {
             Header: 'Status',
-            button: (row: { ownerId?: { isBlocked: boolean } }) => (
+            element: (row: { ownerId?: { isBlocked: boolean } }) => (
                 <Chip
                     label={row?.ownerId?.isBlocked ? 'inActive' : 'active'}
                     color={row?.ownerId?.isBlocked ? 'error' : 'success'}
@@ -102,7 +102,7 @@ const RestaurantsList: React.FC = () => {
         },
         {
             Header: 'Action',
-            button: (row: { ownerId: { _id: string; isBlocked: boolean } }) => (
+            element: (row: { ownerId: { _id: string; isBlocked: boolean } }) => (
                 <CustomButton
                     sx={{
                         backgroundColor: row?.ownerId?.isBlocked ? '#3B9212' : '#D10000',

@@ -127,7 +127,7 @@ const MenuCard: React.FC<IMenuCardProps> = ({ menu, addItemToCartHandler }) => {
                                 ₹{menu.price}
                             </Typography>
                             <Typography component="span" className="text-yellow-600">
-                                ₹{menu?.salePrice}
+                                {menu.salePrice ? `₹${menu.salePrice}` : ''}
                             </Typography>
                         </h2>
                     </div>

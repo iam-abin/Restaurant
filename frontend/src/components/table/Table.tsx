@@ -68,7 +68,9 @@ const Table: React.FC<ITableProps> = ({ columns, data, numberOfPages, fetchData 
                                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                     {columns.map((col: any, index: number) => (
                                         <TableCell key={index} align="center">
-                                            {col.button ? col.button(row) : getNestedValue(row, col.accessor)}
+                                            {col.element
+                                                ? col.element(row)
+                                                : getNestedValue(row, col.accessor)}
                                         </TableCell>
                                     ))}
                                 </TableRow>

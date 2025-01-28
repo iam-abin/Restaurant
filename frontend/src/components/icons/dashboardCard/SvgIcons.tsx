@@ -111,3 +111,20 @@ export const cuisineIcon: JSX.Element = (
         />
     </svg>
 );
+
+export const ordersIcon: JSX.Element = (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 2a1 1 0 00-1 1v1H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-2V3a1 1 0 00-1-1H9zM9 4h6v1H9V4zM9 10h6M9 14h6M9 18h6"
+        />
+    </svg>
+);
