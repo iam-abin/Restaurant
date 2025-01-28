@@ -16,7 +16,7 @@ import {
     IRestaurantDocument,
     IUserDocument,
 } from '../database/model';
-import { ForbiddenError, NotFoundError } from '../errors';
+import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
 import { stripeInstance } from '../config/stripe';
 import { appConfig } from '../config/app.config';
 import { executeTransaction, getPaginationSkipValue, getPaginationTotalNumberOfPages } from '../utils';
@@ -47,6 +47,16 @@ export class OrderService {
             ]);
 
             if (cartItems.length === 0) throw new NotFoundError('Must contain cart items to place order');
+
+            const closedMenuItems: string[] = this.findClosedMenuItems(cartItems);
+            if (closedMenuItems.length) {
+                const lengthIsOne: boolean = closedMenuItems.length === 1;
+                throw new BadRequestError(
+                    `${closedMenuItems.join(', ')} ${lengthIsOne ? 'is a' : 'are'} closed item${lengthIsOne ? '.' : 's.'}` +
+                        `Remove ${lengthIsOne ? 'it' : 'them'} from cart to proceed`,
+                );
+            }
+
             if (!address) throw new NotFoundError('Must fill address details');
 
             const totalAmount: number = this.findtotalAmount(cartItems);
@@ -191,6 +201,17 @@ export class OrderService {
                 images: JSON.stringify(cartItems.map((item) => (item.itemId as IMenuDocument).imageUrl)),
             },
         });
+    };
+
+    private findClosedMenuItems = (cartItems: ICartDocument[]): string[] => {
+        const closedMenuItems: string[] = cartItems
+            .filter((cartItem: ICartDocument) => {
+                const menuItem = cartItem.itemId as IMenuDocument;
+                return menuItem.isClosed;
+            })
+            .map((cartItem: ICartDocument) => (cartItem.itemId as IMenuDocument).name);
+
+        return closedMenuItems;
     };
 
     // Helper function to calculate total order amound

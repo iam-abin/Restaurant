@@ -9,12 +9,14 @@ export const axiosInstance = axios.create({
 
 import { store } from '../redux/store'; // Import your Redux store
 import { resetAuth } from '../redux/slice/authSlice'; // Import an action to reset auth state
-import { clearProfile } from '../redux/slice/profileSlice';
+import { clearProfile, clearUserProfileList } from '../redux/slice/profileSlice';
 import { clearMenus } from '../redux/slice/menusSlice';
 import { clearCart } from '../redux/slice/cartSlice';
-import { clearRestaurant } from '../redux/slice/restaurantSlice';
+import { clearRestaurant, clearRestaurantList } from '../redux/slice/restaurantSlice';
 import { clearAdminDashboard } from '../redux/slice/dashboardSlice';
 import { ApiErrorResponse } from '../types';
+import { clearOtpTokenTimer } from '../redux/slice/otpTokenSlice';
+import { clearRestaurantOrdersList } from '../redux/slice/orderSlice';
 
 declare module 'axios' {
     export interface AxiosRequestConfig {
@@ -32,8 +34,13 @@ const clearAllState = (): void => {
     // Restaurant
     store.dispatch(clearRestaurant());
     store.dispatch(clearMenus());
+    store.dispatch(clearRestaurantOrdersList());
     // Admin
     store.dispatch(clearAdminDashboard());
+    store.dispatch(clearUserProfileList());
+    store.dispatch(clearRestaurantList());
+    // common
+    store.dispatch(clearOtpTokenTimer());
 };
 
 axiosInstance.interceptors.response.use(
@@ -66,6 +73,9 @@ axiosInstance.interceptors.response.use(
                 clearAllState();
                 return Promise.reject(refreshError);
             }
+        } else if (error.response?.status === 403) {
+            // When the user has been blocked
+            clearAllState();
         }
         return Promise.reject(error);
     },

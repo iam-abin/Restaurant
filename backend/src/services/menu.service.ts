@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { autoInjectable } from 'tsyringe';
-import { IMenu, Menus } from '../types';
+import { IMenu, Menu } from '../types';
 import {
     AddressRepository,
     CuisineRepository,
@@ -33,7 +33,7 @@ export class MenuService {
         private readonly addressRepository: AddressRepository,
     ) {}
 
-    public createMenu = async (
+    public createMenuItem = async (
         userId: string,
         menuData: Omit<IMenu, 'imageUrl' | 'restaurantId' | 'cuisineId'>,
         file: Express.Multer.File,
@@ -45,8 +45,10 @@ export class MenuService {
             const addressData: IAddressDocument | null =
                 await this.addressRepository.findAddressByUserId(userId);
             if (!addressData) throw new BadRequestError('Must have address to create menu');
-            if (!addressData.city && !addressData.country)
-                throw new BadRequestError('Must have city and country to create menu');
+
+            // Ensure city and country are present
+            const { city, country } = addressData;
+            if (!city || !country) throw new BadRequestError('Must have city and country to create menu');
 
             const cuisineData: ICuisineDocument | null = await this.handleCuisine(
                 cuisine,
@@ -55,7 +57,7 @@ export class MenuService {
             );
 
             const imageUrl: string = await uploadImageOnCloudinary(file);
-            const menu: IMenuDocument | null = await this.menuRepository.createMenu(
+            const menu: IMenuDocument | null = await this.menuRepository.createMenuItem(
                 {
                     ...menuData,
                     restaurantId: restaurant._id.toString(),
@@ -68,37 +70,37 @@ export class MenuService {
         });
     };
 
-    public getMenus = async (restaurantId: string, page: number, limit: number): Promise<Menus> => {
+    public getMenu = async (restaurantId: string, page: number, limit: number): Promise<Menu> => {
         const restaurant: IRestaurantDocument | null =
             await this.restaurantRepository.findRestaurantById(restaurantId);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         const skip: number = getPaginationSkipValue(page, limit);
 
-        const [menus, myOrdersCount]: [IMenuDocument[], number] = await Promise.all([
-            this.menuRepository.findMenus(restaurantId, skip, limit),
-            this.menuRepository.countRestaurantMenus(restaurantId),
+        const [menu, myOrdersCount]: [IMenuDocument[], number] = await Promise.all([
+            this.menuRepository.findMenu(restaurantId, skip, limit),
+            this.menuRepository.countRestaurantMenuItems(restaurantId),
         ]);
 
         const numberOfPages: number = getPaginationTotalNumberOfPages(myOrdersCount, limit);
-        return { menus, numberOfPages };
+        return { menu, numberOfPages };
     };
 
-    public getMenu = async (menuId: string): Promise<IMenuDocument> => {
-        const menu: IMenuDocument | null = await this.menuRepository.findMenu(menuId);
+    public getMenuItem = async (menuId: string): Promise<IMenuDocument> => {
+        const menu: IMenuDocument | null = await this.menuRepository.findMenuItemById(menuId);
         if (!menu) throw new NotFoundError('Menu not found');
         return menu;
     };
 
-    public updateMenu = async (
+    public updateMenuItem = async (
         userId: string,
-        menuId: string,
+        menuItemId: string,
         updateData: Partial<IMenu>,
         file: Express.Multer.File,
     ): Promise<IMenuDocument | null> => {
         return executeTransaction(async (session) => {
             const restaurant: IRestaurantDocument = await this.validateRestaurantOwnership(userId);
 
-            const menu: IMenuDocument | null = await this.menuRepository.findMenu(menuId);
+            const menu: IMenuDocument | null = await this.menuRepository.findMenuItemById(menuItemId);
             if (!menu) throw new NotFoundError('Menu not found');
 
             if (updateData.salePrice && updateData.salePrice > menu.price) {
@@ -121,13 +123,26 @@ export class MenuService {
                 imageUrl = await uploadImageOnCloudinary(file);
             }
 
-            const updatedMenu: IMenuDocument | null = await this.menuRepository.updateMenu(menuId, {
+            const updatedMenu: IMenuDocument | null = await this.menuRepository.updateMenuItem(menuItemId, {
                 ...updateData,
                 cuisineId: cuisineData._id.toString(),
                 imageUrl,
             });
             return updatedMenu;
         });
+    };
+
+    public updateCloseMenuItemStatus = async (menuItemId: string): Promise<IMenuDocument | null> => {
+        const menuItem: IMenuDocument | null = await this.menuRepository.findMenuItemById(menuItemId);
+        if (!menuItem) throw new NotFoundError('This menuItem does not exist');
+
+        const menuItemWithUpdatedBlockStatus: IMenuDocument | null = await this.menuRepository.updateMenuItem(
+            menuItemId,
+            {
+                isClosed: !menuItem.isClosed,
+            },
+        );
+        return menuItemWithUpdatedBlockStatus;
     };
 
     private validateRestaurantOwnership = async (userId: string): Promise<IRestaurantDocument> => {

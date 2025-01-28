@@ -113,7 +113,7 @@ export class UserService {
         if (existingUser.role !== role) throw new BadRequestError('Role is not matching');
 
         if (role === UserRole.ADMIN) {
-            if (email !== existingUser.email && password !== existingUser.password)
+            if (email !== existingUser.email || password !== existingUser.password)
                 throw new BadRequestError('Invalid email or password');
         } else {
             if (existingUser.isBlocked) throw new ForbiddenError('You are a blocked user');

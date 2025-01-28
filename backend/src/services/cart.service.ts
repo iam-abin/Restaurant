@@ -17,7 +17,7 @@ export class CartService {
         cartData: Pick<ICart, 'itemId' | 'restaurantId'>,
     ): Promise<ICartDocument> => {
         const { itemId, restaurantId } = cartData;
-        const menuItem: IMenuDocument | null = await this.menuRepository.findMenu(itemId);
+        const menuItem: IMenuDocument | null = await this.menuRepository.findMenuItemById(itemId);
         if (!menuItem) throw new NotFoundError('MenuItem not found');
         const cartItem: ICartDocument | null = await this.cartRepository.findCartItem(
             userId,

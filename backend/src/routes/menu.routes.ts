@@ -20,15 +20,15 @@ router.post(
     multerUpload.single('image'),
     addMenuRequestBodyValidator,
     validateRequest,
-    menuController.addMenu,
+    menuController.addMenuItem,
 );
 
 router.get(
-    '/:menuId',
+    '/:menuItemId',
     checkCurrentUser,
-    mongoIdParamsValidator('menuId'),
+    mongoIdParamsValidator('menuItemId'),
     validateRequest,
-    menuController.getMenu,
+    menuController.getMenuItem,
 );
 
 router.get(
@@ -37,18 +37,25 @@ router.get(
     mongoIdParamsValidator('restaurantId'),
     paginationValidator,
     validateRequest,
-    menuController.getMenus,
+    menuController.getMenu,
 );
 
 router.patch(
-    '/:menuId',
+    '/:menuItemId',
     checkCurrentUser,
     auth(UserRole.RESTAURANT),
     multerUpload.single('image'),
-    mongoIdParamsValidator('menuId'),
+    mongoIdParamsValidator('menuItemId'),
     updateMenuRequestBodyValidator,
     validateRequest,
-    menuController.editMenu,
+    menuController.editMenuItem,
+);
+
+router.patch(
+    '/close-open/:menuItemId',
+    mongoIdParamsValidator('menuItemId'),
+    validateRequest,
+    menuController.closeOpenMenuItem,
 );
 
 export { router as menuRoutes };

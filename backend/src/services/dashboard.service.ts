@@ -47,7 +47,7 @@ export class DashboardService {
         ] = await Promise.all([
             this.orderRepository.countOrderStatuses(restaurantId),
             this.orderRepository.findRestaurantTotalOrdersPrice(restaurantId),
-            this.menuRepository.countRestaurantMenus(restaurantId),
+            this.menuRepository.countRestaurantMenuItems(restaurantId),
             this.restaurantCuisineRepository.countRestaurantCuisines(restaurantId),
         ]);
 

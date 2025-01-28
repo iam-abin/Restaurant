@@ -14,7 +14,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import LoaderCircle from '../Loader/LoaderCircle';
 import { MenuFormSchema, menuSchema, hotToastMessage } from '../../utils';
 import { IResponse } from '../../types/api';
-import { addMenuApi } from '../../api/apiMethods/menu';
+import { addMenuItemApi } from '../../api/apiMethods/menu';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { searchCuisineApi } from '../../api/apiMethods/cuisine';
 import { ICuisineResponse1, IMenu } from '../../types';
@@ -159,7 +159,7 @@ const MenuModal: React.FC<IMenuModalProps> = ({
                 }
             } else {
                 // Call the API to add a new menu
-                const response: IResponse = await addMenuApi(formData as unknown as IMenu);
+                const response: IResponse = await addMenuItemApi(formData as unknown as IMenu);
                 hotToastMessage(response.message, 'success');
                 resetForm();
             }
