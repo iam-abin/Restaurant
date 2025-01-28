@@ -15,7 +15,7 @@ import Box from '@mui/material/Box';
 import { updateOrderStatusApi } from '../../api/apiMethods';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import OrdersTableRestaurantSkelton from '../../components/shimmer/OrdersTableRestaurantSkelton';
-import { IResponse, IRestaurantOrder } from '../../types';
+import { IResponse, IRestaurantOrder, OrderStatus } from '../../types';
 import { hotToastMessage } from '../../utils';
 import OrderDetailsModal from '../../components/modal/OrderDetailsModal';
 import PaginationButtons from '../../components/pagination/PaginationButtons';
@@ -71,7 +71,7 @@ const OrdersListPage: React.FC = () => {
         setModalOpen(true);
     };
 
-    const orderStatuses: string[] = ['preparing', 'outfordelivery', 'delivered'];
+    const orderStatuses: OrderStatus[] = ['preparing', 'outfordelivery', 'delivered'];
     const tableColumns: string[] = ['Image', 'OrderId', 'Customer', 'Total', 'Status', 'Actions'];
 
     const handleCloseModal = (): void => {

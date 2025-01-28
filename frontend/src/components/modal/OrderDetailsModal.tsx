@@ -1,8 +1,8 @@
 import { Typography, Box, Modal, IconButton, Divider, Grid, Backdrop, Fade } from '@mui/material';
-import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import CloseIcon from '@mui/icons-material/Close';
 import { formatDateWithTime } from '../../utils';
 import { IRestaurantOrder } from '../../types';
+import ChipCustom from '../chip/OrderChip';
 
 interface IOrderDetailsModalProps {
     modalOpen: boolean;
@@ -65,15 +65,18 @@ const OrderDetailsModal: React.FC<IOrderDetailsModalProps> = ({
                                 <Typography variant="h6" gutterBottom>
                                     Customer Information
                                 </Typography>
-                                <Typography variant="body2">
-                                    Name: {selectedOrder?.userDetails?.name}
+                                <Typography variant="body2" className="flex gap-2">
+                                    <Typography variant="subtitle2"> Name: </Typography>{' '}
+                                    {selectedOrder?.userDetails?.name}
                                 </Typography>
-                                <Typography variant="body2">
-                                    Email: {selectedOrder?.userDetails?.email}
+                                <Typography variant="body2" className="flex gap-2">
+                                    <Typography variant="subtitle2"> Email: </Typography>
+                                    {selectedOrder?.userDetails?.email}
                                 </Typography>
-                                <Typography variant="body2">
-                                    Address: {selectedOrder?.address?.address}, {selectedOrder?.address?.city}
-                                    , {selectedOrder?.address?.country}
+                                <Typography variant="body2" className="flex gap-2">
+                                    <Typography variant="subtitle2"> Address: </Typography>
+                                    {selectedOrder?.address?.address}, {selectedOrder?.address?.city},{' '}
+                                    {selectedOrder?.address?.country}
                                 </Typography>
                             </Grid>
 
@@ -104,11 +107,10 @@ const OrderDetailsModal: React.FC<IOrderDetailsModalProps> = ({
                                                 }}
                                             />
                                             <Box>
-                                                <Typography variant="body2">{item.name}</Typography>
-                                                <Typography variant="body2" color="textSecondary">
-                                                    <span style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <CurrencyRupeeIcon style={{ fontSize: '0.85rem' }} />
-                                                        {item.price} x {item.quantity}
+                                                <Typography variant="subtitle2">{item.name}</Typography>
+                                                <Typography variant="subtitle2" color="textSecondary">
+                                                    <span className="flex items-center justify-center">
+                                                        ₹ {item.price} x {item.quantity}
                                                     </span>
                                                 </Typography>
                                             </Box>
@@ -121,12 +123,16 @@ const OrderDetailsModal: React.FC<IOrderDetailsModalProps> = ({
                             <Grid item xs={12}>
                                 <Divider sx={{ margin: '16px 0' }} />
                                 <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center' }}>
-                                    Total Amount: <CurrencyRupeeIcon style={{ fontSize: '1.15rem' }} />
-                                    {selectedOrder?.totalAmount}
+                                    Total Amount: ₹ {selectedOrder?.totalAmount}
                                 </Typography>
-                                <Typography variant="body2">Order Status: {selectedOrder?.status}</Typography>
-                                <Typography variant="body2">
-                                    Order Date: {formatDateWithTime(selectedOrder?.createdAt)}
+                                <Typography variant="body2" className="flex gap-2">
+                                    <Typography variant="subtitle2"> Order Status: </Typography>
+                                    <ChipCustom status={selectedOrder?.status} />
+                                </Typography>
+                                <Typography variant="body2" className="flex gap-2">
+                                    <Typography variant="subtitle2">Order Date: </Typography>
+
+                                    {formatDateWithTime(selectedOrder?.createdAt)}
                                 </Typography>
                             </Grid>
                         </Grid>

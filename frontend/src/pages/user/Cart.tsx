@@ -105,7 +105,7 @@ const Cart: React.FC = () => {
             Header: 'Price',
             button: (row: { itemId: { price: number; salePrice: number } }) => (
                 <div className="flex items-center justify-center">
-                    {row?.itemId?.salePrice || row?.itemId?.price}
+                    ₹{row?.itemId?.salePrice || row?.itemId?.price}
                 </div>
             ),
         },
@@ -130,6 +130,7 @@ const Cart: React.FC = () => {
                 itemId: { quantity: number; price: number; salePrice: number };
             }) => (
                 <div className="flex items-center justify-center">
+                    ₹
                     {row.itemId.salePrice
                         ? row?.itemId?.salePrice * row?.quantity
                         : row?.itemId?.price * row?.quantity}
