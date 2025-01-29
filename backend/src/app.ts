@@ -35,12 +35,13 @@ app.use(helmet());
 app.disable('x-powered-by');
 app.use(
     cors({
-        origin: [appConfig.FRONTEND_URL],
+        origin: appConfig.FRONTEND_URLS,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
         allowedHeaders: ['Content-Type', 'Set-Cookie'],
         credentials: true,
     }),
 );
+
 app.use(compression());
 app.use(cookieParser());
 if (!isProductionENV) app.use(morgan('dev'));

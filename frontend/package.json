@@ -2,7 +2,7 @@
     "name": "frontend",
     "private": true,
     "version": "0.0.0",
-    "description": "this is backend of restaurant application",
+    "description": "this is frontend of restaurant application",
     "type": "module",
     "scripts": {
         "dev": "vite",

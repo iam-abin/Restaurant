@@ -35,7 +35,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
             yAxis={[
                 {
                     position: 'left', // You can also use 'right' for a secondary Y axis
-                    label: 'Value',
+                    label: 'Account creation count',
                     min: 0, // Optional: Set minimum value for the Y axis
                     max: maxValue, // Optional: Set maximum value for the Y axis
                     // tickCount: 5,     // Optional: Control the number of ticks (steps)
