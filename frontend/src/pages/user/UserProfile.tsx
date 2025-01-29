@@ -8,7 +8,7 @@ import { IAddress, IUser } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
 import { useConfirmationContext } from '../../context/confirmationContext';
 import CustomButton from '../../components/Button/CustomButton';
-import { hotToastMessage, ProfileFormSchema, profileFromSchema } from '../../utils';
+import { checkFileType, hotToastMessage, ProfileFormSchema, profileFromSchema } from '../../utils';
 
 const Profile: React.FC = () => {
     const [selectedProfilePicture, setSelectedProfilePicture] = useState<string>('');
@@ -44,7 +44,13 @@ const Profile: React.FC = () => {
 
     const fileChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
         const file: File | undefined = e.target.files?.[0];
-        if (!file) {
+        if (!file) return;
+
+        // Validate file type
+        const requiredFileType: string = 'image';
+        const isValid: boolean = checkFileType(file, requiredFileType);
+        if (!isValid) {
+            hotToastMessage(`Please select a valid ${requiredFileType} file.`, 'error');
             return;
         }
 
@@ -160,17 +166,20 @@ const Profile: React.FC = () => {
                                 onClick={() => imageRef.current?.click()}
                             />
                         </Box>
-                        {errors && <Typography className="text-sm text-red-500">{errors.name}</Typography>}
+                        {errors && <Typography className="text-sm text-red-500">{errors.image}</Typography>}
                     </div>
                     {/* Name */}
-                    <input
-                        type="text"
-                        placeholder="update your name"
-                        name="name"
-                        value={profileData.name}
-                        onChange={changeHandler}
-                        className="h-8 font-bold outline-none border-none"
-                    />
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="update your name"
+                            name="name"
+                            value={profileData.name}
+                            onChange={changeHandler}
+                            className="h-8 font-bold outline-none border-none"
+                        />
+                        {errors && <Typography className="text-sm text-red-500">{errors.name}</Typography>}
+                    </div>
                 </div>
             </div>
             {/* Email */}

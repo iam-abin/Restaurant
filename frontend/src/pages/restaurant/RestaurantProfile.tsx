@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { Alert, Chip } from '@mui/material';
 
-import { hotToastMessage, RestaurantFormSchema, restaurantFromSchema } from '../../utils';
+import { checkFileType, hotToastMessage, RestaurantFormSchema, restaurantFromSchema } from '../../utils';
 import { updateRestaurantApi } from '../../api/apiMethods';
 import { IResponse, ICuisineResponse, IRestaurant, IRestaurantResponse, IUser } from '../../types';
 import LoaderCircle from '../../components/Loader/LoaderCircle';
@@ -69,16 +69,22 @@ const RestaurantProfile: React.FC = () => {
     };
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        const files: FileList | null = event.target.files;
+        const file: File | undefined = event.target.files?.[0];
+        if (!file) return;
 
-        if (files?.length) {
-            const file: File = files[0];
-            setInput((prevInput) => ({
-                ...prevInput,
-                image: file,
-            }));
-            setSelectedImage(file);
+        // Validate file type
+        const requiredFileType: string = 'image';
+        const isValid: boolean = checkFileType(file, requiredFileType);
+        if (!isValid) {
+            hotToastMessage(`Please select a valid ${requiredFileType} file.`, 'error');
+            return;
         }
+
+        setInput((prevInput) => ({
+            ...prevInput,
+            image: file,
+        }));
+        setSelectedImage(file);
     };
 
     const getImagePreviewUrl = (): string | undefined => {
@@ -119,6 +125,7 @@ const RestaurantProfile: React.FC = () => {
     };
 
     const udateProfileSubmitHandler = async (): Promise<void> => {
+        setErrors({});
         setIsLoading(true);
         const result = restaurantFromSchema.safeParse({
             ...input,

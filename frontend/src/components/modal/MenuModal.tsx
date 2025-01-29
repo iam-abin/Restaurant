@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import LoaderCircle from '../Loader/LoaderCircle';
-import { MenuFormSchema, menuSchema, hotToastMessage } from '../../utils';
+import { MenuFormSchema, menuSchema, hotToastMessage, checkFileType } from '../../utils';
 import { IResponse } from '../../types/api';
 import { addMenuItemApi } from '../../api/apiMethods/menu';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
@@ -105,14 +105,19 @@ const MenuModal: React.FC<IMenuModalProps> = ({
 
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>): void => {
         const file: File | undefined = e.target.files?.[0];
-        setInput((prev) => ({ ...prev, image: file }));
-        if (file) {
-            const reader: FileReader = new FileReader();
-            reader.onload = () => setPreviewImage(reader.result as string);
-            reader.readAsDataURL(file);
-        } else {
-            setPreviewImage(null);
+        if (!file) return;
+        // Validate file type
+        const requiredFileType: string = 'image';
+        const isValid: boolean = checkFileType(file, requiredFileType);
+        if (!isValid) {
+            hotToastMessage(`Please select a valid ${requiredFileType} file.`, 'error');
+            return;
         }
+
+        setInput((prev) => ({ ...prev, image: file }));
+        const reader: FileReader = new FileReader();
+        reader.onload = () => setPreviewImage(reader.result as string);
+        reader.readAsDataURL(file);
     };
 
     const submitHandler = async (e: FormEvent<HTMLFormElement>): Promise<void> => {

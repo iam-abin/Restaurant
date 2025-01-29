@@ -7,3 +7,4 @@ export * from './pathUtils';
 export * from './pdf';
 export * from './role';
 export * from './schema';
+export * from './validateFile';

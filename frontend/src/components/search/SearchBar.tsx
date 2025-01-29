@@ -22,7 +22,7 @@ const SearchBar: React.FC<ISearchBarProps> = ({ placeholder, onSearch, className
         return () => {
             debouncedOnSearch.cancel();
         };
-    }, [searchKey, debouncedOnSearch]);
+    }, [searchKey]);
 
     return (
         <input

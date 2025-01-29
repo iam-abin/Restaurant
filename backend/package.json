@@ -12,7 +12,6 @@
     "start": "cross-env NODE_ENV=production node build/src/index.js",
     "stripe": "stripe listen --forward-to localhost:3000/api/v1/webhook/stripe/confirm-order"
   },
-  "author": "abin",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.9",

@@ -24,6 +24,21 @@ cd Restaurant
 
 3. Install the dependencies:
 
+- Install all dependencies from root directory
+
+```
+npm run install-all
+```
+
+***or***
+- Install dependencies seperately
+
+To install some dev dependencies, from root directory, run
+
+```
+npm install
+```
+
 ```
 cd backend
 ```
@@ -38,10 +53,23 @@ cd frontend
 npm install 
 ```
 
-4. Set up the required environment variables. Rename the `.env.example` file to `.env` and provide the necessary values for your environment in frontend and backend.
+4. Setup stripe
 
-5. Start server (Running the app):
+- Install stripe cli in local system (refer stripe website's webhook section)
+- Login to stripe cli in local system 
 
+5. Set up the required environment variables.
+- Rename the `.env.example` file in frontend to `.env`
+- Rename the `.env.example` file in backend to `.env.development`, `.env.production`
+- Provide the necessary values for environment in frontend and backend.
+
+6. Start server (Running the app):
+
+- We can run all the start command from root directory using
+```
+npm run dev
+```
+***or***
 - In both frontend and backend terminal tabs, run
 
 ```
@@ -53,7 +81,7 @@ npm run dev
 npm run stripe
 ```
 
-5. Access the application from browser using:
+7. Access the application from browser using:
 
 ***For user***
 ```
@@ -79,4 +107,3 @@ http://localhost:5000/auth/admin
 ![Screenshot from 2025-01-21 08-20-47](https://github.com/user-attachments/assets/cc28eaad-8961-433c-a32d-bd8a15a62cba)
 
 ![Screenshot from 2025-01-21 11-55-31](https://github.com/user-attachments/assets/9f7ae398-1653-4c55-af71-b90ec8ab17e7)
-
