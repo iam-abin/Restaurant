@@ -104,6 +104,24 @@ http://localhost:5000/auth/admin
 
 ![Screenshot from 2025-01-21 11-52-20](https://github.com/user-attachments/assets/aaa9dce8-685a-41f7-9685-3dfa9cdb4274)
 
-![Screenshot from 2025-01-21 08-20-47](https://github.com/user-attachments/assets/cc28eaad-8961-433c-a32d-bd8a15a62cba)
+![Screenshot from 2025-01-29 17-25-51](https://github.com/user-attachments/assets/060c2e60-e448-46ba-85bd-9dea033a007a)
 
 ![Screenshot from 2025-01-21 11-55-31](https://github.com/user-attachments/assets/9f7ae398-1653-4c55-af71-b90ec8ab17e7)
+
+
+### Docker compose
+1. install docker 
+2. docker componse
+3. makefile
+- For docker compose commands check [Makefile](Makefile)
+  
+  ***or***
+  
+- Run the following command in the root directory of project
+```
+make
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
