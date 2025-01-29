@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
-import { Avatar, Box, Tooltip, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Tooltip, Typography } from '@mui/material';
 import { Add, Email, Flag, LocationOn, LocationSearching, Phone } from '@mui/icons-material';
 
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
@@ -100,8 +100,21 @@ const Profile: React.FC = () => {
         setSelectedProfilePicture('');
     };
 
+    const isProfileIncomplete: boolean =
+        !profileData.name ||
+        !profileData.city ||
+        !profileData.address ||
+        !profileData.country ||
+        !profileData.phone;
+
     return (
         <form onSubmit={handleUpdateProfileButton} className=" mx-auto my-5">
+            {/* Warning message */}
+            {isProfileIncomplete && (
+                <Alert severity="warning" className="mb-4">
+                    Fill all the profile details before making orders.
+                </Alert>
+            )}
             <div className="flex items-center justify-between">
                 <div className="flex gap-2 items-center">
                     {/* Profile image */}

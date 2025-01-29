@@ -80,6 +80,8 @@ const MenuModal: React.FC<IMenuModalProps> = ({
         if (isEditMode && initialValues) {
             setInput(transformInitialValueCuisine(initialValues));
             setPreviewImage(initialValues.imageUrl ? initialValues.imageUrl : null);
+        } else {
+            setInput((prev) => ({ ...prev, featured: false })); // Ensure "featured" has a default boolean value
         }
     }, [isEditMode, initialValues]);
 
@@ -225,7 +227,7 @@ const MenuModal: React.FC<IMenuModalProps> = ({
                                 fullWidth
                                 label="Name"
                                 name="name"
-                                value={input.name}
+                                value={input.name ?? ''}
                                 onChange={handleInputChange}
                                 error={!!errors.name}
                                 helperText={errors.name}
@@ -237,7 +239,7 @@ const MenuModal: React.FC<IMenuModalProps> = ({
                                 fullWidth
                                 label="Description"
                                 name="description"
-                                value={input.description}
+                                value={input.description ?? ''}
                                 onChange={handleInputChange}
                                 error={!!errors.description}
                                 helperText={errors.description}
@@ -251,7 +253,7 @@ const MenuModal: React.FC<IMenuModalProps> = ({
                                 fullWidth
                                 label="Price (in ₹)"
                                 name="price"
-                                value={input.price}
+                                value={input.price ?? 0}
                                 onChange={handleInputChange}
                                 error={!!errors.price}
                                 helperText={errors.price}
@@ -264,7 +266,7 @@ const MenuModal: React.FC<IMenuModalProps> = ({
                                 fullWidth
                                 label="Sale Price (in ₹)"
                                 name="salePrice"
-                                value={input.salePrice}
+                                value={input.salePrice ?? 0}
                                 onChange={handleInputChange}
                                 error={!!errors.salePrice}
                                 helperText={errors.salePrice}
@@ -276,7 +278,7 @@ const MenuModal: React.FC<IMenuModalProps> = ({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={input.featured}
+                                        checked={!!input.featured}
                                         onChange={
                                             (e) =>
                                                 setInput((prev) => ({ ...prev, featured: e.target.checked })) // Change `isFeatured` to `featured`
@@ -322,7 +324,7 @@ const MenuModal: React.FC<IMenuModalProps> = ({
                             {previewImage && (
                                 <Box mt={2} textAlign="center">
                                     <img
-                                        src={previewImage}
+                                        src={previewImage ?? ''}
                                         alt="Preview"
                                         style={{
                                             width: '100%',

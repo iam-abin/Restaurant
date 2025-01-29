@@ -28,27 +28,25 @@ const RatingModal: React.FC<IRatingModalProps> = ({
     handleRatingChange,
 }) => {
     return (
-        <div>
-            <Modal
-                open={isModalOpen}
-                onClose={closeRatingModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Rate this restaurant
-                    </Typography>
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        <StarRating
-                            ratingValue={myRating}
-                            isReadOnly={false}
-                            handleRatingChange={handleRatingChange}
-                        />
-                    </Typography>
+        <Modal
+            open={isModalOpen}
+            onClose={closeRatingModal}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+        >
+            <Box sx={style}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                    Rate this restaurant
+                </Typography>
+                <Box sx={{ mt: 2 }}>
+                    <StarRating
+                        ratingValue={myRating}
+                        isReadOnly={false}
+                        handleRatingChange={handleRatingChange}
+                    />
                 </Box>
-            </Modal>
-        </div>
+            </Box>
+        </Modal>
     );
 };
 
