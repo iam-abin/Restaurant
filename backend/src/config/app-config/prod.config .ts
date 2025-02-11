@@ -1,7 +1,19 @@
-import { IAppConfig, NodeEnvironment } from '../types';
+import { IAppConfig, NodeEnvironment } from '../../types';
+
+const PORT: number = +process.env.PORT! || 3000;
+const FRONTEND_URLS: string[] =
+    process.env.FRONTEND_URLS?.split(',')
+        .map((url: string) => url.trim())
+        .filter(
+            (url: string) =>
+                url && url !== 'null' && url !== 'undefined' && url !== "''" && url !== '[]' && url !== '{}',
+        ) || [];
+
+const DEFAULT_FRONTEND_URL: string = FRONTEND_URLS[0];
 
 const appConfig: Readonly<IAppConfig> = Object.freeze({
-    PORT: +process.env.PORT! || 3000,
+    PORT,
+    SERVER_URL: process.env.SERVER_URL! || `http://localhost:${PORT}`,
     DB_NAME: process.env.DB_NAME!,
     MONGO_URI: process.env.MONGODB_CONNECTION_STRING!,
     NODE_ENVIRONMENT: process.env.NODE_ENV as NodeEnvironment,
@@ -15,18 +27,7 @@ const appConfig: Readonly<IAppConfig> = Object.freeze({
     COOKIE_JWT_ACCESS_EXPIRY_TIME: 3 * 60 * 60 * 1000, // Convert hours to milliseconds (3 hour),
     COOKIE_JWT_REFRESH_EXPIRY_TIME: 7 * 24 * 60 * 60 * 1000, // Convert days to milliseconds (7 days)
 
-    FRONTEND_URLS:
-        process.env.FRONTEND_URLS?.split(',')
-            .map((url: string) => url.trim())
-            .filter(
-                (url: string) =>
-                    url &&
-                    url !== 'null' &&
-                    url !== 'undefined' &&
-                    url !== "''" &&
-                    url !== '[]' &&
-                    url !== '{}',
-            ) || [],
+    FRONTEND_URLS,
 
     EMAIL_USER: process.env.EMAIL_USER!,
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD!,
@@ -39,8 +40,10 @@ const appConfig: Readonly<IAppConfig> = Object.freeze({
     STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY!,
     STRIPE_WEBHOOK_ENDPOINT_SECRET: process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET!,
 
-    PAYMENT_SUCCESS_URL: `${process.env.FRONTEND_URLS}/order/success`,
-    PAYMENT_CANCEL_URL: `${process.env.FRONTEND_URLS}/cart`,
+    PAYMENT_SUCCESS_URL: `${DEFAULT_FRONTEND_URL}/order/success`,
+    PAYMENT_CANCEL_URL: `${DEFAULT_FRONTEND_URL}/cart`,
 });
 
-export { appConfig };
+const optionalEnvVariables: string[] = ['PORT', 'FRONTEND_URLS', 'SERVER_URL'];
+
+export { appConfig, optionalEnvVariables };

@@ -18,7 +18,7 @@ import {
 } from '../database/model';
 import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
 import { stripeInstance } from '../config/stripe';
-import { appConfig } from '../config/app.config';
+import { appConfig } from '../config/app-config';
 import { executeTransaction, getPaginationSkipValue, getPaginationTotalNumberOfPages } from '../utils';
 
 @autoInjectable()
@@ -39,27 +39,27 @@ export class OrderService {
         return executeTransaction(async (session) => {
             const restaurant: IRestaurantDocument | null =
                 await this.restaurantRepository.findRestaurantById(restaurantId);
-            if (!restaurant) throw new NotFoundError('Restaurant not found');
+            if (!restaurant) throw new BadRequestError('Restaurant does not exist');
 
             const [cartItems, address]: [ICartDocument[], IAddressDocument | null] = await Promise.all([
                 this.cartRepository.findCartItemsByRestaurant(userId, restaurantId),
                 this.addressRepository.findAddressByUserId(userId),
             ]);
 
-            if (cartItems.length === 0) throw new NotFoundError('Must contain cart items to place order');
+            if (cartItems.length === 0) throw new BadRequestError('Must contain cart items to place order');
 
             const closedMenuItems: string[] = this.findClosedMenuItems(cartItems);
             if (closedMenuItems.length) {
-                const lengthIsOne: boolean = closedMenuItems.length === 1;
+                const isLengthOne: boolean = closedMenuItems.length === 1;
                 throw new BadRequestError(
-                    `${closedMenuItems.join(', ')} ${lengthIsOne ? 'is a' : 'are'} closed item${lengthIsOne ? '.' : 's.'}` +
-                        `Remove ${lengthIsOne ? 'it' : 'them'} from cart to proceed`,
+                    `${closedMenuItems.join(', ')} ${isLengthOne ? 'is a' : 'are'} closed item${isLengthOne ? '.' : 's.'}` +
+                        `Remove ${isLengthOne ? 'it' : 'them'} from cart to proceed`,
                 );
             }
 
-            if (!address) throw new NotFoundError('Must fill address details');
+            if (!address) throw new BadRequestError('Must fill address details');
 
-            const totalAmount: number = this.findtotalAmount(cartItems);
+            const totalAmount: number = this.calculateTotalAmount(cartItems);
 
             // Create the order
             const order: IOrderDocument | null = await this.orderRepository.createOrder(
@@ -81,20 +81,6 @@ export class OrderService {
             );
 
             if (!checkoutSession.url) throw new Error('Error while creating checkout session');
-
-            // Delete cart items in bulk
-            await this.cartRepository.deleteAllCartItems(userId, session);
-
-            // Transforming cart items to ordered items with order details
-            const orderedItems: IOrderedItem[] = this.createOrderedItems(
-                cartItems,
-                order._id.toString(),
-                restaurantId,
-                userId,
-            );
-
-            // Adding ordered items to OrderedItems collection
-            await this.orderedItemRepository.createOrderedItem(orderedItems, session);
 
             return { stripePaymentUrl: checkoutSession.url };
         });
@@ -141,29 +127,64 @@ export class OrderService {
         requestBody: Buffer,
         stripeSignature: string | Buffer | Array<string>,
     ): Promise<IOrderDocument | null> => {
-        const webhookEndPointSecret: string = appConfig.STRIPE_WEBHOOK_ENDPOINT_SECRET;
+        return executeTransaction(async (session) => {
+            const webhookEndPointSecret: string = appConfig.STRIPE_WEBHOOK_ENDPOINT_SECRET;
 
-        const event: Stripe.Event = stripeInstance.webhooks.constructEvent(
-            requestBody,
-            stripeSignature,
-            webhookEndPointSecret,
-        );
-
-        // Handle the checkout session completed event
-        if (event.type === 'checkout.session.completed') {
-            const checkoutSession = event.data.object as Stripe.Checkout.Session;
-            if (!checkoutSession.metadata?.orderId)
-                throw new Error('Order ID is missing in the session metadata');
-
-            const order: IOrderDocument | null = await this.orderRepository.findOrderById(
-                checkoutSession.metadata.orderId!,
+            const event: Stripe.Event = stripeInstance.webhooks.constructEvent(
+                requestBody,
+                stripeSignature,
+                webhookEndPointSecret,
             );
-            if (!order) throw new NotFoundError('Order not found');
 
-            const confirmedOrder = this.orderRepository.updateOrderStatus(order._id.toString(), status);
-            return confirmedOrder;
-        }
-        return null;
+            // Handle the checkout session completed event
+            if (event.type === 'checkout.session.completed') {
+                const checkoutSession = event.data.object as Stripe.Checkout.Session;
+                if (!checkoutSession.metadata?.orderId)
+                    throw new Error('Order ID is missing in the session metadata');
+
+                const order: IOrderDocument | null = await this.orderRepository.findOrderById(
+                    checkoutSession.metadata.orderId!,
+                );
+                if (!order) throw new NotFoundError('Order not found');
+
+                let userId: string;
+                if (typeof order.userId === 'string') {
+                    userId = order.userId;
+                } else {
+                    userId = (order.userId as IUserDocument)._id.toString();
+                }
+
+                const restaurantId: string = (order.restaurantId as IRestaurantDocument)._id.toString();
+                // Delete cart items in bulk
+                await this.cartRepository.deleteAllCartItems(order.userId.toString(), session);
+
+                const cartItems: ICartDocument[] = await this.cartRepository.findCartItemsByRestaurant(
+                    userId,
+                    restaurantId,
+                );
+
+                if (cartItems.length === 0) throw new NotFoundError('Must contain cart items to place order');
+
+                // Transforming cart items to ordered items with order details
+                const orderedItems: IOrderedItem[] = this.createOrderedItems(
+                    cartItems,
+                    order._id.toString(),
+                    restaurantId,
+                    userId,
+                );
+
+                // Adding ordered items to OrderedItems collection
+                await this.orderedItemRepository.createOrderedItem(orderedItems, session);
+
+                const confirmedOrder = await this.orderRepository.updateOrderStatus(
+                    order._id.toString(),
+                    status,
+                    session,
+                );
+                return confirmedOrder;
+            }
+            return null;
+        });
     };
 
     public updateOrderStatus = async (
@@ -215,7 +236,7 @@ export class OrderService {
     };
 
     // Helper function to calculate total order amound
-    private findtotalAmount = (cartItems: ICartDocument[]): number => {
+    private calculateTotalAmount = (cartItems: ICartDocument[]): number => {
         if (cartItems.length === 0) throw new Error('Cart is empty');
 
         const totalAmount: number = cartItems.reduce((acc: number, currItem: ICartDocument) => {

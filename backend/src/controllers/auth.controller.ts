@@ -16,7 +16,7 @@ import {
     ISignupData,
     IOtpTokenData,
 } from '../types';
-import { appConfig } from '../config/app.config';
+import { appConfig } from '../config/app-config';
 import { HTTP_STATUS_CODE } from '../constants';
 
 @autoInjectable()

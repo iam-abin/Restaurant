@@ -1,6 +1,6 @@
 import { IRating } from '../../types';
 import { singleton } from 'tsyringe';
-import { IRatingDocument, RatingModel } from '../model/rating.model';
+import { IRatingDocument, RatingModel } from '../model';
 import mongoose, { DeleteResult } from 'mongoose';
 
 @singleton()

@@ -4,13 +4,13 @@
   "description": "this is backend of restaurant application",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint 'src/**/*.ts'",
-    "lint:fix": "eslint 'src/**/*.ts' --fix",
-    "format": "prettier --write 'src/**/*.ts'",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write src/**/*.ts",
     "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
     "build": "tsc",
     "start": "cross-env NODE_ENV=production node build/src/index.js",
-    "stripe": "stripe listen --forward-to localhost:3000/api/v1/webhook/stripe/confirm-order"
+    "stripe": "stripe listen --forward-to localhost:4000/api/v1/webhook/stripe/confirm-order"
   },
   "license": "ISC",
   "dependencies": {

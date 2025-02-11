@@ -7,6 +7,7 @@ It is a Restaurant application where users can order food from different restaur
 - Vscode
 - Nodejs v20.16.0+
 - Mongodb 
+- Stripe CLI // Necessary only for development environment
 
 ## Installation
 

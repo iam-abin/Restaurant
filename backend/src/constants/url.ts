@@ -1,4 +1,4 @@
-import { appConfig } from '../config/app.config';
+import { appConfig } from '../config/app-config';
 
 export const GOOGLE_TOKEN_INFO_URL: string = 'https://oauth2.googleapis.com/tokeninfo?id_token=';
 
