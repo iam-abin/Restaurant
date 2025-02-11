@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
-import { appConfig } from '../config/app.config';
+import { appConfig } from '../config/app-config';
 import { IEmailTemplate } from '../types';
 import { APPLICATION_NAME } from '../constants';
 

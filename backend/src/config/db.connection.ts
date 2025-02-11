@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { appConfig } from './app.config';
+import { appConfig } from './app-config';
 import { DatabaseConnectionError } from '../errors';
 
 const connectDb = async (): Promise<void> => {

@@ -14,6 +14,7 @@ export interface IAppConfig {
     COOKIE_JWT_REFRESH_EXPIRY_TIME: number;
 
     FRONTEND_URLS: string[];
+    SERVER_URL: string;
 
     EMAIL_USER: string;
     EMAIL_PASSWORD: string;

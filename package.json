@@ -5,11 +5,11 @@
   },
  "scripts": {
     "prepare": "husky install",
-    "install-all": "npm i && concurrently 'cd ./frontend && npm i' 'cd ./backend && npm i'",
+    "install-all": "npm i && concurrently \"cd ./frontend && npm i\" \"cd ./backend && npm i\"",
     "frontend": "npm run dev --prefix frontend",
     "backend": "npm run dev --prefix backend",
     "stripe": "npm run stripe --prefix backend",
-    "dev": "concurrently 'npm run backend' 'npm run stripe' 'npm run frontend'",
+    "dev": "concurrently \"npm run backend\" \"npm run stripe\" \"npm run frontend\"",
     "build-frontend": "npm run build --prefix frontend",
     "build-backend": "npm run build --prefix backend",
     "build-all": "npm run build-frontend && npm run build-backend",
@@ -17,7 +17,7 @@
     "clean-backend-build": "rimraf ./backend/build",
     "clean-all-build": "npm run clean-frontend-build && npm run clean-backend-build",
     "preview-frontend": "npm run build-frontend && npm run preview --prefix frontend",
-    "preview-backend": "npm run build-backend && concurrently 'npm run stripe --prefix backend' 'npm run start --prefix backend'",
+    "preview-backend": "npm run build-backend && concurrently \"npm run stripe --prefix backend\" \"npm run start --prefix backend\"",
     "preview-all": "npm run clean-all-build && npm run preview-backend & npm run preview-frontend"
   },
   "devDependencies": {

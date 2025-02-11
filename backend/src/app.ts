@@ -19,7 +19,7 @@ import {
     ratingRoutes,
     restaurantRoutes,
 } from './routes';
-import { appConfig } from './config/app.config';
+import { appConfig } from './config/app-config';
 import { checkNodeEnvironment } from './utils';
 import { NodeEnvironment } from './types';
 

@@ -1,5 +1,5 @@
 import { createLogger, transports, format, Logger } from 'winston';
-import { appConfig } from '../config/app.config';
+import { appConfig } from '../config/app-config';
 import { NodeEnvironment } from '../types';
 import { checkNodeEnvironment } from './environment-check';
 

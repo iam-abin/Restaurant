@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { ClientSession } from 'mongoose';
 import { singleton } from 'tsyringe';
 import { IOrder, IOrderStatusWithCounts, OrderStatus } from '../../types';
 import { IOrderDocument, OrderModel } from '../model';
@@ -269,12 +269,17 @@ export class OrderRepository {
         return await OrderModel.findById(orderId).populate('restaurantId').lean<IOrderDocument | null>();
     };
 
-    updateOrderStatus = async (orderId: string, status: string): Promise<IOrderDocument | null> => {
+    updateOrderStatus = async (
+        orderId: string,
+        status: string,
+        session?: ClientSession,
+    ): Promise<IOrderDocument | null> => {
         const order: IOrderDocument | null = await OrderModel.findByIdAndUpdate(
             orderId,
             { status },
             {
                 new: true,
+                session,
             },
         );
         return order;

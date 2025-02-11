@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 import { omitDocFields } from '../../utils';
-import { IRating } from '../../types/rating';
+import { IRating } from '../../types';
 
 export interface IRatingDocument extends Document, Omit<IRating, 'userId' | 'restaurantId'> {
     restaurantId: Types.ObjectId;
