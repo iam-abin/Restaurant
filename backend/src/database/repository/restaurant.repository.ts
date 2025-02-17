@@ -30,8 +30,12 @@ export class RestaurantRepository {
             .lean<IRestaurantDocument[]>();
     };
 
-    findRestaurantById = async (restaurantId: string): Promise<IRestaurantDocument | null> => {
+    findRestaurantById = async (
+        restaurantId: string,
+        session?: ClientSession | null,
+    ): Promise<IRestaurantDocument | null> => {
         return await RestaurantModel.findById(restaurantId)
+            .session(session!)
             .populate([
                 {
                     path: 'ownerId',
@@ -46,8 +50,12 @@ export class RestaurantRepository {
             .lean<IRestaurantDocument | null>(); // Exclude fields from the main restaurant document
     };
 
-    findRestaurantByOwnerId = async (ownerId: string): Promise<IRestaurantDocument | null> => {
+    findRestaurantByOwnerId = async (
+        ownerId: string,
+        session?: ClientSession | null,
+    ): Promise<IRestaurantDocument | null> => {
         return await RestaurantModel.findOne({ ownerId })
+            .session(session!)
             .populate({
                 path: 'ownerId',
                 select: this.excludedFields,

@@ -1,4 +1,6 @@
+import { ClientSession } from 'mongoose';
 import { ICartDocument } from '../database/model';
+import { Pagination } from './pagination';
 
 export interface ICart {
     userId: string;
@@ -7,12 +9,17 @@ export interface ICart {
     quantity: number;
 }
 
-export type GetCartItemsByRestaurantIdParams = {
+export type GetCartItemsByRestaurantIdParams = Required<Pagination> & {
     userId: string;
     restaurantId: string;
-    page: number;
-    limit: number;
 };
+
+export interface IFindCartItemsByRestaurant extends Pagination {
+    userId: string;
+    restaurantId: string;
+    skip?: number;
+    session?: ClientSession;
+}
 
 export type CartItemId = {
     cartItemId: string;

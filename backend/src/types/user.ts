@@ -39,7 +39,7 @@ export type DecodedGoogleToken = {
 };
 
 export interface ISigninData {
-    user: IUserDocument;
+    user: IUserDocument | Omit<IUser, 'password'>;
     jwtAccessToken: string;
     jwtRefreshToken: string;
 }

@@ -31,6 +31,7 @@ import {
     UserRole,
     ISigninData,
     ISignupData,
+    IUser,
 } from '../types';
 import { getEmailVerificationTemplate } from '../templates/signupVerificationEmail';
 
@@ -46,12 +47,13 @@ export class UserService {
     public signUp = async (userRegisterDto: ISignup): Promise<ISignupData | null> => {
         return executeTransaction(async (session) => {
             const { name, email } = userRegisterDto;
-            const existingUser: IUserDocument | null = await this.userRepository.findUserByEmail(email);
+            const existingUser: IUser | null = await this.userRepository.findUserByEmail(email, session);
             // If the user already exists but is not verified
             if (existingUser && !existingUser.isVerified) {
                 // Check if an OTP already exists and hasn't expired (optional, based on use case)
                 const existingOtp: IOtpTokenDocument | null = await this.otpTokenRepository.findByUserId(
                     existingUser._id.toString(),
+                    session,
                 );
                 if (existingOtp) {
                     const isExpired: boolean = checkIsOtpTokenExpired(existingOtp?.expiresAt);
@@ -105,23 +107,23 @@ export class UserService {
 
     public signIn = async (userSignInDto: ISignin): Promise<ISigninData> => {
         const { email, password, role } = userSignInDto;
-        const existingUser: IUserDocument | null = await this.userRepository.findUserByEmail(email);
+        const existingUser: IUser | null = await this.userRepository.findUserByEmail(email);
         if (!existingUser) throw new BadRequestError('Invalid email or password');
-
+        const { password: hashedPassword, ...user } = existingUser;
         // Check if the user is signedup using google
-        if (existingUser.googleId) throw new BadRequestError('use another way to login');
-        if (existingUser.role !== role) throw new BadRequestError('Role is not matching');
+        if (user.googleId) throw new BadRequestError('use another way to login');
+        if (user.role !== role) throw new BadRequestError('Role is not matching');
 
         if (role === UserRole.ADMIN) {
-            if (email !== existingUser.email || password !== existingUser.password)
+            if (email !== user.email || password !== existingUser.password)
                 throw new BadRequestError('Invalid email or password');
         } else {
-            if (existingUser.isBlocked) throw new ForbiddenError('You are a blocked user');
-            const isSamePassword: boolean = await comparePassword(password!, existingUser.password!);
+            if (user.isBlocked) throw new ForbiddenError('You are a blocked user');
+            const isSamePassword: boolean = await comparePassword(password!, hashedPassword!);
             if (!isSamePassword) throw new BadRequestError('Invalid email or password');
 
             // Check if the user is verified
-            if (!existingUser.isVerified) {
+            if (!user.isVerified) {
                 throw new ForbiddenError(
                     'You are not verified yet. Pleas verify by signup again to get otp.',
                 );
@@ -129,7 +131,7 @@ export class UserService {
         }
 
         const { jwtAccessToken, jwtRefreshToken }: Tokens = await this.generateTokens(existingUser);
-        return { user: existingUser, jwtAccessToken, jwtRefreshToken };
+        return { user, jwtAccessToken, jwtRefreshToken };
     };
 
     public googleAuth = async (authCredential: IGoogleAuthCredential): Promise<ISigninData> => {
@@ -141,7 +143,7 @@ export class UserService {
             if (!email_verified) throw new ForbiddenError('Email is not verified');
 
             // Check if the user exists
-            const existingUser: IUserDocument | null = await this.userRepository.findUserByEmail(email);
+            const existingUser: IUser | null = await this.userRepository.findUserByEmail(email, session);
             if (!existingUser) {
                 const userData: Omit<IGoogleAuth, 'picture'> = {
                     name,
@@ -179,20 +181,32 @@ export class UserService {
 
             if (role === UserRole.RESTAURANT) {
                 const restaurant: IRestaurantDocument | null =
-                    await this.restaurantRepository.findRestaurantByOwnerId(existingUser._id.toString());
+                    await this.restaurantRepository.findRestaurantByOwnerId(
+                        existingUser._id.toString(),
+                        session,
+                    );
                 if (restaurant?.imageUrl !== picture) {
-                    await this.restaurantRepository.updateRestaurant(existingUser._id.toString(), {
-                        imageUrl: picture,
-                    });
+                    await this.restaurantRepository.updateRestaurant(
+                        existingUser._id.toString(),
+                        {
+                            imageUrl: picture,
+                        },
+                        session,
+                    );
                 }
             } else if (role === UserRole.USER) {
                 const profile: IProfileDocument | null = await this.profileRepository.findProfileByUserId(
                     existingUser._id.toString(),
+                    session,
                 );
                 if (profile?.imageUrl !== picture) {
-                    await this.profileRepository.updateProfile(existingUser._id.toString(), {
-                        imageUrl: picture,
-                    });
+                    await this.profileRepository.updateProfile(
+                        existingUser._id.toString(),
+                        {
+                            imageUrl: picture,
+                        },
+                        session,
+                    );
                 }
             }
 
@@ -226,7 +240,7 @@ export class UserService {
         return userWithUpdatedBlockStatus;
     };
 
-    private generateTokens = async (user: IUserDocument): Promise<Tokens> => {
+    private generateTokens = async (user: IUserDocument | IUser): Promise<Tokens> => {
         // Generate JWT tokens
         const userPayload: IJwtPayload = {
             userId: user._id.toString(),

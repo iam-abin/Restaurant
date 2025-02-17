@@ -1,7 +1,7 @@
 import { ClientSession, DeleteResult } from 'mongoose';
 import { singleton } from 'tsyringe';
 import { ICartDocument, CartModel } from '../model';
-import { ICart } from '../../types';
+import { ICart, IFindCartItemsByRestaurant } from '../../types';
 
 @singleton()
 export class CartRepository {
@@ -29,13 +29,14 @@ export class CartRepository {
             .lean<ICartDocument | null>();
     };
 
-    findCartItemsByRestaurant = async (
-        userId: string,
-        restaurantId: string,
-        skip: number = 0, // If skip is undefined or null, it defaults to 0, ensuring no skipping of documents
-        limit: number = 0, // If limit is undefined or null, it defaults to 0, which means no limit is applied
-    ): Promise<ICartDocument[]> => {
-        return await CartModel.find({ userId, restaurantId })
+    findCartItemsByRestaurant = async ({
+        userId,
+        restaurantId,
+        skip = 10,
+        limit = 10,
+        session,
+    }: IFindCartItemsByRestaurant): Promise<ICartDocument[]> => {
+        return await CartModel.find({ userId, restaurantId }, { session })
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)

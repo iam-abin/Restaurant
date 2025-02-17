@@ -16,10 +16,11 @@ import {
     RestaurantRepository,
 } from '../database/repository';
 import { IOtpTokenDocument, IUserDocument } from '../database/model';
-import { IEmailTemplate, IOtpTokenData, UserRole } from '../types';
+import { IEmailTemplate, IOtpTokenData, IUser, UserRole } from '../types';
 import { getEmailVerificationTemplate } from '../templates/signupVerificationEmail';
 import { getForgotPasswordEmailTemplate } from '../templates/forgotPasswordEmail';
 import { RESET_PASSWORD_URL } from '../constants';
+import { ClientSession } from 'mongoose';
 
 @autoInjectable()
 export class OtpService {
@@ -32,13 +33,16 @@ export class OtpService {
 
     public verifyOtp = async (userId: string, otp: string): Promise<IUserDocument | null> => {
         return executeTransaction(async (session) => {
-            const user: IUserDocument = await this.validateUserExistence(userId);
+            const user: IUserDocument = await this.validateUserExistence(userId, session);
 
             // Check if the user is already verified
             if (user.isVerified) throw new BadRequestError('You are already verified. Please signin');
 
             // If user is not verified, Check otp
-            const otpData: IOtpTokenDocument | null = await this.otpTokenRepository.findByUserId(userId);
+            const otpData: IOtpTokenDocument | null = await this.otpTokenRepository.findByUserId(
+                userId,
+                session,
+            );
             const validatedOtpData: IOtpTokenDocument = await this.validateOtpOrResetToken(otpData);
 
             if (otp !== validatedOtpData.otp) throw new BadRequestError('Invalid otp');
@@ -63,12 +67,15 @@ export class OtpService {
 
     public resendOtp = async (userId: string): Promise<IOtpTokenData> => {
         return executeTransaction(async (session) => {
-            const user: IUserDocument = await this.validateUserExistence(userId);
+            const user: IUserDocument = await this.validateUserExistence(userId, session);
 
             if (user.isVerified) throw new BadRequestError('You are already verified. Please signin');
 
             // Check if an OTP already exists and hasn't expired
-            const existOtp: IOtpTokenDocument | null = await this.otpTokenRepository.findByUserId(userId);
+            const existOtp: IOtpTokenDocument | null = await this.otpTokenRepository.findByUserId(
+                userId,
+                session,
+            );
             if (existOtp) {
                 const isResendTimeLimitCompleted: boolean = isOtpTOkenResendAllowed(existOtp.createdAt);
                 if (!isResendTimeLimitCompleted) {
@@ -98,7 +105,7 @@ export class OtpService {
 
     public forgotPassword = async (email: string): Promise<IOtpTokenData> => {
         return executeTransaction(async (session) => {
-            const user: IUserDocument | null = await this.userRepository.findUserByEmail(email);
+            const user: IUser | null = await this.userRepository.findUserByEmail(email, session);
             if (!user) throw new NotFoundError('This user does not exist');
             if (!user.isVerified)
                 throw new ForbiddenError(
@@ -108,6 +115,7 @@ export class OtpService {
             // Check if a Token already exists and hasn't expired
             const existToken: IOtpTokenDocument | null = await this.otpTokenRepository.findByUserId(
                 user._id.toString(),
+                session,
             );
             if (existToken) {
                 const isResendTimeLimitCompleted: boolean = isOtpTOkenResendAllowed(existToken.createdAt);
@@ -167,8 +175,11 @@ export class OtpService {
         return updatedUser;
     };
 
-    private validateUserExistence = async (userId: string): Promise<IUserDocument> => {
-        const user: IUserDocument | null = await this.userRepository.findUserById(userId);
+    private validateUserExistence = async (
+        userId: string,
+        session?: ClientSession,
+    ): Promise<IUserDocument> => {
+        const user: IUserDocument | null = await this.userRepository.findUserById(userId, session);
         if (!user) throw new NotFoundError('This user does not exist.');
         return user;
     };

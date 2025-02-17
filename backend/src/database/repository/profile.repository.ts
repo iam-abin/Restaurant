@@ -15,8 +15,12 @@ export class ProfileRepository {
         return user[0];
     };
 
-    findProfileByUserId = async (userId: string): Promise<IProfileDocument | null> => {
+    findProfileByUserId = async (
+        userId: string,
+        session?: ClientSession | null,
+    ): Promise<IProfileDocument | null> => {
         return await ProfileModel.findOne({ userId })
+            .session(session!)
             .populate([
                 {
                     path: 'userId',
