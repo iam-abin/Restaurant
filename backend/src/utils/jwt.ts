@@ -21,17 +21,6 @@ export const createJwtRefreshToken = (payload: IJwtPayload): string => {
 };
 
 /**
- * Helper function to create a JWT token (access or refresh).
- * @param {IJwtPayload} payload - The payload to include in the token.
- * @param {string} secret - The secret to sign the token.
- * @param {string} expiry - The expiry time for the token.
- * @returns {string} - The signed JWT token.
- */
-const createJwtToken = (payload: IJwtPayload, secret: string, expiry: string): string => {
-    return jwt.sign(payload, secret, { expiresIn: expiry });
-};
-
-/**
  * Verifies and decodes a JWT access token.
  * @param {string} token - The access token to verify.
  * @returns {IJwtPayload} - The decoded JWT payload.
@@ -49,4 +38,29 @@ export const verifyJwtAccessToken = (token: string): IJwtPayload => {
 export const verifyJwtRefreshToken = (token: string): IJwtPayload => {
     const decodedData: IJwtPayload = jwt.verify(token, appConfig.JWT_REFRESH_SECRET!) as IJwtPayload;
     return decodedData;
+};
+
+/**
+ * Helper function to create a JWT token (access or refresh).
+ * @param {IJwtPayload} payload - The payload to include in the token.
+ * @param {string} secret - The secret to sign the token.
+ * @param {string} expiry - The expiry time for the token.
+ * @returns {string} - The signed JWT token.
+ */
+const createJwtToken = (payload: IJwtPayload, secret: string, expiry: string): string => {
+    if (!isValidPayload(payload)) throw new Error('Invalid payload structure');
+    return jwt.sign(payload, secret, { expiresIn: expiry });
+};
+
+/**
+ * Validates the JWT payload structure.
+ * @param {IJwtPayload} payload - The payload to validate.
+ * @returns {boolean} - True if valid, otherwise false.
+ */
+const isValidPayload = (payload: IJwtPayload): boolean => {
+    return (
+        typeof payload === 'object' &&
+        typeof payload?.userId === 'string' &&
+        typeof payload?.role === 'string'
+    );
 };

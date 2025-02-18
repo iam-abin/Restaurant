@@ -10,7 +10,7 @@ type PasswordType = 'password' | 'hashed password' | undefined;
  */
 const validatePassword = (password: string, passwordType?: PasswordType): void => {
     if (!password || typeof password !== 'string') {
-        throw new Error(`${passwordType ?? 'password'} must be a non-empty string`);
+        throw new TypeError(`${passwordType ?? 'password'} must be a non-empty string`);
     }
 };
 
