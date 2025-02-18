@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { ClientSession } from 'mongoose';
 import { autoInjectable } from 'tsyringe';
 import { IMenu, Menu } from '../types';
 import {
@@ -39,11 +39,13 @@ export class MenuService {
         file: Express.Multer.File,
     ): Promise<IMenuDocument> => {
         return executeTransaction(async (session) => {
-            const restaurant: IRestaurantDocument = await this.validateRestaurantOwnership(userId);
+            const restaurant: IRestaurantDocument = await this.validateRestaurantOwnership(userId, session);
             const { cuisine } = menuData;
             if (!file) throw new BadRequestError('Must have image file to create menu');
-            const addressData: IAddressDocument | null =
-                await this.addressRepository.findAddressByUserId(userId);
+            const addressData: IAddressDocument | null = await this.addressRepository.findAddressByUserId(
+                userId,
+                session,
+            );
             if (!addressData) throw new BadRequestError('Must have address to create menu');
 
             // Ensure city and country are present
@@ -98,9 +100,12 @@ export class MenuService {
         file: Express.Multer.File,
     ): Promise<IMenuDocument | null> => {
         return executeTransaction(async (session) => {
-            const restaurant: IRestaurantDocument = await this.validateRestaurantOwnership(userId);
+            const restaurant: IRestaurantDocument = await this.validateRestaurantOwnership(userId, session);
 
-            const menu: IMenuDocument | null = await this.menuRepository.findMenuItemById(menuItemId);
+            const menu: IMenuDocument | null = await this.menuRepository.findMenuItemById(
+                menuItemId,
+                session,
+            );
             if (!menu) throw new NotFoundError('Menu not found');
 
             if (updateData.salePrice && updateData.salePrice > menu.price) {
@@ -123,11 +128,15 @@ export class MenuService {
                 imageUrl = await uploadImageOnCloudinary(file);
             }
 
-            const updatedMenu: IMenuDocument | null = await this.menuRepository.updateMenuItem(menuItemId, {
-                ...updateData,
-                cuisineId: cuisineData._id.toString(),
-                imageUrl,
-            });
+            const updatedMenu: IMenuDocument | null = await this.menuRepository.updateMenuItem(
+                menuItemId,
+                {
+                    ...updateData,
+                    cuisineId: cuisineData._id.toString(),
+                    imageUrl,
+                },
+                session,
+            );
             return updatedMenu;
         });
     };
@@ -145,9 +154,12 @@ export class MenuService {
         return menuItemWithUpdatedBlockStatus;
     };
 
-    private validateRestaurantOwnership = async (userId: string): Promise<IRestaurantDocument> => {
+    private validateRestaurantOwnership = async (
+        userId: string,
+        session?: ClientSession,
+    ): Promise<IRestaurantDocument> => {
         const restaurant: IRestaurantDocument | null =
-            await this.restaurantRepository.findRestaurantByOwnerId(userId);
+            await this.restaurantRepository.findRestaurantByOwnerId(userId, session);
         if (!restaurant) throw new NotFoundError('Restaurant not found');
         return restaurant;
     };

@@ -37,13 +37,15 @@ export class OrderService {
     ): Promise<{ stripePaymentUrl: string }> => {
         const { restaurantId } = orderData;
         return executeTransaction(async (session) => {
-            const restaurant: IRestaurantDocument | null =
-                await this.restaurantRepository.findRestaurantById(restaurantId);
+            const restaurant: IRestaurantDocument | null = await this.restaurantRepository.findRestaurantById(
+                restaurantId,
+                session,
+            );
             if (!restaurant) throw new BadRequestError('Restaurant does not exist');
 
             const [cartItems, address]: [ICartDocument[], IAddressDocument | null] = await Promise.all([
-                this.cartRepository.findCartItemsByRestaurant(userId, restaurantId),
-                this.addressRepository.findAddressByUserId(userId),
+                this.cartRepository.findCartItemsByRestaurant({ userId, restaurantId, session }),
+                this.addressRepository.findAddressByUserId(userId, session),
             ]);
 
             if (cartItems.length === 0) throw new BadRequestError('Must contain cart items to place order');
@@ -144,6 +146,7 @@ export class OrderService {
 
                 const order: IOrderDocument | null = await this.orderRepository.findOrderById(
                     checkoutSession.metadata.orderId!,
+                    session,
                 );
                 if (!order) throw new NotFoundError('Order not found');
 
@@ -158,10 +161,11 @@ export class OrderService {
                 // Delete cart items in bulk
                 await this.cartRepository.deleteAllCartItems(order.userId.toString(), session);
 
-                const cartItems: ICartDocument[] = await this.cartRepository.findCartItemsByRestaurant(
+                const cartItems: ICartDocument[] = await this.cartRepository.findCartItemsByRestaurant({
                     userId,
                     restaurantId,
-                );
+                    session,
+                });
 
                 if (cartItems.length === 0) throw new NotFoundError('Must contain cart items to place order');
 

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { ClientSession } from 'mongoose';
 import { singleton } from 'tsyringe';
 import { IMenu } from '../../types';
 import { IMenuDocument, MenuModel } from '../model';
@@ -12,8 +12,11 @@ export class MenuRepository {
         return menu[0];
     };
 
-    findMenuItemById = async (menuItemId: string): Promise<IMenuDocument | null> => {
-        return await MenuModel.findById(menuItemId).lean<IMenuDocument | null>();
+    findMenuItemById = async (
+        menuItemId: string,
+        session?: ClientSession | null,
+    ): Promise<IMenuDocument | null> => {
+        return await MenuModel.findById(menuItemId).session(session!).lean<IMenuDocument | null>();
     };
 
     findMenu = async (
@@ -30,9 +33,14 @@ export class MenuRepository {
             .lean<IMenuDocument[]>();
     };
 
-    updateMenuItem = async (menuId: string, updatedData: Partial<IMenu>): Promise<IMenuDocument | null> => {
+    updateMenuItem = async (
+        menuId: string,
+        updatedData: Partial<IMenu>,
+        session?: ClientSession,
+    ): Promise<IMenuDocument | null> => {
         const menu: IMenuDocument | null = await MenuModel.findByIdAndUpdate(menuId, updatedData, {
             new: true,
+            session,
         }).populate('cuisineId', ['-_id', 'name']);
         return menu;
     };

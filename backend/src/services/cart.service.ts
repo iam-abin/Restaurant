@@ -42,7 +42,7 @@ export class CartService {
         const skip: number = getPaginationSkipValue(page, limit);
 
         const [cartItems, cartItemsCount]: [ICartDocument[], number] = await Promise.all([
-            this.cartRepository.findCartItemsByRestaurant(userId, restaurantId, skip, limit),
+            this.cartRepository.findCartItemsByRestaurant({ userId, restaurantId, skip, limit }),
             this.cartRepository.countCartItems(restaurantId, userId),
         ]);
 

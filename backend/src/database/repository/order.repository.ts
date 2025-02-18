@@ -265,8 +265,14 @@ export class OrderRepository {
         return restaurantOrders;
     };
 
-    findOrderById = async (orderId: string): Promise<IOrderDocument | null> => {
-        return await OrderModel.findById(orderId).populate('restaurantId').lean<IOrderDocument | null>();
+    findOrderById = async (
+        orderId: string,
+        session?: ClientSession | null,
+    ): Promise<IOrderDocument | null> => {
+        return await OrderModel.findById(orderId)
+            .session(session!)
+            .populate('restaurantId')
+            .lean<IOrderDocument | null>();
     };
 
     updateOrderStatus = async (

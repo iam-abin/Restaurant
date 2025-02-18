@@ -2,27 +2,41 @@ import dotenv from 'dotenv';
 dotenv.config();
 import { IAppConfig, NodeEnvironment } from '../../types';
 
-// Load .env.test files for test environment.
-if (process.env.NODE_ENV === NodeEnvironment.TEST) {
-    dotenv.config({ path: '.env.test' });
+// Load different .env files based on NODE_ENV
+switch (process.env.NODE_ENV) {
+    case NodeEnvironment.PRODUCTION:
+        dotenv.config({ path: '.env.production' });
+        break;
+    case NodeEnvironment.TEST:
+        dotenv.config({ path: '.env.test' });
+        break;
+    default:
+        dotenv.config({ path: '.env.development' });
 }
 
 import * as devConfig from './dev.config';
 import * as prodConfig from './prod.config ';
+import * as testConfig from './test.config';
+
 let appConfig: IAppConfig;
 let optionalEnvVariables: string[] = [];
 
+// Set app configuration based on environment.
 switch (process.env.NODE_ENV) {
     case NodeEnvironment.PRODUCTION:
         appConfig = prodConfig.appConfig;
         optionalEnvVariables = prodConfig.optionalEnvVariables;
+        break;
+    case NodeEnvironment.TEST:
+        appConfig = testConfig.appConfig;
+        optionalEnvVariables = testConfig.optionalEnvVariables;
         break;
     default:
         appConfig = devConfig.appConfig;
         optionalEnvVariables = devConfig.optionalEnvVariables;
 }
 
-// Validation (Important!)
+// Validation
 const REQUIRED_ENV_VARIABLES = (Object.keys(appConfig) as (keyof IAppConfig)[]).filter(
     (key: keyof IAppConfig) => !(optionalEnvVariables as readonly string[]).includes(key as string),
 );

@@ -1,4 +1,5 @@
 import { IUserDocument } from '../database/model';
+import { IUser } from './user';
 
 export interface IOtpToken {
     userId: string;
@@ -19,6 +20,6 @@ export type OtpConfig = {
 };
 
 export interface IOtpTokenData {
-    user: IUserDocument;
+    user: IUser | IUserDocument;
     otpOrTokenExpiresAt: Date;
 }

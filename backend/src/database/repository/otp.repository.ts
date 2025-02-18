@@ -18,8 +18,8 @@ export class OtpTokenRepository {
         );
     };
 
-    findByUserId = async (userId: string): Promise<IOtpTokenDocument | null> => {
-        return await OtpTokenModel.findOne({ userId }).lean();
+    findByUserId = async (userId: string, session?: ClientSession): Promise<IOtpTokenDocument | null> => {
+        return await OtpTokenModel.findOne({ userId }).session(session!).lean();
     };
 
     findByResetToken = async (resetToken: string): Promise<IOtpTokenDocument | null> => {

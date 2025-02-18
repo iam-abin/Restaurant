@@ -12,15 +12,17 @@ export class UserRepository {
         return user[0];
     };
 
-    findUserByEmail = async (email: string): Promise<IUserDocument | null> => {
+    findUserByEmail = async (email: string, session?: ClientSession | null): Promise<IUser | null> => {
         return await UserModel.findOne({ email })
-            .select([...this.excludedFields, '-passwored'])
-            .lean();
+            .session(session!)
+            .select([...this.excludedFields])
+            .lean<IUser>();
     };
 
-    findUserById = async (userId: string): Promise<IUserDocument | null> => {
+    findUserById = async (userId: string, session?: ClientSession | null): Promise<IUserDocument | null> => {
         return await UserModel.findById(userId)
-            .select([...this.excludedFields, '-passwored'])
+            .session(session!)
+            .select([...this.excludedFields, '-password'])
             .lean();
     };
 

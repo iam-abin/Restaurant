@@ -6,7 +6,7 @@ const FRONTEND_URLS: string[] =
         .map((url: string) => url.trim())
         .filter(
             (url: string) =>
-                url && url !== 'null' && url !== 'undefined' && url !== "''" && url !== '[]' && url !== '{}',
+                url && url !== 'null' && url !== 'undefined' && url !== '' && url !== '[]' && url !== '{}',
         ) || [];
 
 const DEFAULT_FRONTEND_URL: string = FRONTEND_URLS[0];

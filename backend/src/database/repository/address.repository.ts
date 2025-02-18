@@ -5,8 +5,11 @@ import { IAddress } from '../../types';
 
 @singleton()
 export class AddressRepository {
-    findAddressByUserId = async (userId: string): Promise<IAddressDocument | null> => {
-        return await AddressModel.findOne({ userId }).lean<IAddressDocument | null>();
+    findAddressByUserId = async (
+        userId: string,
+        session?: ClientSession | null,
+    ): Promise<IAddressDocument | null> => {
+        return await AddressModel.findOne({ userId }).session(session!).lean<IAddressDocument | null>();
     };
 
     updateAddress = async (
