@@ -1,18 +1,17 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-
+echo "⏳ Running tests before pushing..."
 # Navigate to the backend folder
 cd backend
 
 # Run tests
-npm run test
+npm run test || {
+  echo "❌ Tests failed! Aborting push.";
+  exit 1;
+}
 
-if [ $? -ne 0 ]; then
-  echo "Tests failed! Aborting push."
-  exit 1
-fi
-
+echo "✅ Tests completed successfully."
 # Go back to the project root
 cd ..
 
@@ -21,8 +20,8 @@ current_branch=$(git symbolic-ref --short HEAD)
 
 # Check if the branch is master
 if [ "$current_branch" = "master" ]; then
-  echo "You cannot push to the 'master' branch directly. Please push to a different branch."
-  exit 1
+  echo "❌ You cannot push to the 'master' branch directly. Please push to a different branch.";
+  exit 1;
 fi
 
 exit 0

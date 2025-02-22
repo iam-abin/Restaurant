@@ -5,7 +5,7 @@ services:
             dockerfile: ./docker/Dockerfile.prod
         container_name: frontend-container-prod
         ports:
-            - 5000:5000
+            - "8080:80" 
         restart: unless-stopped
         env_file:
             - ./frontend/.env
@@ -13,11 +13,6 @@ services:
             - restaurant_network
         depends_on:
             - backend
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:5000"]
-            interval: 30s
-            timeout: 10s
-            retries: 3
 
     backend:
         build:
@@ -31,11 +26,6 @@ services:
             - ./backend/.env.production
         networks:
             - restaurant_network
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:3000"]
-            interval: 30s
-            timeout: 10s
-            retries: 3
 
 networks:
   restaurant_network:
