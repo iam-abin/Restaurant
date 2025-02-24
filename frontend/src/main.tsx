@@ -12,6 +12,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { Suspense } from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { ConfirmationProvider } from './context/confirmationContext.tsx';
+// import { BrowserRouter } from 'react-router';
 
 createRoot(document.getElementById('root')!).render(
     <Provider store={store}>

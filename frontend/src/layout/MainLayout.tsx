@@ -5,6 +5,7 @@ import { useAppSelector } from '../redux/hooks';
 import { RootState } from '../redux/store';
 import { IUser, UserRole } from '../types';
 import { checkRole } from '../utils';
+import PageTransition from '../components/framer-motion/PageTransition';
 
 const MainLayout = () => {
     const currentUser: IUser | null = useAppSelector((store: RootState) => store.authReducer.authData);
@@ -20,9 +21,11 @@ const MainLayout = () => {
             <main
                 className={`flex-grow ${checkRole(UserRole.USER, currentUser?.role) ? 'bg-gray-100' : 'bg-white'}`}
             >
-                <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <Outlet />
-                </div>
+                <PageTransition>
+                    <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                        <Outlet />
+                    </div>
+                </PageTransition>
             </main>
 
             {/* Footer */}
