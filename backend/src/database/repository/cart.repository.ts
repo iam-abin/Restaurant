@@ -32,11 +32,12 @@ export class CartRepository {
     findCartItemsByRestaurant = async ({
         userId,
         restaurantId,
-        skip = 10,
-        limit = 10,
+        skip = 0,
+        limit = 0,
         session,
     }: IFindCartItemsByRestaurant): Promise<ICartDocument[]> => {
-        return await CartModel.find({ userId, restaurantId }, { session })
+        return await CartModel.find({ userId, restaurantId })
+            .session(session!)
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
