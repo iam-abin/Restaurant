@@ -239,8 +239,8 @@ export class RestaurantRepository {
     // Admin will use it
     searchRestaurantByName = async (
         searchText: string,
-        skip: number,
-        limit: number,
+        skip: number = 0,
+        limit: number = 0,
     ): Promise<ISearchRestaurantResult> => {
         const pipeline: PipelineStage[] = [
             // Lookup the associated user details

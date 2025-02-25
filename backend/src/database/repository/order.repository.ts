@@ -13,7 +13,7 @@ export class OrderRepository {
     findUserOrders = async (
         userId: string,
         skip: number = 0,
-        limit: number = 10,
+        limit: number = 0,
     ): Promise<IOrderDocument[]> => {
         const userOrders = await OrderModel.aggregate([
             // Match orders for the specific user
@@ -158,7 +158,7 @@ export class OrderRepository {
     findRestaurantOrders = async (
         restaurantId: string,
         skip: number = 0,
-        limit: number = 10,
+        limit: number = 0,
     ): Promise<IOrderDocument[]> => {
         const restaurantOrders = await OrderModel.aggregate([
             // Match orders by restaurantId

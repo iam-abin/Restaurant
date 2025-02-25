@@ -46,8 +46,8 @@ export class ProfileRepository {
 
     searchProfileByName = async (
         searchText: string,
-        skip: number,
-        limit: number,
+        skip: number = 0,
+        limit: number = 0,
     ): Promise<ISearchProfileResult> => {
         const pipeline: PipelineStage[] = [
             // Lookup the associated user details
