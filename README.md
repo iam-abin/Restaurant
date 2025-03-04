@@ -34,7 +34,7 @@ npm run install-all
 ***or***
 - Install dependencies seperately
 
-To install some dev dependencies, from root directory, run
+Install some dev dependencies in the root directory,
 
 ```
 npm install
@@ -60,9 +60,8 @@ npm install
 - Login to stripe cli in local system 
 
 5. Set up the required environment variables.
-- Rename the `.env.example` file in frontend to `.env`
-- Rename the `.env.example` file in backend to `.env.development`, `.env.production`
-- Provide the necessary values for environment in frontend and backend.
+- In the frontend folder create `.env` file  and setup variables using `.env.example` file. 
+- In the backend folder create `.env.development`, `.env.production`, `.env.test` files based on need and setup variables using `.env.example` file.
 
 6. Start server (Running the app):
 
@@ -111,9 +110,13 @@ http://localhost:5000/auth/admin
 
 
 ### Docker compose
-1. install docker 
+---
+
+### prerequsties
+1. docker 
 2. docker componse
 3. makefile
+
 - For docker compose commands check [Makefile](Makefile)
   
   ***or***

@@ -5,15 +5,21 @@ updates:
     directory: "/frontend" # Path to your frontend folder
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "*"
 
   # Update npm dependencies for the backend
   - package-ecosystem: "npm"
     directory: "/backend" # Path to your backend folder
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "*"
     
 # GitHub Actions dependencies (e.g., actions/checkout@v2, actions/setup-node@v3)
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "*"
