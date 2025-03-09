@@ -17,8 +17,8 @@ import {
     ProfileRepository,
     RestaurantRepository,
     UserRepository,
-} from '../database/repository';
-import { IOtpTokenDocument, IProfileDocument, IRestaurantDocument, IUserDocument } from '../database/model';
+} from '../database/repositories';
+import { IOtpTokenDocument, IProfileDocument, IRestaurantDocument, IUserDocument } from '../database/models';
 import {
     DecodedGoogleToken,
     IEmailTemplate,

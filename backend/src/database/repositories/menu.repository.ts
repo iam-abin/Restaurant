@@ -1,7 +1,7 @@
 import mongoose, { ClientSession } from 'mongoose';
 import { singleton } from 'tsyringe';
 import { IMenu } from '../../types';
-import { IMenuDocument, MenuModel } from '../model';
+import { IMenuDocument, MenuModel } from '../models';
 
 @singleton()
 export class MenuRepository {

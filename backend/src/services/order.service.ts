@@ -7,7 +7,7 @@ import {
     OrderedItemRepository,
     CartRepository,
     AddressRepository,
-} from '../database/repository';
+} from '../database/repositories';
 import {
     IAddressDocument,
     ICartDocument,
@@ -15,7 +15,7 @@ import {
     IOrderDocument,
     IRestaurantDocument,
     IUserDocument,
-} from '../database/model';
+} from '../database/models';
 import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
 import { stripeInstance } from '../config/stripe';
 import { appConfig } from '../config/app-config';

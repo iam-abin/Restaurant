@@ -1,6 +1,6 @@
 import { ClientSession } from 'mongoose';
 import { singleton } from 'tsyringe';
-import { ICuisineDocument, CuisineModel } from '../model';
+import { ICuisineDocument, CuisineModel } from '../models';
 
 @singleton()
 export class CuisineRepository {

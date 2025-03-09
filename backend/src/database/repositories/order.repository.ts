@@ -1,7 +1,7 @@
 import mongoose, { ClientSession } from 'mongoose';
 import { singleton } from 'tsyringe';
 import { IOrder, IOrderStatusWithCounts, OrderStatus } from '../../types';
-import { IOrderDocument, OrderModel } from '../model';
+import { IOrderDocument, OrderModel } from '../models';
 
 @singleton()
 export class OrderRepository {

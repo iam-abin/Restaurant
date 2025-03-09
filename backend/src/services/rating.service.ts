@@ -1,7 +1,7 @@
 import { autoInjectable } from 'tsyringe';
 import { IRating } from '../types';
-import { RatingRepository, RestaurantRepository } from '../database/repository';
-import { IRatingDocument, IRestaurantDocument } from '../database/model';
+import { RatingRepository, RestaurantRepository } from '../database/repositories';
+import { IRatingDocument, IRestaurantDocument } from '../database/models';
 import { NotFoundError } from '../errors';
 
 @autoInjectable()

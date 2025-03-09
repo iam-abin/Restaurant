@@ -1,4 +1,4 @@
-import { IUserDocument } from '../database/model';
+import { IUserDocument } from '../database/models';
 import { IOtpTokenData } from './otp';
 import { UserRole } from './roles';
 

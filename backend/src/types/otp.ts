@@ -1,4 +1,4 @@
-import { IUserDocument } from '../database/model';
+import { IUserDocument } from '../database/models';
 import { IUser } from './user';
 
 export interface IOtpToken {

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IRestaurantCuisineDocument, IRestaurantDocument } from '../database/model';
+import { IRestaurantCuisineDocument, IRestaurantDocument } from '../database/models';
 
 export interface IRestaurant {
     ownerId: string;

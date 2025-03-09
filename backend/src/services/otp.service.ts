@@ -14,8 +14,8 @@ import {
     UserRepository,
     ProfileRepository,
     RestaurantRepository,
-} from '../database/repository';
-import { IOtpTokenDocument, IUserDocument } from '../database/model';
+} from '../database/repositories';
+import { IOtpTokenDocument, IUserDocument } from '../database/models';
 import { IEmailTemplate, IOtpTokenData, IUser, UserRole } from '../types';
 import { getEmailVerificationTemplate } from '../templates/signupVerificationEmail';
 import { getForgotPasswordEmailTemplate } from '../templates/forgotPasswordEmail';

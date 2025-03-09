@@ -7,7 +7,7 @@ import {
     ISearchRestaurantResult,
     SearchFilterResult,
 } from '../../types';
-import { IRestaurantDocument, RestaurantModel } from '../model';
+import { IRestaurantDocument, RestaurantModel } from '../models';
 
 @singleton()
 export class RestaurantRepository {

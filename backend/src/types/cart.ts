@@ -1,5 +1,5 @@
 import { ClientSession } from 'mongoose';
-import { ICartDocument } from '../database/model';
+import { ICartDocument } from '../database/models';
 import { Pagination } from './pagination';
 
 export interface ICart {

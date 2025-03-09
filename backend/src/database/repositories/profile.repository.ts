@@ -1,6 +1,6 @@
 import { ClientSession, PipelineStage } from 'mongoose';
 import { singleton } from 'tsyringe';
-import { IProfileDocument, ProfileModel } from '../model';
+import { IProfileDocument, ProfileModel } from '../models';
 import { CountByMonth, IProfile, ISearchProfileResult } from '../../types';
 
 @singleton()

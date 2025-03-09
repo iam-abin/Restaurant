@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { autoInjectable } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
-import { IOrderDocument } from '../database/model';
+import { IOrderDocument } from '../database/models';
 import { OrderService } from '../services';
 import { IJwtPayload, OrderId, Orders, OrderStatus, Pagination, RestaurantId, Status } from '../types';
 import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE_VALUE, HTTP_STATUS_CODE } from '../constants';

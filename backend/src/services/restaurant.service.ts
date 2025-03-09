@@ -16,13 +16,13 @@ import {
     RestaurantCuisineRepository,
     RestaurantRepository,
     UserRepository,
-} from '../database/repository';
+} from '../database/repositories';
 import {
     IAddressDocument,
     IRatingDocument,
     IRestaurantCuisineDocument,
     IRestaurantDocument,
-} from '../database/model';
+} from '../database/models';
 import {
     executeTransaction,
     getPaginationSkipValue,

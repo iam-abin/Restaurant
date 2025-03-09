@@ -6,8 +6,8 @@ import {
     RestaurantCuisineRepository,
     RestaurantRepository,
     UserRepository,
-} from '../database/repository';
-import { IRestaurantDocument } from '../database/model';
+} from '../database/repositories';
+import { IRestaurantDocument } from '../database/models';
 import { NotFoundError } from '../errors';
 import {
     IAdminDashboardCard,

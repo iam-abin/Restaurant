@@ -1,6 +1,6 @@
 import { autoInjectable } from 'tsyringe';
-import { CuisineRepository } from '../database/repository';
-import { ICuisineDocument } from '../database/model';
+import { CuisineRepository } from '../database/repositories';
+import { ICuisineDocument } from '../database/models';
 
 @autoInjectable()
 export class CuisineService {
