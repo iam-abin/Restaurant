@@ -1,6 +1,6 @@
 import { ClientSession } from 'mongoose';
 import { singleton } from 'tsyringe';
-import { IOtpTokenDocument, OtpTokenModel } from '../model';
+import { IOtpTokenDocument, OtpTokenModel } from '../models';
 import { IOtpToken } from '../../types';
 
 @singleton()

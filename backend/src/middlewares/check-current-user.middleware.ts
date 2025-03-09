@@ -2,9 +2,9 @@ import { container } from 'tsyringe';
 import { Request, Response, NextFunction } from 'express';
 import { ForbiddenError, NotAuthorizedError, NotFoundError } from '../errors';
 import { verifyJwtAccessToken } from '../utils';
-import { UserRepository } from '../database/repository';
+import { UserRepository } from '../database/repositories';
 import { IJwtPayload } from '../types';
-import { IUserDocument } from '../database/model';
+import { IUserDocument } from '../database/models';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 
 // Extend Express's Request interface globally

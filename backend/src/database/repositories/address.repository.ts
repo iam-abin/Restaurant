@@ -1,6 +1,6 @@
 import { ClientSession } from 'mongoose';
 import { singleton } from 'tsyringe';
-import { IAddressDocument, AddressModel } from '../model';
+import { IAddressDocument, AddressModel } from '../models';
 import { IAddress } from '../../types';
 
 @singleton()

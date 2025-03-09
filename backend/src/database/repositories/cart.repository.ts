@@ -1,6 +1,6 @@
 import { ClientSession, DeleteResult } from 'mongoose';
 import { singleton } from 'tsyringe';
-import { ICartDocument, CartModel } from '../model';
+import { ICartDocument, CartModel } from '../models';
 import { ICart, IFindCartItemsByRestaurant } from '../../types';
 
 @singleton()

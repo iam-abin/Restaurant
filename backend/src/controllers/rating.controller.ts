@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { autoInjectable } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
-import { IRatingDocument } from '../database/model';
+import { IRatingDocument } from '../database/models';
 import { RatingService } from '../services';
 import { IJwtPayload, IRating } from '../types';
 import { HTTP_STATUS_CODE } from '../constants';

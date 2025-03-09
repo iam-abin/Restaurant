@@ -1,4 +1,4 @@
-import { IProfileDocument } from '../database/model';
+import { IProfileDocument } from '../database/models';
 import { IAddress } from './address';
 import { IUser } from './user';
 

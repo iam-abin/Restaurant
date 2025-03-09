@@ -1,7 +1,7 @@
 import { autoInjectable } from 'tsyringe';
 import { GetCartItemsByRestaurantIdParams, ICart, ICartItemsData } from '../types';
-import { CartRepository, MenuRepository } from '../database/repository';
-import { ICartDocument, IMenuDocument, IUserDocument } from '../database/model';
+import { CartRepository, MenuRepository } from '../database/repositories';
+import { ICartDocument, IMenuDocument, IUserDocument } from '../database/models';
 import { BadRequestError, ForbiddenError, NotFoundError } from '../errors';
 import { getPaginationSkipValue, getPaginationTotalNumberOfPages } from '../utils';
 

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { autoInjectable } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
-import { IMenuDocument } from '../database/model';
+import { IMenuDocument } from '../database/models';
 import { MenuService } from '../services';
 import { IJwtPayload, IMenu, MenuId, Menu, Pagination, RestaurantId } from '../types';
 import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE_VALUE, HTTP_STATUS_CODE } from '../constants';

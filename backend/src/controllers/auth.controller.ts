@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { autoInjectable } from 'tsyringe';
-import { IUserDocument } from '../database/model';
+import { IUserDocument } from '../database/models';
 import { createSuccessResponse } from '../utils';
 import { OtpService, UserService } from '../services';
 import {

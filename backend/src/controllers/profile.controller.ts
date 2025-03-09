@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { autoInjectable } from 'tsyringe';
-import { IProfileDocument } from '../database/model';
+import { IProfileDocument } from '../database/models';
 import { createSuccessResponse } from '../utils';
 import { ProfileService } from '../services';
 import {

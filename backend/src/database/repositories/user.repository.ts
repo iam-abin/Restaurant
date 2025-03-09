@@ -1,6 +1,6 @@
 import { ClientSession } from 'mongoose';
 import { singleton } from 'tsyringe';
-import { IUserDocument, UserModel } from '../model';
+import { IUserDocument, UserModel } from '../models';
 import { IUser, MinMaxYears } from '../../types';
 
 @singleton()

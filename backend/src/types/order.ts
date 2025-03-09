@@ -1,4 +1,4 @@
-import { IOrderDocument } from '../database/model';
+import { IOrderDocument } from '../database/models';
 import { Pagination } from './pagination';
 
 export enum OrderStatus {

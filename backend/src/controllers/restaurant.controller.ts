@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { autoInjectable } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
-import { IRestaurantDocument } from '../database/model';
+import { IRestaurantDocument } from '../database/models';
 import { RestaurantService } from '../services';
 import {
     IJwtPayload,

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { autoInjectable } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
 import { CuisineService } from '../services';
-import { ICuisineDocument } from '../database/model';
+import { ICuisineDocument } from '../database/models';
 import { HTTP_STATUS_CODE } from '../constants';
 
 @autoInjectable()

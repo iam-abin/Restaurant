@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { singleton } from 'tsyringe';
 import { IOrderedItem } from '../../types';
-import { OrderedItemModel, IOrderedItemDocument } from '../model';
+import { OrderedItemModel, IOrderedItemDocument } from '../models';
 
 @singleton()
 export class OrderedItemRepository {

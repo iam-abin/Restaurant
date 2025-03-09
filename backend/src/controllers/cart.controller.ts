@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { autoInjectable } from 'tsyringe';
 import { createSuccessResponse } from '../utils';
-import { ICartDocument } from '../database/model';
+import { ICartDocument } from '../database/models';
 import { CartService } from '../services';
 import { CartItemId, ICart, ICartItemsData, IJwtPayload, Pagination, Quantity, RestaurantId } from '../types';
 import { DEFAULT_LIMIT_VALUE, DEFAULT_PAGE_VALUE, HTTP_STATUS_CODE } from '../constants';

@@ -1,4 +1,4 @@
-import { IMenuDocument } from '../database/model';
+import { IMenuDocument } from '../database/models';
 
 export interface IMenu {
     name: string;

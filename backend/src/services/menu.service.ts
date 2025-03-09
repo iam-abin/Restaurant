@@ -7,14 +7,14 @@ import {
     MenuRepository,
     RestaurantCuisineRepository,
     RestaurantRepository,
-} from '../database/repository';
+} from '../database/repositories';
 import {
     IAddressDocument,
     ICuisineDocument,
     IMenuDocument,
     IRestaurantCuisineDocument,
     IRestaurantDocument,
-} from '../database/model';
+} from '../database/models';
 import {
     executeTransaction,
     getPaginationSkipValue,
